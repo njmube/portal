@@ -1,0 +1,28 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.magnabyte.cfdi.portal</groupId>
+		<artifactId>portal-cfdi</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>portal-cfdi-api</artifactId>
+	<name>portal-cfdi-api</name>
+	<description>Capa de Servicio</description>
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.magnabyte.cfdi.portal</groupId>
+			<artifactId>portal-cfdi-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.magnabyte.cfdi.portal</groupId>
+			<artifactId>portal-cfdi-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+	</dependencies>
+	
+</project>
