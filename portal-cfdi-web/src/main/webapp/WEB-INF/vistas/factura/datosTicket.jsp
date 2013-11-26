@@ -1,18 +1,18 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <html>
 <head>
-<title>Facturación en Línea</title>
+<title>FacturaciÃ³n en LÃ­nea</title>
 </head>
 <body>
 	<div class="container marketing">
 		<div class="main-content">
 			<div class="white-panel row">
 				<h2>
-					Factura Electrónica <span class="label label-primary">@</span>
+					Factura ElectrÃ³nica <span class="label label-primary">@</span>
 				</h2>
 				<br>
 				<p>
-					<strong>Instrucciones: </strong>Para generar la factura electrónica
+					<strong>Instrucciones: </strong>Para generar la factura electrÃ³nica
 					ingresa los siguientes datos.
 				</p>
 				<br>
@@ -21,7 +21,7 @@
 						action="${pageContext.request.contextPath}/cfdi/validarTicket"
 						role="form" cssClass="form-horizontal" modelAttribute="ticketHeader">
 						<div class="form-group">
-							<label for="idTicket" class="col-lg-4 control-label">Número
+							<label for="idTicket" class="col-lg-4 control-label">NÃºmero
 								de Ticket:</label>
 							<div class="col-lg-8">
 								<form:input id="idTicket" cssClass="form-control"
@@ -29,7 +29,7 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="idCaja" class="col-lg-4 control-label">Número de Caja:</label>
+							<label for="idCaja" class="col-lg-4 control-label">NÃºmero de Caja:</label>
 							<div class="col-lg-8">
 								<form:input id="idCaja" cssClass="form-control" 
 								path="idCaja" placeholder="#" />
