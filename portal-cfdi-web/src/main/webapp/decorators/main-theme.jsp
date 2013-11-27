@@ -72,13 +72,13 @@
 	<div id="footer" class="footer">
 		<div class="row">
 			<p class="credit">
-				<span class="glyphicon glyphicon-registration-mark"></span> 2013
-				Modatelas S.A.P.I de C.V.
+				<span class="glyphicon glyphicon-registration-mark"></span> <strong>2013
+				Modatelas S.A.P.I de C.V.</strong>
 			</p>
 			<p class="credit">
-				<a href="#">Acerca de <span
+				<a href="#"><strong>Acerca de </strong><span
 					class="glyphicon glyphicon-question-sign"></span></a> &middot; <a
-					href="#"> Ir arriba <span
+					href="#"><strong> Ir arriba </strong><span
 					class="glyphicon glyphicon-circle-arrow-up"></span></a>
 			</p>
 		</div>
