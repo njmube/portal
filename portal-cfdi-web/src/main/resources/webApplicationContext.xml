@@ -12,8 +12,6 @@
 
 	<mvc:resources location="/resources/" mapping="/resources/**"/>
 	
-	<mvc:view-controller path="/" view-name="welcome" />
-
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass"

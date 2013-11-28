@@ -1,17 +1,34 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
-import javax.servlet.http.HttpSession;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class LoginController {
 
-	@RequestMapping(value="/login", method=RequestMethod.POST)
-	public String login(HttpSession session) {
-		return "factura/datosTicket";
+	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+	
+	private static final String loginView = "login/login";
+
+	@RequestMapping("/")
+	public String root() {
+		return "redirect:/menu";
+	}
+	
+	@RequestMapping("/login")
+	public String login(ModelMap model) {
+		logger.debug("login");
+		return loginView;
+	}
+	
+	@RequestMapping("/loginFailed")
+	public String loginError(ModelMap model) {
+		logger.debug("loginFailed");
+		model.put("error", true);
+		return loginView;
 	}
 	
 }

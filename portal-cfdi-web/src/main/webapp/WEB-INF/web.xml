@@ -10,12 +10,17 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
 			classpath*:/serviceApplicationContext.xml,
-			classpath*:/jdbcApplicationContext.xml
+			classpath*:/jdbcApplicationContext.xml,
+			classpath*:/springSecurity.xml
 		</param-value>
 	</context-param>
 
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>com.magnabyte.cfdi.portal.web.utils.SessionCounterListener</listener-class>
 	</listener>
 
 	<filter>
@@ -33,6 +38,16 @@
 
 	<filter-mapping>
 		<filter-name>CharacterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
@@ -61,4 +76,7 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 
+	<session-config>
+		<session-timeout>2</session-timeout>
+	</session-config>
 </web-app>
