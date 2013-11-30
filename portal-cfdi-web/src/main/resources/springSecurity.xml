@@ -6,16 +6,18 @@
            http://www.springframework.org/schema/security
            http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
-	<http pattern="/login*" security="none" />
-	<http pattern="/about" security="none" />
-	<http pattern="/resources/**" security="none" />
-	<http auto-config="true" disable-url-rewriting="true">
-		<intercept-url pattern="/**" access="ROLE_USER" />
+	<http auto-config="true" disable-url-rewriting="true"
+		use-expressions="true">
+		<intercept-url pattern="/login*" access="permitAll" />
+		<intercept-url pattern="/about" access="permitAll" />
+		<intercept-url pattern="/sessionTimeout" access="permitAll" />
+		<intercept-url pattern="/resources/**" access="permitAll" />
+		<intercept-url pattern="/cfdi/**" access="permitAll" />
+		<intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
 		<form-login login-page="/login" authentication-failure-url="/loginFailed"
 			default-target-url="/menu" />
 		<session-management invalid-session-url="/sessionTimeout" />
-		
-		<logout delete-cookies="JSESSIONID"/>
+		<logout delete-cookies="JSESSIONID" />
 	</http>
 
 	<authentication-manager>

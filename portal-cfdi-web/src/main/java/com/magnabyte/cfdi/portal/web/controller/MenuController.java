@@ -1,5 +1,6 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
+import java.io.File;
 import java.security.Principal;
 
 import javax.servlet.http.HttpSession;
@@ -21,17 +22,39 @@ public class MenuController {
 
 	@RequestMapping("/menu")
 	public String menu(ModelMap model, Principal principal) {
-		logger.debug("welcome");
+		logger.debug("menu sucursal");
 		Sucursal sucursal = new Sucursal();
 		sucursal.setNombre(principal.getName());
 		model.put("sucursal", sucursal);
-		return "menu/welcome";
+		return "menu/menu";
 	}
+	
+	@RequestMapping("/cfdi/menu")
+	public String menuCliente(ModelMap model) {
+		logger.debug("menu cliente");
+		return "menu/menu";
+	}
+	
 	@RequestMapping("/about")
 	public String about(ModelMap model, HttpSession session) {
 		logger.debug("about");
 		logger.debug("suc--{}", (Sucursal)session.getAttribute("sucursal"));
 		logger.debug("sessionId={}", session.getId());
+		return "menu/about";
+	}
+	
+	@RequestMapping("/cfdi/list")
+	public String list() {
+		logger.debug("list...");
+		File dir = new File("/home");
+		if (dir.exists()) {
+			logger.debug("el directorio existe");
+			for (String name : dir.list()) {
+				logger.debug("-" + name);
+			}
+		} else {
+			logger.debug("no existe el directorio");
+		}
 		return "menu/about";
 	}
 }

@@ -31,4 +31,10 @@ public class LoginController {
 		return loginView;
 	}
 	
+	@RequestMapping("/sessionTimeout")
+	public String sessionTimeout(ModelMap model) {
+		logger.debug("Sesion expirada");
+		return "login/sessionTimeout";
+	}
+	
 }

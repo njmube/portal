@@ -1,9 +1,9 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator"
-	prefix="decorator"%>
+<%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -42,7 +42,7 @@
 						<li><a href="<c:url value="/about" />">Acerca de <span
 								class="glyphicon glyphicon-question-sign"></span></a></li>
 					</ul>
-					<c:if test="${not empty sessionScope.sucursal}">
+					<sec:authorize access="hasRole('ROLE_USER')">
 						<div class="navbar-right">
 							<div class="btn-group">
 								<button type="button" class="btn btn-default dropdown-toggle"
@@ -55,7 +55,7 @@
 								</ul>
 							</div>
 						</div>
-					</c:if>
+					</sec:authorize>
 				</div>
 			</div>
 		</div>
