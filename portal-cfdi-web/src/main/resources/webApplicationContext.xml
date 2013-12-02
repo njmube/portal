@@ -12,6 +12,10 @@
 
 	<mvc:resources location="/resources/" mapping="/resources/**"/>
 	
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="modatelasmsg"/>
+	</bean>
+	
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass"
@@ -19,5 +23,4 @@
 		<property name="prefix" value="/WEB-INF/vistas/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
-
 </beans>

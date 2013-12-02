@@ -17,6 +17,6 @@
 		</div>
 	</div>
 
-	<script src="<c:url value="/resources/js/main/modatelas-session.js"/>"></script>
+	<script src="<c:url value="/resources/js/login/sessionTimeout.js"/>"></script>
 </body>
 </html>

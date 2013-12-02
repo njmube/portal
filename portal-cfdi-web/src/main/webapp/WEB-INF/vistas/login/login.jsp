@@ -1,6 +1,7 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
 <title>Inicio de Sesión</title>
@@ -16,8 +17,9 @@
 				<div class="col-md-offset-3 col-md-6">
 					<div class="alert alert-danger alert-dismissable">
 						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-						<strong>Your login attempt was not successful, try again.</strong>
-						<br /> Caused: ${sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}
+						<spring:message code="messages.login.failed" text="hola"/>
+						<br><br> <strong><spring:message code="messages.login.cause" />:</strong> 
+						<c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}" />
 					</div>
 				</div>
 			</c:if>
@@ -51,5 +53,6 @@
 			</div>
 		</div>
 	</div>
+	<script src="<c:url value="/resources/js/login/login.js" />"></script>
 </body>
 </html>

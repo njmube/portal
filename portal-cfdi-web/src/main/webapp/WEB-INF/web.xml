@@ -9,9 +9,9 @@
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
+			classpath*:/springSecurity.xml,
 			classpath*:/serviceApplicationContext.xml,
-			classpath*:/jdbcApplicationContext.xml,
-			classpath*:/springSecurity.xml
+			classpath*:/jdbcApplicationContext.xml
 		</param-value>
 	</context-param>
 
