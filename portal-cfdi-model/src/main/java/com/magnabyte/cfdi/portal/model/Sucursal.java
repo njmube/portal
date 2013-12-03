@@ -1,9 +1,21 @@
 package com.magnabyte.cfdi.portal.model;
 
-public class Sucursal {
+import java.io.Serializable;
+
+public class Sucursal implements Serializable {
 	private Integer id;
 	private String nombre;
 	private String password;
+
+	public Sucursal() {
+	}
+
+	public Sucursal(Integer id, String nombre, String password) {
+		super();
+		this.id = id;
+		this.nombre = nombre;
+		this.password = password;
+	}
 
 	public Integer getId() {
 		return id;

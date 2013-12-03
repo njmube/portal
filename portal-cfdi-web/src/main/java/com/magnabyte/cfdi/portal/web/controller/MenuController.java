@@ -2,6 +2,8 @@ package com.magnabyte.cfdi.portal.web.controller;
 
 import java.io.File;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -18,6 +20,9 @@ import com.magnabyte.cfdi.portal.model.Sucursal;
 @SessionAttributes("sucursal")
 public class MenuController {
 	
+//	@Autowired
+//	private NewWebService newWebService;
+	
 	private static final Logger logger = LoggerFactory.getLogger(MenuController.class);
 
 	@RequestMapping("/menu")
@@ -26,7 +31,27 @@ public class MenuController {
 		Sucursal sucursal = new Sucursal();
 		sucursal.setNombre(principal.getName());
 		model.put("sucursal", sucursal);
-		return "menu/menu";
+		
+		//Web Service
+//		logger.debug(newWebService.suma(69, 2));
+//		logger.debug(newWebService.operation("Omar"));
+		
+		if (sucursal.getNombre().equalsIgnoreCase("magna")) {
+			return "menu/menu";
+		} else {
+			return "redirect:/menuCorp";
+		}
+	}
+	
+	@RequestMapping("/menuCorp")
+	public String menuCorp(ModelMap model) {
+		logger.debug("menuCorp...");
+		List<Sucursal> list = new ArrayList<Sucursal>();
+		for(int i = 0; i < 10; i++) {
+			list.add(new Sucursal(i + 1, "Nombre " + i, "Password " + i));
+		}
+		model.put("lista", list);
+		return "menu/menuCorp";
 	}
 	
 	@RequestMapping("/cfdi/menu")

@@ -10,13 +10,19 @@
 			<h2>La sesión ha expirado :(</h2>
 			<hr>
 			<div class="well col-md-6 col-md-offset-3">
-				<strong>Mensaje: </strong>
-				<br><br>
+				<strong>Mensaje: </strong> <br> <br>
 				<p>Vuelva a iniciar sesión, redireccionando...</p>
 			</div>
 		</div>
 	</div>
 
-	<script src="<c:url value="/resources/js/login/sessionTimeout.js"/>"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			window.setTimeout(function() {
+				url = "<c:url value='/login' />";
+				window.location.replace(url);
+			}, 3000);
+		});
+	</script>
 </body>
 </html>
