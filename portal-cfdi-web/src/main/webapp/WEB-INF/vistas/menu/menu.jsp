@@ -10,7 +10,7 @@
 	<div class="container main-content">
 		<div class="white-panel row">
 			<h2>
-				Facturación en Línea <span class="label label-primary">@</span>
+				Facturación en Línea - <span class="text-info">Sucursal ${sessionScope.sucursal.nombre}</span> <span class="label label-primary">@</span>
 			</h2>
 			<hr>
 
@@ -21,14 +21,14 @@
 					</a>
 				</p>
 				<hr>
-				<sec:authorize access="hasRole('ROLE_USER')">
-					<p>
-						<a href="#" class="btn btn-warning" role="button">Generar Nota
-							de Crédito <span class="glyphicon glyphicon-arrow-right"></span>
-						</a>
-					</p>
-					<hr>
-				</sec:authorize>
+<%-- 				<sec:authorize access="hasRole('ROLE_USER')"> --%>
+<!-- 					<p> -->
+<!-- 						<a href="#" class="btn btn-warning" role="button">Generar Nota -->
+<!-- 							de Crédito <span class="glyphicon glyphicon-arrow-right"></span> -->
+<!-- 						</a> -->
+<!-- 					</p> -->
+<!-- 					<hr> -->
+<%-- 				</sec:authorize> --%>
 				<p>
 					<a href="#" class="btn btn-primary" role="button">Consultar Facturas
 						<span class="glyphicon glyphicon-arrow-right"></span>

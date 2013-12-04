@@ -41,7 +41,11 @@ hr {
 }
 
 .navbar-right {
-	margin-top: 8px;
+	margin-top: 12px;
+}
+
+.navbar-right div.btn-group {
+	margin-left: 5px;
 }
 
 .white-panel {

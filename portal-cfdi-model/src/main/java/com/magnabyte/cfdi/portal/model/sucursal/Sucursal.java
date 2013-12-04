@@ -1,4 +1,4 @@
-package com.magnabyte.cfdi.portal.model;
+package com.magnabyte.cfdi.portal.model.sucursal;
 
 import java.io.Serializable;
 

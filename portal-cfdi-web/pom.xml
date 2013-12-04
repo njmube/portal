@@ -45,6 +45,10 @@
 			<artifactId>displaytag</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>displaytag</groupId>
+			<artifactId>displaytag-export-poi</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>jstl</groupId>
 			<artifactId>jstl</artifactId>
 		</dependency>

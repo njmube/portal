@@ -24,11 +24,11 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 	
-	<bean id="newWebService" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
-		<property name="serviceInterface" value="server.NewWebService" />
-		<property name="wsdlDocumentUrl" value="http://10.2.200.135:8084/WerService/NewWebService?WSDL" />
-		<property name="namespaceUri" value="http://server/" />
-		<property name="serviceName" value="NewWebService" />
-		<property name="portName" value="NewWebServicePort" />
-	</bean>
+<!-- 	<bean id="newWebService" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean"> -->
+<!-- 		<property name="serviceInterface" value="server.NewWebService" /> -->
+<!-- 		<property name="wsdlDocumentUrl" value="http://10.2.200.135:8084/WerService/NewWebService?WSDL" /> -->
+<!-- 		<property name="namespaceUri" value="http://server/" /> -->
+<!-- 		<property name="serviceName" value="NewWebService" /> -->
+<!-- 		<property name="portName" value="NewWebServicePort" /> -->
+<!-- 	</bean> -->
 </beans>

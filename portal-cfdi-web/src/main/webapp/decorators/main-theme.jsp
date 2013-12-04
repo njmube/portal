@@ -46,7 +46,7 @@
 					<sec:authorize access="hasRole('ROLE_USER')">
 						<div class="navbar-right">
 							<div class="btn-group">
-								<button type="button" class="btn btn-default dropdown-toggle"
+								<button type="button" class="btn btn-warning btn-sm dropdown-toggle"
 									data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> 
 									${sessionScope.sucursal.nombre} <span class="caret"></span>
 								</button>

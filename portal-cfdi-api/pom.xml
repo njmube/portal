@@ -9,7 +9,7 @@
 	<artifactId>portal-cfdi-api</artifactId>
 	<name>portal-cfdi-api</name>
 	<description>Capa de Servicio</description>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>com.magnabyte.cfdi.portal</groupId>
@@ -23,6 +23,10 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.samba.jcifs</groupId>
+			<artifactId>jcifs</artifactId>
+		</dependency>
 	</dependencies>
-	
+
 </project>

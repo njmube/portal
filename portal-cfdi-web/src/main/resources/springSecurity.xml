@@ -30,6 +30,7 @@
 			<user-service>
 				<user name="magna" password="admin" authorities="ROLE_USER" />
 				<user name="suc1" password="user" authorities="ROLE_USER" />
+				<user name="suc2" password="user" authorities="ROLE_USER" />
 			</user-service>
 		</authentication-provider>
 	</authentication-manager>

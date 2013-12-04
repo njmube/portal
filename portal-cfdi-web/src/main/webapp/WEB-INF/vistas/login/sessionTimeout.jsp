@@ -21,7 +21,7 @@
 			window.setTimeout(function() {
 				url = "<c:url value='/login' />";
 				window.location.replace(url);
-			}, 3000);
+			}, 2000);
 		});
 	</script>
 </body>
