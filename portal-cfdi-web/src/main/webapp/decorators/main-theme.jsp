@@ -43,7 +43,7 @@
 						<li><a href="<c:url value="/about" />">Acerca de <span
 								class="glyphicon glyphicon-question-sign"></span></a></li>
 					</ul>
-					<sec:authorize access="hasRole('ROLE_USER')">
+					<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_CORP')">
 						<div class="navbar-right">
 							<div class="btn-group">
 								<button type="button" class="btn btn-warning btn-sm dropdown-toggle"

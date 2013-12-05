@@ -10,25 +10,25 @@
 	<div class="container main-content">
 		<div class="white-panel row">
 			<h2>
-				Facturación en Línea - <span class="text-info">Sucursal ${sessionScope.sucursal.nombre}</span> <span class="label label-primary">@</span>
+				Facturación en Línea
+				<sec:authorize access="hasRole('ROLE_SUC')">
+					<span class="text-info"> - Sucursal ${sessionScope.sucursal.nombre}</span> <span class="label label-primary">@</span>
+					<c:url var="urlPage" value="/ticketPage"/>
+				</sec:authorize>
+				<sec:authorize access="hasRole('ROLE_CORP')">
+					<span class="text-info"> - Corporativo</span> <span class="label label-primary">@</span>
+					<c:url var="urlPage" value="/facturaCorp"/>
+				</sec:authorize>
 			</h2>
 			<hr>
 
 			<div class="well col-md-6 col-md-offset-3 centered">
 				<p>
-					<a href="#" class="btn btn-success" role="button">Generar
+					<a href="${urlPage}" class="btn btn-success" role="button">Generar
 						Factura <span class="glyphicon glyphicon-arrow-right"></span>
 					</a>
 				</p>
 				<hr>
-<%-- 				<sec:authorize access="hasRole('ROLE_USER')"> --%>
-<!-- 					<p> -->
-<!-- 						<a href="#" class="btn btn-warning" role="button">Generar Nota -->
-<!-- 							de Crédito <span class="glyphicon glyphicon-arrow-right"></span> -->
-<!-- 						</a> -->
-<!-- 					</p> -->
-<!-- 					<hr> -->
-<%-- 				</sec:authorize> --%>
 				<p>
 					<a href="#" class="btn btn-primary" role="button">Consultar Facturas
 						<span class="glyphicon glyphicon-arrow-right"></span>

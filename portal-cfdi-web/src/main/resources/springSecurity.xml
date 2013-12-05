@@ -18,7 +18,7 @@
 		<intercept-url pattern="/sessionTimeout" access="permitAll" />
 		<intercept-url pattern="/resources/**" access="permitAll" />
 		<intercept-url pattern="/cfdi/**" access="permitAll" />
-		<intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
+		<intercept-url pattern="/**" access="hasAnyRole('ROLE_SUC', 'ROLE_CORP')" />
 		<form-login login-page="/login" authentication-failure-url="/loginFailed"
 			default-target-url="/menu" />
 		<session-management invalid-session-url="/sessionTimeout" />
@@ -28,9 +28,9 @@
 	<authentication-manager>
 		<authentication-provider>
 			<user-service>
-				<user name="magna" password="admin" authorities="ROLE_USER" />
-				<user name="suc1" password="user" authorities="ROLE_USER" />
-				<user name="suc2" password="user" authorities="ROLE_USER" />
+				<user name="magna" password="admin" authorities="ROLE_CORP" />
+				<user name="suc1" password="user" authorities="ROLE_SUC" />
+				<user name="suc2" password="user" authorities="ROLE_SUC" />
 			</user-service>
 		</authentication-provider>
 	</authentication-manager>

@@ -6,6 +6,7 @@ public class Sucursal implements Serializable {
 	private Integer id;
 	private String nombre;
 	private String password;
+	private String rutaRepositorio;
 
 	public Sucursal() {
 	}
@@ -41,6 +42,14 @@ public class Sucursal implements Serializable {
 		this.password = password;
 	}
 
+	public String getRutaRepositorio() {
+		return rutaRepositorio;
+	}
+
+	public void setRutaRepositorio(String rutaRepositorio) {
+		this.rutaRepositorio = rutaRepositorio;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -50,6 +59,8 @@ public class Sucursal implements Serializable {
 		builder.append(nombre);
 		builder.append(", password=");
 		builder.append(password);
+		builder.append(", rutaRepositorio=");
+		builder.append(rutaRepositorio);
 		builder.append("]");
 		return builder.toString();
 	}
