@@ -11,7 +11,7 @@
 			<hr>
 			<div class="well col-md-6 col-md-offset-3">
 				<strong>Mensaje: </strong> <br> <br>
-				<p>Vuelva a iniciar sesión, redireccionando...</p>
+				<p class="text-danger">Vuelva a iniciar sesión, redireccionando...</p>
 			</div>
 		</div>
 	</div>
@@ -19,7 +19,7 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			window.setTimeout(function() {
-				url = "<c:url value='/login' />";
+				url = "<c:url value='/j_spring_security_logout' />";
 				window.location.replace(url);
 			}, 2000);
 		});

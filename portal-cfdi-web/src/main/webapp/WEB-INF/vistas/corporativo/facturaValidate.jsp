@@ -1,5 +1,5 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="display" uri="http://displaytag.sf.net"%>
 <html>
 <head>
@@ -9,7 +9,7 @@
 	<div class="container main-content">
 		<div class="white-panel row">
 			<h2>
-				Facturación en Línea - <span class="text-info">Corporativo</span> <span class="label label-primary">@</span>
+				Facturación Electrónica - <span class="text-info">Corporativo</span> <span class="label label-primary">@</span>
 			</h2>
 			<hr>
 			<p class="wrapword">

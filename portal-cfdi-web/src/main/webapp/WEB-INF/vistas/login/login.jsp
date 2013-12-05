@@ -9,7 +9,7 @@
 <body>
 	<div class="container main-content">
 		<div class="white-panel row">
-			<h2>
+			<h2 class="text-primary">
 				Iniciar Sesión <span class="glyphicon glyphicon-user"></span>
 			</h2>
 			<hr>

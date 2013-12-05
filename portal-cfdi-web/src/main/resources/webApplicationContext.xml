@@ -27,6 +27,8 @@
 		<property name="prefix" value="/WEB-INF/vistas/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
+	
+	<bean id="comprobanteFactory" class="mx.gob.sat.cfd._3.ObjectFactory" />
 
 	<!-- <bean id="newWebService" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean"> -->
 	<!-- <property name="serviceInterface" value="server.NewWebService" /> -->

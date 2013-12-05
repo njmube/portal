@@ -9,7 +9,7 @@
 	<div class="container main-content">
 		<div class="white-panel row">
 			<h2>
-				Facturación en Línea - <span class="text-info">Corporativo</span> <span class="label label-primary">@</span>
+				Facturación Electrónica - <span class="text-info">Corporativo</span> <span class="label label-primary">@</span>
 			</h2>
 			<hr>
 			<div class="col-md-offset-1 col-md-10">
