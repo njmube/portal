@@ -4,6 +4,39 @@
 <html>
 <head>
 <title>Facturacion Corporativo</title>
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$('#documents').dataTable({
+			"sDom" : "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-6'i><'col-md-6'p>>",
+			"sPaginationType" : "bootstrap",
+			"oLanguage" : {
+				"sProcessing":     "Procesando...",
+			    "sLengthMenu":     "Mostrar _MENU_ registros",
+			    "sZeroRecords":    "No se encontraron resultados",
+			    "sEmptyTable":     "Ningún dato disponible en esta tabla",
+			    "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			    "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+			    "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+			    "sInfoPostFix":    "",
+			    "sSearch":         "Buscar:",
+			    "sUrl":            "",
+			    "sInfoThousands":  ",",
+			    "sLoadingRecords": "Cargando...",
+			    "oPaginate": {
+			        "sFirst":    "Primero",
+			        "sLast":     "Último",
+			        "sNext":     "Siguiente",
+			        "sPrevious": "Anterior"
+			    },
+			    "oAria": {
+			        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+			        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+			    }
+			}
+		});
+	});
+	</script>
 </head>
 <body>
 	<div class="container main-content">
@@ -20,13 +53,12 @@
 							Recargar <span class="glyphicon glyphicon-refresh"></span>
 						</a>
 					</div>
-					<c:set var="title" value="Nombre <span class='glyphicon glyphicon-sort'></span>"/>
 					<div class="table-responsive">
-						<display:table id="document" name="documentos"
+						<display:table htmlId="documents" id="document" name="${documentos}" 
  							class="table table-hover table-striped table-condensed"
- 							requestURI="/facturaCorp" pagesize="10"> 
+ 							requestURI="/facturaCorp"> 
  							<display:column title="#" sortable="true">${document_rowNum}</display:column>
- 							<display:column title="${title}" property="nombre" sortable="true" />
+ 							<display:column title="Nombre" property="nombre" sortable="true" />
  							<display:column title="Generar Factura" headerClass="text-primary text-center" class="text-center">
  								<a href="<c:url value="/facturaCorp/validate/${document.nombre}"/>" class="btn btn-xs btn-success"><span class="glyphicon glyphicon-print"></span></a>
  							</display:column>
