@@ -64,10 +64,14 @@ $.extend($.fn.dataTableExt.oPagination, {
  
       $(nPaging).append(
        '<ul class="pagination pagination-sm">' +
-        '<li class="first disabled"><a href="#" title="' + oLang.sFirst + '"><span class="glyphicon glyphicon-fast-backward"></span></a></li>' +
-        '<li class="prev disabled"><a href="#" title="' + oLang.sPrevious + '"><span class="glyphicon glyphicon-step-backward"></span></a></li>' +
-        '<li class="next disabled"><a href="#" title="' + oLang.sNext + '"><span class="glyphicon glyphicon-step-forward"></span></a></li>' +
-        '<li class="last disabled"><a href="#" title="' + oLang.sLast + '"><span class="glyphicon glyphicon-fast-forward"></span></a></li>' +
+//        '<li class="first disabled"><a href="#" title="' + oLang.sFirst + '"><span class="glyphicon glyphicon-fast-backward"></span></a></li>' +
+//        '<li class="prev disabled"><a href="#" title="' + oLang.sPrevious + '"><span class="glyphicon glyphicon-step-backward"></span></a></li>' +
+//        '<li class="next disabled"><a href="#" title="' + oLang.sNext + '"><span class="glyphicon glyphicon-step-forward"></span></a></li>' +
+//        '<li class="last disabled"><a href="#" title="' + oLang.sLast + '"><span class="glyphicon glyphicon-fast-forward"></span></a></li>' +
+	      '<li class="first disabled"><a href="#" title="' + oLang.sFirst + '">&laquo;</a></li>' +
+	      '<li class="prev disabled"><a href="#" title="' + oLang.sPrevious + '">&lsaquo;</a></li>' +
+	      '<li class="next disabled"><a href="#" title="' + oLang.sNext + '">&rsaquo;</a></li>' +
+	      '<li class="last disabled"><a href="#" title="' + oLang.sLast + '">&raquo;</a></li>' +
        '</ul>'
       );
       var els = $('a', nPaging);

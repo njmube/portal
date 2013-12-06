@@ -10,7 +10,8 @@
 			<h2>About</h2>
 			<hr>
 			<p>About page...</p>
-			<a href="<c:url value="/cfdi/list"/>">List /home</a>
+			<p>Receptor - ${receptor.rfc} : ${receptor.nombre}</p>
+			<a href="<c:url value="/buscaRfc"/>">List /home</a>
 		</div>
 	</div>
 </body>
