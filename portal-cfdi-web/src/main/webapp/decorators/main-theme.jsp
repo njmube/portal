@@ -56,7 +56,7 @@
 								</button>
 								<ul class="dropdown-menu" role="menu">
 									<c:url var="logoutUrl" value="/j_spring_security_logout" />
-									<li><a href="${logoutUrl}"><span class="glyphicon glyphicon-off"></span> Cerrar sesión</a></li>
+									<li><a href="${logoutUrl}"><span class="glyphicon glyphicon-log-out"></span> Cerrar sesión</a></li>
 								</ul>
 							</div>
 						</div>

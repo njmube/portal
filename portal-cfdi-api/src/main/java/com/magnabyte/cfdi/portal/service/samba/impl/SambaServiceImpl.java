@@ -86,6 +86,7 @@ public class SambaServiceImpl implements SambaService {
 				for (SmbFile file : files) {
 					if(file.isFile()) {
 						DocumentoFile documento = new DocumentoFile();
+						documento.setFolio(file.getName().substring(1, 11));
 						documento.setNombre(file.getName());
 						documentos.add(documento);
 					}

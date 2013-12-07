@@ -46,7 +46,7 @@
 					<div class="form-group">
 						<div class="centered">
 							<button id="buttonLogin" type="submit" class="btn btn-primary">Iniciar
-								Sesión</button>
+								Sesión <span class="glyphicon glyphicon-log-in"></span></button>
 						</div>
 					</div>
 				</form>

@@ -1,5 +1,6 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="display" uri="http://displaytag.sf.net"%>
 <html>
 <head>
@@ -21,12 +22,14 @@
 						</a>
 					</div>
 					<div class="table-responsive">
-						<c:set var="title" value="Nombre <span class='glyphicon glyphicon-sort text-warning'></span>"/>
+						<c:set var="titlename" value="Nombre <span class='glyphicon glyphicon-sort text-warning'></span>"/>
+						<c:set var="foliosap" value="Folio SAP <span class='glyphicon glyphicon-sort text-warning'></span>"/>
 						<display:table htmlId="documents" id="document" name="${documentos}" 
  							class="table table-hover table-striped table-condensed"
  							requestURI="/facturaCorp"> 
  							<display:column title="#" headerClass="text-primary">${document_rowNum}</display:column>
- 							<display:column title="${title}" property="nombre" headerClass="text-primary"/>
+ 							<display:column title="${foliosap}" property="folio" headerClass="text-primary"></display:column>
+ 							<display:column title="${titlename}" property="nombre" headerClass="text-primary"/>
  							<display:column title="Generar Factura" headerClass="text-primary text-center" class="text-center">
  								<a href="<c:url value="/facturaCorp/validate/${document.nombre}"/>" class="btn btn-xs btn-success"><span class="glyphicon glyphicon-print"></span></a>
  							</display:column>

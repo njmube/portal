@@ -1,6 +1,5 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mx.gob.sat.cfd._3.Comprobante;
@@ -31,13 +30,7 @@ public class CorporativoCfdiController {
 	@RequestMapping("/facturaCorp")
 	public String facturaCorp(@ModelAttribute Sucursal sucursal, ModelMap model) {
 		logger.debug("facturaCorp...");
-//		List<DocumentoFile> documentos = sambaService.getFilesFromDirectory(sucursal.getRutaRepositorio());
-		List<DocumentoFile> documentos = new ArrayList<DocumentoFile>();
-		for (int i = 0; i < 15; i ++) {
-			DocumentoFile d = new DocumentoFile();
-			d.setNombre("archivo" + i + ".xml");
-			documentos.add(d);
-		}
+		List<DocumentoFile> documentos = sambaService.getFilesFromDirectory(sucursal.getRutaRepositorio());
 		model.put("documentos", documentos);
 		return "corporativo/facturaCorp";
 	}
