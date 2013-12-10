@@ -52,7 +52,7 @@
 							<div class="btn-group">
 								<button type="button" class="btn btn-warning btn-sm dropdown-toggle"
 									data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> 
-									${sessionScope.sucursal.nombre} <span class="caret"></span>
+									${sessionScope.sucursal.username} <span class="caret"></span>
 								</button>
 								<ul class="dropdown-menu" role="menu">
 									<c:url var="logoutUrl" value="/j_spring_security_logout" />

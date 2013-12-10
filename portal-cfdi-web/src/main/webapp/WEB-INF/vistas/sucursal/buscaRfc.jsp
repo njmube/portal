@@ -22,7 +22,7 @@ $(document).ready(function() {
 <body>
 	<div class="container main-content">
 		<div class="white-panel row">
-			<h2>Facturación Electrónica<span class="text-info"> - Sucursal ${sessionScope.sucursal.nombre}</span> <span class="label label-primary">@</span></h2>
+			<h2>Facturación Electrónica<span class="text-info"> - Sucursal ${sessionScope.sucursal.username}</span> <span class="label label-primary">@</span></h2>
 			<blockquote>
 				<p class="text-info">Ingresa el RFC ó Nombre del Cliente.</p>
 			</blockquote>
@@ -32,13 +32,13 @@ $(document).ready(function() {
 					<div class="form-group">
 						<label for="rfc" class="col-lg-4 control-label">RFC: </label>
 						<div class="col-lg-5">
-							<form:input path="rfc" id="rfc" cssClass="form-control" />
+							<form:input path="rfc" id="rfc" cssClass="form-control input-sm" />
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="nombre" class="col-lg-4 control-label">Nombre ó Razón Social</label>
 						<div class="col-lg-8">
-							<form:input path="nombre" id="nombre" cssClass="form-control"/>
+							<form:input path="nombre" id="nombre" cssClass="form-control input-sm"/>
 						</div>
 					</div>
 					<hr>

@@ -31,7 +31,7 @@
 						</label>
 						<div class="col-lg-8">
 							<input id="j_username" name="j_username" type="text"
-								class="form-control" />
+								class="form-control input-sm" />
 						</div>
 					</div>
 					<div class="form-group">
@@ -39,7 +39,7 @@
 						</label>
 						<div class="col-lg-8">
 							<input id="j_password" name="j_password" type="password"
-								class="form-control" />
+								class="form-control input-sm" />
 						</div>
 					</div>
 					<hr>

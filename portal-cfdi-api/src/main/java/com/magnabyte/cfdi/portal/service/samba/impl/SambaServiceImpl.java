@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoFile;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 
-@Service
+@Service("sambaService")
 public class SambaServiceImpl implements SambaService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SambaServiceImpl.class);

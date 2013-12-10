@@ -1,45 +1,26 @@
 package com.magnabyte.cfdi.portal.model.sucursal;
 
 import java.io.Serializable;
+import java.util.Collection;
 
-public class Sucursal implements Serializable {
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+
+public class Sucursal extends User implements Serializable {
+	
 	private Integer id;
-	private String nombre;
-	private String password;
 	private String rutaRepositorio;
 
-	public Sucursal() {
+	public Sucursal(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+		super(username, password, authorities);
 	}
-
-	public Sucursal(Integer id, String nombre, String password) {
-		super();
-		this.id = id;
-		this.nombre = nombre;
-		this.password = password;
-	}
-
+	
 	public Integer getId() {
 		return id;
 	}
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public String getRutaRepositorio() {
@@ -52,17 +33,7 @@ public class Sucursal implements Serializable {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Sucursal [id=");
-		builder.append(id);
-		builder.append(", nombre=");
-		builder.append(nombre);
-		builder.append(", password=");
-		builder.append(password);
-		builder.append(", rutaRepositorio=");
-		builder.append(rutaRepositorio);
-		builder.append("]");
-		return builder.toString();
+		return super.toString();
 	}
 
 }

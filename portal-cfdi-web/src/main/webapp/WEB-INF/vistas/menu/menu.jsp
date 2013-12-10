@@ -12,7 +12,7 @@
 			<h2>
 				Facturación Electrónica
 				<sec:authorize access="hasRole('ROLE_SUC')">
-					<span class="text-info"> - Sucursal ${sessionScope.sucursal.nombre}</span> <span class="label label-primary">@</span>
+					<span class="text-info"> - Sucursal ${sessionScope.sucursal.username}</span> <span class="label label-primary">@</span>
 					<c:url var="urlPage" value="/buscaRfc"/>
 				</sec:authorize>
 				<sec:authorize access="hasRole('ROLE_CORP')">

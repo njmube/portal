@@ -4,12 +4,14 @@ import java.security.Principal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.magnabyte.cfdi.portal.model.sucursal.Sucursal;
+import com.magnabyte.cfdi.portal.service.samba.SucursalService;
 
 @Controller
 @SessionAttributes("sucursal")
@@ -17,14 +19,14 @@ public class MenuController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MenuController.class);
 
+	@Autowired
+	private SucursalService sucursalService;
+	
 	@RequestMapping("/menu")
 	public String menu(ModelMap model, Principal principal) {
 		logger.debug("menu sucursal");
-		Sucursal sucursal = new Sucursal();
-		sucursal.setNombre(principal.getName().toUpperCase());
-		sucursal.setRutaRepositorio("smb://10.1.200.125/compartido/modatelas/");
+		Sucursal sucursal = (Sucursal) sucursalService.loadUserByUsername(principal.getName().toUpperCase());
 		model.put("sucursal", sucursal);
-		
 		return "menu/menu";
 	}
 	
@@ -35,9 +37,4 @@ public class MenuController {
 		return "menu/about";
 	}
 	
-//	@RequestMapping("/cfdi/menu")
-//	public String menuCliente(ModelMap model) {
-//		logger.debug("menu cliente");
-//		return "menu/menu";
-//	}
 }
