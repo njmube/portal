@@ -1,6 +1,7 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="display" uri="http://displaytag.sf.net"%>
 <html>
 <head>
@@ -8,8 +9,11 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	$("#buscarCliente").click(function(){
+		var rfc = $("#rfc").val();
+		var nombre = $("#nombre").val();
 		$.ajax({
-			url: "<c:url value='/listaClientes?ajax=true&rfc=" + $("#rfc").val() + "'/>",
+			url: "<c:url value='/listaClientes?ajax=true'/>",
+			data: "rfc=" + rfc + "&nombre=" + nombre,
 			type: "GET",
 			success: function(response) {
 				$("#listClientesPage").html(response);
@@ -22,13 +26,13 @@ $(document).ready(function() {
 <body>
 	<div class="container main-content">
 		<div class="white-panel row">
-			<h2>Facturación Electrónica<span class="text-info"> - Sucursal ${sessionScope.establecimiento.nombre}</span> <span class="label label-primary">@</span></h2>
+			<h2>Facturación Electrónica<span class="text-info"> - ${fn:toUpperCase(sessionScope.establecimiento.nombre)}</span> <span class="label label-primary">@</span></h2>
 			<blockquote>
 				<p class="text-info">Ingresa el RFC ó Nombre del Cliente.</p>
 			</blockquote>
 			<hr>
 			<div class="well col-md-offset-2 col-md-8">
-				<form:form id="receptorForm" action="muestraReceptor" method="GET" modelAttribute="receptor" cssClass="form-horizontal" role="form">
+				<form:form id="receptorForm" action="#" method="GET" modelAttribute="receptor" cssClass="form-horizontal" role="form">
 					<div class="form-group">
 						<label for="rfc" class="col-lg-4 control-label">RFC: </label>
 						<div class="col-lg-5">

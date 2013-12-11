@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html>
 <head>
 <title>Facturación en Línea</title>
@@ -12,7 +13,7 @@
 			<h2>
 				Facturación Electrónica
 				<sec:authorize access="hasRole('ROLE_SUC')">
-					<span class="text-info"> - Sucursal ${sessionScope.establecimiento.nombre}</span> <span class="label label-primary">@</span>
+					<span class="text-info"> - ${fn:toUpperCase(sessionScope.establecimiento.nombre)}</span> <span class="label label-primary">@</span>
 					<c:url var="urlPage" value="/buscaRfc"/>
 				</sec:authorize>
 				<sec:authorize access="hasRole('ROLE_CORP')">

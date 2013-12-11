@@ -7,29 +7,27 @@ import mx.gob.sat.cfd._3.Comprobante.Receptor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+
+import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 
 @Controller
 public class ClienteController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClienteController.class);
 	
+	@Autowired
+	private ClienteService clienteService;
+	
 	@RequestMapping("/listaClientes")
-	public String listaClientes(ModelMap model, @RequestParam(value = "rfc", required = false) boolean rfc) {
+	public String listaClientes(ModelMap model, @ModelAttribute Receptor receptor) {
 		logger.debug("listaaaa");
-		List<Receptor> clientes = new ArrayList<Receptor>();
-		if (rfc)
-		for (int i = 0; i < 15; i ++) {
-			Receptor rec = new Receptor();
-			rec.setRfc("rfc" + i);
-			rec.setNombre("nombre" + i);
-			clientes.add(rec);
-		}
+		List<Receptor> clientes = clienteService.findClientesByNameRfc(receptor);
 		if(!clientes.isEmpty())
 			model.put("emptyList", false);
 		model.put("clientes", clientes);
