@@ -10,6 +10,6 @@ public interface SambaService {
 
 	Comprobante getFile(String url, String fileName);
 
-	List<DocumentoFile> getFilesFromDirectory(String sucursal);
+	List<DocumentoFile> getFilesFromDirectory(String url);
 
 }

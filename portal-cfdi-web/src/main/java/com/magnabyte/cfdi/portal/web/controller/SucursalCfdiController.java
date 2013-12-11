@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 @Controller
-@SessionAttributes("sucursal")
+@SessionAttributes("establecimiento")
 public class SucursalCfdiController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SucursalCfdiController.class);

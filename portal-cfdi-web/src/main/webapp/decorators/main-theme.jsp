@@ -35,13 +35,13 @@
 						<span class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="<c:url value="/menu" />"> Facturación
+					<a class="navbar-brand" href="<c:url value="/menuPage" />"> Facturación
 						en Línea <span class="glyphicon glyphicon-globe"></span>
 					</a>
 				</div>
 				<div class="collapse navbar-collapse pull-right">
 					<ul class="nav navbar-nav">
-						<li><a href="<c:url value="/menu" />">Menu Principal <span
+						<li><a href="<c:url value="/menuPage" />">Menu Principal <span
 								class="glyphicon glyphicon-home"></span>
 						</a></li>
 						<li><a href="<c:url value="/about" />">Acerca de <span
@@ -52,7 +52,7 @@
 							<div class="btn-group">
 								<button type="button" class="btn btn-warning btn-sm dropdown-toggle"
 									data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> 
-									${sessionScope.sucursal.username} <span class="caret"></span>
+									${fn:toUpperCase(sessionScope.establecimiento.nombre)} <span class="caret"></span>
 								</button>
 								<ul class="dropdown-menu" role="menu">
 									<c:url var="logoutUrl" value="/j_spring_security_logout" />

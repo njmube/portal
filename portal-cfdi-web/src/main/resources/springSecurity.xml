@@ -20,21 +20,12 @@
 		<intercept-url pattern="/cfdi/**" access="permitAll" />
 		<intercept-url pattern="/**" access="hasAnyRole('ROLE_SUC', 'ROLE_CORP')" />
 		<form-login login-page="/login" authentication-failure-url="/loginFailed"
-			default-target-url="/menu" />
+			default-target-url="/menu" always-use-default-target="true" />
 		<session-management invalid-session-url="/sessionTimeout" />
 		<logout delete-cookies="JSESSIONID" />
 	</http>
 
-<!-- 	<authentication-manager> -->
-<!-- 		<authentication-provider> -->
-<!-- 			<user-service> -->
-<!-- 				<user name="magna" password="admin" authorities="ROLE_CORP" /> -->
-<!-- 				<user name="suc1" password="user" authorities="ROLE_SUC" /> -->
-<!-- 				<user name="suc2" password="user" authorities="ROLE_SUC" /> -->
-<!-- 			</user-service> -->
-<!-- 		</authentication-provider> -->
-<!-- 	</authentication-manager> -->
 	<authentication-manager>
-		<authentication-provider user-service-ref="sucursalDao" />
+		<authentication-provider user-service-ref="userDetailsService" />
 	</authentication-manager>
 </beans:beans>

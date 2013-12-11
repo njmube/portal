@@ -10,30 +10,37 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.magnabyte.cfdi.portal.model.sucursal.Sucursal;
-import com.magnabyte.cfdi.portal.service.samba.SucursalService;
+import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 
 @Controller
-@SessionAttributes("sucursal")
+@SessionAttributes("establecimiento")
 public class MenuController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MenuController.class);
 
 	@Autowired
-	private SucursalService sucursalService;
+	private EstablecimientoService establecimientoService;
 	
 	@RequestMapping("/menu")
 	public String menu(ModelMap model, Principal principal) {
-		logger.debug("menu sucursal");
-		Sucursal sucursal = (Sucursal) sucursalService.loadUserByUsername(principal.getName().toUpperCase());
-		model.put("sucursal", sucursal);
+		logger.debug("Obteniendo usuario logeado");
+		Establecimiento establecimiento = new Establecimiento();
+		establecimiento.setClave(principal.getName());
+		model.put("establecimiento", establecimientoService.findByClave(establecimiento));
+		return "redirect:/menuPage";
+	}
+	
+	@RequestMapping("/menuPage")
+	public String menuPage() {
+		logger.debug("menuPage...");
 		return "menu/menu";
 	}
 	
 	@RequestMapping("/about")
 	public String about(ModelMap model) {
 		logger.debug("about");
-		logger.debug("suc--{}", (Sucursal)model.get("sucursal"));
+		logger.debug("establecimiento--{}", (Establecimiento) model.get("establecimiento"));
 		return "menu/about";
 	}
 	

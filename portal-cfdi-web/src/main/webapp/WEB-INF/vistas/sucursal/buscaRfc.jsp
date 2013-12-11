@@ -22,7 +22,7 @@ $(document).ready(function() {
 <body>
 	<div class="container main-content">
 		<div class="white-panel row">
-			<h2>Facturación Electrónica<span class="text-info"> - Sucursal ${sessionScope.sucursal.username}</span> <span class="label label-primary">@</span></h2>
+			<h2>Facturación Electrónica<span class="text-info"> - Sucursal ${sessionScope.establecimiento.nombre}</span> <span class="label label-primary">@</span></h2>
 			<blockquote>
 				<p class="text-info">Ingresa el RFC ó Nombre del Cliente.</p>
 			</blockquote>

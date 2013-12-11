@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.magnabyte.cfdi.portal.model.documento.DocumentoFile;
-import com.magnabyte.cfdi.portal.model.sucursal.Sucursal;
+import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 
 @Controller
-@SessionAttributes("sucursal")
+@SessionAttributes("establecimiento")
 public class CorporativoCfdiController {
 
 	private static final Logger logger = LoggerFactory.getLogger(CorporativoCfdiController.class);
@@ -28,7 +28,7 @@ public class CorporativoCfdiController {
 	private SambaService sambaService;
 	
 	@RequestMapping("/facturaCorp")
-	public String facturaCorp(@ModelAttribute Sucursal sucursal, ModelMap model) {
+	public String facturaCorp(@ModelAttribute Establecimiento sucursal, ModelMap model) {
 		logger.debug("facturaCorp...");
 		List<DocumentoFile> documentos = sambaService.getFilesFromDirectory(sucursal.getRutaRepositorio());
 		model.put("documentos", documentos);
@@ -36,7 +36,7 @@ public class CorporativoCfdiController {
 	}
 	
 	@RequestMapping("/facturaCorp/validate/{fileName:.+\\.[a-z]+}")
-	public String validarFactura(@ModelAttribute Sucursal sucursal, @PathVariable String fileName, ModelMap model) {
+	public String validarFactura(@ModelAttribute Establecimiento sucursal, @PathVariable String fileName, ModelMap model) {
 		logger.debug("valida factura");
 		logger.debug(fileName);
 		logger.debug(sucursal.getRutaRepositorio() + fileName);
