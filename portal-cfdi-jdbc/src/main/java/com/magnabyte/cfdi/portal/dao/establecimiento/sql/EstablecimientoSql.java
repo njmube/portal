@@ -7,7 +7,7 @@ public class EstablecimientoSql extends GenericSql {
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
-		qryBuilder.append("select * from t_establecimiento where clave = ?");
+		qryBuilder.append("select id_establecimiento, TRIM(clave) AS clave, nombre, TRIM(password) AS password, ruta_repositorio from t_establecimiento where clave = ?");
 		FIND_BY_CLAVE = qryBuilder.toString();
 	}
 }

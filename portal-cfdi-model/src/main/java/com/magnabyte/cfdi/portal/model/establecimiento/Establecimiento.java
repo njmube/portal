@@ -4,6 +4,11 @@ import java.io.Serializable;
 
 public class Establecimiento implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2674768576109909674L;
+	
 	private Integer id;
 	private String clave;
 	private String nombre;
@@ -58,5 +63,15 @@ public class Establecimiento implements Serializable {
 	public void setTipoEstablecimiento(TipoEstablecimiento tipoEstablecimiento) {
 		this.tipoEstablecimiento = tipoEstablecimiento;
 	}
+
+	@Override
+	public String toString() {
+		return "Establecimiento [id=" + id + ", clave=" + clave + ", nombre="
+				+ nombre + ", password=" + password + ", rutaRepositorio="
+				+ rutaRepositorio + ", tipoEstablecimiento="
+				+ tipoEstablecimiento + "]";
+	}
+	
+	
 
 }

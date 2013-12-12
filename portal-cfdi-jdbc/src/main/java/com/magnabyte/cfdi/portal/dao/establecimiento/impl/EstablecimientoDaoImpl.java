@@ -21,7 +21,7 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements Establecim
 
 	@Override
 	public Establecimiento findByClave(Establecimiento establecimiento) {
-		logger.debug("Recuperando establecimiento");
+		logger.debug("Recuperando establecimiento" + establecimiento);
 		return getJdbcTemplate().queryForObject(EstablecimientoSql.FIND_BY_CLAVE, MAPPER_ESTABLECIMIENTO, establecimiento.getClave());
 	}
 	
@@ -30,7 +30,7 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements Establecim
 		@Override
 		public Establecimiento mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Establecimiento establecimiento = new Establecimiento();
-			establecimiento.setId(rs.getInt("id"));
+			establecimiento.setId(rs.getInt("id_establecimiento"));
 			establecimiento.setClave(rs.getString("clave"));
 			establecimiento.setNombre(rs.getString("nombre"));
 			establecimiento.setPassword(rs.getString("password"));
