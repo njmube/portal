@@ -11,7 +11,7 @@
 			<hr>
 			<p>About page...</p>
 			<p>Receptor - ${receptor.rfc} : ${receptor.nombre}</p>
-			<a href="<c:url value="/buscaRfc"/>">List /home</a>
+			<a href="<c:url value="/cfdi/reportep"/>">List /home</a>
 		</div>
 	</div>
 </body>
