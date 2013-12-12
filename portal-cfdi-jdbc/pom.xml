@@ -36,8 +36,8 @@
 			<artifactId>aspectjweaver</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
+			<groupId>informix</groupId>
+			<artifactId>ifxjdbc</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>commons-dbcp</groupId>

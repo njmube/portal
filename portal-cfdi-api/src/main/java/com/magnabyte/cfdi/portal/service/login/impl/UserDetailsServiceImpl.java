@@ -31,6 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		Establecimiento establecimiento = new Establecimiento();
 		establecimiento.setClave(username);
 		establecimiento = establecimientoDao.findByClave(establecimiento);
+		logger.debug("Recuperando establecimiento" + establecimiento);
 		
 		if (establecimiento == null) {
 			throw new UsernameNotFoundException("Usuario no encontrado");
