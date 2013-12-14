@@ -45,6 +45,7 @@ public class CorporativoCfdiController {
 		logger.debug(sucursal.getRutaRepositorio() + fileName);
 		Comprobante comprobante = xmlConverterService.convertXmlSapToCfdi(sucursal.getRutaRepositorio(), fileName);
 		logger.debug("el comprobante {}", comprobante);
+		model.put("folioSap", fileName.substring(1, 11));
 		model.put("comprobante", comprobante);
 		return "corporativo/facturaValidate";
 	}
