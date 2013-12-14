@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportePrueba" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1effeb6c-601d-46a1-a925-593a4f436dfa">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="115"/>
 	<field name="clave" class="java.lang.String"/>
 	<field name="nombre" class="java.lang.String"/>
 	<field name="password" class="java.lang.String"/>
@@ -37,7 +37,7 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="125" splitType="Stretch">
+		<band height="23" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="0" width="100" height="20" uuid="5f9d7ef3-f215-4cd4-82da-7658b34d8591"/>
 				<textFieldExpression><![CDATA[$F{clave}]]></textFieldExpression>
