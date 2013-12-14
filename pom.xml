@@ -199,6 +199,18 @@
 				<artifactId>itext</artifactId>
 				<version>2.1.7</version>
 			</dependency>
+			<!-- Xml -->
+			<dependency>
+				<groupId>jdom</groupId>
+				<artifactId>jdom</artifactId>
+				<version>1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.xml.bind</groupId>
+				<artifactId>jaxb-impl</artifactId>
+				<version>2.2.7</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 

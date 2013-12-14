@@ -35,6 +35,14 @@
 			<groupId>org.samba.jcifs</groupId>
 			<artifactId>jcifs</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>jdom</groupId>
+			<artifactId>jdom</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+		</dependency>
 	</dependencies>
 
 </project>

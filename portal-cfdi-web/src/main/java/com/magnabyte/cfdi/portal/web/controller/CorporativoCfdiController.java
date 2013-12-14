@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoFile;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
+import com.magnabyte.cfdi.portal.service.xml.XmlConverterService;
 
 @Controller
 @SessionAttributes("establecimiento")
@@ -26,6 +27,9 @@ public class CorporativoCfdiController {
 
 	@Autowired
 	private SambaService sambaService;
+	
+	@Autowired
+	private XmlConverterService xmlConverterService;
 	
 	@RequestMapping("/facturaCorp")
 	public String facturaCorp(@ModelAttribute Establecimiento sucursal, ModelMap model) {
@@ -38,10 +42,10 @@ public class CorporativoCfdiController {
 	@RequestMapping("/facturaCorp/validate/{fileName:.+\\.[a-z]+}")
 	public String validarFactura(@ModelAttribute Establecimiento sucursal, @PathVariable String fileName, ModelMap model) {
 		logger.debug("valida factura");
-		logger.debug(fileName);
 		logger.debug(sucursal.getRutaRepositorio() + fileName);
-		Comprobante comprobante = sambaService.getFile(sucursal.getRutaRepositorio(), fileName);
+		Comprobante comprobante = xmlConverterService.convertXmlSapToCfdi(sucursal.getRutaRepositorio(), fileName);
 		logger.debug("el comprobante {}", comprobante);
+		model.put("folioSap", fileName.substring(1, 11));
 		model.put("comprobante", comprobante);
 		return "corporativo/facturaValidate";
 	}
