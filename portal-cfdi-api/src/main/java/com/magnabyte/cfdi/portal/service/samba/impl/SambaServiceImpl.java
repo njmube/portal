@@ -25,7 +25,7 @@ public class SambaServiceImpl implements SambaService {
 	private static final Logger logger = LoggerFactory.getLogger(SambaServiceImpl.class);
 
 	@Override
-	public InputStream getFile(String url, String fileName) {
+	public InputStream getFileStream(String url, String fileName) {
 		logger.debug("sambaService filename...");
 		SmbFileInputStream smbIs = null;
 		BufferedInputStream bis = null;

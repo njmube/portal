@@ -7,7 +7,7 @@ import com.magnabyte.cfdi.portal.model.documento.DocumentoFile;
 
 public interface SambaService {
 
-	InputStream getFile(String url, String fileName);
+	InputStream getFileStream(String url, String fileName);
 
 	List<DocumentoFile> getFilesFromDirectory(String url);
 

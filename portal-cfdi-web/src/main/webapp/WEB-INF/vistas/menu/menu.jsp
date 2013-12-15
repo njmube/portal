@@ -21,6 +21,9 @@
 					<c:url var="urlPage" value="/facturaCorp"/>
 				</sec:authorize>
 			</h2>
+			<blockquote>
+				<p class="text-info">Seleccione una opción.</p>
+			</blockquote>
 			<hr>
 
 			<div class="well col-md-6 col-md-offset-3 centered">

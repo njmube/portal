@@ -61,14 +61,14 @@ public class XmlConverterServiceImpl implements XmlConverterService, ResourceLoa
 	private ResourceLoader resourceLoader;
 	
 	@Override
-	public Comprobante convertXmlSapToCfdi(String rutaRepositorio, String fileName) {
+	public Comprobante convertXmlSapToCfdi(InputStream xmlSap) {
 		Comprobante comprobante = null;
 		try {
 			SAXBuilder builder = new SAXBuilder();
 			
 			Document documentoCFD;
 			try {
-				documentoCFD = (Document) builder.build(sambaService.getFile(rutaRepositorio, fileName));
+				documentoCFD = (Document) builder.build(xmlSap);
 				Element documentoPrevio = documentoCFD.getRootElement().getChild("Comprobante");
 				Element documento = (Element) documentoPrevio.clone();
 				documentoCFD.setRootElement(documento);
