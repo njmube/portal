@@ -15,7 +15,7 @@ public class LoginController {
 
 	@RequestMapping("/")
 	public String root() {
-		return "redirect:/menu";
+		return "redirect:/menuPage";
 	}
 	
 	@RequestMapping("/login")

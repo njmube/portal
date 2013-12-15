@@ -1,6 +1,5 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mx.gob.sat.cfd._3.Comprobante.Receptor;
