@@ -1,4 +1,7 @@
-<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="display" uri="http://displaytag.sf.net"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <html>
 <head>
 <title>Confirmar Datos</title>
@@ -8,11 +11,50 @@
 		<div class="white-panel row">
 			<h2 class="text-primary">Confirmación</h2>
 			<hr>
-			${receptor.rfc}
-			${receptor.nombre}
-			${receptor.domicilio.calle}
-			${receptor.domicilio.noInterior}
-		</div>
+			<c:url var="altaUrl" value="/clienteForm"/>
+			<div class="form-group">
+				<label class="control-label col-lg-1">Nombre: </label>
+				<div class="col-lg-3">
+					<input id="nombre" class="form-control input-sm" value="${cliente.nombre}" disabled="disabled"/>
+				</div>
+				<label class="control-label col-lg-1">Rfc: </label>
+				<div class="col-lg-2">
+					<input id="rfc" class="form-control input-sm" value="${cliente.rfc}" disabled="disabled"/>
+				</div>
+			</div>
+			<br/>
+			<br/>
+			<div class="well col-md-offset-0 col-md-12">
+				<div class="table-responsive">
+					<display:table htmlId="domicilios" id="domicilio" name="${cliente.domicilios}"
+						class="table table-hover table-striped table-condensed"
+						requestURI="/confirmarDatos">
+						<display:column title="#" property="id" headerClass="text-primary"></display:column>
+						<display:column title="Calle" property="calle" headerClass="text-primary"></display:column>
+						<display:column title="No. Ext." property="noExterior" headerClass="text-primary" />
+						<c:choose>
+							<c:when test="${empty domicilio.noInterior}">
+								<display:column title="No. Int." value="S/N" headerClass="text-primary" />
+							</c:when>
+							<c:otherwise>
+								<display:column title="No. Int." property="noInterior" headerClass="text-primary" />
+							</c:otherwise>
+						</c:choose>
+						<display:column title="Colonia"  property="colonia" headerClass="text-primary" />
+						<display:column title="Municipio"  property="municipio" headerClass="text-primary" />
+						<display:column title="Estado"  property="estado.nombre" headerClass="text-primary" />
+						<display:column title="País"  property="estado.pais.id" headerClass="text-primary" />
+						<display:column title="Codigo Postal"  property="codigoPostal" headerClass="text-primary" />
+						<display:column title="Localidad"  property="localidad" headerClass="text-primary" />
+						<display:column title="Referencia"  property="referencia" headerClass="text-primary" />
+					</display:table>
+				</div>
+			</div>
+				<p class="text-center"> 
+					<a href="<c:url value=""/>" class="btn btn-success"><span>Continuar</span></a>
+					<a href="<c:url value="/clienteForm"/>" class="btn btn-warning"><span>Corregir</span></a>
+				</p>
+		</div>				
 	</div>
 </body>
 </html>
