@@ -14,13 +14,16 @@
 				Facturación Electrónica
 				<sec:authorize access="hasRole('ROLE_SUC')">
 					<span class="text-info"> - ${fn:toUpperCase(sessionScope.establecimiento.nombre)}</span> <span class="label label-primary">@</span>
-					<c:url var="urlPage" value="/buscaRfc"/>
+					<c:url var="urlPage" value="/buscaTicket"/>
 				</sec:authorize>
 				<sec:authorize access="hasRole('ROLE_CORP')">
 					<span class="text-info"> - Corporativo</span> <span class="label label-primary">@</span>
 					<c:url var="urlPage" value="/facturaCorp"/>
 				</sec:authorize>
 			</h2>
+			<blockquote>
+				<p class="text-info">Seleccione una opción.</p>
+			</blockquote>
 			<hr>
 
 			<div class="well col-md-6 col-md-offset-3 centered">

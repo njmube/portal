@@ -1,24 +1,19 @@
 package com.magnabyte.cfdi.portal.service.samba.impl;
 
 import java.io.BufferedInputStream;
-import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.transform.stream.StreamSource;
-
 import jcifs.Config;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
-import mx.gob.sat.cfd._3.Comprobante;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.oxm.Unmarshaller;
 import org.springframework.stereotype.Service;
 
 import com.magnabyte.cfdi.portal.model.documento.DocumentoFile;
@@ -28,48 +23,29 @@ import com.magnabyte.cfdi.portal.service.samba.SambaService;
 public class SambaServiceImpl implements SambaService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SambaServiceImpl.class);
-	
-	@Autowired
-	private Unmarshaller unmarshaller;
 
 	@Override
-	public Comprobante getFile(String url, String fileName) {
+	public InputStream getFileStream(String url, String fileName) {
+		logger.debug("sambaService filename...");
 		SmbFileInputStream smbIs = null;
 		BufferedInputStream bis = null;
 		Config.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
-		logger.debug("sambaService filename...");
+		SmbFile file;
 		try {
-			SmbFile file = new SmbFile(url, fileName);
+			file = new SmbFile(url, fileName);
 			if (file.exists()) {
 				smbIs = new SmbFileInputStream(file);
 				bis = new BufferedInputStream(smbIs);
-//				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//				int length = (int) file.length();
-//				byte [] arrBuffer = new byte [length];
-//				int leido = 0;
-//				while ((leido = bis.read(arrBuffer)) >= 0) {
-//					baos.write(arrBuffer, 0, leido);
-//				}
-				Comprobante comprobante = (Comprobante) unmarshaller.unmarshal(new StreamSource(bis));
-				return comprobante;
+				return bis;
 			}
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			logger.error("La URL proporcionada no es valida.");
 		} catch (SmbException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al intentar recuperar el archivo");
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (smbIs != null) {
-				try {
-					smbIs.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+			logger.error("La direccion ip es invalida");
+		} 
+		
 		return null;
 	}
 
@@ -84,7 +60,7 @@ public class SambaServiceImpl implements SambaService {
 				SmbFile[] files = dir.listFiles();
 
 				for (SmbFile file : files) {
-					if(file.isFile()) {
+					if (file.isFile()) {
 						DocumentoFile documento = new DocumentoFile();
 						documento.setFolio(file.getName().substring(1, 11));
 						documento.setNombre(file.getName());

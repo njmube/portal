@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:oxm="http://www.springframework.org/schema/oxm"
 	xsi:schemaLocation="http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.2.xsd
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -26,13 +24,23 @@
 			value="org.springframework.web.servlet.view.JstlView" />
 		<property name="prefix" value="/WEB-INF/vistas/" />
 		<property name="suffix" value=".jsp" />
+		<property name="order" value="1"/>
 	</bean>
-	
+
+
+	<bean id="jasperViewResolver"
+		class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
+		<property name="basename" value="views" />
+		<property name="order" value="0"/>
+	</bean>
+
+
 	<bean id="comprobanteFactory" class="mx.gob.sat.cfd._3.ObjectFactory" />
 
 	<!-- <bean id="newWebService" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean"> -->
 	<!-- <property name="serviceInterface" value="server.NewWebService" /> -->
-	<!-- <property name="wsdlDocumentUrl" value="http://10.2.200.135:8084/WerService/NewWebService?WSDL" /> -->
+	<!-- <property name="wsdlDocumentUrl" value="http://10.2.200.135:8084/WerService/NewWebService?WSDL" 
+		/> -->
 	<!-- <property name="namespaceUri" value="http://server/" /> -->
 	<!-- <property name="serviceName" value="NewWebService" /> -->
 	<!-- <property name="portName" value="NewWebServicePort" /> -->
