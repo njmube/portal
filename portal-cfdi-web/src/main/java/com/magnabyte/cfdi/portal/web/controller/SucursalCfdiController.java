@@ -23,6 +23,12 @@ public class SucursalCfdiController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(SucursalCfdiController.class);
 	
+	@RequestMapping("/buscaTicket")
+	public String buscaTicket() {
+		return "sucursal/buscaTicket";
+	}
+	
+	
 	@RequestMapping("/buscaRfc")
 	public String buscaRfc(@ModelAttribute Cliente cliente, ModelMap model) {
 		logger.debug("buscaRfc page");
