@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.util.WebUtils;
 
+import com.certus.facturehoy.ws2.cfdi.WsServicioBO;
+import com.certus.facturehoy.ws2.cfdi.WsServicios;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoFile;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
@@ -34,6 +36,9 @@ public class CorporativoCfdiController {
 	
 	@Autowired
 	private XmlConverterService xmlConverterService;
+	
+	@Autowired
+	private WsServicios wsServicios;
 	
 	@RequestMapping("/facturaCorp")
 	public String facturaCorp(@ModelAttribute Establecimiento sucursal, ModelMap model) {
@@ -57,6 +62,12 @@ public class CorporativoCfdiController {
 	@RequestMapping(value = "/generaFactura", method = RequestMethod.POST)
 	public String generaFactura(@ModelAttribute Comprobante comprobante) {
 		logger.debug(comprobante.getReceptor().getNombre());
+		WsServicioBO wsbo= wsServicios.obtenerServicios("AAA010101AAA.Test.User", "Prueba$1");
+		if (wsbo.getArray().size() > 0) {
+			for (WsServicioBO wsel : wsbo.getArray()) {
+				logger.debug("webservice-----------{}", wsel.getNombreServicio());
+			}
+		}
 		return "corporativo/pdf";
 	}
 	

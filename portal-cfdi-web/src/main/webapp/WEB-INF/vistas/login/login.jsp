@@ -17,7 +17,7 @@
 				<div class="col-md-offset-3 col-md-6">
 					<div class="alert alert-danger alert-dismissable">
 						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-						<spring:message code="messages.login.failed" text="hola"/>
+						<spring:message code="messages.login.failed"/>
 						<br><br> <strong><spring:message code="messages.login.cause" />:</strong> 
 						<c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}" />
 					</div>

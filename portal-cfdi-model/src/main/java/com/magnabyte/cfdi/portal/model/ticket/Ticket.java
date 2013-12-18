@@ -2,12 +2,15 @@ package com.magnabyte.cfdi.portal.model.ticket;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "TAS")
@@ -33,6 +36,12 @@ public class Ticket {
 		@XmlElement(name = "ART_SALE")
 		protected List<Ticket.Transaccion.Partida> partidas;
 		
+		@XmlElement(name = "DISC_INFO")
+		protected List<Ticket.Transaccion.PartidaDescuento> partidasDescuentos;
+		
+		@XmlElement(name = "TOTAL")
+		protected Ticket.Transaccion.TransaccionTotal transaccionTotal;
+		
 		public Ticket.Transaccion.TransaccionHeader getTransaccionHeader() {
 			return transaccionHeader;
 		}
@@ -48,49 +57,111 @@ public class Ticket {
 			}
 			return partidas;
 		}
+		
+		public List<Ticket.Transaccion.PartidaDescuento> getPartidasDescuentos() {
+			if (partidasDescuentos == null) {
+				return new ArrayList<Ticket.Transaccion.PartidaDescuento>();
+			}
+			return partidasDescuentos;
+		}
 
+		public Ticket.Transaccion.TransaccionTotal getTransaccionTotal() {
+			return transaccionTotal;
+		}
+		
+		public void setTransaccionTotal(
+				Ticket.Transaccion.TransaccionTotal transaccionTotal) {
+			this.transaccionTotal = transaccionTotal;
+		}
+		
 		@XmlAccessorType(XmlAccessType.FIELD)
 		public static class TransaccionHeader {
 			
 			@XmlElement(name = "lRetailStoreID")
-			protected Integer idSucursal;
+			protected String idSucursal;
 			
 			@XmlElement(name = "lTaNmbr")
-			protected Integer idTicket;
+			protected String idTicket;
 			
 			@XmlElement(name = "lWorkstationNmbr")
-			protected Integer idCaja;
+			protected String idCaja;
 
-			public Integer getIdSucursal() {
+			@XmlElement(name = "szDate")
+			protected String fechaHora;
+
+			@XmlElement(name = "szTaType")
+			protected String tipoTransaccion;
+			
+			@XmlTransient
+			protected String fecha;
+			
+			public String getIdSucursal() {
 				return idSucursal;
 			}
 
-			public void setIdSucursal(Integer idSucursal) {
+			public void setIdSucursal(String idSucursal) {
 				this.idSucursal = idSucursal;
 			}
 
-			public Integer getIdTicket() {
+			public String getIdTicket() {
 				return idTicket;
 			}
 
-			public void setIdTicket(Integer idTicket) {
+			public void setIdTicket(String idTicket) {
 				this.idTicket = idTicket;
 			}
 
-			public Integer getIdCaja() {
+			public String getIdCaja() {
 				return idCaja;
 			}
 
-			public void setIdCaja(Integer idCaja) {
+			public void setIdCaja(String idCaja) {
 				this.idCaja = idCaja;
+			}
+
+			public String getFechaHora() {
+				return fechaHora;
+			}
+
+			public void setFechaHora(String fechaHora) {
+				this.fechaHora = fechaHora;
+			}
+
+			public String getTipoTransaccion() {
+				return tipoTransaccion;
+			}
+
+			public void setTipoTransaccion(String tipoTransaccion) {
+				this.tipoTransaccion = tipoTransaccion;
+			}
+
+			public String getFecha() {
+				return fecha;
+			}
+
+			public void setFecha(String fecha) {
+				this.fecha = fecha;
 			}
 
 			@Override
 			public String toString() {
-				return "TransaccionHeader [idSucursal=" + idSucursal
-						+ ", idTicket=" + idTicket + ", idCaja=" + idCaja + "]";
+				StringBuilder builder = new StringBuilder();
+				builder.append("TransaccionHeader [idSucursal=");
+				builder.append(idSucursal);
+				builder.append(", idTicket=");
+				builder.append(idTicket);
+				builder.append(", idCaja=");
+				builder.append(idCaja);
+				builder.append(", fechaHora=");
+				builder.append(fechaHora);
+				builder.append(", tipoTransaccion=");
+				builder.append(tipoTransaccion);
+				builder.append(", fecha=");
+				builder.append(fecha);
+				builder.append("]");
+				return builder.toString();
 			}
-			
+
 		}
 		
 		@XmlAccessorType(XmlAccessType.FIELD)
@@ -100,13 +171,13 @@ public class Ticket {
 			protected Ticket.Transaccion.Partida.Articulo articulo;
 			
 			@XmlElement(name = "dTaPrice")
-			protected BigDecimal precio;
+			protected BigDecimal precioUnitario;
 			
 			@XmlElement(name = "dTaQty")
 			protected Integer cantidad;
 			
 			@XmlElement(name = "dTaTotal")
-			protected BigDecimal total;
+			protected BigDecimal precioTotal;
 			
 			public Ticket.Transaccion.Partida.Articulo getArticulo() {
 				return articulo;
@@ -116,14 +187,14 @@ public class Ticket {
 				this.articulo = articulo;
 			}
 
-			public BigDecimal getPrecio() {
-				return precio;
+			public BigDecimal getPrecioUnitario() {
+				return precioUnitario;
 			}
-
-			public void setPrecio(BigDecimal precio) {
-				this.precio = precio;
+			
+			public void setPrecioUnitario(BigDecimal precioUnitario) {
+				this.precioUnitario = precioUnitario;
 			}
-
+		
 			public Integer getCantidad() {
 				return cantidad;
 			}
@@ -132,28 +203,34 @@ public class Ticket {
 				this.cantidad = cantidad;
 			}
 
-			public BigDecimal getTotal() {
-				return total;
+			public BigDecimal getPrecioTotal() {
+				return precioTotal;
 			}
-
-			public void setTotal(BigDecimal total) {
-				this.total = total;
+			
+			public void setPrecioTotal(BigDecimal precioTotal) {
+				this.precioTotal = precioTotal;
 			}
 
 			@XmlAccessorType(XmlAccessType.FIELD)
 			public static class Articulo {
 				
 				@XmlElement(name = "szPOSItemID")
-				protected Integer id;
+				protected String id;
 				
 				@XmlElement(name = "szDesc")
 				protected String descripcion;
 
-				public Integer getId() {
+				@XmlElement(name = "szItemCategoryTypeCode")
+				protected String tipoCategoria;
+				
+				@XmlElement(name = "szPOSDepartmentID")
+				protected String deptoId;
+
+				public String getId() {
 					return id;
 				}
 
-				public void setId(Integer id) {
+				public void setId(String id) {
 					this.id = id;
 				}
 
@@ -165,27 +242,139 @@ public class Ticket {
 					this.descripcion = descripcion;
 				}
 
+				public String getTipoCategoria() {
+					return tipoCategoria;
+				}
+
+				public void setTipoCategoria(String tipoCategoria) {
+					this.tipoCategoria = tipoCategoria;
+				}
+
+				public String getDeptoId() {
+					return deptoId;
+				}
+
+				public void setDeptoId(String deptoId) {
+					this.deptoId = deptoId;
+				}
+
 				@Override
 				public String toString() {
-					return "Articulo [id=" + id + ", descripcion="
-							+ descripcion + "]";
+					StringBuilder builder = new StringBuilder();
+					builder.append("Articulo [id=");
+					builder.append(id);
+					builder.append(", descripcion=");
+					builder.append(descripcion);
+					builder.append(", tipoCategoria=");
+					builder.append(tipoCategoria);
+					builder.append(", deptoId=");
+					builder.append(deptoId);
+					builder.append("]");
+					return builder.toString();
 				}
 				
 			}
 
 			@Override
 			public String toString() {
-				return "Partida [articulo=" + articulo + ", precio=" + precio
-						+ ", cantidad=" + cantidad + ", total=" + total + "]";
+				return "Partida [articulo=" + articulo + ", precioUnitario=" + precioUnitario
+						+ ", cantidad=" + cantidad + ", precioTotal=" + precioTotal + "]";
 			}
 			
 		}
 
+		@XmlAccessorType(XmlAccessType.FIELD)
+		public static class PartidaDescuento {
+			
+			@XmlElement(name = "szArtDptNmbr")
+			protected String idArticulo;
+			
+			@XmlElement(name = "dTotalDiscount")
+			protected BigDecimal descuentoTotal;
+			
+			@XmlElement(name = "dDiscValue")
+			protected BigDecimal porcentajeDescuento;
+
+			public String getIdArticulo() {
+				return idArticulo;
+			}
+
+			public void setIdArticulo(String idArticulo) {
+				this.idArticulo = idArticulo;
+			}
+
+			public BigDecimal getDescuentoTotal() {
+				return descuentoTotal;
+			}
+
+			public void setDescuentoTotal(BigDecimal descuentoTotal) {
+				this.descuentoTotal = descuentoTotal;
+			}
+
+			public BigDecimal getPorcentajeDescuento() {
+				return porcentajeDescuento;
+			}
+
+			public void setPorcentajeDescuento(BigDecimal porcentajeDescuento) {
+				this.porcentajeDescuento = porcentajeDescuento;
+			}
+
+			@Override
+			public String toString() {
+				StringBuilder builder = new StringBuilder();
+				builder.append("PartidaDescuento [idArticulo=");
+				builder.append(idArticulo);
+				builder.append(", descuentoTotal=");
+				builder.append(descuentoTotal);
+				builder.append(", porcentajeDescuento=");
+				builder.append(porcentajeDescuento);
+				builder.append("]");
+				return builder.toString();
+			}
+			
+		}
+
+		@XmlAccessorType(XmlAccessType.FIELD)
+		public static class TransaccionTotal {
+			
+			@XmlElement(name = "dTotalSale")
+			protected BigDecimal totalVenta;
+
+			public BigDecimal getTotalVenta() {
+				return totalVenta;
+			}
+
+			public void setTotalVenta(BigDecimal totalVenta) {
+				this.totalVenta = totalVenta;
+			}
+
+			@Override
+			public String toString() {
+				StringBuilder builder = new StringBuilder();
+				builder.append("TransaccionTotal [totalVenta=");
+				builder.append(totalVenta);
+				builder.append("]");
+				return builder.toString();
+			}
+			
+		}
+		
+
 		@Override
 		public String toString() {
-			return "Transaccion [transaccionHeader=" + transaccionHeader
-					+ ", partidas=" + partidas + "]";
+			StringBuilder builder = new StringBuilder();
+			builder.append("Transaccion [transaccionHeader=");
+			builder.append(transaccionHeader);
+			builder.append(", partidas=");
+			builder.append(partidas);
+			builder.append(", partidasDescuentos=");
+			builder.append(partidasDescuentos);
+			builder.append(", transaccionTotal=");
+			builder.append(transaccionTotal);
+			builder.append("]");
+			return builder.toString();
 		}
+
 		
 	}
 
