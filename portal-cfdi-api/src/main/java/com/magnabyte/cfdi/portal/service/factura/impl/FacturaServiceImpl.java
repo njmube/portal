@@ -1,6 +1,6 @@
 package com.magnabyte.cfdi.portal.service.factura.impl;
 
-import java.util.Collection;
+import java.util.List;
 
 import mx.gob.sat.cfd._3.Comprobante;
 
@@ -17,7 +17,7 @@ public class FacturaServiceImpl implements FacturaService {
 	private FacturaDao facturaDao;
 	
 	@Override
-	public Collection<Comprobante> obtenerDatos() {
+	public List<Comprobante> obtenerDatos() {
 		return facturaDao.obteberDatosAImprimir();
 	}
 

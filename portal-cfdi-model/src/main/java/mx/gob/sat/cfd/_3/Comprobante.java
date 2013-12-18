@@ -1527,11 +1527,6 @@ public class Comprobante {
         }
 
 
-        public void setConcepto(List<Comprobante.Conceptos.Concepto> concepto) {
-			this.concepto = concepto;
-		}
-
-
 		/**
          * <p>Java class for anonymous complex type.
          * 
@@ -2450,7 +2445,8 @@ public class Comprobante {
             return this.regimenFiscal;
         }
 
-        /**
+        
+		/**
          * Gets the value of the rfc property.
          * 
          * @return

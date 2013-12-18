@@ -210,7 +210,17 @@
 				<artifactId>jaxb-impl</artifactId>
 				<version>2.2.7</version>
 			</dependency>
-
+<!-- 			dependecia para generar codigo QR -->
+			<dependency>
+				<groupId>com.google.zxing</groupId>
+				<artifactId>javase</artifactId>
+				<version>2.3.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.zxing</groupId>
+				<artifactId>core</artifactId>
+				<version>2.3.0</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
