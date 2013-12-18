@@ -13,11 +13,13 @@
 
 	<mvc:resources location="/resources/" mapping="/resources/**" />
 
+	<context:property-placeholder location="classpath*:/webservices.properties" />
+	
 	<bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basename" value="modatelasmsg" />
 	</bean>
-
+	
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass"
@@ -39,7 +41,7 @@
 
 	<bean id="wsServicios" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
 		<property name="serviceInterface" value="com.certus.facturehoy.ws2.cfdi.WsServicios" />
-		<property name="wsdlDocumentUrl" value="http://173.201.18.113:9999/CFDI/WsServicios?WSDL" />
+		<property name="wsdlDocumentUrl" value="${ws.servicios.url}" />
 		<property name="namespaceUri" value="http://cfdi.ws2.facturehoy.certus.com/" />
 		<property name="serviceName" value="WsServiciosService" />
 		<property name="portName" value="WsServiciosPort" />
@@ -47,7 +49,7 @@
 	
 	<bean id="wsEmisionTimbrado" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
 		<property name="serviceInterface" value="com.certus.facturehoy.ws2.cfdi.WsEmisionTimbrado" />
-		<property name="wsdlDocumentUrl" value="http://173.201.18.113:9999/CFDI/WsEmisionTimbrado?WSDL" />
+		<property name="wsdlDocumentUrl" value="${ws.emisiontimbrado.url}" />
 		<property name="namespaceUri" value="http://cfdi.ws2.facturehoy.certus.com/" />
 		<property name="serviceName" value="WsEmisionTimbradoService" />
 		<property name="portName" value="WsEmisionTimbradoPort" />
