@@ -59,7 +59,7 @@
 									${fn:toUpperCase(sessionScope.establecimiento.nombre)} <span class="caret"></span>
 								</button>
 								<ul class="dropdown-menu" role="menu">
-									<c:url var="logoutUrl" value="/j_spring_security_logout" />
+									<c:url var="logoutUrl" value="/perform_logout" />
 									<li><a href="${logoutUrl}"><span class="glyphicon glyphicon-log-out"></span> Cerrar sesión</a></li>
 								</ul>
 							</div>
