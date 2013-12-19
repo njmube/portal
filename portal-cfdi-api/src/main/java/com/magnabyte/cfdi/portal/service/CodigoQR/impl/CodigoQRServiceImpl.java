@@ -5,6 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -43,11 +44,12 @@ public class CodigoQRServiceImpl implements CodigoQRService{
 
 			byte[] b = null;
 
-			String message = "?re=" + comp.getEmisor().getRfc() + "rr"
-					+ comp.getReceptor().getRfc() + "tt" + comp.getTotal()
+			String message = "?re=" + comp.getEmisor().getRfc() + "&rr"
+					+ comp.getReceptor().getRfc() + "&tt" + comp.getTotal().setScale(6, BigDecimal.ROUND_HALF_UP)
 					+ "&id=" + comp.getFolioFiscalOrig();
 
 			ByteBuffer bbuf = encoder.encode(CharBuffer.wrap(message));
+			logger.debug("Mensajee"+ message);
 
 			b = bbuf.array();
 
@@ -57,9 +59,9 @@ public class CodigoQRServiceImpl implements CodigoQRService{
 
 			BitMatrix matrix = null;
 
-			int h = 400;
+			int h = 550;
 
-			int w = 400;
+			int w = 550;
 
 			Writer writer = new QRCodeWriter();
 
@@ -73,7 +75,7 @@ public class CodigoQRServiceImpl implements CodigoQRService{
 
 			BufferedImage bi = ImageIO.read(new ByteArrayInputStream(baos
 					.toByteArray()));
-			BufferedImage subBi = bi.getSubimage(50, 50, w - 100, h - 100);
+			BufferedImage subBi = bi.getSubimage(50, 50, w -100, h -100);
 
 			baos = new ByteArrayOutputStream();
 			bos = new BufferedOutputStream(baos);

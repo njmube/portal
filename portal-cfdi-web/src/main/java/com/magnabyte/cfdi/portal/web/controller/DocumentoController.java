@@ -6,9 +6,12 @@ import java.util.Locale;
 import mx.gob.sat.cfd._3.Comprobante;
 import net.sf.jasperreports.engine.JRParameter;
 
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,5 +49,4 @@ public class DocumentoController {
 		model.put("objetoKey", comprobantes);
 		return "Reporte";
 	}
-
 }
