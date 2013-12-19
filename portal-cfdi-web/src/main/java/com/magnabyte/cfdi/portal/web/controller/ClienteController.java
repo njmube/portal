@@ -1,9 +1,6 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import mx.gob.sat.cfd._3.Comprobante.Receptor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 
 @Controller
@@ -25,9 +23,9 @@ public class ClienteController {
 	private ClienteService clienteService;
 	
 	@RequestMapping("/listaClientes")
-	public String listaClientes(ModelMap model, @ModelAttribute Receptor receptor) {
+	public String listaClientes(ModelMap model, @ModelAttribute Cliente cliente) {
 		logger.debug("listaaaa");
-		List<Receptor> clientes = clienteService.findClientesByNameRfc(receptor);
+		List<Cliente> clientes = clienteService.findClientesByNameRfc(cliente);
 		if(!clientes.isEmpty())
 			model.put("emptyList", false);
 		model.put("clientes", clientes);
@@ -35,14 +33,15 @@ public class ClienteController {
 	}
 	
 	@RequestMapping("/clienteForm")
-	public String clienteForm(@ModelAttribute Receptor receptor) {
+	public String clienteForm(@ModelAttribute Cliente cliente) {
 		logger.debug("regresando forma cliente");
 		return "sucursal/clienteForm";
 	}
 	
 	@RequestMapping(value = "/confirmarDatos", method = RequestMethod.POST)
-	public String confirmarDatos(@ModelAttribute Receptor receptor) {
+	public String confirmarDatos(@ModelAttribute Cliente cliente) {
 		logger.debug("Confimar datos");
+		logger.debug("Cliente: {}", cliente);
 		return "sucursal/confirmarDatos";
 	}
 }

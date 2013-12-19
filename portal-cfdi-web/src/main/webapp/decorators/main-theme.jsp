@@ -19,9 +19,13 @@
 	href="<c:url value="/resources/css/modatelas-style.css" />" />
 <link rel="stylesheet" type="text/css"
 	href="<c:url value="/resources/css/bootstrap-datatables.css" />" />
+<link rel="stylesheet" type="text/css"
+	href="<c:url value="/resources/css/datepicker.css" />" />
 <script src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
 <script src="<c:url value="/resources/js/jquery/jquery.dataTables.min.js" />"></script>
 <script src="<c:url value="/resources/js/datatable/datatable.js" />"></script>
+<script src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.js" />"></script>
+<script src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.es.js" />"></script>
 <decorator:head />
 </head>
 <body>
@@ -55,7 +59,7 @@
 									${fn:toUpperCase(sessionScope.establecimiento.nombre)} <span class="caret"></span>
 								</button>
 								<ul class="dropdown-menu" role="menu">
-									<c:url var="logoutUrl" value="/j_spring_security_logout" />
+									<c:url var="logoutUrl" value="/perform_logout" />
 									<li><a href="${logoutUrl}"><span class="glyphicon glyphicon-log-out"></span> Cerrar sesión</a></li>
 								</ul>
 							</div>

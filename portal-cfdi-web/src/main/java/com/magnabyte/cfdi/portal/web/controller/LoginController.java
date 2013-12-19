@@ -15,7 +15,7 @@ public class LoginController {
 
 	@RequestMapping("/")
 	public String root() {
-		return "redirect:/menu";
+		return "redirect:/menuPage";
 	}
 	
 	@RequestMapping("/login")
@@ -35,6 +35,11 @@ public class LoginController {
 	public String sessionTimeout(ModelMap model) {
 		logger.debug("Sesion expirada");
 		return "login/sessionTimeout";
+	}
+	
+	@RequestMapping("logout")
+	public String logout(ModelMap model) {
+		return "login/logoutSuccess";
 	}
 	
 }

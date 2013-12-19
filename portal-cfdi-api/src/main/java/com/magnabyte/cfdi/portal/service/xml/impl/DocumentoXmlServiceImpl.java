@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,13 +39,13 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Service;
 
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
-import com.magnabyte.cfdi.portal.service.xml.XmlConverterService;
+import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.service.xml.util.CustomNamespacePrefixMapper;
 
-@Service("xmlConverterService")
-public class XmlConverterServiceImpl implements XmlConverterService, ResourceLoaderAware {
+@Service("documentoXmlService")
+public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoaderAware {
 
-	private static final Logger logger = LoggerFactory.getLogger(XmlConverterServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(DocumentoXmlServiceImpl.class);
 
 	@Autowired
 	private SambaService sambaService;
@@ -61,14 +62,14 @@ public class XmlConverterServiceImpl implements XmlConverterService, ResourceLoa
 	private ResourceLoader resourceLoader;
 	
 	@Override
-	public Comprobante convertXmlSapToCfdi(String rutaRepositorio, String fileName) {
+	public Comprobante convertXmlSapToCfdi(InputStream xmlSap) {
 		Comprobante comprobante = null;
 		try {
 			SAXBuilder builder = new SAXBuilder();
 			
 			Document documentoCFD;
 			try {
-				documentoCFD = (Document) builder.build(sambaService.getFile(rutaRepositorio, fileName));
+				documentoCFD = (Document) builder.build(xmlSap);
 				Element documentoPrevio = documentoCFD.getRootElement().getChild("Comprobante");
 				Element documento = (Element) documentoPrevio.clone();
 				documentoCFD.setRootElement(documento);
@@ -88,22 +89,7 @@ public class XmlConverterServiceImpl implements XmlConverterService, ResourceLoa
 		            oos.flush();
 		            oos.close();
 					comprobante = (Comprobante) unmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(baos.toByteArray())));
-					
-					//MOVE
-					Map<String, Object> marshallerProperties = new HashMap<String, Object>();
-					marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, true);
-					marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_SCHEMA_LOCATION, "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv32.xsd");
-					marshallerProperties.put("com.sun.xml.bind.namespacePrefixMapper", customNamespacePrefixMapper);
-					((Jaxb2Marshaller) marshaller).setMarshallerProperties(marshallerProperties);
-
-					ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
-					OutputStreamWriter oos2= new OutputStreamWriter(baos2, "UTF-8");
-					marshaller.marshal(comprobante, new StreamResult(oos2));
-					marshaller.marshal(comprobante, new StreamResult(System.out));
-		            oos2.flush();
-		            oos2.close();
-					logger.debug(".-----" + validaXml(new ByteArrayInputStream(baos2.toByteArray())));
-					//
+					logger.debug("XML valido-----" + validaComprobanteXml(comprobante));
 				}
 			} catch (JDOMException e) {
 				logger.error("Error el leer el documento Sap");
@@ -152,12 +138,13 @@ public class XmlConverterServiceImpl implements XmlConverterService, ResourceLoa
 		return element;
 	}
 
-	public boolean validaXml(InputStream xml) {
+	public boolean validaComprobanteXml(Comprobante comprobante) {
 		try {
+			InputStream comprobanteStream = convierteComprobanteAStream(comprobante);
 			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			Schema schema = sf.newSchema(new StreamSource(resourceLoader.getResource("classpath:/cfdv32.xsd").getInputStream()));
 			Validator validator = schema.newValidator();
-			validator.validate(new StreamSource(xml));
+			validator.validate(new StreamSource(comprobanteStream));
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -165,6 +152,32 @@ public class XmlConverterServiceImpl implements XmlConverterService, ResourceLoa
 		}
 	}
 	
+	@Override
+	public InputStream convierteComprobanteAStream(Comprobante comprobante) {
+		Map<String, Object> marshallerProperties = new HashMap<String, Object>();
+		marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_SCHEMA_LOCATION, "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv32.xsd");
+		marshallerProperties.put("com.sun.xml.bind.namespacePrefixMapper", customNamespacePrefixMapper);
+		((Jaxb2Marshaller) marshaller).setMarshallerProperties(marshallerProperties);
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		OutputStreamWriter oos;
+		try {
+			oos = new OutputStreamWriter(baos, "UTF-8");
+			marshaller.marshal(comprobante, new StreamResult(oos));
+			marshaller.marshal(comprobante, new StreamResult(System.out));
+	        oos.flush();
+	        oos.close();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (XmlMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return new ByteArrayInputStream(baos.toByteArray());
+	}
+
 	@Override
 	public void setResourceLoader(ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;

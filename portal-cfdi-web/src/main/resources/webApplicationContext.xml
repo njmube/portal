@@ -13,11 +13,13 @@
 
 	<mvc:resources location="/resources/" mapping="/resources/**" />
 
+	<context:property-placeholder location="classpath*:/webservices.properties" />
+	
 	<bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basename" value="modatelasmsg" />
 	</bean>
-
+	
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass"
@@ -37,12 +39,19 @@
 
 	<bean id="comprobanteFactory" class="mx.gob.sat.cfd._3.ObjectFactory" />
 
-	<!-- <bean id="newWebService" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean"> -->
-	<!-- <property name="serviceInterface" value="server.NewWebService" /> -->
-	<!-- <property name="wsdlDocumentUrl" value="http://10.2.200.135:8084/WerService/NewWebService?WSDL" 
-		/> -->
-	<!-- <property name="namespaceUri" value="http://server/" /> -->
-	<!-- <property name="serviceName" value="NewWebService" /> -->
-	<!-- <property name="portName" value="NewWebServicePort" /> -->
-	<!-- </bean> -->
+	<bean id="wsServicios" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
+		<property name="serviceInterface" value="com.certus.facturehoy.ws2.cfdi.WsServicios" />
+		<property name="wsdlDocumentUrl" value="${ws.servicios.url}" />
+		<property name="namespaceUri" value="http://cfdi.ws2.facturehoy.certus.com/" />
+		<property name="serviceName" value="WsServiciosService" />
+		<property name="portName" value="WsServiciosPort" />
+	</bean>
+	
+	<bean id="wsEmisionTimbrado" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
+		<property name="serviceInterface" value="com.certus.facturehoy.ws2.cfdi.WsEmisionTimbrado" />
+		<property name="wsdlDocumentUrl" value="${ws.emisiontimbrado.url}" />
+		<property name="namespaceUri" value="http://cfdi.ws2.facturehoy.certus.com/" />
+		<property name="serviceName" value="WsEmisionTimbradoService" />
+		<property name="portName" value="WsEmisionTimbradoPort" />
+	</bean>
 </beans>

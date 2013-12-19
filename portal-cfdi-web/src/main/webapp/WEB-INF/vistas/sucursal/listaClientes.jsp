@@ -8,12 +8,12 @@
 				<display:table htmlId="clientes" id="cliente" name="${clientes}"
 					class="table table-hover table-striped table-condensed"
 					requestURI="/facturaCorp">
-					<display:column title="#" headerClass="text-primary">${cliente_rowNum}</display:column>
+					<display:column title="#" property="id" headerClass="text-primary"></display:column>
 					<display:column title="RFC" property="rfc" headerClass="text-primary"></display:column>
 					<display:column title="Nombre" property="nombre" headerClass="text-primary" />
-		<%-- 			<display:column title="Generar Factura" headerClass="text-primary text-center" class="text-center"> --%>
-		<%-- 				<a href="<c:url value="/facturaCorp/validate/${cliente.nombre}"/>" class="btn btn-xs btn-success"><span class="glyphicon glyphicon-print"></span></a> --%>
-		<%-- 			</display:column> --%>
+					<display:column title="Generar Factura" headerClass="text-primary text-center" class="text-center">
+						<a href="<c:url value="/confirmarDatos/${cliente.id}"/>" class="btn btn-xs btn-success"><span class="glyphicon glyphicon-share-alt"></span></a>
+					</display:column>
 				</display:table>
 			</div>
 		</c:when>

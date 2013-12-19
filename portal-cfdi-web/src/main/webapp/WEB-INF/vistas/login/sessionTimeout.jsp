@@ -19,7 +19,7 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			window.setTimeout(function() {
-				url = "<c:url value='/j_spring_security_logout' />";
+				url = "<c:url value='/login' />";
 				window.location.replace(url);
 			}, 2000);
 		});
