@@ -6,10 +6,8 @@ package com.magnabyte.cfdi.portal.model.commons;
  * @author Edgar Pérez
  * 
  */
-public class Estado {
-
-	private Integer id;
-	private String nombre;
+public class Estado extends OpcionDeCatalogo {
+	
 	private Pais pais;
 	
 	/**
@@ -17,22 +15,6 @@ public class Estado {
 	 */
 	public Estado() {
 		
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
 	}
 
 	public Pais getPais() {

@@ -6,22 +6,7 @@
 <html>
 <head>
 <title>Ingresa tu RFC</title>
-<script type="text/javascript">
-$(document).ready(function() {
-	$("#buscarCliente").click(function(){
-		var rfc = $("#rfc").val();
-		var nombre = $("#nombre").val();
-		$.ajax({
-			url: "<c:url value='/listaClientes?ajax=true'/>",
-			data: "rfc=" + rfc + "&nombre=" + nombre,
-			type: "GET",
-			success: function(response) {
-				$("#listClientesPage").html(response);
-			}
-		});
-	});
-});
-</script>
+<script type="text/javascript" src="<c:url value="/resources/js/sucursal/clientes.js"/>"></script>
 </head>
 <body>
 	<div class="container main-content">

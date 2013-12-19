@@ -8,4 +8,9 @@ import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 public interface DomicilioClienteService {
 
 	List<DomicilioCliente>  getByCliente(Cliente cliente);
+	
+	public void save(Cliente cliente);
+	
+	public void update(Cliente cliente);
+	
 }
