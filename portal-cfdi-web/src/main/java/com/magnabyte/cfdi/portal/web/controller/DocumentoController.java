@@ -20,9 +20,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
-import com.magnabyte.cfdi.portal.service.CodigoQR.CodigoQRService;
-import com.magnabyte.cfdi.portal.service.factura.FacturaService;
+import com.magnabyte.cfdi.portal.model.documento.Documento;
+import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
 
 @Controller
@@ -31,9 +30,6 @@ public class DocumentoController {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(DocumentoController.class);
-
-	@Autowired
-	private FacturaService facturaService;
 
 	@Autowired
 	private CodigoQRService codigoQRService;
