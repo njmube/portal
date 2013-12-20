@@ -66,8 +66,8 @@
 						<label for="hora" class="col-lg-5 control-label">Importe: </label>
 						<div class="col-lg-2">
 							<form:input path="transaccion.transaccionTotal.totalVenta" id="hora" cssClass="form-control input-sm"/>
-						<small class="errorForm"><strong><form:errors path="transaccion.transaccionTotal.totalVenta" cssClass="text-danger"/></strong></small>
 						</div>
+						<small class="errorForm"><strong><form:errors path="transaccion.transaccionTotal.totalVenta" cssClass="text-danger"/></strong></small>
 					</div>
 					<hr>
 					<div class="form-group">

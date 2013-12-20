@@ -60,8 +60,7 @@ public class CorporativoCfdiController {
 		logger.debug("el comprobante {}", comprobante);
 		model.put("folioSap", fileName.substring(1, 11));
 		model.put("comprobante", comprobante);
-		throw new NullPointerException("hollllllll");
-//		return "corporativo/facturaValidate";
+		return "corporativo/facturaValidate";
 	}
 	
 	@RequestMapping(value = "/generaFactura", method = RequestMethod.POST)
