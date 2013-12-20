@@ -47,32 +47,14 @@
 						<display:column title="Codigo Postal"  property="codigoPostal" headerClass="text-primary" />
 						<display:column title="Localidad"  property="localidad" headerClass="text-primary" />
 						<display:column title="Referencia"  property="referencia" headerClass="text-primary" />
-						<display:column title="Fiscal" headerClass="text-primary text-center" class="text-center">
-						<c:choose>
-							<c:when test="${domicilio_rowNum == 1}">
-								<input type="radio" id="domFiscal" name="domFiscal" value="${domicilio.id}" checked="checked">
-							</c:when>
-							<c:otherwise>
-								<input type="radio" id="domFiscal" name="domFiscal" value="${domicilio.id}">
-							</c:otherwise>
-						</c:choose>											
-						</display:column>
 					</display:table>
 				</div>
 			</div>
 				<p class="text-center"> 
-					<a id="continue" href="#" class="btn btn-success"><span>Continuar</span></a>
+					<a href="<c:url value=""/>" class="btn btn-success"><span>Continuar</span></a>
 					<a href="<c:url value="/clienteCorregir/${cliente.id}"/>" class="btn btn-warning"><span>Corregir</span></a>
 				</p>
 		</div>				
 	</div>
-	<script type="text/javascript">
-		$(document).ready(function () {
-			$("#continue").click(function () {
-				var idDom = $("input[id=domFiscal]:checked").val();
-				location.href = contextPath + "/datosFacturacion/" + idDom;
-			});
-		});
-	</script>
 </body>
 </html>

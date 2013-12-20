@@ -2,8 +2,7 @@ package com.magnabyte.cfdi.portal.service.cliente.impl;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +14,8 @@ import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 @Service("domicilioClienteService")
 public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 
-	public static final Logger logger = 
-			LoggerFactory.getLogger(DomicilioClienteServiceImpl.class);
+	public static final Logger logger = Logger
+			.getLogger(DomicilioClienteServiceImpl.class);
 
 	@Autowired
 	private DomicilioClienteDao domicilioClienteDao;
@@ -51,7 +50,7 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 
 	@Override
 	public void update(Cliente cliente) {
-		List<DomicilioCliente> domNuevos = cliente.getDomicilios();
+		List<DomicilioCliente> domNuevos = cliente.getDomicilios();		
 		List<DomicilioCliente> domAnteriores = getByCliente(cliente);
 		
 		if(cliente.getDomicilios() != null) {
@@ -59,9 +58,9 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 				if(domicilio.getCliente() == null) {
 					domicilio.setCliente(cliente);
 				}
-				if (domAnteriores.contains(domicilio)) {
+				if (domAnteriores.contains(domicilio) && domicilio.getCalle() != null) {
 					domicilioClienteDao.update(domicilio);
-				} else if (!domAnteriores.contains(domicilio)) {
+				} else if (!domAnteriores.contains(domicilio) && domicilio.getCalle() != null) {
 					domicilioClienteDao.save(domicilio);
 				}
 			}

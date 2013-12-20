@@ -25,5 +25,4 @@ public class DomicilioCliente extends Domicilio {
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
 	}
-	
 }

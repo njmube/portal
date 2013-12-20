@@ -27,7 +27,7 @@ import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
 public class DocumentoController {
 
 	private static final Logger logger = LoggerFactory.getLogger(DocumentoController.class);
-	
+
 	@Autowired
 	private CodigoQRService codigoQRService;
 
