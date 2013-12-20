@@ -77,7 +77,10 @@ $("#agregarCorregir").click(function() {
 		}
 		
 		var tr = "<tr>"
-		+ "<td width=\'100px\'><input id=\'calle\' name=\'domicilios["+ aux +"].calle\' class=\'form-control input-xsm\' type=\'text\'></td>"
+		+ "<td width=\'100px\'>" 
+		+ "<input id=\'calle\' name=\'domicilios["+ aux +"].calle\' class=\'form-control input-xsm\' type=\'text\'>"
+		+ "<input id=\'id\' name=\'domicilios["+ aux +"].id\' type=\'hidden\'>"
+		+ "</td>"
 		+ "<td width=\'65px\'><input id=\'noExterior\' name=\'domicilios["+ aux +"].noExterior\' class=\'form-control input-xsm\' type=\'text\'></td>"
 		+ "<td width=\'65px\'><input id=\'noInterior\' name=\'domicilios["+ aux +"].noInterior\' class=\'form-control input-xsm\' type=\'text\'></td>"		
 		+ "<td width=\'100px\'>"

@@ -180,7 +180,7 @@ public class Ticket {
                         protected BigDecimal precioUnitario;
                         
                         @XmlElement(name = "dTaQty")
-                        protected Integer cantidad;
+                        protected BigDecimal cantidad;
                         
                         @XmlElement(name = "dTaTotal")
                         protected BigDecimal precioTotal;
@@ -201,11 +201,11 @@ public class Ticket {
                                 this.precioUnitario = precioUnitario;
                         }
                 
-                        public Integer getCantidad() {
+                        public BigDecimal getCantidad() {
                                 return cantidad;
                         }
 
-                        public void setCantidad(Integer cantidad) {
+                        public void setCantidad(BigDecimal cantidad) {
                                 this.cantidad = cantidad;
                         }
 

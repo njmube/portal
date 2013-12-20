@@ -24,6 +24,10 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import mx.gob.sat.cfd._3.Comprobante;
+import mx.gob.sat.cfd._3.Comprobante.Conceptos;
+import mx.gob.sat.cfd._3.Comprobante.Conceptos.Concepto;
+import mx.gob.sat.cfd._3.Comprobante.Receptor;
+import mx.gob.sat.cfd._3.TUbicacion;
 
 import org.apache.commons.ssl.PKCS8Key;
 import org.bouncycastle.util.encoders.Base64;
@@ -34,6 +38,10 @@ import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
+import com.magnabyte.cfdi.portal.model.cliente.Cliente;
+import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 
@@ -140,6 +148,48 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public void setResourceLoader(ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
+	}
+
+	@Override
+	public Comprobante obtenerComprobantePor(Cliente cliente, Ticket ticket,
+			Integer domicilioFiscal) {
+		
+		Comprobante comprobante = new Comprobante();
+		Receptor receptor = new Receptor();
+		Conceptos conceptos = new Conceptos();
+		TUbicacion tUbicacion = new TUbicacion();
+		DomicilioCliente domicilioCte = new DomicilioCliente();
+		
+		domicilioCte = cliente.getDomicilios().remove(cliente
+				.getDomicilios().indexOf(domicilioCte));
+		
+		tUbicacion.setCalle(domicilioCte.getCalle());
+		tUbicacion.setNoExterior(domicilioCte.getNoExterior());
+		tUbicacion.setNoInterior(domicilioCte.getNoInterior());
+		tUbicacion.setPais(domicilioCte.getEstado().getPais().getNombre());
+		tUbicacion.setEstado(domicilioCte.getEstado().getNombre());
+		tUbicacion.setMunicipio(domicilioCte.getMunicipio());
+		tUbicacion.setColonia(domicilioCte.getColonia());
+		tUbicacion.setCodigoPostal(domicilioCte.getCodigoPostal());
+		tUbicacion.setReferencia(domicilioCte.getReferencia());
+		tUbicacion.setLocalidad(domicilioCte.getLocalidad());
+		
+		for(Partida partida : ticket.getTransaccion().getPartidas()) {
+			Concepto concepto = new Concepto();
+			concepto.setCantidad(partida.getCantidad());
+			concepto.setDescripcion(partida.getArticulo().getDescripcion());
+			concepto.setImporte(partida.getPrecioTotal());
+			concepto.setValorUnitario(partida.getPrecioUnitario());
+			conceptos.getConcepto().add(concepto);
+		}
+		
+		receptor.setRfc(cliente.getRfc());
+		receptor.setNombre(cliente.getNombre());
+		receptor.setDomicilio(tUbicacion);
+		
+		comprobante.setReceptor(receptor);
+		comprobante.setConceptos(conceptos);
+		return null;
 	}
 
 }
