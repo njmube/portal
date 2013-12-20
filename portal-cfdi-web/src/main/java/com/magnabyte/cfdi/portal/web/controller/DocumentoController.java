@@ -34,7 +34,7 @@ public class DocumentoController {
 
 	@Autowired
 	private FacturaService facturaService;
-
+	
 	@Autowired
 	private CodigoQRService codigoQRService;
 
