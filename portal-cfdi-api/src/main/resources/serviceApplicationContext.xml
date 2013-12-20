@@ -16,11 +16,11 @@
 		<oxm:class-to-be-bound name="com.magnabyte.cfdi.portal.model.ticket.Ticket"/>
 	</oxm:jaxb2-marshaller>
 	
-	<task:scheduler id="scheduler" pool-size="10"/>
-	<task:executor id="executor" pool-size="10"/>
+<!-- 	<task:scheduler id="scheduler" pool-size="10"/> -->
+<!-- 	<task:executor id="executor" pool-size="10"/> -->
 	
-	<task:scheduled-tasks>
-		<task:scheduled ref="Trabajo" method=""/>
-	</task:scheduled-tasks>	
+<!-- 	<task:scheduled-tasks> -->
+<!-- 		<task:scheduled ref="Trabajo" method=""/> -->
+<!-- 	</task:scheduled-tasks>	 -->
 	
 </beans>

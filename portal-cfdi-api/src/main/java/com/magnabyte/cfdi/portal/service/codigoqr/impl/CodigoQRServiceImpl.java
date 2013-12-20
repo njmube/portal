@@ -1,4 +1,4 @@
-package com.magnabyte.cfdi.portal.service.CodigoQR.impl;
+package com.magnabyte.cfdi.portal.service.codigoqr.impl;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
@@ -24,7 +24,7 @@ import com.google.zxing.Writer;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-import com.magnabyte.cfdi.portal.service.CodigoQR.CodigoQRService;
+import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 
 @Service("CodigoQRService")
 public class CodigoQRServiceImpl implements CodigoQRService{

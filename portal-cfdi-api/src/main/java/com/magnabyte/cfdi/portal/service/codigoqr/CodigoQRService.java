@@ -1,4 +1,4 @@
-package com.magnabyte.cfdi.portal.service.CodigoQR;
+package com.magnabyte.cfdi.portal.service.codigoqr;
 
 import java.io.InputStream;
 

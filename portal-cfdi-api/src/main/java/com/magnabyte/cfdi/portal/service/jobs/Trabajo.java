@@ -1,4 +1,4 @@
-package com.magnabyte.cfdi.portal.service.Jobs;
+package com.magnabyte.cfdi.portal.service.jobs;
 
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;

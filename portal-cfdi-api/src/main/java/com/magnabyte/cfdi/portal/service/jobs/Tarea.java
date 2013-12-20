@@ -1,4 +1,4 @@
-package com.magnabyte.cfdi.portal.service.Jobs;
+package com.magnabyte.cfdi.portal.service.jobs;
 
 public class Tarea {
 	public void printMe() {

@@ -65,13 +65,15 @@
 									<th><small>Localidad</small></th>
 									<th><small></small></th>
 								</tr>
-							</thead>Corregir
+							</thead>
 							<tbody>
 								<c:choose>
 									<c:when test="${not empty cliente.domicilios}">
 										<c:forEach items="${cliente.domicilios}" var="domicilio" varStatus="theCount">
 											<tr>
-												<td width="200px"><form:input path="domicilios[${theCount.index}].calle" id="calle" cssClass="form-control input-xsm"/></td>
+												<td width="200px"><form:input path="domicilios[${theCount.index}].calle" id="calle" cssClass="form-control input-xsm"/>
+													<form:hidden path="domicilios[${theCount.index}].id" id="id"/>
+												</td>
 												<td width="65px"><form:input path="domicilios[${theCount.index}].noExterior" id="noExterior" cssClass="form-control input-xsm"/></td>
 												<td width="65px"><form:input path="domicilios[${theCount.index}].noInterior" id="noInteriorr" cssClass="form-control input-xsm"/></td>
 												<td width="100px">

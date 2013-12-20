@@ -11,16 +11,18 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
-import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.cliente.factory.ClienteFactory;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 
 @Controller
+@SessionAttributes({"cliente", "ticket"})
 public class ClienteController {
-
+	
 	private static final Logger logger = LoggerFactory.getLogger(ClienteController.class);
 	
 	@Autowired
@@ -31,7 +33,6 @@ public class ClienteController {
 	
 	@RequestMapping("/listaClientes")
 	public String listaClientes(ModelMap model, @ModelAttribute Cliente cliente) {
-		logger.debug("listaaaa");
 		List<Cliente> clientes = clienteService.findClientesByNameRfc(cliente);
 		if(!clientes.isEmpty())
 			model.put("emptyList", false);
@@ -47,15 +48,16 @@ public class ClienteController {
 	}
 	
 	@RequestMapping(value = "/confirmarDatos", method = RequestMethod.POST)
-	public String confirmarDatos(@ModelAttribute Cliente cliente) {
+	public String confirmarDatos(@ModelAttribute Cliente cliente, ModelMap model) {
 		logger.debug("Confimar datos");	
 		if(cliente.getId() != null) {		
 			clienteService.update(cliente);
 		} else {
 			clienteService.save(cliente);
 		}
+		model.put("cliente", cliente);
 		logger.debug("Cliente: {}", cliente.getId());		
-		return "sucursal/confirmarDatos";
+		return "redirect:/confirmarDatos/" + cliente.getId();
 	}
 	
 	@RequestMapping("/clienteCorregir/{id}")
@@ -65,5 +67,13 @@ public class ClienteController {
 		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
 		model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
 		return "sucursal/clienteCorregir";
+	}
+	
+	@RequestMapping("/datosFacturacion/{idDomicilio}")
+	public String datosFacturacion(@ModelAttribute Cliente cliente, 
+			@ModelAttribute Ticket ticket, @PathVariable Integer idDomicilio) {
+		logger.debug(cliente.toString());
+		logger.debug(ticket.toString());
+		return "sucursal/datosFacturacion";
 	}
 }

@@ -19,7 +19,7 @@ import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 
 @Controller
-@SessionAttributes({"establecimiento", "ticket"})
+@SessionAttributes({"establecimiento", "ticket", "cliente"})
 public class SucursalCfdiController {
 
 	@Autowired
@@ -49,9 +49,10 @@ public class SucursalCfdiController {
 	}
 	
 	@RequestMapping("/buscaRfc")
-	public String buscaRfc(@ModelAttribute Cliente cliente, ModelMap model) {
+	public String buscaRfc(ModelMap model) {
 		logger.debug("buscaRfc page");
 		logger.debug("Ticket: ---{}", (Ticket)model.get("ticket"));
+		model.put("cliente", new Cliente());
 		model.put("emptyList", true);
 		return "sucursal/buscaRfc";
 	}

@@ -2,7 +2,6 @@ package com.magnabyte.cfdi.portal.model.ticket;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -10,7 +9,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "TAS")
@@ -174,7 +172,7 @@ public class Ticket {
 			protected BigDecimal precioUnitario;
 			
 			@XmlElement(name = "dTaQty")
-			protected Integer cantidad;
+			protected BigDecimal cantidad;
 			
 			@XmlElement(name = "dTaTotal")
 			protected BigDecimal precioTotal;
@@ -195,11 +193,11 @@ public class Ticket {
 				this.precioUnitario = precioUnitario;
 			}
 		
-			public Integer getCantidad() {
+			public BigDecimal getCantidad() {
 				return cantidad;
 			}
 
-			public void setCantidad(Integer cantidad) {
+			public void setCantidad(BigDecimal cantidad) {
 				this.cantidad = cantidad;
 			}
 
