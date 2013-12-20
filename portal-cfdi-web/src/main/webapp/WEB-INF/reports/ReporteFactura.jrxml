@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteFactura" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4a6ba1cb-2ea7-4218-8d09-5f9f932a9716">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="153"/>
+	<property name="ireport.y" value="93"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="0.0" lineColor="#000000"/>
@@ -284,6 +284,7 @@
 	<parameter name="REGIMEN" class="java.lang.String"/>
 	<parameter name="QRCODE" class="java.lang.Object" isForPrompting="false"/>
 	<parameter name="LETRAS" class="java.lang.String"/>
+	<parameter name="PATH_IMAGES" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -330,6 +331,9 @@
 	<field name="tipoCambio" class="java.lang.String"/>
 	<field name="serieFolioFiscalOrig" class="java.lang.String"/>
 	<field name="fechaFolioFiscalOrig" class="java.lang.Object"/>
+	<field name="fecha" class="java.lang.Object"/>
+	<field name="sello" class="java.lang.String"/>
+	<field name="impuestos.totalImpuestosTrasladados" class="java.math.BigDecimal"/>
 	<variable name="fecha" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
@@ -376,7 +380,7 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$F{receptor.domicilio.calle}+","+" "+
 $F{receptor.domicilio.noExterior}+" "+
-$F{receptor.domicilio.noInterior}]]></textFieldExpression>
+($F{receptor.domicilio.noInterior} != null ? $F{receptor.domicilio.noInterior} : "") ]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="34" width="302" height="10" uuid="0ec53e7d-e2a7-41b6-8ce0-58fd6cde96b4"/>
@@ -424,7 +428,7 @@ $F{receptor.domicilio.codigoPostal}]]></textFieldExpression>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="1" y="64" width="133" height="12" uuid="67cf8e17-45a1-4b7a-919b-d034792d3ef0"/>
@@ -590,7 +594,7 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 			</frame>
 			<image>
 				<reportElement x="1" y="2" width="195" height="63" uuid="42d8fe3c-d2c8-498e-a62f-ff12b4e49f61"/>
-				<imageExpression><![CDATA["/home/desarrollo1/Documents/workspace-sts-3.4.0.RELEASE/portal-cfdi/portal-cfdi-web/src/main/webapp/resources/img/modatelas_logo.jpg"]]></imageExpression>
+				<imageExpression><![CDATA[$P{PATH_IMAGES} + "//modatelas_logo.jpg"]]></imageExpression>
 			</image>
 			<textField>
 				<reportElement x="438" y="111" width="134" height="12" uuid="0194f683-cfa8-493b-8dcd-9062337361ba"/>
@@ -600,28 +604,21 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$F{numCtaPago}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="182" width="99" height="12" uuid="58e16d17-d154-4ac8-ac2d-719e1eadd6da"/>
+				<reportElement x="1" y="182" width="94" height="12" uuid="58e16d17-d154-4ac8-ac2d-719e1eadd6da"/>
 				<textElement verticalAlignment="Bottom">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Método de pago :]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="100" y="182" width="55" height="12" uuid="e10a2a82-6f26-46b1-befc-476f4220581f"/>
-				<textElement textAlignment="Left" verticalAlignment="Bottom">
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{metodoDePago}]]></textFieldExpression>
-			</textField>
 			<staticText>
-				<reportElement x="156" y="182" width="72" height="12" uuid="95474add-64e9-4a61-853f-b0ee9aaf1237"/>
+				<reportElement x="190" y="182" width="72" height="12" uuid="95474add-64e9-4a61-853f-b0ee9aaf1237"/>
 				<textElement verticalAlignment="Bottom">
-					<font isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Folio Fiscal :]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="228" y="182" width="247" height="12" uuid="3e478ff0-d6cf-445e-bf15-c75eef99821f"/>
+				<reportElement x="262" y="182" width="247" height="12" uuid="3e478ff0-d6cf-445e-bf15-c75eef99821f"/>
 				<textElement textAlignment="Justified" verticalAlignment="Bottom">
 					<font size="10"/>
 				</textElement>
@@ -630,6 +627,13 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 			<line>
 				<reportElement x="439" y="1" width="133" height="1" uuid="72888b27-064a-4997-a24a-487c6182c3ee"/>
 			</line>
+			<textField>
+				<reportElement x="96" y="182" width="94" height="12" uuid="c0cc5bdd-5780-4602-b57f-b0ff6c3eaf28"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{metodoDePago}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<detail>
@@ -895,7 +899,7 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 					<textElement textAlignment="Right">
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{descuento}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{impuestos.totalImpuestosTrasladados}]]></textFieldExpression>
 				</textField>
 				<textField pattern="¤ #,##0.00">
 					<reportElement positionType="FixRelativeToBottom" x="92" y="44" width="98" height="12" uuid="3a921ebd-f557-47d5-8964-f4ee3d19ef71"/>
@@ -931,12 +935,11 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 				</box>
 				<textField>
 					<reportElement x="0" y="0" width="470" height="25" uuid="b6385468-a9a9-4484-a29e-91189fe9b33f"/>
-					<box topPadding="1" leftPadding="0"/>
+					<box topPadding="1" leftPadding="3"/>
 					<textElement>
 						<font size="6"/>
 					</textElement>
-					<textFieldExpression><![CDATA["||2.0|ABCD|2|03-05-2010T14:11:36|49|2008|INGRESO|UNA SOLA EXHIBICIÓN|||2.0|ABCD|2|03-05-2010T14:11:36|49|2008|INGRESO|UNA SOLA EXHIBICIÓN"+
-"||2.0|ABCD|2|03-05-2010T14:11:36|49|2008|INGRESO|UNA SOLA EXHIBICIÓN|||2.0|ABCD|2|03-05-2010T14:11:36|49|2008|INGRESO|UNA SOLA EXHIBICIÓN"]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{sello}]]></textFieldExpression>
 				</textField>
 			</frame>
 			<frame>
@@ -950,7 +953,7 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 				</box>
 				<textField>
 					<reportElement x="0" y="0" width="470" height="25" uuid="955a5a46-d72f-4478-a4d0-42b39ba6851b"/>
-					<box topPadding="1" leftPadding="0"/>
+					<box topPadding="1" leftPadding="3"/>
 					<textElement>
 						<font size="6"/>
 					</textElement>
@@ -980,7 +983,7 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 					<textElement>
 						<font size="6"/>
 					</textElement>
-					<textFieldExpression><![CDATA["||2.0|ABCD|2|03-05-2010T14:11:36|49|2008|INGRESO|UNA SOLA EXHIBICIÓN|2000.00|00.00|2320.00|PAMC660606ER9|CONTRIBUYENTE PRUEBASEIS PATERNOSEIS MATERNOSEIS|PRUEBA SEIS|6|6|PUEBLA CENTRO|PUEBLA|PUEBLA|PUEBLA||MÉXICO|72000|CAUR390312S87|ROSA MARÍA CÁLDERON URIEGAS|TOPOCHICO|52|JARDINES DEL VALLE|NUEVO LEÓN|MEXICO|95465|1.00|SERVICIO|01|ASESORIA FISCAL Y ADMINISTRATIVA|2000.00|IVA|16.00|320.00|| "]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{sello}]]></textFieldExpression>
 				</textField>
 			</frame>
 			<staticText>

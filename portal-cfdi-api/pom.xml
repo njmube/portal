@@ -57,12 +57,8 @@
 			<artifactId>quartz</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.directory.studio</groupId>
-			<artifactId>org.apache.commons.logging</artifactId>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>ca.juliusdavies</groupId>

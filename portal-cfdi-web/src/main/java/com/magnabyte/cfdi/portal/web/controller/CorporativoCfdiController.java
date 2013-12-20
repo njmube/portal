@@ -71,7 +71,8 @@ public class CorporativoCfdiController {
 		logger.debug("Comprobante sellado: {}", comprobante);
 		documentoXmlService.convierteComprobanteAStream(comprobante);
 		
-		return "corporativo/pdf";
+//		return "corporativo/pdf";
+		return "redirect:/reporte";
 	}
 	
 	@RequestMapping("/limpia")

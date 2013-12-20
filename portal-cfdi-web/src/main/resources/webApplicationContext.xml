@@ -14,44 +14,48 @@
 	<mvc:resources location="/resources/" mapping="/resources/**" />
 
 	<context:property-placeholder location="classpath*:/webservices.properties" />
-	
+
 	<bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basename" value="modatelasmsg" />
 	</bean>
-	
+
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass"
 			value="org.springframework.web.servlet.view.JstlView" />
 		<property name="prefix" value="/WEB-INF/vistas/" />
 		<property name="suffix" value=".jsp" />
-		<property name="order" value="1"/>
+		<property name="order" value="1" />
 	</bean>
 
 
 	<bean id="jasperViewResolver"
 		class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
 		<property name="basename" value="views" />
-		<property name="order" value="0"/>
+		<property name="order" value="0" />
 	</bean>
 
 
 	<bean id="comprobanteFactory" class="mx.gob.sat.cfd._3.ObjectFactory" />
 
-	<bean id="wsServicios" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
+	<bean id="wsServicios"
+		class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
 		<property name="serviceInterface" value="com.certus.facturehoy.ws2.cfdi.WsServicios" />
 		<property name="wsdlDocumentUrl" value="${ws.servicios.url}" />
 		<property name="namespaceUri" value="http://cfdi.ws2.facturehoy.certus.com/" />
 		<property name="serviceName" value="WsServiciosService" />
 		<property name="portName" value="WsServiciosPort" />
 	</bean>
-	
-	<bean id="wsEmisionTimbrado" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
-		<property name="serviceInterface" value="com.certus.facturehoy.ws2.cfdi.WsEmisionTimbrado" />
+
+	<bean id="wsEmisionTimbrado"
+		class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
+		<property name="serviceInterface"
+			value="com.certus.facturehoy.ws2.cfdi.WsEmisionTimbrado" />
 		<property name="wsdlDocumentUrl" value="${ws.emisiontimbrado.url}" />
 		<property name="namespaceUri" value="http://cfdi.ws2.facturehoy.certus.com/" />
 		<property name="serviceName" value="WsEmisionTimbradoService" />
 		<property name="portName" value="WsEmisionTimbradoPort" />
 	</bean>
+
 </beans>
