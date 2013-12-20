@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.util.WebUtils;
 
+import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoFile;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
@@ -26,7 +27,7 @@ import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
 
 @Controller
-@SessionAttributes({"establecimiento", "comprobante"})
+@SessionAttributes({"establecimiento", "comprobante", "documento"})
 public class CorporativoCfdiController {
 
 	private static final Logger logger = LoggerFactory.getLogger(CorporativoCfdiController.class);
@@ -63,10 +64,12 @@ public class CorporativoCfdiController {
 	}
 	
 	@RequestMapping(value = "/generaFactura", method = RequestMethod.POST)
-	public String generaFactura(@ModelAttribute Comprobante comprobante) {
+	public String generaFactura(@ModelAttribute Comprobante comprobante, ModelMap model) {
 		logger.debug("generando factura");
 		if (documentoService.sellarDocumento(comprobante)) {
-			documentoWebService.timbrarDocumento(comprobante);
+			Documento documento = documentoWebService.timbrarDocumento(comprobante);
+			documentoXmlService.convierteComprobanteAStream(documento.getComprobante());
+			model.put("documento", documento);
 		}
 		
 //		return "corporativo/pdf";

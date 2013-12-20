@@ -9,4 +9,11 @@
 	<artifactId>portal-cfdi-model</artifactId>
 	<name>portal-cfdi-model</name>
 	<description>Modelo</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+	</dependencies>
 </project>

@@ -4,16 +4,20 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.hibernate.validator.constraints.NotEmpty;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "TAS")
 public class Ticket {
 
+	@Valid
 	@XmlElement(name = "NEW_TA", required = true)
 	protected Ticket.Transaccion transaccion;
 	
@@ -28,6 +32,7 @@ public class Ticket {
 	@XmlAccessorType(XmlAccessType.FIELD)
 	public static class Transaccion {
 		
+		@Valid
 		@XmlElement(name = "HEADER", required = true)
 		protected Ticket.Transaccion.TransaccionHeader transaccionHeader;
 		
@@ -37,6 +42,7 @@ public class Ticket {
 		@XmlElement(name = "DISC_INFO")
 		protected List<Ticket.Transaccion.PartidaDescuento> partidasDescuentos;
 		
+		@Valid
 		@XmlElement(name = "TOTAL")
 		protected Ticket.Transaccion.TransaccionTotal transaccionTotal;
 		
@@ -78,20 +84,23 @@ public class Ticket {
 			@XmlElement(name = "lRetailStoreID")
 			protected String idSucursal;
 			
+			@NotEmpty
 			@XmlElement(name = "lTaNmbr")
 			protected String idTicket;
 			
+			@NotEmpty
 			@XmlElement(name = "lWorkstationNmbr")
 			protected String idCaja;
 
 			@XmlElement(name = "szDate")
 			protected String fechaHora;
+			
+			@NotEmpty
+			@XmlTransient
+			protected String fecha;
 
 			@XmlElement(name = "szTaType")
 			protected String tipoTransaccion;
-			
-			@XmlTransient
-			protected String fecha;
 			
 			public String getIdSucursal() {
 				return idSucursal;
@@ -125,20 +134,20 @@ public class Ticket {
 				this.fechaHora = fechaHora;
 			}
 
+			public String getFecha() {
+				return fecha;
+			}
+			
+			public void setFecha(String fecha) {
+				this.fecha = fecha;
+			}
+			
 			public String getTipoTransaccion() {
 				return tipoTransaccion;
 			}
 
 			public void setTipoTransaccion(String tipoTransaccion) {
 				this.tipoTransaccion = tipoTransaccion;
-			}
-
-			public String getFecha() {
-				return fecha;
-			}
-
-			public void setFecha(String fecha) {
-				this.fecha = fecha;
 			}
 
 			@Override
@@ -154,8 +163,6 @@ public class Ticket {
 				builder.append(fechaHora);
 				builder.append(", tipoTransaccion=");
 				builder.append(tipoTransaccion);
-				builder.append(", fecha=");
-				builder.append(fecha);
 				builder.append("]");
 				return builder.toString();
 			}
@@ -335,6 +342,7 @@ public class Ticket {
 		@XmlAccessorType(XmlAccessType.FIELD)
 		public static class TransaccionTotal {
 			
+			@NotNull
 			@XmlElement(name = "dTotalSale")
 			protected BigDecimal totalVenta;
 

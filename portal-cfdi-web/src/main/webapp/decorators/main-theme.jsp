@@ -26,6 +26,11 @@
 <script src="<c:url value="/resources/js/datatable/datatable.js" />"></script>
 <script type="text/javascript">
 	var contextPath = "${pageContext.request.contextPath}"; 
+	
+	function autoClosingAlert(selector, delay) {
+		var alert = $(selector).alert();
+		window.setTimeout(function() {alert.fadeOut("slow");}, delay);
+	}
 </script>
 <script src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.js" />"></script>
 <script src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.es.js" />"></script>

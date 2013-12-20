@@ -11,6 +11,7 @@ import com.certus.facturehoy.ws2.cfdi.WsEmisionTimbrado;
 import com.certus.facturehoy.ws2.cfdi.WsResponseBO;
 import com.certus.facturehoy.ws2.cfdi.WsServicioBO;
 import com.certus.facturehoy.ws2.cfdi.WsServicios;
+import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
 
@@ -29,23 +30,28 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	private DocumentoXmlService documentoXmlService;
 	
 	@Override
-	public void timbrarDocumento(Comprobante comprobante) {
+	public Documento timbrarDocumento(Comprobante comprobante) {
+		Documento documento = null;
 		logger.debug("en timbrar Documento");
 		String user = "AAA010101AAA.Test.User";
 		String password = "Prueba$1";
 		WsResponseBO response = new WsResponseBO();
 		//QUITAR
 		comprobante.getEmisor().setRfc("AAA010101AAA");
-		
 		//
 		response = wsEmisionTimbrado.emitirTimbrar(user, password, obtenerIdServicio(user, password), documentoXmlService.convierteComprobanteAByteArray(comprobante));
 		
 		if (!response.isIsError()) {
 			if (response.getXML() != null) {
+				documento = new Documento();
 				comprobante = documentoXmlService.convierteByteArrayAComprobante(response.getXML());
 				documentoXmlService.convierteComprobanteAStream(comprobante);
+				documento.setComprobante(comprobante);
+				documento.setCadenaOriginal(response.getCadenaOriginal());
+				return documento;
 			}
 		}
+		return documento;
 	}
 	
 	private int obtenerIdServicio(String user, String password) {

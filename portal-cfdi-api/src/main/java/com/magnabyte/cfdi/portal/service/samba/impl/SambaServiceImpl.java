@@ -3,6 +3,7 @@ package com.magnabyte.cfdi.portal.service.samba.impl;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -97,8 +98,8 @@ public class SambaServiceImpl implements SambaService {
 		String noCaja = ticket.getTransaccion().getTransaccionHeader().getIdCaja();
 		String noTicket = ticket.getTransaccion().getTransaccionHeader().getIdTicket();
 		String fechaXml = ticket.getTransaccion().getTransaccionHeader().getFecha();
+		BigDecimal importe = ticket.getTransaccion().getTransaccionTotal().getTotalVenta();
 		String fecha = fechaXml.substring(6, 10) + fechaXml.substring(3, 5) + fechaXml.substring(0, 2);
-		logger.debug("fecha {}", fecha);
 		String regex = noSucursal + "_" + noCaja + "_" + noTicket + "_" + fecha + "\\d\\d\\d\\d\\d\\d\\.xml";
 
 		Pattern pattern = Pattern.compile(regex);
@@ -111,6 +112,10 @@ public class SambaServiceImpl implements SambaService {
 					Matcher matcher = pattern.matcher(file.getName());
 					if (matcher.matches()) {
 						Ticket ticketXml = (Ticket) unmarshaller.unmarshal(new StreamSource(getFileStream(establecimiento.getRutaRepositorio(), file.getName())));
+						
+						if (ticketXml.getTransaccion().getTransaccionTotal().getTotalVenta().compareTo(importe) != 0) {
+							return false;
+						}
 						ticket.setTransaccion(ticketXml.getTransaccion());
 						return true;
 					}
