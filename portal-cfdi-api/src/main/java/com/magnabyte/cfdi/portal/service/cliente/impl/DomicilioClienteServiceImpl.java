@@ -34,4 +34,42 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 		}
 		return domiciliosBD;
 	}
+
+	@Override
+	public void save(Cliente cliente) {
+		if(!cliente.getDomicilios().isEmpty()) {
+			for(DomicilioCliente domicilio : cliente.getDomicilios()) {
+				domicilio.setCliente(cliente);
+				domicilioClienteDao.save(domicilio);
+			}
+		} else {
+			logger.debug("La lista de domicilios no puede ser vacia.");
+		}
+		
+	}
+
+	@Override
+	public void update(Cliente cliente) {
+		List<DomicilioCliente> domNuevos = cliente.getDomicilios();		
+		List<DomicilioCliente> domAnteriores = getByCliente(cliente);
+		
+		if(cliente.getDomicilios() != null) {
+			for (DomicilioCliente domicilio : domNuevos) {
+				if(domicilio.getCliente() == null) {
+					domicilio.setCliente(cliente);
+				}
+				if (domAnteriores.contains(domicilio) && domicilio.getCalle() != null) {
+					domicilioClienteDao.update(domicilio);
+				} else if (!domAnteriores.contains(domicilio) && domicilio.getCalle() != null) {
+					domicilioClienteDao.save(domicilio);
+				}
+			}
+			for (DomicilioCliente domicilio : domAnteriores) {
+				if (!domNuevos.contains(domicilio)) {
+					domicilioClienteDao.delete(domicilio);
+				}
+			}
+			
+		}
+	}
 }

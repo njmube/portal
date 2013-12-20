@@ -6,10 +6,7 @@ package com.magnabyte.cfdi.portal.model.commons;
  * @author Edgar Pérez
  * 
  */
-public class Pais {
-
-	private Integer id;
-	private String nombre;
+public class Pais extends OpcionDeCatalogo {
 
 	/**
 	 * Constructor por default
@@ -17,21 +14,4 @@ public class Pais {
 	public Pais() {
 
 	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
 }

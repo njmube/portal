@@ -5,9 +5,13 @@ import java.util.List;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 
 public interface ClienteService {
-
-	List<Cliente> findClientesByNameRfc(Cliente cliente);
 	
 	public Cliente read(Cliente cliente);
+	
+	public void save(Cliente cliente);
+	
+	public void update(Cliente cliente);
+	
+	List<Cliente> findClientesByNameRfc(Cliente cliente);
 
 }

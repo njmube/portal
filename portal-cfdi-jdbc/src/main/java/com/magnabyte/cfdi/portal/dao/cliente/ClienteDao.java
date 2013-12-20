@@ -9,5 +9,9 @@ public interface ClienteDao {
 	List<Cliente> findClientesByNameRfc(Cliente cliente);
 	
 	public Cliente read(Cliente cliente);
+	
+	public void save(Cliente cliente);
+
+	public void update(Cliente cliente);
 
 }

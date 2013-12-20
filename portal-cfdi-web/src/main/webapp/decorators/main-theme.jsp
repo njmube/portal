@@ -24,6 +24,9 @@
 <script src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
 <script src="<c:url value="/resources/js/jquery/jquery.dataTables.min.js" />"></script>
 <script src="<c:url value="/resources/js/datatable/datatable.js" />"></script>
+<script type="text/javascript">
+	var contextPath = "${pageContext.request.contextPath}"; 
+</script>
 <script src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.js" />"></script>
 <script src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.es.js" />"></script>
 <decorator:head />
