@@ -65,7 +65,7 @@
 									<th><small>Localidad</small></th>
 									<th><small></small></th>
 								</tr>
-							</thead>Corregir
+							</thead>
 							<tbody>
 								<c:choose>
 									<c:when test="${not empty cliente.domicilios}">

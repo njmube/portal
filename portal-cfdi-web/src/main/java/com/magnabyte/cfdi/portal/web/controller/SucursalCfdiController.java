@@ -1,10 +1,13 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,9 +40,12 @@ public class SucursalCfdiController {
 	}
 	
 	@RequestMapping(value = "/validaTicket", method = RequestMethod.POST)
-	public String validaTicket(@ModelAttribute Ticket ticket, @ModelAttribute Establecimiento establecimiento, ModelMap model) {
-		logger.debug("validando ticket");
+	public String validaTicket(@Valid @ModelAttribute Ticket ticket, BindingResult resultTicket, 
+			@ModelAttribute Establecimiento establecimiento, ModelMap model) {
 		logger.debug("controller--{}", ticket);
+		if (resultTicket.hasErrors()) {
+			return "sucursal/buscaTicket";
+		}
 		if (sambaService.ticketExists(ticket, establecimiento)) {
 			model.put("ticket", ticket);
 			return "redirect:/buscaRfc";
