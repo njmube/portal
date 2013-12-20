@@ -5,34 +5,10 @@
 <head>
 <title>Registrar Cliente</title>
 
-<style type="text/css">
-.input-xsm {
-	height: 20px;
-	padding: 5px 10px;
-	font-size: 10px;
-	line-height: 1.5;
-	border-radius: 3px;
-}
-</style>
-<script type="text/javascript">
-$(document).ready(function() {
-	$("#continuar").click(function() {
-		$("#agregar").hide();
-		$("input[type=text]").attr("readonly", true);
-		$(this).hide();
-		$("#corregir").show();
-		$("#guardar").show();
-	});
-	
-	$("#corregir").click(function() {
-		$("#agregar").show();
-		$("input[type=text]").attr("readonly", false);
-		$("#continuar").show();
-		$(this).hide();
-		$("#guardar").hide();
-	});
-});
-</script>
+<script src="<c:url value="/resources/js/commons/direccionFunctions.js"/>"></script>
+<script src="<c:url value="/resources/js/sucursal/clienteForm.js"/>"></script>
+<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/clienteForm.css"/>">
+
 </head>
 <body>
 	<div class="container main-content">
@@ -42,7 +18,7 @@ $(document).ready(function() {
 				<p class="text-info">Ingresa la Información de Facturación.</p>
 			</blockquote>
 			<hr>
-			<div class="well col-md-12 col-md-offset-0">
+			<div class="well">
 				<c:url var="altaUrl" value="/confirmarDatos"/>
 				<form:form id="receptorForm" action="${altaUrl}" method="POST" modelAttribute="cliente" cssClass="form-horizontal" role="form">
 					<div class="form-group">
@@ -55,13 +31,11 @@ $(document).ready(function() {
 							<form:input path="nombre" id="nombre" cssClass="form-control input-sm"/>
 						</div>
 					</div>
-					<div class="form-group">
-						<div class="centered">
-							<button id="agregar" type="button" class="btn btn-xs btn-warning">Agregar Dirección <span class="glyphicon glyphicon glyphicon-plus"></span> </button>
-						</div>
-					</div>
+					<p class="text-center">
+						<button id="agregar" type="button" class="btn btn-xs btn-warning">Agregar Dirección <span class="glyphicon glyphicon glyphicon-plus"></span> </button>
+					</p>
 					<div class="white-panel row">
-						<table class="table table-hover">
+						<table class="table table-hover" id="tblDireccion">
 							<thead>
 								<tr>
 									<th><small>Calle</small></th>
@@ -71,51 +45,48 @@ $(document).ready(function() {
 									<th><small>Estado</small></th>
 									<th><small>Municipio</small></th>
 									<th><small>Colonia</small></th>
-									<th><small>Código Postal</small></th>
+									<th><small>C.P.</small></th>
 									<th><small>Referencia</small></th>
-									<th><small>Localidades</small></th>
+									<th><small>Localidad</small></th>
+									<th><small></small></th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
 									<td width="200px"><form:input path="domicilios[0].calle" id="calle" cssClass="form-control input-xsm"/></td>
 									<td width="65px"><form:input path="domicilios[0].noExterior" id="noExterior" cssClass="form-control input-xsm"/></td>
-									<td width="65px"><form:input path="domicilios[0].noInterior" id="noExterior" cssClass="form-control input-xsm"/></td>
-									<td><form:input path="domicilios[0].estado.pais.id" id="pais" cssClass="form-control input-xsm"/></td>
-									<td><form:input path="domicilios[0].estado.id" id="estado" cssClass="form-control input-xsm"/></td>
+									<td width="65px"><form:input path="domicilios[0].noInterior" id="noInteriorr" cssClass="form-control input-xsm"/></td>
+									<td width="100px">
+									  	<select class="form-control-xsm" id="pais" name="domicilios[0].estado.pais.id">
+									  		<option value="0">- Seleccione una opción -</option>
+									  		<c:forEach items="${listaPaises}" var="pais">
+									    		<option value="${pais.id}">${pais.nombre}</option>
+									  		</c:forEach>
+  										</select>
+									</td>
+									<td width="100px">
+										<select class="form-control-xsm" id="estado" name="domicilios[0].estado.id">
+									  		<option value="0">- Seleccione una opción -</option>									  		
+  										</select>
+									</td>
 									<td><form:input path="domicilios[0].municipio" id="municipio" cssClass="form-control input-xsm"/></td>
 									<td width="200px"><form:input path="domicilios[0].colonia" id="colonia" cssClass="form-control input-xsm"/></td>
-									<td><form:input path="domicilios[0].codigoPostal" id="codigoPostal" cssClass="form-control input-xsm"/></td>
+									<td width="70px"><form:input path="domicilios[0].codigoPostal" id="codigoPostal" cssClass="form-control input-xsm"/></td>
 									<td><form:input path="domicilios[0].referencia" id="referencia" cssClass="form-control input-xsm"/></td>
 									<td><form:input path="domicilios[0].localidad" id="localidad" cssClass="form-control input-xsm"/></td>
-								</tr>
-								<tr>
-									<td width="200px"><form:input path="domicilios[1].calle" id="calle" cssClass="form-control input-xsm"/></td>
-									<td width="65px"><form:input path="domicilios[1].noExterior" id="noExterior" cssClass="form-control input-xsm"/></td>
-									<td width="65px"><form:input path="domicilios[1].noInterior" id="noExterior" cssClass="form-control input-xsm"/></td>
-									<td><form:input path="domicilios[1].estado.pais.id" id="pais" cssClass="form-control input-xsm"/></td>
-									<td><form:input path="domicilios[1].estado.id" id="estado" cssClass="form-control input-xsm"/></td>
-									<td><form:input path="domicilios[1].municipio" id="municipio" cssClass="form-control input-xsm"/></td>
-									<td width="200px"><form:input path="domicilios[1].colonia" id="colonia" cssClass="form-control input-xsm"/></td>
-									<td><form:input path="domicilios[1].codigoPostal" id="codigoPostal" cssClass="form-control input-xsm"/></td>
-									<td><form:input path="domicilios[1].referencia" id="referencia" cssClass="form-control input-xsm"/></td>
-									<td><form:input path="domicilios[1].localidad" id="localidad" cssClass="form-control input-xsm"/></td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 					<hr>
-					<div class="form-group">
-						<div class="centered">
-							<button id="continuar" type="button" class="btn btn-success">Continuar <span class="glyphicon glyphicon-arrow-right"></span></button>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="centered">
-							<button id="guardar" type="submit" class="btn btn-primary" style="display:none"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</button>
-							<button id="corregir" type="button" class="btn btn-warning" style="display:none"><span class="glyphicon glyphicon-arrow-left"></span> Corregir</button>
-						</div>
-					</div>
+					<p class="text-center">
+						<button id="continuar" type="button" class="btn btn-success">Continuar <span class="glyphicon glyphicon-arrow-right"></span></button>
+						<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger"><small>Cancelar</small> <span class="glyphicon glyphicon-remove"></span></a>
+					</p>
+					<p class="text-center" id="botones" style="display:none">
+						<button id="guardar" type="submit" class="btn btn-primary"><small>Guardar</small> <span class="glyphicon glyphicon-floppy-disk"></span></button>
+						<button id="corregir" type="button" class="btn btn-warning"><small>Corregir</small> <span class="glyphicon glyphicon-arrow-left"></span></button>
+					</p>
 				</form:form>
 			</div>
 		</div>

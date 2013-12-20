@@ -40,10 +40,10 @@
 								<display:column title="No. Int." property="noInterior" headerClass="text-primary" />
 							</c:otherwise>
 						</c:choose>
-						<display:column title="Colonia"  property="colonia" headerClass="text-primary" />
-						<display:column title="Municipio"  property="municipio" headerClass="text-primary" />
+						<display:column title="País"  property="estado.pais.nombre" headerClass="text-primary" />
 						<display:column title="Estado"  property="estado.nombre" headerClass="text-primary" />
-						<display:column title="País"  property="estado.pais.id" headerClass="text-primary" />
+						<display:column title="Municipio"  property="municipio" headerClass="text-primary" />
+						<display:column title="Colonia" property="colonia" headerClass="text-primary" />
 						<display:column title="Codigo Postal"  property="codigoPostal" headerClass="text-primary" />
 						<display:column title="Localidad"  property="localidad" headerClass="text-primary" />
 						<display:column title="Referencia"  property="referencia" headerClass="text-primary" />
@@ -52,7 +52,7 @@
 			</div>
 				<p class="text-center"> 
 					<a href="<c:url value=""/>" class="btn btn-success"><span>Continuar</span></a>
-					<a href="<c:url value="/clienteForm"/>" class="btn btn-warning"><span>Corregir</span></a>
+					<a href="<c:url value="/clienteCorregir/${cliente.id}"/>" class="btn btn-warning"><span>Corregir</span></a>
 				</p>
 		</div>				
 	</div>

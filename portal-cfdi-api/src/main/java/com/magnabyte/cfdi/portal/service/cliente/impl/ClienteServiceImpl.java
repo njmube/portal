@@ -52,4 +52,32 @@ public class ClienteServiceImpl implements ClienteService {
 		return cteBD;
 	}
 
+	@Override
+	public void save(Cliente cliente) {
+		if(cliente != null) {
+			clienteDao.save(cliente);
+			if(!cliente.getDomicilios().isEmpty()) {
+				domicilioClienteService.save(cliente);
+			} else {
+				logger.debug("La lista de direcciones no puede estar vacia.");
+			}
+		} else {
+			logger.debug("El cliente no puede ser nulo.");
+		}
+	}
+
+	@Override
+	public void update(Cliente cliente) {
+		if(cliente != null) {
+			clienteDao.update(cliente);
+			if(!cliente.getDomicilios().isEmpty()) {
+				domicilioClienteService.update(cliente);
+			} else {
+				logger.debug("La lista de direcciones de cliente está vacía.");
+			}
+		} else {
+			logger.debug("El cliente no puede ser nulo.");
+		}
+	}
+
 }

@@ -13,7 +13,7 @@
 
 	<mvc:resources location="/resources/" mapping="/resources/**" />
 
-	<context:property-placeholder location="classpath*:/webservices.properties" />
+	<context:property-placeholder location="classpath*:/webservices.properties"/>
 
 	<bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">

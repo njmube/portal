@@ -13,4 +13,12 @@ public class GenericJdbcDao extends JdbcDaoSupport {
 	public void setJdbcDataSource(DataSource dataSource) {
 		super.setDataSource(dataSource);
 	}
+	
+	protected String assignValues(String string, Object... values) {
+		String a = string;
+		for(int i = 0; i < values.length; i++) {
+			a = a.replaceAll("\\{" + i + "}", values[i].toString());
+		}
+		return a.toString();
+	}
 }

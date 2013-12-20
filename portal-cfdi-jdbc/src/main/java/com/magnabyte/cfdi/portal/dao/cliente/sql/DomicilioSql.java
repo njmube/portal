@@ -29,34 +29,64 @@ public class DomicilioSql extends GenericSql {
 	public static final String LOCALIDAD = "localidad";
 	
 	public static final String FIND_DOM_BY_CLIENTE;
+	public static final String UPDATE_DOMICILIO_CTE;
+	public static final String DELETE_DOMICILIO_CTE;
 	
 	static {
-		StringBuilder queryBuilder = new StringBuilder();
-		queryBuilder.append(SELECT).append(EOL).append(TAB);
-		queryBuilder.append(ALL).append(EOL_).append(TAB);
-		queryBuilder.append(ALIAS_ESTADO).append(DOT).append(NOMBRE);
-		queryBuilder.append(AS).append(AS_ESTADO).append(EOL_).append(TAB);
-		queryBuilder.append(ALIAS_PAIS).append(DOT).append(NOMBRE);
-		queryBuilder.append(AS).append(AS_PAIS).append(EOL);
+		StringBuilder qryBuilder = new StringBuilder();
+		qryBuilder.append(SELECT).append(EOL).append(TAB);
+		qryBuilder.append(ALL).append(EOL_).append(TAB);
+		qryBuilder.append(ALIAS_ESTADO).append(DOT).append(NOMBRE);
+		qryBuilder.append(AS).append(AS_ESTADO).append(EOL_).append(TAB);
+		qryBuilder.append(ALIAS_PAIS).append(DOT).append(NOMBRE);
+		qryBuilder.append(AS).append(AS_PAIS).append(EOL);
 		
-		queryBuilder.append(FROM).append(EOL).append(TAB);		
-		queryBuilder.append(TABLE_NAME).append(AS).append(TABLE_ALIAS);
-		queryBuilder.append(INNER).append(TABLE_ESTADO).append(AS);
-		queryBuilder.append(ALIAS_ESTADO).append(ON).append(ALIAS_ESTADO);
-		queryBuilder.append(DOT).append(ID_ESTADO).append(EQ).append(TABLE_ALIAS);
-		queryBuilder.append(DOT).append(ID_ESTADO).append(EOL).append(TAB);
+		qryBuilder.append(FROM).append(EOL).append(TAB);		
+		qryBuilder.append(TABLE_NAME).append(AS).append(TABLE_ALIAS);
+		qryBuilder.append(INNER).append(TABLE_ESTADO).append(AS);
+		qryBuilder.append(ALIAS_ESTADO).append(ON).append(ALIAS_ESTADO);
+		qryBuilder.append(DOT).append(ID_ESTADO).append(EQ).append(TABLE_ALIAS);
+		qryBuilder.append(DOT).append(ID_ESTADO).append(EOL).append(TAB);
 		
-		queryBuilder.append(INNER).append(TABLE_PAIS).append(AS);
-		queryBuilder.append(ALIAS_PAIS).append(ON).append(ALIAS_PAIS);
-		queryBuilder.append(DOT).append(ID_PAIS).append(EQ).append(ALIAS_ESTADO);
-		queryBuilder.append(DOT).append(ID_PAIS).append(EOL);
+		qryBuilder.append(INNER).append(TABLE_PAIS).append(AS);
+		qryBuilder.append(ALIAS_PAIS).append(ON).append(ALIAS_PAIS);
+		qryBuilder.append(DOT).append(ID_PAIS).append(EQ).append(ALIAS_ESTADO);
+		qryBuilder.append(DOT).append(ID_PAIS).append(EOL);
 		
-		queryBuilder.append(WHERE).append(EOL).append(TAB);
-		queryBuilder.append(TABLE_ALIAS).append(DOT).append(ID_CLIENTE).append(SET_PARAM);
+		qryBuilder.append(WHERE).append(EOL).append(TAB);
+		qryBuilder.append(TABLE_ALIAS).append(DOT).append(ID_CLIENTE).append(SET_PARAM);
+		qryBuilder.append(EOL).append(ORDER).append(ID_DOMICILIO);
 		
-		FIND_DOM_BY_CLIENTE = queryBuilder.toString();
+		FIND_DOM_BY_CLIENTE = qryBuilder.toString();
+		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
 		
-		queryBuilder = clearAndReuseStringBuilder(queryBuilder);
+		qryBuilder.append(UPDATE).append(EOL).append(TAB).append(TABLE_NAME);
+		qryBuilder.append(EOL).append(SET).append(EOL);
+				
+		qryBuilder.append(TAB).append(ID_ESTADO).append(SET_PARAM).append(EOL_);
+		qryBuilder.append(TAB).append(ID_CLIENTE).append(SET_PARAM).append(EOL_);
+		qryBuilder.append(TAB).append(CALLE).append(SET_PARAM).append(EOL_);
+		qryBuilder.append(TAB).append(NO_EXTERIOR).append(SET_PARAM).append(EOL_);
+		qryBuilder.append(TAB).append(NO_INTERIOR).append(SET_PARAM).append(EOL_);
+		qryBuilder.append(TAB).append(MUNICIPIO).append(SET_PARAM).append(EOL_);
+		qryBuilder.append(TAB).append(COLONIA).append(SET_PARAM).append(EOL_);
+		qryBuilder.append(TAB).append(CODIGO_POSTAL).append(SET_PARAM).append(EOL_);
+		qryBuilder.append(TAB).append(REFERENCIA).append(SET_PARAM).append(EOL_);
+		qryBuilder.append(TAB).append(LOCALIDAD).append(SET_PARAM).append(EOL);
+		
+		qryBuilder.append(WHERE).append(EOL).append(TAB);
+		qryBuilder.append(ID_DOMICILIO).append(SET_PARAM);
+		
+		UPDATE_DOMICILIO_CTE = qryBuilder.toString();
+		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		
+		
+		qryBuilder.append(DELETE).append(" " + FROM).append(EOL);
+		qryBuilder.append(TABLE_NAME).append(EOL).append(WHERE);
+		qryBuilder.append(EOL).append(TAB).append(ID_DOMICILIO).append(SET_PARAM);
+		
+		DELETE_DOMICILIO_CTE = qryBuilder.toString();
+		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
 	}
 	
 }

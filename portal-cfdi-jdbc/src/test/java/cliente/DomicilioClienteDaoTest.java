@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.magnabyte.cfdi.portal.dao.cliente.DomicilioClienteDao;
 import com.magnabyte.cfdi.portal.dao.cliente.dummys.ClienteDummy;
+import com.magnabyte.cfdi.portal.dao.cliente.dummys.DomicilioClienteDummy;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 
@@ -24,10 +25,29 @@ public class DomicilioClienteDaoTest {
 	@Autowired
 	DomicilioClienteDao domicilioClienteDao;
 	
+	public static DomicilioCliente DOMICILIOS = null;
 	public static Cliente CLIENTE = null;
 	
 	static {
-		CLIENTE = ClienteDummy.generateCliente();
+		DOMICILIOS = DomicilioClienteDummy.generateDomicilioCliente();
+		CLIENTE = ClienteDummy.generateCliente();		
+	}
+	
+//	@Test
+	public void save() {
+		logger.info("Instertando un domicilio de cliente en la base de datos");
+		DomicilioCliente domicilio = DOMICILIOS;
+		domicilioClienteDao.save(domicilio);
+		Assert.assertNotNull(domicilio.getId());
+	}
+	
+	@Test
+	public void update() {
+		logger.info("Actualizando un domicilio de cliente en la base de datos");
+		DomicilioCliente domicilio = DOMICILIOS;
+		domicilio.setId(3);
+		domicilioClienteDao.update(domicilio);
+		Assert.assertNotNull(domicilio.getId());
 	}
 	
 	@Test

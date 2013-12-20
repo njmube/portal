@@ -27,10 +27,27 @@ public class CienteDaoTest {
 		CLIENTE = ClienteDummy.generateCliente();
 	}
 	
+//	@Test
+	public void save() {
+		logger.info("Insertando cliente en la base de datos");
+		Cliente cliente = CLIENTE;
+		clienteDao.save(cliente);
+		Assert.assertNotNull(cliente.getId());
+	}
+	
+	@Test
+	public void update() {
+		logger.info("Insertando cliente en la base de datos");
+		Cliente cliente = CLIENTE;		
+		clienteDao.update(cliente);
+		Assert.assertNotNull(cliente.getId());
+	}
+	
 	@Test
 	public void readCte() {
 		logger.info("Recuperando el cliente de la base de datos.");
-		Cliente cliente = clienteDao.read(CLIENTE);
-		Assert.assertNotNull(cliente);
+		Cliente cliente = CLIENTE;
+		clienteDao.read(cliente);
+		Assert.assertNotNull(cliente.getId());
 	}
 }
