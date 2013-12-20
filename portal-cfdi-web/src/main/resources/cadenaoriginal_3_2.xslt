@@ -6,12 +6,14 @@
 	<!--
 		En esta sección se define la inclusión de las plantillas de utilerías para colapsar espacios
 	-->
-	<xsl:include href="http://www.sat.gob.mx/sitio_internet/cfd/2/cadenaoriginal_2_0/utilerias.xslt"/>
+	<!--xsl:include href="http://www.sat.gob.mx/sitio_internet/cfd/2/cadenaoriginal_2_0/utilerias.xslt"/-->
 <!-- 	<xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/utilerias.xslt"/> -->
+	 	<xsl:include href="src/main/resources/utilerias.xslt"/> 
 	<!-- 
 		En esta sección se define la inclusión de las demás plantillas de transformación para 
 		la generación de las cadenas originales de los complementos fiscales 
 	-->
+    <!--
 	<xsl:include href="http://www.sat.gob.mx/sitio_internet/cfd/ecc/ecc.xslt"/>
 	<xsl:include href="http://www.sat.gob.mx/sitio_internet/cfd/psgecfd/psgecfd.xslt"/>
 	<xsl:include href="http://www.sat.gob.mx/sitio_internet/cfd/donat/donat11.xslt"/>
@@ -27,6 +29,7 @@
 	<xsl:include href="http://www.sat.gob.mx/sitio_internet/cfd/leyendasFiscales/leyendasFisc.xslt"/>
 	<xsl:include href="http://www.sat.gob.mx/sitio_internet/cfd/spei/spei.xslt"/>
 	<xsl:include href="http://www.sat.gob.mx/sitio_internet/cfd/nomina/nomina.xslt"/>
+	-->
     <!--
     <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/ecc.xslt"/>
     <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/psgecfd.xslt"/>
@@ -44,6 +47,21 @@
     <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/spei.xslt"/>
     <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/nomina.xslt"/>
     -->
+    <xsl:include href="src/main/resources/ecc.xslt"/>
+    <xsl:include href="src/main/resources/psgecfd.xslt"/>
+    <xsl:include href="src/main/resources/donat11.xslt"/>
+    <xsl:include href="src/main/resources/divisas.xslt"/>
+    <xsl:include href="src/main/resources/ecb.xslt"/>
+    <xsl:include href="src/main/resources/detallista.xslt"/>
+    <xsl:include href="src/main/resources/implocal.xslt"/>
+    <xsl:include href="src/main/resources/terceros11.xslt"/>
+    <xsl:include href="src/main/resources/iedu.xslt"/>
+    <xsl:include href="src/main/resources/ventavehiculos.xslt"/>
+    <xsl:include href="src/main/resources/pfic.xslt"/>
+    <xsl:include href="src/main/resources/TuristaPasajeroExtranjero.xslt"/>
+    <xsl:include href="src/main/resources/leyendasFisc.xslt"/>
+    <xsl:include href="src/main/resources/spei.xslt"/>
+    <xsl:include href="src/main/resources/nomina.xslt"/>
 
 	<!-- Aquí iniciamos el procesamiento de la cadena original con su | inicial y el terminador || -->
 	<xsl:template match="/">|<xsl:apply-templates select="/cfdi:Comprobante"/>||</xsl:template>

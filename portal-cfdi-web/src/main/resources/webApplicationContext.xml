@@ -13,8 +13,8 @@
 
 	<mvc:resources location="/resources/" mapping="/resources/**" />
 
-	<context:property-placeholder location="classpath*:/webservices.properties" />
-	
+	<context:property-placeholder location="classpath*:/webservices.properties"/>
+
 	<bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basename" value="modatelasmsg" />
@@ -38,7 +38,7 @@
 
 
 	<bean id="comprobanteFactory" class="mx.gob.sat.cfd._3.ObjectFactory" />
-
+	
 	<bean id="wsServicios" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
 		<property name="serviceInterface" value="com.certus.facturehoy.ws2.cfdi.WsServicios" />
 		<property name="wsdlDocumentUrl" value="${ws.servicios.url}" />
@@ -54,4 +54,5 @@
 		<property name="serviceName" value="WsEmisionTimbradoService" />
 		<property name="portName" value="WsEmisionTimbradoPort" />
 	</bean>
+
 </beans>

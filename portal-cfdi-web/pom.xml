@@ -93,10 +93,6 @@
 			<groupId>org.apache.directory.studio</groupId>
 			<artifactId>org.apache.commons.logging</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.certus.facturehoy.ws2.cfdi</groupId>
-			<artifactId>certus-facturehoy-ws-test</artifactId>
-		</dependency>
 	</dependencies>
 
 	<build>

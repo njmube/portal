@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.util.WebUtils;
 
-import com.certus.facturehoy.ws2.cfdi.WsServicios;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoFile;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
+import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
 
 @Controller
 @SessionAttributes({"establecimiento", "comprobante"})
@@ -41,7 +41,7 @@ public class CorporativoCfdiController {
 	private DocumentoService documentoService;
 	
 	@Autowired
-	private WsServicios wsServicios;
+	private DocumentoWebService documentoWebService;
 	
 	@RequestMapping("/facturaCorp")
 	public String facturaCorp(@ModelAttribute Establecimiento sucursal, ModelMap model) {
@@ -65,11 +65,9 @@ public class CorporativoCfdiController {
 	@RequestMapping(value = "/generaFactura", method = RequestMethod.POST)
 	public String generaFactura(@ModelAttribute Comprobante comprobante) {
 		logger.debug("generando factura");
-		logger.debug("Comprobante sin sellar: {}", comprobante);
-		documentoXmlService.convierteComprobanteAStream(comprobante);
-		documentoService.sellarDocumento(comprobante);
-		logger.debug("Comprobante sellado: {}", comprobante);
-		documentoXmlService.convierteComprobanteAStream(comprobante);
+		if (documentoService.sellarDocumento(comprobante)) {
+			documentoWebService.timbrarDocumento(comprobante);
+		}
 		
 		return "corporativo/pdf";
 	}

@@ -8,12 +8,9 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
 	<context:component-scan base-package="com.magnabyte.cfdi.portal.service" />
-
+	
 	<oxm:jaxb2-marshaller id="jaxb2Marshaller">
 		<oxm:class-to-be-bound name="mx.gob.sat.cfd._3.Comprobante"/>
-		<oxm:class-to-be-bound name="mx.gob.sat.cfd._3.TInformacionAduanera"/>
-		<oxm:class-to-be-bound name="mx.gob.sat.cfd._3.TUbicacion"/>
-		<oxm:class-to-be-bound name="mx.gob.sat.cfd._3.TUbicacionFiscal"/>
 		<oxm:class-to-be-bound name="com.magnabyte.cfdi.portal.model.ticket.Ticket"/>
 	</oxm:jaxb2-marshaller>
 		

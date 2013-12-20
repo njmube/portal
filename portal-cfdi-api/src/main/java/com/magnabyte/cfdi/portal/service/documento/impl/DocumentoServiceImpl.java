@@ -23,6 +23,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import mx.gob.sat.cfd._3.Comprobante;
+
 import org.apache.commons.ssl.PKCS8Key;
 import org.bouncycastle.util.encoders.Base64;
 import org.slf4j.Logger;
@@ -31,8 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
-
-import mx.gob.sat.cfd._3.Comprobante;
 
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
@@ -48,14 +48,20 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	private ResourceLoader resourceLoader;
 	
 	@Override
-	public void sellarDocumento(Comprobante comprobante) {
+	public boolean sellarDocumento(Comprobante comprobante) {
 		logger.debug("en sellar Documento");
+		//QUITAR
+		comprobante.getEmisor().setRfc("AAA010101AAA");
+		
+		//
 		String cadena = obtenerCadena(comprobante);
 		String sello = obtenerSelloDigital(cadena);
 		logger.debug("sello {} y cadena {}", sello, cadena);
 		if(validSelloDigital(sello, cadena, comprobante)) {
 			comprobante.setSello(sello);
+			return true;
 		}
+		return false;
 	}
 
 	private boolean validSelloDigital(String sello, String cadena, Comprobante comprobante) {
@@ -66,7 +72,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			X509Certificate certificate = (X509Certificate) certFactory.generateCertificate(resourceLoader.getResource("classpath:/aaa010101aaa__csd_01.cer").getInputStream());
 			certificate.checkValidity();
 			PublicKey publicKey = certificate.getPublicKey();
-			comprobante.setNoCertificado(certificate.getSerialNumber().toString());
+			comprobante.setNoCertificado(new String(certificate.getSerialNumber().toByteArray()));
 			comprobante.setCertificado(new String(Base64.encode(certificate.getEncoded())));
 			
 			Signature signature = Signature.getInstance("SHA1withRSA");

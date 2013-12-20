@@ -85,10 +85,10 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 					OutputStreamWriter oos = new OutputStreamWriter(baos, "UTF-8");
 					XMLOutputter outputter = new XMLOutputter();
 		            outputter.setFormat(Format.getPrettyFormat().setEncoding("UTF-8"));
-		            outputter.output(documentoCFD,oos);
+		            outputter.output(documentoCFD, oos);
 		            oos.flush();
 		            oos.close();
-					comprobante = (Comprobante) unmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(baos.toByteArray())));
+					comprobante = convierteByteArrayAComprobante(baos.toByteArray());
 					logger.debug("XML valido-----" + validaComprobanteXml(comprobante));
 				}
 			} catch (JDOMException e) {
@@ -96,9 +96,6 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 				e.printStackTrace();
 			}
 		
-		} catch (XmlMappingException e) {
-			logger.error("Error al convertir el objeto a xml");
-			e.printStackTrace();
 		} catch (IOException e) {
 			logger.error("Error al recuperar el documento");
 			e.printStackTrace();
@@ -154,6 +151,11 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	
 	@Override
 	public InputStream convierteComprobanteAStream(Comprobante comprobante) {
+		return new ByteArrayInputStream(convierteComprobanteAByteArray(comprobante));
+	}
+	
+	@Override
+	public byte[] convierteComprobanteAByteArray(Comprobante comprobante) {
 		Map<String, Object> marshallerProperties = new HashMap<String, Object>();
 		marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_SCHEMA_LOCATION, "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv32.xsd");
@@ -175,11 +177,26 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return new ByteArrayInputStream(baos.toByteArray());
+		return baos.toByteArray();
 	}
 
+	@Override
+	public Comprobante convierteByteArrayAComprobante(byte[] xml) {
+		try {
+			return (Comprobante) unmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(xml)));
+		} catch (XmlMappingException e) {
+			logger.error("Error al convertir el objeto a xml");
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	@Override
 	public void setResourceLoader(ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
 	}
 }
+
+	
