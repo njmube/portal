@@ -1,9 +1,14 @@
 package com.magnabyte.cfdi.portal.model.cliente;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import com.magnabyte.cfdi.portal.model.commons.Domicilio;
 
 public class DomicilioCliente extends Domicilio {
 
+	@Valid
+	@NotNull
 	private Cliente cliente;
 	
 	/**

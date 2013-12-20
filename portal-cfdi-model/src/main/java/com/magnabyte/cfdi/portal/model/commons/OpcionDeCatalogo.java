@@ -1,5 +1,6 @@
 package com.magnabyte.cfdi.portal.model.commons;
 
+
 /**
  * Clase que representa una opción de catalogo
  * 
@@ -15,7 +16,7 @@ public class OpcionDeCatalogo {
 	
 	/**
 	 * Nombre de la opción de catalogo
-	 */
+	 */	
 	private String nombre;
 
 	/**

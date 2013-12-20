@@ -1,5 +1,7 @@
 package com.magnabyte.cfdi.portal.model.commons;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Clase que representa un estado.
  * 
@@ -8,6 +10,7 @@ package com.magnabyte.cfdi.portal.model.commons;
  */
 public class Estado extends OpcionDeCatalogo {
 	
+	@NotNull
 	private Pais pais;
 	
 	/**

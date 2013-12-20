@@ -2,6 +2,10 @@ package com.magnabyte.cfdi.portal.model.cliente;
 
 import java.util.List;
 
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 /**
  * Clase que representa un cliente
  * 
@@ -9,10 +13,14 @@ import java.util.List;
  * 
  */
 public class Cliente {
-
+	
 	private Integer id;
+	
+	@NotEmpty
 	private String rfc;
+	@NotEmpty
 	private String nombre;
+	@NotEmpty
 	private List<DomicilioCliente> domicilios;
 	
 	/**

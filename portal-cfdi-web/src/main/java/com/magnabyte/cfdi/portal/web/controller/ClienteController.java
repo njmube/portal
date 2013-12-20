@@ -2,11 +2,14 @@ package com.magnabyte.cfdi.portal.web.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,8 +51,12 @@ public class ClienteController {
 	}
 	
 	@RequestMapping(value = "/confirmarDatos", method = RequestMethod.POST)
-	public String confirmarDatos(@ModelAttribute Cliente cliente, ModelMap model) {
+	public String confirmarDatos(@Valid @ModelAttribute Cliente cliente, ModelMap model, BindingResult result) {
 		logger.debug("Confimar datos");	
+		if (result.hasErrors()) {
+			return "redirect:/confirmarDatos/" + cliente.getId();
+		}
+		
 		if(cliente.getId() != null) {		
 			clienteService.update(cliente);
 		} else {

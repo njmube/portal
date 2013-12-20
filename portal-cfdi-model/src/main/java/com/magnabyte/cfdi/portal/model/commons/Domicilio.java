@@ -1,5 +1,10 @@
 package com.magnabyte.cfdi.portal.model.commons;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
+
 /**
  * Clase abstracta que representa el domicilio generico
  * 
@@ -9,14 +14,28 @@ package com.magnabyte.cfdi.portal.model.commons;
 public abstract class Domicilio {
 
 	protected Integer id;
+	@NotEmpty
+	@Length(max = 100)
 	protected String calle;
+	@NotEmpty
+	@Length(max = 150)
 	protected String colonia;
+	@NotEmpty
+	@Length(max = 100)
 	protected String municipio;
+	@NotNull
 	protected Estado estado;
+	@NotEmpty
+	@Length(min = 4, max = 5)
 	protected String codigoPostal;
+	@Length(max = 100)
 	protected String localidad;
+	@Length(max = 200)
 	protected String referencia;
+	@NotEmpty
+	@Length(min = 1, max = 20)
 	protected String noExterior;
+	@Length(min = 1, max = 4)
 	protected String noInterior;
 
 	/**
