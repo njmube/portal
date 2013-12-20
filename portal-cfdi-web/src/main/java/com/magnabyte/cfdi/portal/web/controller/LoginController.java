@@ -37,4 +37,9 @@ public class LoginController {
 		return "login/sessionTimeout";
 	}
 	
+	@RequestMapping("logout")
+	public String logout(ModelMap model) {
+		return "login/logoutSuccess";
+	}
+	
 }

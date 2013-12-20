@@ -1,10 +1,10 @@
 package com.magnabyte.cfdi.portal.service.factura;
 
-import java.util.Collection;
+import java.util.List;
 
 import mx.gob.sat.cfd._3.Comprobante;
 
 public interface FacturaService {
-	Collection<Comprobante> obtenerDatos();
+	List<Comprobante> obtenerDatos();
 
 }
