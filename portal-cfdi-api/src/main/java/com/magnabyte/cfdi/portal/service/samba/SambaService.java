@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.magnabyte.cfdi.portal.model.documento.DocumentoFile;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
-import com.magnabyte.cfdi.portal.model.ticket.TicketForm;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 
 public interface SambaService {
 
@@ -13,6 +13,6 @@ public interface SambaService {
 
 	List<DocumentoFile> getFilesFromDirectory(String url);
 
-	boolean ticketExists(TicketForm ticketForm, Establecimiento establecimiento);
+	boolean ticketExists(Ticket ticket, Establecimiento establecimiento);
 
 }

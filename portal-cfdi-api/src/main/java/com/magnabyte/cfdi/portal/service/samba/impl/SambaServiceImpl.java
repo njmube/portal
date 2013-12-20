@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoFile;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
-import com.magnabyte.cfdi.portal.model.ticket.TicketForm;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 
 @Service("sambaService")
@@ -92,15 +91,15 @@ public class SambaServiceImpl implements SambaService {
 	}
 
 	@Override
-	public boolean ticketExists(TicketForm ticketForm, Establecimiento establecimiento) {
+	public boolean ticketExists(Ticket ticket, Establecimiento establecimiento) {
 		logger.debug("buscando ticket");
 		Config.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
 		String noSucursal = establecimiento.getClave();
-		String noCaja = ticketForm.getNoCaja();
-		String noTicket = ticketForm.getNoTicket();
-		String fechaXml = ticketForm.getFecha();
+		String noCaja = ticket.getTransaccion().getTransaccionHeader().getIdCaja();
+		String noTicket = ticket.getTransaccion().getTransaccionHeader().getIdTicket();
+		String fechaXml = ticket.getTransaccion().getTransaccionHeader().getFecha();
+		BigDecimal importe = ticket.getTransaccion().getTransaccionTotal().getTotalVenta();
 		String fecha = fechaXml.substring(6, 10) + fechaXml.substring(3, 5) + fechaXml.substring(0, 2);
-		logger.debug("fecha {}", fecha);
 		String regex = noSucursal + "_" + noCaja + "_" + noTicket + "_" + fecha + "\\d\\d\\d\\d\\d\\d\\.xml";
 
 		Pattern pattern = Pattern.compile(regex);
@@ -117,8 +116,7 @@ public class SambaServiceImpl implements SambaService {
 						if (ticketXml.getTransaccion().getTransaccionTotal().getTotalVenta().compareTo(importe) != 0) {
 							return false;
 						}
-						
-						ticketForm.setTicket(ticketXml);
+						ticket.setTransaccion(ticketXml.getTransaccion());
 						return true;
 					}
 				}
