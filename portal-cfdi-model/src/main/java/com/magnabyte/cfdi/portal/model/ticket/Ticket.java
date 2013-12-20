@@ -2,15 +2,12 @@ package com.magnabyte.cfdi.portal.model.ticket;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "TAS")
@@ -92,9 +89,6 @@ public class Ticket {
 			@XmlElement(name = "szTaType")
 			protected String tipoTransaccion;
 			
-			@XmlTransient
-			protected String fecha;
-			
 			public String getIdSucursal() {
 				return idSucursal;
 			}
@@ -135,14 +129,6 @@ public class Ticket {
 				this.tipoTransaccion = tipoTransaccion;
 			}
 
-			public String getFecha() {
-				return fecha;
-			}
-
-			public void setFecha(String fecha) {
-				this.fecha = fecha;
-			}
-
 			@Override
 			public String toString() {
 				StringBuilder builder = new StringBuilder();
@@ -156,8 +142,6 @@ public class Ticket {
 				builder.append(fechaHora);
 				builder.append(", tipoTransaccion=");
 				builder.append(tipoTransaccion);
-				builder.append(", fecha=");
-				builder.append(fecha);
 				builder.append("]");
 				return builder.toString();
 			}
