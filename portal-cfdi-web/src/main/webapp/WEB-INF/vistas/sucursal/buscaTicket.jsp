@@ -35,24 +35,24 @@
 			</c:if>
 			<div class="well col-md-offset-3 col-md-6">
 				<c:url var="urlTicket" value="/validaTicket"/>
-				<form:form id="ticketForm" action="${urlTicket}" method="post" modelAttribute="ticket" cssClass="form-horizontal" role="form">
+				<form:form id="ticketForm" action="${urlTicket}" method="post" modelAttribute="ticketForm" cssClass="form-horizontal" role="form">
 					<div class="form-group">
 						<label for="noTicket" class="col-lg-5 control-label">No. de Ticket: </label>
 						<div class="col-lg-4">
-							<form:input path="transaccion.transaccionHeader.idTicket" id="noTicket" cssClass="form-control input-sm" />
+							<form:input path="noTicket" id="noTicket" cssClass="form-control input-sm" />
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="caja" class="col-lg-5 control-label">Caja: </label>
 						<div class="col-lg-4">
-							<form:input path="transaccion.transaccionHeader.idCaja" id="caja" cssClass="form-control input-sm"/>
+							<form:input path="noCaja" id="caja" cssClass="form-control input-sm"/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="fecha" class="col-lg-5 control-label">Fecha: </label>
 						<div class="col-lg-4">
 							<div class="input-group date" id="divFecha" data-date="" data-date-format="dd-mm-yyyy">
-								<form:input path="transaccion.transaccionHeader.fecha" id="fecha" cssClass="form-control input-sm" readonly="true"/>
+								<form:input path="fecha" id="fecha" cssClass="form-control input-sm" readonly="true"/>
 							    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 						    </div>
 						</div>
@@ -60,7 +60,7 @@
 					<div class="form-group">
 						<label for="hora" class="col-lg-5 control-label">Importe: </label>
 						<div class="col-lg-2">
-							<form:input path="transaccion.transaccionTotal.totalVenta" id="hora" cssClass="form-control input-sm"/>
+							<form:input path="importe" id="hora" cssClass="form-control input-sm"/>
 						</div>
 					</div>
 					<hr>

@@ -15,6 +15,7 @@ import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.factory.ClienteFactory;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
+import com.magnabyte.cfdi.portal.model.ticket.TicketForm;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 
@@ -32,16 +33,16 @@ public class SucursalCfdiController {
 	
 	@RequestMapping("/buscaTicket")
 	public String buscaTicket(ModelMap model) {
-		model.put("ticket", new Ticket());
+		model.put("ticketForm", new TicketForm());
 		return "sucursal/buscaTicket";
 	}
 	
 	@RequestMapping(value = "/validaTicket", method = RequestMethod.POST)
-	public String validaTicket(@ModelAttribute Ticket ticket, @ModelAttribute Establecimiento establecimiento, ModelMap model) {
+	public String validaTicket(@ModelAttribute TicketForm ticketForm, @ModelAttribute Establecimiento establecimiento, ModelMap model) {
 		logger.debug("validando ticket");
-		logger.debug("controller--{}", ticket);
-		if (sambaService.ticketExists(ticket, establecimiento)) {
-			model.put("ticket", ticket);
+		logger.debug("controller--{}", ticketForm);
+		if (sambaService.ticketExists(ticketForm, establecimiento)) {
+			model.put("ticket", ticketForm.getTicket());
 			return "redirect:/buscaRfc";
 		}
 		model.put("invalidTicket", true);
