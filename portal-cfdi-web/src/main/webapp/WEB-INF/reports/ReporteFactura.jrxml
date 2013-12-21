@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteFactura" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4a6ba1cb-2ea7-4218-8d09-5f9f932a9716">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="93"/>
+	<property name="ireport.x" value="36"/>
+	<property name="ireport.y" value="725"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="0.0" lineColor="#000000"/>
@@ -285,6 +285,7 @@
 	<parameter name="QRCODE" class="java.lang.Object" isForPrompting="false"/>
 	<parameter name="LETRAS" class="java.lang.String"/>
 	<parameter name="PATH_IMAGES" class="java.lang.String"/>
+	<parameter name="CADENA_ORIGINAL" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -380,7 +381,7 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$F{receptor.domicilio.calle}+","+" "+
 $F{receptor.domicilio.noExterior}+" "+
-($F{receptor.domicilio.noInterior} != null ? $F{receptor.domicilio.noInterior} : "") ]]></textFieldExpression>
+($F{receptor.domicilio.noInterior} != null ? $F{receptor.domicilio.noInterior} : "")]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="34" width="302" height="10" uuid="0ec53e7d-e2a7-41b6-8ce0-58fd6cde96b4"/>
@@ -451,12 +452,12 @@ $F{receptor.domicilio.codigoPostal}]]></textFieldExpression>
 					</textElement>
 					<text><![CDATA[Número de cuenta]]></text>
 				</staticText>
-				<textField pattern="d/M/yyyy">
+				<textField pattern="¤ #,##0.0000">
 					<reportElement x="0" y="139" width="134" height="12" uuid="52513e67-dfe7-4f3f-a8fa-f9799d7652ad"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{tipoCambio}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[new Double($F{tipoCambio})]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="0" y="126" width="134" height="12" uuid="93224e15-cee4-4091-9ccf-7742c2c66df3"/>
@@ -969,7 +970,7 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 				<text><![CDATA[Sello Digital]]></text>
 			</staticText>
 			<frame>
-				<reportElement x="1" y="13" width="571" height="25" uuid="9a1318f5-19ad-4ade-bdb0-14bbe786797c"/>
+				<reportElement x="1" y="13" width="571" height="23" uuid="9a1318f5-19ad-4ade-bdb0-14bbe786797c"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -978,12 +979,12 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textField>
-					<reportElement x="0" y="0" width="571" height="25" uuid="a20eb6ef-2b85-48af-b96e-dcc785d8740e"/>
-					<box topPadding="1" leftPadding="4"/>
-					<textElement>
+					<reportElement x="0" y="0" width="571" height="23" uuid="a20eb6ef-2b85-48af-b96e-dcc785d8740e"/>
+					<box topPadding="1" leftPadding="4" rightPadding="2"/>
+					<textElement textAlignment="Left">
 						<font size="6"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{sello}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{CADENA_ORIGINAL}]]></textFieldExpression>
 				</textField>
 			</frame>
 			<staticText>

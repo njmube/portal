@@ -38,6 +38,7 @@ public class DocumentoController {
 		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
 		comprobantes.add(documento.getComprobante());
 		String pathImages = request.getSession().getServletContext().getRealPath("resources/img");
+		model.put("CADENA_ORIGINAL", documento.getCadenaOriginal());
 		model.put("PATH_IMAGES", pathImages);
 		model.put(JRParameter.REPORT_LOCALE, locale);
 		model.put("QRCODE", codigoQRService.generaCodigoQR(documento.getComprobante()));
