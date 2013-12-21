@@ -1,6 +1,7 @@
 package com.magnabyte.cfdi.portal.web.webservice.impl;
 
 import mx.gob.sat.cfd._3.Comprobante;
+import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	@Override
 	public Documento timbrarDocumento(Comprobante comprobante) {
 		Documento documento = null;
+		TimbreFiscalDigital timbre = null;
 		logger.debug("en timbrar Documento");
 		String user = "AAA010101AAA.Test.User";
 		String password = "Prueba$1";
@@ -44,8 +46,14 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		if (!response.isIsError()) {
 			if (response.getXML() != null) {
 				documento = new Documento();
+				timbre = new TimbreFiscalDigital();
+				timbre.setFechaTimbrado(response.getFechaHoraTimbrado());
+				timbre.setSelloCFD(response.getSelloDigitalEmisor());
+				timbre.setSelloSAT(response.getSelloDigitalTimbreSAT());
+				timbre.setUUID(response.getFolioUDDI());
 				comprobante = documentoXmlService.convierteByteArrayAComprobante(response.getXML());
 				documentoXmlService.convierteComprobanteAStream(comprobante);
+				documento.setTimbreFiscalDigital(timbre);
 				documento.setComprobante(comprobante);
 				documento.setCadenaOriginal(response.getCadenaOriginal());
 				return documento;

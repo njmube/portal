@@ -68,7 +68,6 @@ public class CorporativoCfdiController {
 		logger.debug("generando factura");
 		if (documentoService.sellarDocumento(comprobante)) {
 			Documento documento = documentoWebService.timbrarDocumento(comprobante);
-			documentoXmlService.convierteComprobanteAStream(documento.getComprobante());
 			model.put("documento", documento);
 		}
 		

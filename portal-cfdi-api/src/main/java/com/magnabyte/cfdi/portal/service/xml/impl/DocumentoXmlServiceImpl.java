@@ -18,6 +18,7 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import mx.gob.sat.cfd._3.Comprobante;
+import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
 
 import org.jdom.Attribute;
 import org.jdom.Document;
@@ -30,6 +31,7 @@ import org.jdom.output.XMLOutputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.oxm.Marshaller;
@@ -55,7 +57,7 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	
 	@Autowired
 	private Marshaller marshaller;
-	
+
 	@Autowired
 	private CustomNamespacePrefixMapper customNamespacePrefixMapper;
 	
