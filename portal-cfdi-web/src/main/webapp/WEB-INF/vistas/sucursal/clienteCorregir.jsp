@@ -20,6 +20,10 @@
 			var tr = $(this).parent().parent();
 			$(tr).find("input:hidden[id=estadoOculto]").val($("option:selected", this).val());
 		});
+		
+		$("#cancelar").click(function() {
+			location.href = contextPath + "/confirmarDatos/${cliente.id}";
+		});
 	});
 </script>
 
@@ -33,7 +37,7 @@
 			</blockquote>
 			<hr>
 			<div class="well">
-				<c:url var="altaUrl" value="/confirmarDatos"/>
+				<c:url var="altaUrl" value="/confirmarDatos/clienteCorregir"/>
 				<form:form id="receptorForm" action="${altaUrl}" method="POST" modelAttribute="cliente" cssClass="form-horizontal" role="form">
 					<div class="form-group">
 						<form:hidden path="id" id="idCliente"/>
@@ -137,11 +141,11 @@
 					<hr>
 					<p class="text-center">
 						<button id="continuar" type="button" class="btn btn-success">Continuar <span class="glyphicon glyphicon-arrow-right"></span></button>
-						<button type="button" class="btn btn-danger" onclick="window.history.back()"><small>Cancelar</small> <span class="glyphicon glyphicon-remove"></span></button>						
+						<button id="cancelar" type="button" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></button>						
 					</p>
 					<p class="text-center" id="botones" style="display:none">
-						<button id="actualizar" type="submit" class="btn btn-primary"><small>Actualizar</small> <span class="glyphicon glyphicon-refresh"></span></button>
-						<button id="corregir" type="button" class="btn btn-warning"><small>Corregir</small> <span class="glyphicon glyphicon-arrow-left"></span></button>
+						<button id="actualizar" type="submit" class="btn btn-primary">${valueButton} <span class="glyphicon glyphicon-refresh"></span></button>
+						<button id="corregir" type="button" class="btn btn-warning">Corregir <span class="glyphicon glyphicon-arrow-left"></span></button>
 					</p>
 				</form:form>
 			</div>

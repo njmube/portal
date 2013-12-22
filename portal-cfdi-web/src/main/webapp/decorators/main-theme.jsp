@@ -21,9 +21,18 @@
 	href="<c:url value="/resources/css/bootstrap-datatables.css" />" />
 <link rel="stylesheet" type="text/css"
 	href="<c:url value="/resources/css/datepicker.css" />" />
+<link rel="stylesheet" type="text/css"
+	href="<c:url value="/resources/css/validationEngine.jquery.css" />" />
 <script src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
 <script src="<c:url value="/resources/js/jquery/jquery.dataTables.min.js" />"></script>
+
+<script src="<c:url value="/resources/js/jquery/jquery.validate.js" />"></script>
+<script src="<c:url value="/resources/js/jquery/jquery.validationEngine.js" />"></script>
+<script src="<c:url value="/resources/js/jquery/jquery.validationEngine-es.js" />"></script>
+
 <script src="<c:url value="/resources/js/datatable/datatable.js" />"></script>
+<script src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.js" />"></script>
+<script src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.es.js" />"></script>
 <script type="text/javascript">
 	var contextPath = "${pageContext.request.contextPath}"; 
     
@@ -32,8 +41,6 @@
             window.setTimeout(function() {alert.fadeOut("slow");}, delay);
     }
 </script>
-<script src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.js" />"></script>
-<script src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.es.js" />"></script>
 <decorator:head />
 </head>
 <body>

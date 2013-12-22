@@ -2,12 +2,13 @@ package com.magnabyte.cfdi.portal.dao;
 
 public class GenericSql {
 	
+//	SQL Srver dbo.TRIM
 	public static final String SELECT = "SELECT";
 	public static final String UPDATE = "UPDATE";
 	public static final String ALL = " * ";
 	public static final String PARENTESIS_INIT = "(";
 	public static final String PARENTESIS_FIN = ")";
-	public static final String TRIM= "dbo.TRIM";
+	public static final String TRIM= "TRIM";
 	public static final String SET_PARAM = " = ?";
 	public static final String FROM = "FROM";
 	public static final String WHERE = "WHERE";

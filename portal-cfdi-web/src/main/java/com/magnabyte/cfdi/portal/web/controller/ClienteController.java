@@ -47,14 +47,19 @@ public class ClienteController {
 	public String clienteForm(@ModelAttribute Cliente cliente, ModelMap model) {
 		logger.debug("regresando forma cliente");
 		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
+		model.put("emptyList", true);
 		return "sucursal/clienteForm";
 	}
 	
-	@RequestMapping(value = "/confirmarDatos", method = RequestMethod.POST)
-	public String confirmarDatos(@Valid @ModelAttribute Cliente cliente, ModelMap model, BindingResult result) {
+	@RequestMapping(value = "/confirmarDatos/{viewError}", method = RequestMethod.POST)
+	public String confirmarDatos(@Valid @ModelAttribute Cliente cliente, BindingResult result, ModelMap model, 
+			@PathVariable String viewError) {
 		logger.debug("Confimar datos");	
 		if (result.hasErrors()) {
-			return "redirect:/confirmarDatos/" + cliente.getId();
+			model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
+			model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
+			model.put("error", result.getFieldErrors());
+			return "sucursal/" + viewError;
 		}
 		
 		if(cliente.getId() != null) {		

@@ -35,7 +35,7 @@ public abstract class Domicilio {
 	@NotEmpty
 	@Length(min = 1, max = 20)
 	protected String noExterior;
-	@Length(min = 1, max = 4)
+	@Length(max = 4)
 	protected String noInterior;
 
 	/**

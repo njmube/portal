@@ -1,4 +1,7 @@
 $(document).ready(function() {
+	
+	$("#receptorForm").validationEngine();
+	
 	$("#continuar").click(function() {
 		$("#agregar").hide();
 		$("input[type=text]").attr("readonly", true);
@@ -15,6 +18,11 @@ $(document).ready(function() {
 		$("#continuar").show();
 		$("#botones").hide();
 		$("#tblDireccion tbody > tr").find("#delete").attr("disabled", false);
+		
+		$(".formError").fadeOut(150, function() {
+			 $(this).parent('.formErrorOuter').remove();
+			 $(this).remove();
+		 });
 	});
 	
 	$("#guardar").click(function() {
@@ -112,5 +120,8 @@ $("#agregarCorregir").click(function() {
 		var tr = $(this).parent().parent();
 		$(this).loadEstados(this, $(tr).find("#estado"));
 	});
+	
+	autoClosingAlert(".errorForm", 3500);
+	autoClosingAlert("#errorMessage", 3500);	
 	
 });
