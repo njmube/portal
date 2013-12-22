@@ -8,6 +8,8 @@
 <title>Buscar Ticket</title>
 <script type="text/javascript">
 	$(document).ready(function() {
+		$("#ticketForm").validationEngine();
+		
 		$("#divFecha").datepicker({
 			language: "es",
 			todayHighlight: true,
@@ -41,14 +43,14 @@
 					<div class="form-group">
 						<label for="noTicket" class="col-lg-5 control-label">No. de Ticket: </label>
 						<div class="col-lg-3">
-							<form:input path="transaccion.transaccionHeader.idTicket" id="noTicket" cssClass="form-control input-sm" />
+							<form:input path="transaccion.transaccionHeader.idTicket" id="noTicket" cssClass="form-control input-sm validate[required]" />
 						</div>
 						<small class="errorForm"><strong><form:errors path="transaccion.transaccionHeader.idTicket" cssClass="text-danger"/></strong></small>
 					</div>
 					<div class="form-group">
 						<label for="caja" class="col-lg-5 control-label">Caja: </label>
 						<div class="col-lg-3">
-							<form:input path="transaccion.transaccionHeader.idCaja" id="caja" cssClass="form-control input-sm" />
+							<form:input path="transaccion.transaccionHeader.idCaja" id="caja" cssClass="form-control input-sm validate[required]" />
 						</div>
 						<small class="errorForm"><strong><form:errors path="transaccion.transaccionHeader.idCaja" cssClass="text-danger"/></strong></small>
 					</div>
@@ -56,7 +58,7 @@
 						<label for="fecha" class="col-lg-5 control-label">Fecha: </label>
 						<div class="col-lg-3">
 							<div class="input-group date" id="divFecha" data-date="" data-date-format="dd-mm-yyyy">
-								<form:input path="transaccion.transaccionHeader.fecha" id="fecha" cssClass="form-control input-sm" readonly="true"/>
+								<form:input path="transaccion.transaccionHeader.fecha" id="fecha" cssClass="form-control input-sm validate[required]" readonly="true"/>
 							    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 						    </div>
 						</div>
@@ -65,7 +67,7 @@
 					<div class="form-group">
 						<label for="hora" class="col-lg-5 control-label">Importe: </label>
 						<div class="col-lg-2">
-							<form:input path="transaccion.transaccionTotal.totalVenta" id="hora" cssClass="form-control input-sm"/>
+							<form:input path="transaccion.transaccionTotal.totalVenta" id="hora" cssClass="form-control input-sm validate[required]"/>
 						</div>
 						<small class="errorForm"><strong><form:errors path="transaccion.transaccionTotal.totalVenta" cssClass="text-danger"/></strong></small>
 					</div>

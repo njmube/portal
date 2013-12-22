@@ -159,9 +159,14 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		Conceptos conceptos = new Conceptos();
 		TUbicacion tUbicacion = new TUbicacion();
 		DomicilioCliente domicilioCte = new DomicilioCliente();
+		domicilioCte.setId(domicilioFiscal);
 		
-		domicilioCte = cliente.getDomicilios().remove(cliente
-				.getDomicilios().indexOf(domicilioCte));
+		for(DomicilioCliente domicilio : cliente.getDomicilios()) {
+			if(domicilioCte.equals(domicilio)){
+				domicilioCte = domicilio;
+				break;
+			}
+		}
 		
 		tUbicacion.setCalle(domicilioCte.getCalle());
 		tUbicacion.setNoExterior(domicilioCte.getNoExterior());
@@ -189,7 +194,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		
 		comprobante.setReceptor(receptor);
 		comprobante.setConceptos(conceptos);
-		return null;
+		
+		return comprobante;
 	}
 
 }

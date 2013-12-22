@@ -21,6 +21,7 @@ import com.magnabyte.cfdi.portal.model.cliente.factory.ClienteFactory;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
+import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 
 @Controller
 @SessionAttributes({"cliente", "ticket"})
@@ -30,6 +31,9 @@ public class ClienteController {
 	
 	@Autowired
 	private ClienteService clienteService;
+	
+	@Autowired
+	private DocumentoService documentoService;
 	
 	@Autowired
 	private OpcionDeCatalogoService opcionDeCatalogoService;
@@ -83,9 +87,9 @@ public class ClienteController {
 	
 	@RequestMapping("/datosFacturacion/{idDomicilio}")
 	public String datosFacturacion(@ModelAttribute Cliente cliente, 
-			@ModelAttribute Ticket ticket, @PathVariable Integer idDomicilio) {
-		logger.debug(cliente.toString());
-		logger.debug(ticket.toString());
-		return "sucursal/datosFacturacion";
+			@ModelAttribute Ticket ticket, @PathVariable Integer idDomicilio, ModelMap model) {
+		model.put("comprobante", documentoService.obtenerComprobantePor(
+				cliente, ticket, idDomicilio));		
+		return "corporativo/facturaValidate";
 	}
 }
