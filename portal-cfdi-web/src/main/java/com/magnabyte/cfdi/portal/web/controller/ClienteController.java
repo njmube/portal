@@ -44,8 +44,9 @@ public class ClienteController {
 	}
 	
 	@RequestMapping("/clienteForm")
-	public String clienteForm(@ModelAttribute Cliente cliente, ModelMap model) {
+	public String clienteForm(ModelMap model) {
 		logger.debug("regresando forma cliente");
+		model.put("cliente", new Cliente());
 		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
 		model.put("emptyList", true);
 		return "sucursal/clienteForm";
