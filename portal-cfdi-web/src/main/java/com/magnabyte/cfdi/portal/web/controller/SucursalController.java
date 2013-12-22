@@ -23,7 +23,7 @@ import com.magnabyte.cfdi.portal.service.samba.SambaService;
 
 @Controller
 @SessionAttributes({"establecimiento", "ticket", "cliente"})
-public class SucursalCfdiController {
+public class SucursalController {
 
 	@Autowired
 	private ClienteService clienteService;
@@ -31,7 +31,7 @@ public class SucursalCfdiController {
 	@Autowired
 	private SambaService sambaService;
 	
-	private static final Logger logger = LoggerFactory.getLogger(SucursalCfdiController.class);
+	private static final Logger logger = LoggerFactory.getLogger(SucursalController.class);
 	
 	@RequestMapping("/buscaTicket")
 	public String buscaTicket(ModelMap model) {

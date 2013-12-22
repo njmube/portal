@@ -7,7 +7,7 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 
 public interface DocumentoService {
 
-	boolean sellarDocumento(Comprobante comprobante);
+	boolean sellarComprobante(Comprobante comprobante);
 	
 	Comprobante obtenerComprobantePor(Cliente cliente, Ticket ticket, Integer domicilioFiscal);
 

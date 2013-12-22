@@ -56,7 +56,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	private ResourceLoader resourceLoader;
 	
 	@Override
-	public boolean sellarDocumento(Comprobante comprobante) {
+	public boolean sellarComprobante(Comprobante comprobante) {
 		logger.debug("en sellar Documento");
 		//QUITAR
 		comprobante.getEmisor().setRfc("AAA010101AAA");

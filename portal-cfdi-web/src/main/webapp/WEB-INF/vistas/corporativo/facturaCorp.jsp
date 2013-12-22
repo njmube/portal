@@ -16,7 +16,7 @@
 			<div class="col-md-offset-1 col-md-10">
 				<div class="panel panel-danger">
 					<div class="panel-heading">
-						Documentos Pendientes por Facturar
+						<strong>Documentos Pendientes por Facturar</strong>
 						<a href="<c:url value="/facturaCorp"/>" class="pull-right btn btn-primary btn-xs">
 							Recargar <span class="glyphicon glyphicon-refresh"></span>
 						</a>
@@ -28,10 +28,10 @@
  							class="table table-hover table-striped table-condensed"
  							requestURI="/facturaCorp"> 
  							<display:column title="#" headerClass="text-primary">${document_rowNum}</display:column>
- 							<display:column title="${foliosap}" property="folio" headerClass="text-primary"></display:column>
- 							<display:column title="${titlename}" property="nombre" headerClass="text-primary"/>
+ 							<display:column title="${foliosap}" property="folioSap" headerClass="text-primary"></display:column>
+ 							<display:column title="${titlename}" property="nombreXmlPrevio" headerClass="text-primary"/>
  							<display:column title="Generar Factura" headerClass="text-primary text-center" class="text-center">
- 								<a href="<c:url value="/facturaCorp/validate/${document.nombre}"/>" class="btn btn-xs btn-success"><span class="glyphicon glyphicon-print"></span></a>
+ 								<a href="<c:url value="/facturaCorp/validate/${document.nombreXmlPrevio}"/>" class="btn btn-xs btn-success"><span class="glyphicon glyphicon-print"></span></a>
  							</display:column>
  						</display:table>
 					</div>
