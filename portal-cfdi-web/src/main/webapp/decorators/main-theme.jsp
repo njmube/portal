@@ -56,8 +56,8 @@
 						<li><a href="<c:url value="/menuPage" />">Menu Principal <span
 								class="glyphicon glyphicon-home"></span>
 						</a></li>
-						<li><a href="<c:url value="/about" />">Acerca de <span
-								class="glyphicon glyphicon-question-sign"></span></a></li>
+<%-- 						<li><a href="<c:url value="/about" />">Acerca de <span --%>
+<!-- 								class="glyphicon glyphicon-question-sign"></span></a></li> -->
 					</ul>
 					<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_CORP')">
 						<div class="navbar-right">
@@ -103,9 +103,9 @@
 					Modatelas S.A.P.I de C.V.</strong>
 			</p>
 			<p class="credit">
-				<a href="#"><strong>Acerca de </strong><span
-					class="glyphicon glyphicon-question-sign"></span></a> &middot; <a
-					href="#"><strong> Ir arriba </strong><span
+<!-- 				<a href="#"><strong>Acerca de </strong><span -->
+<!-- 					class="glyphicon glyphicon-question-sign"></span></a> &middot;  -->
+				<a href="#"><strong> Ir arriba </strong><span
 					class="glyphicon glyphicon-circle-arrow-up"></span></a>
 			</p>
 		</div>

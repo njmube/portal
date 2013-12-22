@@ -25,8 +25,10 @@ import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.XmlMappingException;
 import org.springframework.stereotype.Service;
 
-import com.magnabyte.cfdi.portal.model.documento.DocumentoFile;
+import com.magnabyte.cfdi.portal.model.documento.Documento;
+import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 
@@ -51,21 +53,26 @@ public class SambaServiceImpl implements SambaService {
 				smbIs = new SmbFileInputStream(file);
 				bis = new BufferedInputStream(smbIs);
 				return bis;
+			} else {
+				logger.error("El archivo seleccionado no existe.");
+				throw new PortalException("El archivo seleccionado no existe.");
 			}
 		} catch (MalformedURLException e) {
-			logger.error("La URL proporcionada no es valida.");
+			logger.error("La URL del archivo no es valida.");
+			throw new PortalException("La URL del archivo no es válida.");
 		} catch (SmbException e) {
-			logger.error("Ocurrió un error al intentar recuperar el archivo");
+			logger.error("Ocurrió un error al intentar recuperar el archivo.");
+			throw new PortalException("Ocurrió un error al intentar recuperar el archivo.");
 		} catch (UnknownHostException e) {
-			logger.error("La direccion ip es invalida");
+			logger.error("La direccion IP es inválida");
+			throw new PortalException("La direccion IP es inválida");
 		} 
 		
-		return null;
 	}
 
 	@Override
-	public List<DocumentoFile> getFilesFromDirectory(String url) {
-		List<DocumentoFile> documentos = new ArrayList<DocumentoFile>();
+	public List<DocumentoCorporativo> getFilesFromDirectory(String url) {
+		List<DocumentoCorporativo> documentos = new ArrayList<DocumentoCorporativo>();
 		Config.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
 		logger.debug("sambaService documentos...");
 		try {
@@ -75,17 +82,19 @@ public class SambaServiceImpl implements SambaService {
 
 				for (SmbFile file : files) {
 					if (file.isFile()) {
-						DocumentoFile documento = new DocumentoFile();
-						documento.setFolio(file.getName().substring(1, 11));
-						documento.setNombre(file.getName());
+						DocumentoCorporativo documento = new DocumentoCorporativo();
+						documento.setFolioSap(file.getName().substring(1, 11));
+						documento.setNombreXmlPrevio(file.getName());
 						documentos.add(documento);
 					}
 				}
 			}
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			logger.error("La URL del archivo no es valida.");
+			throw new PortalException("La URL del archivo no es válida.");
 		} catch (SmbException e) {
-			e.printStackTrace();
+			logger.error("Error al leer la carpeta compartida.");
+			throw new PortalException("Error al leer la carpeta compartida.");
 		}
 		return documentos;
 	}
@@ -103,7 +112,7 @@ public class SambaServiceImpl implements SambaService {
 		String regex = noSucursal + "_" + noCaja + "_" + noTicket + "_" + fecha + "\\d\\d\\d\\d\\d\\d\\.xml";
 
 		Pattern pattern = Pattern.compile(regex);
-		SmbFile dir;
+		SmbFile dir = null;
 		try {
 			dir = new SmbFile(establecimiento.getRutaRepositorio());
 			if(dir.exists()) {
@@ -122,15 +131,47 @@ public class SambaServiceImpl implements SambaService {
 				}
 			}
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			logger.error("La URL del archivo no es valida.");
+			throw new PortalException("La URL del archivo no es válida.");
 		} catch (SmbException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al intentar recuperar el ticket.");
+			throw new PortalException("Ocurrió un error al intentar recuperar el ticket.");
 		} catch (XmlMappingException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al leer ticket.");
+			throw new PortalException("Ocurrió un error al leer el ticket.");
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al intentar recuperar el ticket.");
+			throw new PortalException("Ocurrió un error al intentar recuperar el ticket.");
 		}
 		return false;
+	}
+	
+	@Override
+	public void moveProcessedSapFile(Documento documento) {
+		if (documento instanceof DocumentoCorporativo) {
+			try {
+				SmbFile smbFile = new SmbFile(((DocumentoCorporativo) documento).getRutaXmlPrevio(),
+						((DocumentoCorporativo) documento).getNombreXmlPrevio());
+				if (smbFile.exists()) {
+					SmbFile smbFileProc = new SmbFile(smbFile.getParent() + "proc/", smbFile.getName());
+					smbFile.renameTo(smbFileProc);
+					if (smbFileProc.exists()) {
+						logger.debug("El archivo se procesó y se movió con éxito");
+					}
+				}
+			} catch (MalformedURLException e) {
+				logger.error("La URL del archivo a mover no es valida.");
+				throw new PortalException("La URL del archivo a mover no es válida.");
+			} catch (SmbException e) {
+				logger.error("Ocurrió un error al mover el archivo SAP procesado.");
+				throw new PortalException("Ocurrió un error al mover el archivo SAP procesado.");
+			}
+		}
+	}
+	
+	@Override
+	public void writeProcessedCfdiFile(InputStream xmlCfdi) {
+		logger.debug("Escribir archivo XML CFDI");
 	}
 
 }
