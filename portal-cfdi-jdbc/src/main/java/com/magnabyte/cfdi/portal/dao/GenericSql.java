@@ -7,7 +7,7 @@ public class GenericSql {
 	public static final String ALL = " * ";
 	public static final String PARENTESIS_INIT = "(";
 	public static final String PARENTESIS_FIN = ")";
-	public static final String TRIM= "TRIM";
+	public static final String TRIM= "dbo.TRIM";
 	public static final String SET_PARAM = " = ?";
 	public static final String FROM = "FROM";
 	public static final String WHERE = "WHERE";
