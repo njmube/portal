@@ -16,11 +16,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
+import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
+import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
 
 @Controller
 @SessionAttributes("documento")
@@ -30,6 +33,32 @@ public class DocumentoController {
 
 	@Autowired
 	private CodigoQRService codigoQRService;
+	
+	@Autowired
+	private DocumentoService documentoService;
+	
+	@Autowired
+	private DocumentoWebService documentoWebService;
+	
+	@RequestMapping(value = "/generaFactura", method = RequestMethod.POST)
+	public String generaFactura(@ModelAttribute Documento documento, ModelMap model) {
+		logger.debug("generando factura");
+		logger.debug("docu {}", documento);
+		if (documentoService.sellarComprobante(documento.getComprobante())) {
+			logger.debug("docu {}", documento);
+			documentoWebService.timbrarDocumento(documento);
+			logger.debug("docu {}", documento);
+			model.put("documento", documento);
+		}
+		
+		return "redirect:/imprimirFactura";
+	}
+	
+	@RequestMapping("/imprimirFactura")
+	public String imprimirFactura() {
+		logger.debug("Factura generada...");
+		return "documento/documentoSuccess";
+	}
 
 	@RequestMapping("/reporte")
 	public String reporte(@ModelAttribute Documento documento, ModelMap model, HttpServletRequest request) {
@@ -38,12 +67,18 @@ public class DocumentoController {
 		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
 		comprobantes.add(documento.getComprobante());
 		String pathImages = request.getSession().getServletContext().getRealPath("resources/img");
+		model.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
+		model.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
+		model.put("FECHA_TIMBRADO", documento.getTimbreFiscalDigital().getFechaTimbrado());
+		model.put("FOLIO_FISCAL", documento.getTimbreFiscalDigital().getUUID());
+		model.put("CADENA_ORIGINAL", documento.getCadenaOriginal());
 		model.put("PATH_IMAGES", pathImages);
 		model.put(JRParameter.REPORT_LOCALE, locale);
 		model.put("QRCODE", codigoQRService.generaCodigoQR(documento.getComprobante()));
 		model.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
 		model.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
 		model.put("objetoKey", comprobantes);
-		return "Reporte";
+		return "reporte";
 	}
+	
 }

@@ -26,18 +26,20 @@
 			</blockquote>
 			<hr>
 
-			<div class="well col-md-6 col-md-offset-3 centered">
+			<div class="well col-md-6 col-md-offset-3 text-center">
 				<p>
-					<a href="${urlPage}" class="btn btn-success" role="button">Generar
+					<a href="${urlPage}" class="btn btn-success btn-lg" role="button">Generar
 						Factura <span class="glyphicon glyphicon-arrow-right"></span>
 					</a>
 				</p>
-				<hr>
-				<p>
-					<a href="#" class="btn btn-primary" role="button">Consultar Facturas
-						<span class="glyphicon glyphicon-arrow-right"></span>
-					</a>
-				</p>
+				<sec:authorize access="hasRole('ROLE_SUC')">
+					<hr>
+					<p>
+						<a href="#" class="btn btn-primary btn-lg" role="button">Consultar Facturas
+							<span class="glyphicon glyphicon-arrow-right"></span>
+						</a>
+					</p>
+				</sec:authorize>
 			</div>
 		</div>
 	</div>

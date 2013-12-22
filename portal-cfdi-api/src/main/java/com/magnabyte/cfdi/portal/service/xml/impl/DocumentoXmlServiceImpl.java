@@ -34,10 +34,10 @@ import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
-import org.springframework.oxm.XmlMappingException;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Service;
 
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.service.xml.util.CustomNamespacePrefixMapper;
@@ -55,7 +55,7 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	
 	@Autowired
 	private Marshaller marshaller;
-	
+
 	@Autowired
 	private CustomNamespacePrefixMapper customNamespacePrefixMapper;
 	
@@ -68,37 +68,34 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 			SAXBuilder builder = new SAXBuilder();
 			
 			Document documentoCFD;
-			try {
-				documentoCFD = (Document) builder.build(xmlSap);
-				Element documentoPrevio = documentoCFD.getRootElement().getChild("Comprobante");
-				Element documento = (Element) documentoPrevio.clone();
-				documentoCFD.setRootElement(documento);
-				revisaNodos(documento);
-				if (documento != null) {
-					cambiaNameSpace(documento, Namespace.getNamespace(CustomNamespacePrefixMapper.CFDI_PREFIX, CustomNamespacePrefixMapper.CFDI_URI));
-					documento.setAttribute("version", "3.2");
-					documento.setAttribute("tipoDeComprobante", documento.getAttributeValue("tipoDeComprobante").toLowerCase());
-					documento.setAttribute("sello", "");
-					documento.setAttribute("noCertificado", "xxxxxxxxxxxxxxxxxxxx");
-					documento.setAttribute("certificado", "");
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					OutputStreamWriter oos = new OutputStreamWriter(baos, "UTF-8");
-					XMLOutputter outputter = new XMLOutputter();
-		            outputter.setFormat(Format.getPrettyFormat().setEncoding("UTF-8"));
-		            outputter.output(documentoCFD, oos);
-		            oos.flush();
-		            oos.close();
-					comprobante = convierteByteArrayAComprobante(baos.toByteArray());
-					logger.debug("XML valido-----" + validaComprobanteXml(comprobante));
-				}
-			} catch (JDOMException e) {
-				logger.error("Error el leer el documento Sap");
-				e.printStackTrace();
+			documentoCFD = (Document) builder.build(xmlSap);
+			Element documentoPrevio = documentoCFD.getRootElement().getChild("Comprobante");
+			Element documento = (Element) documentoPrevio.clone();
+			documentoCFD.setRootElement(documento);
+			revisaNodos(documento);
+			if (documento != null) {
+				cambiaNameSpace(documento, Namespace.getNamespace(CustomNamespacePrefixMapper.CFDI_PREFIX, CustomNamespacePrefixMapper.CFDI_URI));
+				documento.setAttribute("version", "3.2");
+				documento.setAttribute("tipoDeComprobante", documento.getAttributeValue("tipoDeComprobante").toLowerCase());
+				documento.setAttribute("sello", "");
+				documento.setAttribute("noCertificado", "xxxxxxxxxxxxxxxxxxxx");
+				documento.setAttribute("certificado", "");
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				OutputStreamWriter oos = new OutputStreamWriter(baos, "UTF-8");
+				XMLOutputter outputter = new XMLOutputter();
+	            outputter.setFormat(Format.getPrettyFormat().setEncoding("UTF-8"));
+	            outputter.output(documentoCFD, oos);
+	            oos.flush();
+	            oos.close();
+				comprobante = convierteByteArrayAComprobante(baos.toByteArray());
+				logger.debug("XML valido: " + validaComprobanteXml(comprobante));
 			}
-		
 		} catch (IOException e) {
-			logger.error("Error al recuperar el documento");
-			e.printStackTrace();
+			logger.error("Error al convertir el archivo SAP a CFDI.");
+			throw new PortalException("Error al convertir el archivo SAP a CFDI.");
+		} catch (JDOMException e) {
+			logger.error("Error al leer el documento SAP.");
+			throw new PortalException("Error al leer el documento SAP.");
 		}
 		return comprobante;
 	}
@@ -144,7 +141,7 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 			validator.validate(new StreamSource(comprobanteStream));
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug("Error al validar el documento: {}", e.getMessage());
 			return false;
 		}
 	}
@@ -171,11 +168,11 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	        oos.flush();
 	        oos.close();
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (XmlMappingException e) {
-			e.printStackTrace();
+			logger.debug("La codificacion no es soportada.");
+			throw new PortalException("La codificacion no es soportada.");
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.debug("Error al convertir el Comprobante a Arreglo de Bytes");
+			throw new PortalException("Error al convertir el Comprobante a Arreglo de Bytes");
 		}
 		return baos.toByteArray();
 	}
@@ -184,13 +181,10 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	public Comprobante convierteByteArrayAComprobante(byte[] xml) {
 		try {
 			return (Comprobante) unmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(xml)));
-		} catch (XmlMappingException e) {
-			logger.error("Error al convertir el objeto a xml");
-			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.debug("Error al convertir el Arreglo de Bytes a Comprobante");
+			throw new PortalException("Error al convertir el Arreglo de Bytes a Comprobante");
 		}
-		return null;
 	}
 	
 	@Override

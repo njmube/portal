@@ -45,7 +45,7 @@
 							<div class="form-group">
 								<label for="fechahora" class="col-lg-4 control-label"><small>Fecha y Hora: </small></label>
 								<div class="col-lg-8">
-									<input id="fechahora" class="form-control input-sm" value="${fn:replace(comprobante.fecha, 'T', ' ')}" readonly="readonly"/>
+									<input id="fechahora" class="form-control input-sm" value="${comprobante.fecha}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
@@ -214,14 +214,13 @@
 				</div>
 			</div>
 			<p class="text-center">
-<%-- 			href="<c:url value="/generaFactura" />" --%>
 				<button id="generaFactura" type="button" class="btn btn-primary btn-lg"><small>Sellar ${tipoComprobante}</small> <span class="glyphicon glyphicon-list-alt"></span></button>
 				<a id="cancel" href="<c:url value="/facturaCorp" />" class="btn btn-danger btn-lg"><small>Cancelar</small> <span class="glyphicon glyphicon-remove"></span></a>
 			</p>
 		</div>
 	</div>
-	<c:url value="/generaFactura" var="urlPdf"/>
-	<form action="${urlPdf}" id="formPdf" method="post"></form>
+	<c:url value="/generaFactura" var="urlFactura"/>
+	<form action="${urlFactura}" id="formPdf" method="post"></form>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$("#generaFactura").click(function() {
