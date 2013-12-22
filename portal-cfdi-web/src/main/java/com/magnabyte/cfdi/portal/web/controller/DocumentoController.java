@@ -38,6 +38,10 @@ public class DocumentoController {
 		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
 		comprobantes.add(documento.getComprobante());
 		String pathImages = request.getSession().getServletContext().getRealPath("resources/img");
+		model.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
+		model.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
+		model.put("FECHA_TIMBRADO", documento.getTimbreFiscalDigital().getFechaTimbrado());
+		model.put("FOLIO_FISCAL", documento.getTimbreFiscalDigital().getUUID());
 		model.put("CADENA_ORIGINAL", documento.getCadenaOriginal());
 		model.put("PATH_IMAGES", pathImages);
 		model.put(JRParameter.REPORT_LOCALE, locale);
@@ -45,6 +49,7 @@ public class DocumentoController {
 		model.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
 		model.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
 		model.put("objetoKey", comprobantes);
-		return "Reporte";
+		return "reporte";
 	}
+	
 }

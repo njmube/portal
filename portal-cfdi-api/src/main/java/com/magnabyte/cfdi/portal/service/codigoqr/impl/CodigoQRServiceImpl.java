@@ -27,9 +27,10 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 
 @Service("CodigoQRService")
-public class CodigoQRServiceImpl implements CodigoQRService{
-	
-	private static final Logger logger = LoggerFactory.getLogger(CodigoQRServiceImpl.class);
+public class CodigoQRServiceImpl implements CodigoQRService {
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(CodigoQRServiceImpl.class);
 
 	public InputStream generaCodigoQR(Comprobante comp)
 
@@ -45,11 +46,12 @@ public class CodigoQRServiceImpl implements CodigoQRService{
 			byte[] b = null;
 
 			String message = "?re=" + comp.getEmisor().getRfc() + "&rr"
-					+ comp.getReceptor().getRfc() + "&tt" + comp.getTotal().setScale(6, BigDecimal.ROUND_HALF_UP)
+					+ comp.getReceptor().getRfc() + "&tt"
+					+ comp.getTotal().setScale(6, BigDecimal.ROUND_HALF_UP)
 					+ "&id=" + comp.getFolioFiscalOrig();
 
 			ByteBuffer bbuf = encoder.encode(CharBuffer.wrap(message));
-			logger.debug("Mensajee"+ message);
+			logger.debug("Mensajee" + message);
 
 			b = bbuf.array();
 
@@ -75,7 +77,7 @@ public class CodigoQRServiceImpl implements CodigoQRService{
 
 			BufferedImage bi = ImageIO.read(new ByteArrayInputStream(baos
 					.toByteArray()));
-			BufferedImage subBi = bi.getSubimage(50, 50, w -100, h -100);
+			BufferedImage subBi = bi.getSubimage(50, 50, w - 100, h - 100);
 
 			baos = new ByteArrayOutputStream();
 			bos = new BufferedOutputStream(baos);
@@ -85,8 +87,10 @@ public class CodigoQRServiceImpl implements CodigoQRService{
 
 			stream = new ByteArrayInputStream(baos.toByteArray());
 		} catch (Exception e) {
-
+			logger.debug("Error al crear el codigoQr");
+			throw new RuntimeException("Error al crear el codigoQr");
 		}
 		return stream;
 	}
+
 }
