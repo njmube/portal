@@ -24,6 +24,7 @@ import com.google.zxing.Writer;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 
 @Service("CodigoQRService")
@@ -32,7 +33,7 @@ public class CodigoQRServiceImpl implements CodigoQRService {
 	private static final Logger logger = LoggerFactory
 			.getLogger(CodigoQRServiceImpl.class);
 
-	public InputStream generaCodigoQR(Comprobante comp)
+	public InputStream generaCodigoQR(Documento documento)
 
 	{
 		logger.debug("Generando Codigo QR");
@@ -45,12 +46,14 @@ public class CodigoQRServiceImpl implements CodigoQRService {
 
 			byte[] b = null;
 
-			String message = "?re=" + comp.getEmisor().getRfc() + "&rr"
-					+ comp.getReceptor().getRfc() + "&tt"
-					+ comp.getTotal().setScale(6, BigDecimal.ROUND_HALF_UP)
-					+ "&id=" + comp.getFolioFiscalOrig();
+			StringBuilder message = new StringBuilder();
+			
+			message.append("?re=").append(documento.getComprobante().getEmisor().getRfc())
+				.append("&rr=").append(documento.getComprobante().getReceptor().getRfc())
+				.append("&tt=").append(documento.getComprobante().getTotal().setScale(6, BigDecimal.ROUND_HALF_UP))
+				.append("&id=").append(documento.getTimbreFiscalDigital().getUUID());
 
-			ByteBuffer bbuf = encoder.encode(CharBuffer.wrap(message));
+			ByteBuffer bbuf = encoder.encode(CharBuffer.wrap(message.toString()));
 			logger.debug("Mensajee" + message);
 
 			b = bbuf.array();

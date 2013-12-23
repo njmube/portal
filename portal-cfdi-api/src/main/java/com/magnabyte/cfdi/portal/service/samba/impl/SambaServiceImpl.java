@@ -17,6 +17,7 @@ import jcifs.Config;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
+import jcifs.smb.SmbFileOutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,6 @@ import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.XmlMappingException;
 import org.springframework.stereotype.Service;
 
-import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
@@ -54,18 +54,18 @@ public class SambaServiceImpl implements SambaService {
 				bis = new BufferedInputStream(smbIs);
 				return bis;
 			} else {
-				logger.error("El archivo seleccionado no existe.");
-				throw new PortalException("El archivo seleccionado no existe.");
+				logger.error("El archivo seleccionado no existe: {}", file.getPath());
+				throw new PortalException("El archivo seleccionado no existe: " + file.getPath());
 			}
 		} catch (MalformedURLException e) {
-			logger.error("La URL del archivo no es valida.");
-			throw new PortalException("La URL del archivo no es válida.");
+			logger.error("La URL del archivo no es valida: {}", e);
+			throw new PortalException("La URL del archivo no es válida: " + e.getMessage());
 		} catch (SmbException e) {
-			logger.error("Ocurrió un error al intentar recuperar el archivo.");
-			throw new PortalException("Ocurrió un error al intentar recuperar el archivo.");
+			logger.error("Ocurrió un error al intentar recuperar el archivo: {}", e);
+			throw new PortalException("Ocurrió un error al intentar recuperar el archivo: " + e.getMessage());
 		} catch (UnknownHostException e) {
-			logger.error("La direccion IP es inválida");
-			throw new PortalException("La direccion IP es inválida");
+			logger.error("La direccion IP es inválida: {}", e);
+			throw new PortalException("La direccion IP es inválida: " + e.getMessage());
 		} 
 		
 	}
@@ -90,11 +90,11 @@ public class SambaServiceImpl implements SambaService {
 				}
 			}
 		} catch (MalformedURLException e) {
-			logger.error("La URL del archivo no es valida.");
-			throw new PortalException("La URL del archivo no es válida.");
+			logger.error("La URL del archivo no es valida: {}", e);
+			throw new PortalException("La URL del archivo no es válida: " + e.getMessage());
 		} catch (SmbException e) {
-			logger.error("Error al leer la carpeta compartida.");
-			throw new PortalException("Error al leer la carpeta compartida.");
+			logger.error("Error al leer la carpeta compartida: {}", e);
+			throw new PortalException("Error al leer la carpeta compartida: " + e.getMessage());
 		}
 		return documentos;
 	}
@@ -131,47 +131,65 @@ public class SambaServiceImpl implements SambaService {
 				}
 			}
 		} catch (MalformedURLException e) {
-			logger.error("La URL del archivo no es valida.");
-			throw new PortalException("La URL del archivo no es válida.");
+			logger.error("La URL del archivo no es valida: {}", e);
+			throw new PortalException("La URL del archivo no es válida: "+ e.getMessage());
 		} catch (SmbException e) {
-			logger.error("Ocurrió un error al intentar recuperar el ticket.");
-			throw new PortalException("Ocurrió un error al intentar recuperar el ticket.");
+			logger.error("Ocurrió un error al intentar recuperar el ticket: {}", e);
+			throw new PortalException("Ocurrió un error al intentar recuperar el ticket: " + e.getMessage());
 		} catch (XmlMappingException e) {
-			logger.error("Ocurrió un error al leer ticket.");
-			throw new PortalException("Ocurrió un error al leer el ticket.");
+			logger.error("Ocurrió un error al leer ticket: {}", e);
+			throw new PortalException("Ocurrió un error al leer el ticket: " + e.getMessage());
 		} catch (IOException e) {
-			logger.error("Ocurrió un error al intentar recuperar el ticket.");
-			throw new PortalException("Ocurrió un error al intentar recuperar el ticket.");
+			logger.error("Ocurrió un error al intentar recuperar el ticket: {}", e);
+			throw new PortalException("Ocurrió un error al intentar recuperar el ticket: " + e.getMessage());
 		}
 		return false;
 	}
 	
 	@Override
-	public void moveProcessedSapFile(Documento documento) {
-		if (documento instanceof DocumentoCorporativo) {
-			try {
-				SmbFile smbFile = new SmbFile(((DocumentoCorporativo) documento).getRutaXmlPrevio(),
-						((DocumentoCorporativo) documento).getNombreXmlPrevio());
-				if (smbFile.exists()) {
-					SmbFile smbFileProc = new SmbFile(smbFile.getParent() + "proc/", smbFile.getName());
-					smbFile.renameTo(smbFileProc);
-					if (smbFileProc.exists()) {
-						logger.debug("El archivo se procesó y se movió con éxito");
-					}
+	public void moveProcessedSapFile(DocumentoCorporativo documento) {
+		try {
+			SmbFile sapFile = new SmbFile(documento.getRutaXmlPrevio(),
+				documento.getNombreXmlPrevio());
+			if (sapFile.exists()) {
+				SmbFile smbFileProc = new SmbFile("smb://10.2.200.125/compartido/modatelas/corporativo/INPROC/", sapFile.getName());
+				sapFile.renameTo(smbFileProc);
+				if (smbFileProc.exists()) {
+					logger.debug("El archivo se procesó y se movió con éxito");
 				}
-			} catch (MalformedURLException e) {
-				logger.error("La URL del archivo a mover no es valida.");
-				throw new PortalException("La URL del archivo a mover no es válida.");
-			} catch (SmbException e) {
-				logger.error("Ocurrió un error al mover el archivo SAP procesado.");
-				throw new PortalException("Ocurrió un error al mover el archivo SAP procesado.");
 			}
+		} catch (MalformedURLException e) {
+			logger.error("La URL del archivo a mover no es valida: {}", e);
+			throw new PortalException("La URL del archivo a mover no es válida: " + e.getMessage());
+		} catch (SmbException e) {
+			logger.error("Ocurrió un error al mover el archivo SAP procesado: {}", e);
+			throw new PortalException("Ocurrió un error al mover el archivo SAP procesado: " + e.getMessage());
 		}
 	}
 	
 	@Override
-	public void writeProcessedCfdiFile(InputStream xmlCfdi) {
+	public void writeProcessedCfdiFile(byte[] xmlCfdi) {
 		logger.debug("Escribir archivo XML CFDI");
+		try {
+			SmbFile xmlFile = new SmbFile("smb://10.2.200.125/compartido/modatelas/corporativo/OUT/", "cfdi.xml");
+			SmbFileOutputStream smbFileOutputStream = new SmbFileOutputStream(xmlFile);
+			if (!xmlFile.exists()) {
+				xmlFile.createNewFile();
+			}
+			
+			smbFileOutputStream.write(xmlCfdi);
+			smbFileOutputStream.flush();
+			smbFileOutputStream.close();
+			logger.debug("Se ha escrito el xml correctamente.");
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (SmbException e) {
+			e.printStackTrace();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

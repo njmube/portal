@@ -91,11 +91,11 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 				logger.debug("XML valido: " + validaComprobanteXml(comprobante));
 			}
 		} catch (IOException e) {
-			logger.error("Error al convertir el archivo SAP a CFDI.");
-			throw new PortalException("Error al convertir el archivo SAP a CFDI.");
+			logger.error("Error al convertir el archivo SAP a CFDI: {}", e);
+			throw new PortalException("Error al convertir el archivo SAP a CFDI: " + e.getMessage());
 		} catch (JDOMException e) {
-			logger.error("Error al leer el documento SAP.");
-			throw new PortalException("Error al leer el documento SAP.");
+			logger.error("Error al leer el documento SAP: {}", e);
+			throw new PortalException("Error al leer el documento SAP: " + e.getMessage());
 		}
 		return comprobante;
 	}
@@ -141,7 +141,7 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 			validator.validate(new StreamSource(comprobanteStream));
 			return true;
 		} catch (Exception e) {
-			logger.debug("Error al validar el documento: {}", e.getMessage());
+			logger.error("Error al validar el documento: {}", e.getMessage());
 			return false;
 		}
 	}
@@ -168,11 +168,11 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	        oos.flush();
 	        oos.close();
 		} catch (UnsupportedEncodingException e) {
-			logger.debug("La codificacion no es soportada.");
-			throw new PortalException("La codificacion no es soportada.");
+			logger.error("La codificacion no es soportada: {}", e);
+			throw new PortalException("La codificacion no es soportada: " + e.getMessage());
 		} catch (IOException e) {
-			logger.debug("Error al convertir el Comprobante a Arreglo de Bytes");
-			throw new PortalException("Error al convertir el Comprobante a Arreglo de Bytes");
+			logger.error("Error al convertir el Comprobante a Arreglo de Bytes: {}", e);
+			throw new PortalException("Error al convertir el Comprobante a Arreglo de Bytes: " + e.getMessage());
 		}
 		return baos.toByteArray();
 	}
@@ -182,8 +182,8 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 		try {
 			return (Comprobante) unmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(xml)));
 		} catch (IOException e) {
-			logger.debug("Error al convertir el Arreglo de Bytes a Comprobante");
-			throw new PortalException("Error al convertir el Arreglo de Bytes a Comprobante");
+			logger.error("Error al convertir el Arreglo de Bytes a Comprobante: {}", e);
+			throw new PortalException("Error al convertir el Arreglo de Bytes a Comprobante: " + e.getMessage());
 		}
 	}
 	

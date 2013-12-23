@@ -12,6 +12,7 @@ import com.certus.facturehoy.ws2.cfdi.WsResponseBO;
 import com.certus.facturehoy.ws2.cfdi.WsServicioBO;
 import com.certus.facturehoy.ws2.cfdi.WsServicios;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
+import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
@@ -45,7 +46,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		documento.getComprobante().getEmisor().setRfc("AAA010101AAA");
 		//
 		response = wsEmisionTimbrado.emitirTimbrar(user, password, obtenerIdServicio(user, password), 
-				documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
+			documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
 		
 		if (!response.isIsError()) {
 			timbre = new TimbreFiscalDigital();
@@ -58,10 +59,12 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			if (response.getXML() != null) {
 				documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(response.getXML()));
 			}
-			sambaService.moveProcessedSapFile(documento);
-			sambaService.writeProcessedCfdiFile(documentoXmlService.convierteComprobanteAStream(documentoXmlService.convierteByteArrayAComprobante(response.getXML())));
+			if (documento instanceof DocumentoCorporativo) {
+				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
+				sambaService.writeProcessedCfdiFile(response.getXML());
+			}
 		} else {
-			logger.debug("El Web Service devolvió un error.");
+			logger.debug("El Web Service devolvió un error: {}", response.getMessage());
 			throw new PortalException(response.getMessage());
 		}
 	}
@@ -76,8 +79,8 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 				idServicio = servicio.getIdProcess();
 			}
 		} else {
-			logger.debug("No hay servicios contratados");
-			throw new PortalException(serviciosContratados.getMensaje());
+			logger.debug("No hay servicios contratados: {}", serviciosContratados.getMensaje());
+			throw new PortalException("No hay servicios contratados: " + serviciosContratados.getMensaje());
 		}
 		//
 		idServicio = 2764104;

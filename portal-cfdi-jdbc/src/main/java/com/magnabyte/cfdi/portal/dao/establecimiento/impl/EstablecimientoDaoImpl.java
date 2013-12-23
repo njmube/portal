@@ -23,6 +23,7 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements Establecim
 	public Establecimiento findByClave(Establecimiento establecimiento) {
 		String qry = EstablecimientoSql.FIND_BY_CLAVE;
 		logger.debug(qry);
+		
 		return getJdbcTemplate().queryForObject(qry, MAPPER_ESTABLECIMIENTO, establecimiento.getClave());
 	}
 	

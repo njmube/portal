@@ -188,16 +188,16 @@
 				<version>5.0.1.Final</version>
 			</dependency>
 			<!-- DB -->
-			<dependency>
-				<groupId>informix</groupId>
-				<artifactId>ifxjdbc</artifactId>
-				<version>11.4</version>
-			</dependency>
 <!-- 			<dependency> -->
-<!-- 				<groupId>com.microsoft.sqlserver</groupId> -->
-<!-- 				<artifactId>sqljdbc4</artifactId> -->
-<!-- 				<version>3.0</version> -->
+<!-- 				<groupId>informix</groupId> -->
+<!-- 				<artifactId>ifxjdbc</artifactId> -->
+<!-- 				<version>11.4</version> -->
 <!-- 			</dependency> -->
+			<dependency>
+				<groupId>com.microsoft.sqlserver</groupId>
+				<artifactId>sqljdbc4</artifactId>
+				<version>3.0</version>
+			</dependency>
 			<!-- Samba -->
 			<dependency>
 				<groupId>jcifs</groupId>
@@ -303,8 +303,8 @@
 				<version>3.1</version>
 				<configuration>
 					<!-- http://maven.apache.org/plugins/maven-compiler-plugin/ -->
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 		</plugins>
