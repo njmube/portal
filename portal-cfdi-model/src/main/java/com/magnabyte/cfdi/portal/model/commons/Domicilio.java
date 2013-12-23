@@ -15,27 +15,20 @@ public abstract class Domicilio {
 
 	protected Integer id;
 	@NotEmpty
-	@Length(max = 100)
 	protected String calle;
 	@NotEmpty
-	@Length(max = 150)
 	protected String colonia;
 	@NotEmpty
-	@Length(max = 100)
 	protected String municipio;
 	@NotNull
 	protected Estado estado;
 	@NotEmpty
-	@Length(min = 4, max = 5)
+	@Length(min=5, max = 6)
 	protected String codigoPostal;
-	@Length(max = 100)
 	protected String localidad;
-	@Length(max = 200)
 	protected String referencia;
 	@NotEmpty
-	@Length(min = 1, max = 20)
 	protected String noExterior;
-	@Length(max = 4)
 	protected String noInterior;
 
 	/**

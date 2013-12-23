@@ -7,8 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.magnabyte.cfdi.portal.dao.cliente.sql.DomicilioSql;
-import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
+import com.magnabyte.cfdi.portal.dao.cliente.sql.ClienteSql;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/jdbcApplicationContext.xml" })
@@ -18,7 +17,7 @@ public class SqlGenericTest {
 
 	@Test
 	public void qryTest() {
-		String qryString = EstablecimientoSql.FIND_BY_CLAVE;
+		String qryString = ClienteSql.FIND_BY_ID;
 		logger.info(qryString);
 		Assert.assertNotNull(qryString);
 	}

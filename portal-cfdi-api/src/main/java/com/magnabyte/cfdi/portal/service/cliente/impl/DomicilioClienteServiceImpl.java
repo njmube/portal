@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.dao.cliente.DomicilioClienteDao;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
@@ -36,6 +37,7 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 	}
 
 	@Override
+	@Transactional
 	public void save(Cliente cliente) {
 		if(!cliente.getDomicilios().isEmpty()) {
 			for(DomicilioCliente domicilio : cliente.getDomicilios()) {
@@ -49,6 +51,7 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 	}
 
 	@Override
+	@Transactional
 	public void update(Cliente cliente) {
 		List<DomicilioCliente> domNuevos = cliente.getDomicilios();		
 		List<DomicilioCliente> domAnteriores = getByCliente(cliente);

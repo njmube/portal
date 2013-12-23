@@ -60,9 +60,8 @@ public class ClienteController {
 			@PathVariable String viewError) {
 		logger.debug("Confimar datos");	
 		if (result.hasErrors()) {
-			model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
-			model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
-			model.put("error", result.getFieldErrors());
+			model.put("error", result.getAllErrors());
+			logger.debug(result.getAllErrors().toString());
 			return "sucursal/" + viewError;
 		}
 		

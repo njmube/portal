@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.dao.cliente.ClienteDao;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
@@ -53,6 +54,7 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	@Override
+	@Transactional
 	public void save(Cliente cliente) {
 		if(cliente != null) {
 			clienteDao.save(cliente);
@@ -67,6 +69,7 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	@Override
+	@Transactional
 	public void update(Cliente cliente) {
 		if(cliente != null) {
 			clienteDao.update(cliente);
