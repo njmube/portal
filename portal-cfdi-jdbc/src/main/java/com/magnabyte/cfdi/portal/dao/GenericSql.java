@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.dao;
 
 public class GenericSql {
 	
+//	SQL Srver dbo.TRIM
 	public static final String SELECT = "SELECT";
 	public static final String UPDATE = "UPDATE";
 	public static final String ALL = " * ";

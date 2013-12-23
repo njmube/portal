@@ -16,8 +16,8 @@ public interface SambaService {
 
 	boolean ticketExists(Ticket ticket, Establecimiento establecimiento);
 
-	void moveProcessedSapFile(Documento documento);
+	void moveProcessedSapFile(DocumentoCorporativo documento);
 
-	void writeProcessedCfdiFile(InputStream xmlCfdi);
+	void writeProcessedCfdiFile(byte[] xmlCfdi);
 
 }

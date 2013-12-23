@@ -19,16 +19,16 @@
 			</blockquote>
 			<hr>
 			<div class="well">
-				<c:url var="altaUrl" value="/confirmarDatos"/>
+				<c:url var="altaUrl" value="/confirmarDatos/clienteForm"/>
 				<form:form id="receptorForm" action="${altaUrl}" method="POST" modelAttribute="cliente" cssClass="form-horizontal" role="form">
 					<div class="form-group">
-						<label class="control-label col-lg-1">RFC: </label>
+						<label class="control-label col-lg-1">* RFC: </label>
 						<div class="col-lg-2">
-							<form:input path="rfc" id="rfc" cssClass="form-control input-sm"/>
+							<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfc]]" />
 						</div>
-						<label class="control-label col-lg-2">Nombre: </label>
+						<label class="control-label col-lg-2">* Nombre: </label>
 						<div class="col-lg-6">
-							<form:input path="nombre" id="nombre" cssClass="form-control input-sm"/>
+							<form:input path="nombre" id="nombre" cssClass="form-control input-sm validate[required]" required="true"/>
 						</div>
 					</div>
 					<p class="text-center">
@@ -38,14 +38,14 @@
 						<table class="table table-hover" id="tblDireccion">
 							<thead>
 								<tr>
-									<th><small>Calle</small></th>
-									<th><small>No. Ext.</small></th>
+									<th><small>* Calle</small></th>
+									<th><small>* No. Ext.</small></th>
 									<th><small>No. Int.</small></th>								
-									<th><small>País</small></th>
-									<th><small>Estado</small></th>
-									<th><small>Municipio</small></th>
-									<th><small>Colonia</small></th>
-									<th><small>C.P.</small></th>
+									<th><small>* País</small></th>
+									<th><small>* Estado</small></th>
+									<th><small>* Municipio</small></th>
+									<th><small>* Colonia</small></th>
+									<th><small>* C.P.</small></th>
 									<th><small>Referencia</small></th>
 									<th><small>Localidad</small></th>
 									<th><small></small></th>
@@ -53,27 +53,29 @@
 							</thead>
 							<tbody>
 								<tr>
-									<td width="200px"><form:input path="domicilios[0].calle" id="calle" cssClass="form-control input-xsm"/></td>
-									<td width="65px"><form:input path="domicilios[0].noExterior" id="noExterior" cssClass="form-control input-xsm"/></td>
-									<td width="65px"><form:input path="domicilios[0].noInterior" id="noInteriorr" cssClass="form-control input-xsm"/></td>
+									<td width="200px"><form:input path="domicilios[0].calle" id="calle" 
+										cssClass="form-control input-xsm validate[required]" required="true"/></td>
+									<td width="68px"><form:input path="domicilios[0].noExterior" id="noExterior" cssClass="form-control input-xsm validate[required, integer, minSize[1]]"/></td>
+									<td width="68px"><form:input path="domicilios[0].noInterior" id="noInteriorr" cssClass="form-control input-xsm validate[integer]" /></td>
 									<td width="100px">
-									  	<select class="form-control-xsm" id="pais" name="domicilios[0].estado.pais.id">
-									  		<option value="0">- Seleccione una opción -</option>
+									  	<select class="validate[required] form-control-xsm" id="pais" name="domicilios[0].estado.pais.id">
+									  		<option value="">- Seleccione una opción -</option>
 									  		<c:forEach items="${listaPaises}" var="pais">
 									    		<option value="${pais.id}">${pais.nombre}</option>
 									  		</c:forEach>
   										</select>
 									</td>
 									<td width="100px">
-										<select class="form-control-xsm" id="estado" name="domicilios[0].estado.id">
-									  		<option value="0">- Seleccione una opción -</option>									  		
+										<select class="validate[required] form-control-xsm" id="estado" name="domicilios[0].estado.id">
+									  		<option value="">- Seleccione una opción -</option>									  		
   										</select>
 									</td>
-									<td><form:input path="domicilios[0].municipio" id="municipio" cssClass="form-control input-xsm"/></td>
-									<td width="200px"><form:input path="domicilios[0].colonia" id="colonia" cssClass="form-control input-xsm"/></td>
-									<td width="70px"><form:input path="domicilios[0].codigoPostal" id="codigoPostal" cssClass="form-control input-xsm"/></td>
-									<td><form:input path="domicilios[0].referencia" id="referencia" cssClass="form-control input-xsm"/></td>
-									<td><form:input path="domicilios[0].localidad" id="localidad" cssClass="form-control input-xsm"/></td>
+									<td><form:input path="domicilios[0].municipio" id="municipio" cssClass="form-control input-xsm validate[required]" /></td>
+									<td width="200px"><form:input path="domicilios[0].colonia" id="colonia" cssClass="form-control input-xsm validate[required]" /></td>
+									<td width="70px"><form:input path="domicilios[0].codigoPostal" id="codigoPostal" 
+										cssClass="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[6], minSize[5]"/></td>
+									<td><form:input path="domicilios[0].referencia" id="referencia" cssClass="form-control input-xsm" /></td>
+									<td><form:input path="domicilios[0].localidad" id="localidad" cssClass="form-control input-xsm" /></td>
 								</tr>
 							</tbody>
 						</table>
@@ -81,11 +83,11 @@
 					<hr>
 					<p class="text-center">
 						<button id="continuar" type="button" class="btn btn-success">Continuar <span class="glyphicon glyphicon-arrow-right"></span></button>
-						<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger"><small>Cancelar</small> <span class="glyphicon glyphicon-remove"></span></a>
+						<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
 					</p>
 					<p class="text-center" id="botones" style="display:none">
-						<button id="guardar" type="submit" class="btn btn-primary"><small>Guardar</small> <span class="glyphicon glyphicon-floppy-disk"></span></button>
-						<button id="corregir" type="button" class="btn btn-warning"><small>Corregir</small> <span class="glyphicon glyphicon-arrow-left"></span></button>
+						<button id="guardar" type="submit" class="btn btn-primary">Guardar <span class="glyphicon glyphicon-floppy-disk"></span></button>
+						<button id="corregir" type="button" class="btn btn-warning">Corregir <span class="glyphicon glyphicon-arrow-left"></span></button>
 					</p>
 				</form:form>
 			</div>

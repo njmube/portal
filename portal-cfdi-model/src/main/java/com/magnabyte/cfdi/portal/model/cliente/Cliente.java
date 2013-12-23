@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.model.cliente;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -17,10 +18,12 @@ public class Cliente {
 	private Integer id;
 	
 	@NotEmpty
+	@Pattern(regexp = "[A-Z]{3,4}[0-9]{6}[A-Z0-9]{3}")
 	private String rfc;
 	@NotEmpty
 	private String nombre;
 	@NotEmpty
+	@Valid
 	private List<DomicilioCliente> domicilios;
 	
 	/**

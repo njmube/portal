@@ -1,10 +1,11 @@
 (function($){
    $.fn.loadEstados = function(value, target) {
       var val = value.value;
-      var opDefault = "<option value =\"0\">- Seleccione una opción -</option>";
+      var opDefault = "<option value =\"\">- Seleccione una opción -</option>";
       target.html(opDefault);
       
-      if(val !== null || val !== "" || val === "0") {
+      if(val !== null || val !== "") {
+    	  
     	  var url = contextPath + "/listaEstados?ajax=true";
     	  $.ajax ({
     		url : url,

@@ -27,6 +27,7 @@
 			<hr>
 
 			<div class="well col-md-6 col-md-offset-3 text-center">
+				<hr>
 				<p>
 					<a href="${urlPage}" class="btn btn-success btn-lg" role="button">Generar
 						Factura <span class="glyphicon glyphicon-arrow-right"></span>
@@ -40,6 +41,7 @@
 						</a>
 					</p>
 				</sec:authorize>
+				<hr>
 			</div>
 		</div>
 	</div>
