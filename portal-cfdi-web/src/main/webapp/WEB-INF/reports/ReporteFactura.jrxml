@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteFactura" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4a6ba1cb-2ea7-4218-8d09-5f9f932a9716">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="124"/>
 	<property name="ireport.y" value="705"/>
 	<style name="table">
 		<box>
@@ -517,7 +517,7 @@ $F{receptor.domicilio.codigoPostal}]]></textFieldExpression>
 					<textFieldExpression><![CDATA[$F{emisor.domicilioFiscal.calle}+" "+
 ($F{emisor.domicilioFiscal.noExterior} !=null ? $F{emisor.domicilioFiscal.noExterior}+" " : " " )+
 ($F{emisor.domicilioFiscal.noInterior} !=null ? $F{emisor.domicilioFiscal.noInterior}+" " : " " )+
-"C.P. "+$F{emisor.domicilioFiscal.codigoPostal}    ]]></textFieldExpression>
+"C.P. "+$F{emisor.domicilioFiscal.codigoPostal}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="31" width="233" height="10" uuid="c8ace24e-f079-4861-a914-e702a1d17836"/>
@@ -981,7 +981,7 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 				<staticText>
 					<reportElement x="0" y="29" width="337" height="12" uuid="04d699d4-3622-4cbe-981d-27a7f06afed1"/>
 					<box topPadding="1"/>
-					<textElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="7"/>
 					</textElement>
 					<text><![CDATA[Este documento es una representación impresa de un CFDI.]]></text>
@@ -1006,9 +1006,7 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="7"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$P{NUM_SERIE_CERT}
-
-]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{NUM_SERIE_CERT}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="224" y="13" width="147" height="12" uuid="af5dda6f-bc04-4932-a0f2-b01447ee3d68"/>
@@ -1027,7 +1025,7 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 				</textField>
 				<textField evaluationTime="Report">
 					<reportElement x="417" y="29" width="40" height="12" uuid="e219ae0c-c1ab-4b71-8be4-57e33cf86f23"/>
-					<textElement verticalAlignment="Middle">
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
