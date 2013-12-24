@@ -19,6 +19,7 @@ public class EstablecimientoSql extends GenericSql {
 	public static final String NOMBRE = "nombre";
 	public static final String PASSWORD = "password";
 	public static final String ID_ESTABLECIMIENTO = "id_establecimiento";
+	public static final String ID_EMISOR = "id_emisor";
 	
 	public static final String ID_TIPO_ESTAB = "id_tipo_establecimiento";
 	public static final String NOM_ESTAB = "nombre_estab";
@@ -60,7 +61,6 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(SELECT).append(EOL).append(TAB);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TIPO_ESTAB);
 		qryBuilder.append(DOT).append(ROL).append(PARENTESIS_FIN).append(AS).append(ROL);
-		
 		qryBuilder.append(EOL).append(FROM).append(EOL).append(TAB);
 		qryBuilder.append(TABLE_NAME).append(AS).append(ALIAS_TABLE).append(EOL).append(TAB);
 		qryBuilder.append(INNER).append(CATALOGO_TIPO_ESTAB).append(AS).append(ALIAS_TIPO_ESTAB);
@@ -75,6 +75,7 @@ public class EstablecimientoSql extends GenericSql {
 		
 		qryBuilder.append(SELECT).append(EOL).append(TAB);
 		qryBuilder.append(ALIAS_TABLE).append(DOT).append(ID_ESTABLECIMIENTO).append(EOL_).append(TAB);
+		qryBuilder.append(ALIAS_TABLE).append(DOT).append(ID_EMISOR).append(EOL_).append(TAB);
 		qryBuilder.append(ALIAS_TIPO_ESTAB).append(DOT).append(ID_TIPO_ESTAB).append(EOL_).append(TAB);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TIPO_ESTAB).append(DOT);
 		qryBuilder.append(NOMBRE).append(PARENTESIS_FIN).append(AS).append(NOM_ESTAB).append(EOL_).append(TAB);
@@ -110,7 +111,7 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(INNER).append(TABLE_DOM_ESTAB).append(AS).append(ALIAS_DOM_ESTAB);
 		qryBuilder.append(ON).append(ALIAS_TABLE).append(DOT).append(ID_RUTA_ESTAB).append(EQ).append(ALIAS_DOM_ESTAB);
 		qryBuilder.append(DOT).append(ID_DOM_ESTAB).append(EOL);
-		
+				
 		qryBuilder.append(WHERE).append(EOL).append(TAB);
 		qryBuilder.append(ALIAS_TABLE).append(DOT).append(CLAVE).append(SET_PARAM);
 		
