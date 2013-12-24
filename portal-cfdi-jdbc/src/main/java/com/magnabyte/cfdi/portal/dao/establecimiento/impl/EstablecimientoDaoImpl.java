@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
 import com.magnabyte.cfdi.portal.dao.establecimiento.EstablecimientoDao;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
+import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.DomicilioEstablecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.RutaRepositorio;
@@ -69,6 +70,7 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 		public Establecimiento mapRow(ResultSet rs, int rowNum)
 				throws SQLException {
 			Establecimiento establecimiento = new Establecimiento();
+			EmpresaEmisor empresa = new EmpresaEmisor();
 			RutaRepositorio rutaRepo = new RutaRepositorio();
 			DomicilioEstablecimiento domEstablecimiento = new DomicilioEstablecimiento();
 			TipoEstablecimiento tipoEstablecimiento = new TipoEstablecimiento();
@@ -89,6 +91,9 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 			tipoEstablecimiento.setNombre(rs.getString(EstablecimientoSql.NOM_ESTAB));
 			tipoEstablecimiento.setRol(rs.getString(EstablecimientoSql.ROL));
 			
+			empresa.setId(rs.getInt(EstablecimientoSql.ID_EMISOR));
+			
+			establecimiento.setEmisor(empresa);
 			establecimiento.setTipoEstablecimiento(tipoEstablecimiento);
 			establecimiento.setRutaRepositorio(rutaRepo);
 			establecimiento.setDomicilio(domEstablecimiento);

@@ -6,8 +6,8 @@ $(document).ready(function() {
 		$("#agregar").hide();
 		$("input[type=text]").attr("readonly", true);
 		$("select").attr("disabled", true);
-		$(this).hide();
-		$("#botones").show();
+		$("#botones2").show();
+		$("#botones1").hide();
 		$("#tblDireccion tbody > tr").find("#delete").attr("disabled", true);
 	});
 	
@@ -15,8 +15,8 @@ $(document).ready(function() {
 		$("#agregar").show();
 		$("input[type=text]").attr("readonly", false);
 		$("select").attr("disabled", false);
-		$("#continuar").show();
-		$("#botones").hide();
+		$("#botones1").show();
+		$("#botones2").hide();
 		$("#tblDireccion tbody > tr").find("#delete").attr("disabled", false);
 		
 		$(".formError").fadeOut(150, function() {
