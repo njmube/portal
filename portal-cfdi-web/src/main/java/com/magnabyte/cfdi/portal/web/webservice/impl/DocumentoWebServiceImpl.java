@@ -42,7 +42,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		String user = "AAA010101AAA.Test.User";
 		String password = "Prueba$1";
 		WsResponseBO response = new WsResponseBO();
-		//QUITAR
+		//FIXME Quitar para produccion
 		documento.getComprobante().getEmisor().setRfc("AAA010101AAA");
 		//
 		response = wsEmisionTimbrado.emitirTimbrar(user, password, obtenerIdServicio(user, password), 
@@ -61,7 +61,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			}
 			if (documento instanceof DocumentoCorporativo) {
 				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
-				sambaService.writeProcessedCfdiFile(response.getXML());
+				sambaService.writeProcessedCfdiFile(response.getXML(), (DocumentoCorporativo) documento);
 			}
 		} else {
 			logger.debug("El Web Service devolvió un error: {}", response.getMessage());
@@ -82,7 +82,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			logger.debug("No hay servicios contratados: {}", serviciosContratados.getMensaje());
 			throw new PortalException("No hay servicios contratados: " + serviciosContratados.getMensaje());
 		}
-		//
+		//FIXME Comentar para produccion
 		idServicio = 2764104;
 		//
 		return idServicio;

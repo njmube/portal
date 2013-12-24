@@ -42,7 +42,7 @@ public class SambaServiceImpl implements SambaService {
 	
 	@Override
 	public InputStream getFileStream(String url, String fileName) {
-		logger.debug("sambaService filename...");
+		logger.debug("sambaService getFileStream...");
 		SmbFileInputStream smbIs = null;
 		BufferedInputStream bis = null;
 		Config.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
@@ -77,12 +77,13 @@ public class SambaServiceImpl implements SambaService {
 	public List<DocumentoCorporativo> getFilesFromDirectory(String url) {
 		List<DocumentoCorporativo> documentos = new ArrayList<DocumentoCorporativo>();
 		Config.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
-		logger.debug("sambaService documentos...");
+		logger.debug("sambaService getFilesFromDirectory...");
+		logger.debug(url);
 		try {
 			SmbFile dir = new SmbFile(url);
 			if (dir.exists()) {
 				SmbFile[] files = dir.listFiles();
-
+				logger.debug("si hay {}", files.length);
 				for (SmbFile file : files) {
 					if (file.isFile()) {
 						DocumentoCorporativo documento = new DocumentoCorporativo();
@@ -91,6 +92,8 @@ public class SambaServiceImpl implements SambaService {
 						documentos.add(documento);
 					}
 				}
+			} else {
+				logger.debug("El directorio no existe...");
 			}
 		} catch (MalformedURLException e) {
 			logger.error("La URL del archivo no es valida: {}", e);
@@ -98,13 +101,15 @@ public class SambaServiceImpl implements SambaService {
 		} catch (SmbException e) {
 			logger.error("Error al leer la carpeta compartida: {}", e);
 			throw new PortalException("Error al leer la carpeta compartida: " + e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return documentos;
 	}
 
 	@Override
 	public boolean ticketExists(Ticket ticket, Establecimiento establecimiento) {
-		logger.debug("buscando ticket");
+		logger.debug("buscando ticket ticketExists");
 		Config.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
 		String noSucursal = establecimiento.getClave();
 		String noCaja = ticket.getTransaccion().getTransaccionHeader().getIdCaja();
@@ -113,19 +118,19 @@ public class SambaServiceImpl implements SambaService {
 		BigDecimal importe = ticket.getTransaccion().getTransaccionTotal().getTotalVenta();
 		String fecha = fechaXml.substring(6, 10) + fechaXml.substring(3, 5) + fechaXml.substring(0, 2);
 		String regex = noSucursal + "_" + noCaja + "_" + noTicket + "_" + fecha + "\\d\\d\\d\\d\\d\\d\\.xml";
-
+		String urlTicketFiles = establecimiento.getRutaRepositorio().getRutaRepositorio() + establecimiento.getRutaRepositorio().getRutaRepoIn(); 
+		
 		Pattern pattern = Pattern.compile(regex);
 		SmbFile dir = null;
 		try {
-//			dir = new SmbFile(establecimiento.getRutaRepositorio());
+			dir = new SmbFile(urlTicketFiles);
 			if(dir.exists()) {
 				SmbFile[] files = dir.listFiles();
 				for (SmbFile file : files) {
 					Matcher matcher = pattern.matcher(file.getName());
 					if (matcher.matches()) {
-						Ticket ticketXml = null; 
 						
-//						Corregir	(Ticket) unmarshaller.unmarshal(new StreamSource(getFileStream(establecimiento.getRutaRepositorio(), file.getName())));
+						Ticket ticketXml = (Ticket) unmarshaller.unmarshal(new StreamSource(getFileStream(urlTicketFiles, file.getName())));
 						
 						if (ticketXml.getTransaccion().getTransaccionTotal().getTotalVenta().compareTo(importe) != 0) {
 							return false;
@@ -135,9 +140,9 @@ public class SambaServiceImpl implements SambaService {
 					}
 				}
 			}
-//	Corregir	} catch (MalformedURLException e) {
-//			logger.error("La URL del archivo no es valida: {}", e);
-//			throw new PortalException("La URL del archivo no es válida: "+ e.getMessage());
+		} catch (MalformedURLException e) {
+			logger.error("La URL del archivo no es valida: {}", e);
+			throw new PortalException("La URL del archivo no es válida: "+ e.getMessage());
 		} catch (SmbException e) {
 			logger.error("Ocurrió un error al intentar recuperar el ticket: {}", e);
 			throw new PortalException("Ocurrió un error al intentar recuperar el ticket: " + e.getMessage());
@@ -153,11 +158,15 @@ public class SambaServiceImpl implements SambaService {
 	
 	@Override
 	public void moveProcessedSapFile(DocumentoCorporativo documento) {
+		logger.debug("en moveProcessedSapFile");
 		try {
-			SmbFile sapFile = new SmbFile(documento.getRutaXmlPrevio(),
-				documento.getNombreXmlPrevio());
+			String rutaXmlPrevio = documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() +
+					documento.getEstablecimiento().getRutaRepositorio().getRutaRepoIn();
+			String rutaXmlProcesado = documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() +
+					documento.getEstablecimiento().getRutaRepositorio().getRutaRepoInProc();
+			SmbFile sapFile = new SmbFile(rutaXmlPrevio, documento.getNombreXmlPrevio());
 			if (sapFile.exists()) {
-				SmbFile smbFileProc = new SmbFile("smb://10.1.200.125/compartido/modatelas/corporativo/INPROC/", sapFile.getName());
+				SmbFile smbFileProc = new SmbFile(rutaXmlProcesado, sapFile.getName());
 				sapFile.renameTo(smbFileProc);
 				if (smbFileProc.exists()) {
 					logger.debug("El archivo se procesó y se movió con éxito");
@@ -173,10 +182,13 @@ public class SambaServiceImpl implements SambaService {
 	}
 	
 	@Override
-	public void writeProcessedCfdiFile(byte[] xmlCfdi) {
-		logger.debug("Escribir archivo XML CFDI");
+	public void writeProcessedCfdiFile(byte[] xmlCfdi, DocumentoCorporativo documento) {
+		logger.debug("Escribir archivo XML CFDI, writeProcessedCfdiFile");
 		try {
-			SmbFile xmlFile = new SmbFile("smb://10.1.200.125/compartido/modatelas/corporativo/OUT/", "cfdi.xml");
+			String rutaXmlCfdi = documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() +
+					documento.getEstablecimiento().getRutaRepositorio().getRutaRepoOut();
+			//FIXME Modificar nombre cfdi xml
+			SmbFile xmlFile = new SmbFile(rutaXmlCfdi, "cfdi.xml");
 			SmbFileOutputStream smbFileOutputStream = new SmbFileOutputStream(xmlFile);
 			if (!xmlFile.exists()) {
 				xmlFile.createNewFile();
