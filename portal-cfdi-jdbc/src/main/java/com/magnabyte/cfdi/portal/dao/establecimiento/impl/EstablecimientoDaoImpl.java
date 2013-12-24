@@ -11,32 +11,88 @@ import org.springframework.stereotype.Repository;
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
 import com.magnabyte.cfdi.portal.dao.establecimiento.EstablecimientoDao;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
+import com.magnabyte.cfdi.portal.model.establecimiento.DomicilioEstablecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
-
+import com.magnabyte.cfdi.portal.model.establecimiento.RutaRepositorio;
+import com.magnabyte.cfdi.portal.model.establecimiento.TipoEstablecimiento;
 
 @Repository("establecimientoDao")
-public class EstablecimientoDaoImpl extends GenericJdbcDao implements EstablecimientoDao {
+public class EstablecimientoDaoImpl extends GenericJdbcDao implements
+		EstablecimientoDao {
 
-	private static final Logger logger = LoggerFactory.getLogger(EstablecimientoDaoImpl.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(EstablecimientoDaoImpl.class);
 
 	@Override
 	public Establecimiento findByClave(Establecimiento establecimiento) {
 		String qry = EstablecimientoSql.FIND_BY_CLAVE;
 		logger.debug(qry);
-		
-		return getJdbcTemplate().queryForObject(qry, MAPPER_ESTABLECIMIENTO, establecimiento.getClave());
+
+		return getJdbcTemplate().queryForObject(qry, MAPPER_ESTABLECIMIENTO,
+				establecimiento.getClave());
 	}
 	
+	@Override
+	public Establecimiento readByClave(Establecimiento establecimiento) {
+		String qry = EstablecimientoSql.READ_BY_CLAVE;
+		logger.debug(qry);
+
+		return getJdbcTemplate().queryForObject(qry, MAPPER_ESTAB_COMPLETO,
+				establecimiento.getClave());
+	}
+
+	@Override
+	public String getRoles(Establecimiento establecimiento) {
+		return getJdbcTemplate().queryForObject(EstablecimientoSql.GET_ROLES,
+				new Object[] { establecimiento.getId() }, String.class);
+	}
+
 	private static final RowMapper<Establecimiento> MAPPER_ESTABLECIMIENTO = new RowMapper<Establecimiento>() {
-		
+
 		@Override
-		public Establecimiento mapRow(ResultSet rs, int rowNum) throws SQLException {
+		public Establecimiento mapRow(ResultSet rs, int rowNum)
+				throws SQLException {
 			Establecimiento establecimiento = new Establecimiento();
-			establecimiento.setId(rs.getInt("id_establecimiento"));
-			establecimiento.setClave(rs.getString("clave"));
-			establecimiento.setNombre(rs.getString("nombre"));
-			establecimiento.setPassword(rs.getString("password"));
-			establecimiento.setRutaRepositorio(rs.getString("ruta_repositorio"));
+			//
+			establecimiento.setId(rs.getInt(EstablecimientoSql.ID_ESTABLECIMIENTO));
+			establecimiento.setClave(rs.getString(EstablecimientoSql.CLAVE));
+			establecimiento.setNombre(rs.getString(EstablecimientoSql.NOMBRE));
+			establecimiento.setPassword(rs.getString(EstablecimientoSql.PASSWORD));
+
+			return establecimiento;
+		}
+	};
+
+	private static final RowMapper<Establecimiento> MAPPER_ESTAB_COMPLETO = new RowMapper<Establecimiento>() {
+
+		@Override
+		public Establecimiento mapRow(ResultSet rs, int rowNum)
+				throws SQLException {
+			Establecimiento establecimiento = new Establecimiento();
+			RutaRepositorio rutaRepo = new RutaRepositorio();
+			DomicilioEstablecimiento domEstablecimiento = new DomicilioEstablecimiento();
+			TipoEstablecimiento tipoEstablecimiento = new TipoEstablecimiento();
+
+			establecimiento.setId(rs.getInt(EstablecimientoSql.ID_ESTABLECIMIENTO));
+			establecimiento.setClave(String.valueOf(rs.getInt(EstablecimientoSql.CLAVE)));
+			establecimiento.setNombre(rs.getString(EstablecimientoSql.NOMBRE));
+			
+			rutaRepo.setId(rs.getInt(EstablecimientoSql.ID_RUTA_ESTAB));
+			rutaRepo.setRutaRepositorio(rs.getString(EstablecimientoSql.RUTA_REPOSITORIO));
+			rutaRepo.setRutaRepoIn(rs.getString(EstablecimientoSql.RUTA_IN));
+			rutaRepo.setRutaRepoOut(rs.getString(EstablecimientoSql.RUTA_OUT));
+			rutaRepo.setRutaRepoInProc(rs.getString(EstablecimientoSql.RUTA_INPROC));
+			
+			domEstablecimiento.setLocalidad(rs.getString(EstablecimientoSql.LOCALIDAD));
+			
+			tipoEstablecimiento.setId(rs.getInt(EstablecimientoSql.ID_TIPO_ESTAB));
+			tipoEstablecimiento.setNombre(rs.getString(EstablecimientoSql.NOM_ESTAB));
+			tipoEstablecimiento.setRol(rs.getString(EstablecimientoSql.ROL));
+			
+			establecimiento.setTipoEstablecimiento(tipoEstablecimiento);
+			establecimiento.setRutaRepositorio(rutaRepo);
+			establecimiento.setDomicilio(domEstablecimiento);
+
 			return establecimiento;
 		}
 	};

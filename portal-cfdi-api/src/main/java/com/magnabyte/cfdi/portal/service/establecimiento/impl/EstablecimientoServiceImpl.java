@@ -17,4 +17,9 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 	public Establecimiento findByClave(Establecimiento establecimiento) {
 		return establecimientoDao.findByClave(establecimiento);
 	}
+	
+	@Override
+	public Establecimiento readByClave(Establecimiento establecimiento) {
+		return establecimientoDao.readByClave(establecimiento);
+	}
 }

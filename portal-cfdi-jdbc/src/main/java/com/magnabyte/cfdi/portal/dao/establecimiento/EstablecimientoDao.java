@@ -7,4 +7,8 @@ public interface EstablecimientoDao {
 
 	Establecimiento findByClave(Establecimiento establecimiento);
 	
+	String getRoles(Establecimiento establecimiento);
+
+	Establecimiento readByClave(Establecimiento establecimiento);
+	
 }

@@ -57,11 +57,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	private List<SimpleGrantedAuthority> getAuthorities(Establecimiento establecimiento) {
 		List<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
-		if (establecimiento.getClave().equals("001")) {
-			authorities.add(new SimpleGrantedAuthority("ROLE_CORP"));
-		} else {
-			authorities.add(new SimpleGrantedAuthority("ROLE_SUC"));
-		}
+			authorities.add(new SimpleGrantedAuthority(establecimientoDao.getRoles(establecimiento)));
 		return authorities;
 	}
 

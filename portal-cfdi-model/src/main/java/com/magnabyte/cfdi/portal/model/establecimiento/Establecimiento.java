@@ -2,6 +2,8 @@ package com.magnabyte.cfdi.portal.model.establecimiento;
 
 import java.io.Serializable;
 
+import com.magnabyte.cfdi.portal.model.emisor.Empresa;
+
 public class Establecimiento implements Serializable {
 
 	private static final long serialVersionUID = 2674768576109909674L;
@@ -10,8 +12,10 @@ public class Establecimiento implements Serializable {
 	private String clave;
 	private String nombre;
 	private String password;
-	private String rutaRepositorio;
+	private Empresa empresa;
+	private RutaRepositorio rutaRepositorio;
 	private TipoEstablecimiento tipoEstablecimiento;
+	private DomicilioEstablecimiento domicilio;
 
 	public Integer getId() {
 		return id;
@@ -45,14 +49,6 @@ public class Establecimiento implements Serializable {
 		this.password = password;
 	}
 
-	public String getRutaRepositorio() {
-		return rutaRepositorio;
-	}
-
-	public void setRutaRepositorio(String rutaRepositorio) {
-		this.rutaRepositorio = rutaRepositorio;
-	}
-
 	public TipoEstablecimiento getTipoEstablecimiento() {
 		return tipoEstablecimiento;
 	}
@@ -61,14 +57,45 @@ public class Establecimiento implements Serializable {
 		this.tipoEstablecimiento = tipoEstablecimiento;
 	}
 
+	public Empresa getEmisor() {
+		return empresa;
+	}
+
+	public void setEmisor(Empresa emisor) {
+		this.empresa = emisor;
+	}
+
+	public DomicilioEstablecimiento getDomicilio() {
+		return domicilio;
+	}
+
+	public void setDomicilio(DomicilioEstablecimiento domicilio) {
+		this.domicilio = domicilio;
+	}
+
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
+	}
+
+	public RutaRepositorio getRutaRepositorio() {
+		return rutaRepositorio;
+	}
+
+	public void setRutaRepositorio(RutaRepositorio rutaRepositorio) {
+		this.rutaRepositorio = rutaRepositorio;
+	}
+
 	@Override
 	public String toString() {
 		return "Establecimiento [id=" + id + ", clave=" + clave + ", nombre="
-				+ nombre + ", password=" + password + ", rutaRepositorio="
-				+ rutaRepositorio + ", tipoEstablecimiento="
-				+ tipoEstablecimiento + "]";
+				+ nombre + ", password=" + password + ", empresa=" + empresa
+				+ ", rutaRepositorio=" + rutaRepositorio
+				+ ", tipoEstablecimiento=" + tipoEstablecimiento
+				+ ", domicilio=" + domicilio + "]";
 	}
-	
-	
 
 }
