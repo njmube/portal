@@ -18,7 +18,6 @@ public abstract class Documento implements Serializable {
 
 	private Comprobante comprobante;
 	private Cliente cliente;
-	private Ticket ticket;
 	private String cadenaOriginal;
 	private Date fechaFacturacion;
 	private Establecimiento establecimiento;
@@ -54,14 +53,6 @@ public abstract class Documento implements Serializable {
 
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
-	}
-
-	public Ticket getTicket() {
-		return ticket;
-	}
-
-	public void setTicket(Ticket ticket) {
-		this.ticket = ticket;
 	}
 
 	public Date getFechaFacturacion() {

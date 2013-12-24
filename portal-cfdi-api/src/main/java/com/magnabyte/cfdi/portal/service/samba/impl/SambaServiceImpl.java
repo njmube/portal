@@ -1,6 +1,7 @@
 package com.magnabyte.cfdi.portal.service.samba.impl;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -118,8 +119,9 @@ public class SambaServiceImpl implements SambaService {
 		BigDecimal importe = ticket.getTransaccion().getTransaccionTotal().getTotalVenta();
 		String fecha = fechaXml.substring(6, 10) + fechaXml.substring(3, 5) + fechaXml.substring(0, 2);
 		String regex = noSucursal + "_" + noCaja + "_" + noTicket + "_" + fecha + "\\d\\d\\d\\d\\d\\d\\.xml";
-		String urlTicketFiles = establecimiento.getRutaRepositorio().getRutaRepositorio() + establecimiento.getRutaRepositorio().getRutaRepoIn(); 
-		
+		String urlTicketFiles = establecimiento.getRutaRepositorio().getRutaRepositorio() 
+				+ establecimiento.getRutaRepositorio().getRutaRepoIn() + fecha + File.separator ; 
+		logger.debug("Ruta ticket {}", urlTicketFiles);
 		Pattern pattern = Pattern.compile(regex);
 		SmbFile dir = null;
 		try {
@@ -132,7 +134,8 @@ public class SambaServiceImpl implements SambaService {
 						
 						Ticket ticketXml = (Ticket) unmarshaller.unmarshal(new StreamSource(getFileStream(urlTicketFiles, file.getName())));
 						
-						if (ticketXml.getTransaccion().getTransaccionTotal().getTotalVenta().compareTo(importe) != 0) {
+						if (!ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase("SA") 
+								|| ticketXml.getTransaccion().getTransaccionTotal().getTotalVenta().compareTo(importe) != 0) {
 							return false;
 						}
 						ticket.setTransaccion(ticketXml.getTransaccion());

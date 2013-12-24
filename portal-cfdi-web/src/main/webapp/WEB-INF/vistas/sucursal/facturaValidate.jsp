@@ -5,6 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ page import="java.util.Date" %>
 <html>
 <head>
 <title>Facturacion Corporativo</title>
@@ -12,9 +13,7 @@
 <body>
 	<div class="container main-content">
 		<div class="white-panel row">
-			<h2>
-				Facturación Electrónica - <span class="text-info">Corporativo</span> <span class="label label-primary">@</span>
-			</h2>
+			<h2>Facturación Electrónica<span class="text-info"> - ${fn:toUpperCase(sessionScope.establecimiento.nombre)}</span> <span class="label label-primary">@</span></h2>
 			<hr>
 			<fmt:setLocale value="en_US" scope="session"/>
 			<c:choose>
@@ -29,24 +28,25 @@
 				<div class="col-md-4">
 					<div class="white-panel form-horizontal">
 						<fieldset>
-							<h5 class="text-primary">Datos ${tipoComprobante}</h5>
+							<h5 class="text-primary">Datos Ticket</h5>
 							<hr>
 							<div class="form-group">
-								<label for="folioSap" class="col-lg-4 control-label"><small>Folio SAP: </small></label>
+								<label for="noTicket" class="col-lg-4 control-label"><small>No. de Ticket: </small></label>
 								<div class="col-lg-8">
-									<input id="folioSap" class="form-control input-sm" value="${folioSap}" readonly="readonly"/>
+									<input id="noTicket" class="form-control input-sm" value="${ticket.transaccion.transaccionHeader.idTicket}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="factura" class="col-lg-4 control-label"><small>Factura: </small></label>
+								<label for="noCaja" class="col-lg-4 control-label"><small>No. de Caja: </small></label>
 								<div class="col-lg-8">
-									<input id="factura" class="form-control input-sm" value="${comprobante.serie}${comprobante.folio}" readonly="readonly"/>
+									<input id="noCaja" class="form-control input-sm" value="${ticket.transaccion.transaccionHeader.idCaja}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="fechahora" class="col-lg-4 control-label"><small>Fecha y Hora: </small></label>
 								<div class="col-lg-8">
-									<input id="fechahora" class="form-control input-sm" value="${comprobante.fecha}" readonly="readonly"/>
+									<c:set var="today" value="<%=new Date()%>"/>
+									<input id="fechahora" class="form-control input-sm" value="${today}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
@@ -66,7 +66,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-lg-12">
-									<textarea id="expedicion" class="form-control input-sm" rows="2" readonly="readonly">${comprobante.lugarExpedicion}</textarea>
+									<textarea id="expedicion" class="form-control input-sm" rows="2" readonly="readonly">${establecimiento.domicilio.localidad}</textarea>
 								</div>
 							</div>
 						</fieldset>
@@ -217,8 +217,8 @@
 				</div>
 			</div>
 			<p class="text-center">
-				<button id="generaFactura" type="button" class="btn btn-primary btn-lg"><small>Sellar ${tipoComprobante}</small> <span class="glyphicon glyphicon-list-alt"></span></button>
-				<a id="cancel" href="<c:url value="/facturaCorp" />" class="btn btn-danger btn-lg"><small>Cancelar</small> <span class="glyphicon glyphicon-remove"></span></a>
+				<button id="generaFactura" type="button" class="btn btn-primary btn-lg"><small>Generar ${tipoComprobante}</small> <span class="glyphicon glyphicon-list-alt"></span></button>
+				<a id="cancel" href="<c:url value="/buscaTicket" />" class="btn btn-danger btn-lg"><small>Cancelar</small> <span class="glyphicon glyphicon-remove"></span></a>
 			</p>
 		</div>
 	</div>

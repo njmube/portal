@@ -8,7 +8,7 @@
 			<hr>
 			<div class="well col-md-6 col-md-offset-3">
 				<strong>Mensaje: </strong> <br> <br>
-				<p class="text-danger">Vuelva a iniciar sesión, redireccionando...</p>
+				<p class="text-danger"><strong>Vuelva a iniciar sesión, redireccionando...</strong></p>
 			</div>
 		</div>
 	</div>
