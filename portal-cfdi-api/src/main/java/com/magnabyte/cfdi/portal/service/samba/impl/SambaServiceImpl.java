@@ -117,13 +117,15 @@ public class SambaServiceImpl implements SambaService {
 		Pattern pattern = Pattern.compile(regex);
 		SmbFile dir = null;
 		try {
-			dir = new SmbFile(establecimiento.getRutaRepositorio());
+//			dir = new SmbFile(establecimiento.getRutaRepositorio());
 			if(dir.exists()) {
 				SmbFile[] files = dir.listFiles();
 				for (SmbFile file : files) {
 					Matcher matcher = pattern.matcher(file.getName());
 					if (matcher.matches()) {
-						Ticket ticketXml = (Ticket) unmarshaller.unmarshal(new StreamSource(getFileStream(establecimiento.getRutaRepositorio(), file.getName())));
+						Ticket ticketXml = null; 
+						
+//						Corregir	(Ticket) unmarshaller.unmarshal(new StreamSource(getFileStream(establecimiento.getRutaRepositorio(), file.getName())));
 						
 						if (ticketXml.getTransaccion().getTransaccionTotal().getTotalVenta().compareTo(importe) != 0) {
 							return false;
@@ -133,9 +135,9 @@ public class SambaServiceImpl implements SambaService {
 					}
 				}
 			}
-		} catch (MalformedURLException e) {
-			logger.error("La URL del archivo no es valida: {}", e);
-			throw new PortalException("La URL del archivo no es válida: "+ e.getMessage());
+//	Corregir	} catch (MalformedURLException e) {
+//			logger.error("La URL del archivo no es valida: {}", e);
+//			throw new PortalException("La URL del archivo no es válida: "+ e.getMessage());
 		} catch (SmbException e) {
 			logger.error("Ocurrió un error al intentar recuperar el ticket: {}", e);
 			throw new PortalException("Ocurrió un error al intentar recuperar el ticket: " + e.getMessage());

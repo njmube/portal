@@ -7,4 +7,6 @@ public interface EstablecimientoService {
 
 	Establecimiento findByClave(Establecimiento establecimiento);
 	
+	Establecimiento readByClave(Establecimiento establecimiento);
+	
 }

@@ -402,6 +402,7 @@ public class Ticket {
 						this.pago = pago;
 					}
                 	
+                	@XmlAccessorType(XmlAccessType.FIELD)
                 	public static class Pago {
                 		
                 		@XmlElement(name = "szPayCurrSymLC")
