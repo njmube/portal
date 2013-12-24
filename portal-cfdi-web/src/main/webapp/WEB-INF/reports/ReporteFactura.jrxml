@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteFactura" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4a6ba1cb-2ea7-4218-8d09-5f9f932a9716">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="124"/>
-	<property name="ireport.y" value="705"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="246"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="0.0" lineColor="#000000"/>
@@ -378,8 +378,8 @@
 					<textElement>
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{receptor.domicilio.calle}+","+" "+
-($F{receptor.domicilio.noExterior} !=null ? $F{receptor.domicilio.noExterior}+" " : ", ")+
+					<textFieldExpression><![CDATA[$F{receptor.domicilio.calle}+" "+
+($F{receptor.domicilio.noExterior} !=null ? $F{receptor.domicilio.noExterior}+", " : "")+
 ($F{receptor.domicilio.noInterior} != null ? $F{receptor.domicilio.noInterior}+" " : "")]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -388,9 +388,9 @@
 					<textElement>
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{receptor.domicilio.colonia} !=null ? $F{receptor.domicilio.colonia}+" " : ", ")+
-($F{receptor.domicilio.localidad} !=null ? $F{receptor.domicilio.localidad}+" " : ", ")+
-($F{receptor.domicilio.municipio} !=null ? $F{receptor.domicilio.municipio}+" " : ", ")+"C.P. "+
+					<textFieldExpression><![CDATA[($F{receptor.domicilio.colonia} !=null ? $F{receptor.domicilio.colonia}+", " : "")+
+($F{receptor.domicilio.localidad} !=null ? $F{receptor.domicilio.localidad}+", " : "")+
+($F{receptor.domicilio.municipio} !=null ? $F{receptor.domicilio.municipio}+", " : "")+"C.P. "+
 $F{receptor.domicilio.codigoPostal}]]></textFieldExpression>
 				</textField>
 			</frame>
@@ -524,16 +524,16 @@ $F{receptor.domicilio.codigoPostal}]]></textFieldExpression>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{emisor.domicilioFiscal.colonia} !=null ? $F{emisor.domicilioFiscal.colonia}+" ": ", ")+
-($F{emisor.domicilioFiscal.municipio} !=null ? $F{emisor.domicilioFiscal.municipio}+" " : ", ")+
-($F{emisor.domicilioFiscal.localidad} !=null ? $F{emisor.domicilioFiscal.localidad}+" " : " ")]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{emisor.domicilioFiscal.colonia} !=null ? $F{emisor.domicilioFiscal.colonia}+", ": "")+
+($F{emisor.domicilioFiscal.municipio} !=null ? $F{emisor.domicilioFiscal.municipio}+", " : "")+
+($F{emisor.domicilioFiscal.localidad} !=null ? $F{emisor.domicilioFiscal.localidad}+" " : "")]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="1" y="40" width="232" height="10" uuid="605574b6-78e0-4619-b7b2-338313a0ba3e"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{emisor.domicilioFiscal.pais}+","+" "+
+					<textFieldExpression><![CDATA[$F{emisor.domicilioFiscal.pais}+", "+
 $F{emisor.domicilioFiscal.estado}+""]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -558,8 +558,8 @@ $F{emisor.domicilioFiscal.estado}+""]]></textFieldExpression>
 					<textElement>
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{emisor.expedidoEn.calle}+", "+
-($F{emisor.expedidoEn.noExterior} !=null ? $F{emisor.expedidoEn.noExterior}+" " : ", ")+
+					<textFieldExpression><![CDATA[$F{emisor.expedidoEn.calle}+" "+
+($F{emisor.expedidoEn.noExterior} !=null ? $F{emisor.expedidoEn.noExterior}+", " : "")+
 ($F{emisor.expedidoEn.noInterior} !=null ? $F{emisor.expedidoEn.noInterior}+" " : "")]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -567,8 +567,8 @@ $F{emisor.domicilioFiscal.estado}+""]]></textFieldExpression>
 					<textElement>
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{emisor.expedidoEn.localidad} !=null ? $F{emisor.expedidoEn.localidad}+" " : ", ")+
-($F{emisor.expedidoEn.municipio} !=null ? $F{emisor.expedidoEn.municipio}+" " : ", ")+
+					<textFieldExpression><![CDATA[($F{emisor.expedidoEn.localidad} !=null ? $F{emisor.expedidoEn.localidad}+", " : "")+
+($F{emisor.expedidoEn.municipio} !=null ? $F{emisor.expedidoEn.municipio}+", " : "")+
 $F{emisor.expedidoEn.pais}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -648,7 +648,7 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 							</box>
 							<textField>
 								<reportElement x="0" y="0" width="87" height="14" uuid="e604c543-78dd-4a98-8d8d-5dec853e27b3"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="8"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
@@ -708,7 +708,7 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 							</box>
 							<textField>
 								<reportElement x="0" y="0" width="207" height="14" uuid="b8b7052d-ad0f-44ff-89ec-30eba432e797"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font size="8"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
@@ -738,7 +738,7 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 							</box>
 							<textField pattern="¤ #,##0.00">
 								<reportElement x="0" y="0" width="96" height="14" uuid="4bfdfe66-6155-4357-a0fa-871d9c69cb67"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="8"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{valorUnitario}]]></textFieldExpression>
@@ -768,7 +768,7 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 							</box>
 							<textField pattern="¤ #,##0.00">
 								<reportElement x="0" y="0" width="90" height="14" uuid="1e24a35e-9792-4957-b881-7ba637152cc7"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="8"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{importe}]]></textFieldExpression>

@@ -45,4 +45,10 @@ public class MenuController {
 		return "menu/about";
 	}
 	
+	@RequestMapping("/menuCatalogo")
+	public String catalogo(){
+		
+		return "admin/catalogo";
+	}
+	
 }
