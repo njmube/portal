@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import mx.gob.sat.cfd._3.Comprobante.Emisor;
 import mx.gob.sat.cfd._3.Comprobante.Emisor.RegimenFiscal;
+import mx.gob.sat.cfd._3.TUbicacion;
 import mx.gob.sat.cfd._3.TUbicacionFiscal;
 
 import org.slf4j.Logger;
@@ -13,10 +14,12 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
+import com.magnabyte.cfdi.portal.dao.cliente.sql.DomicilioSql;
 import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
 import com.magnabyte.cfdi.portal.dao.emisor.sql.EmisorSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
+import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 
 @Repository
 public class EmisorDaoImpl extends GenericJdbcDao implements EmisorDao{
@@ -29,6 +32,30 @@ public class EmisorDaoImpl extends GenericJdbcDao implements EmisorDao{
 		logger.debug(qry);
 		return getJdbcTemplate().queryForObject(qry, new Object[]{empresa.getId()}, MAPPER_EMISOR);
 	}
+	
+	@Override
+	public TUbicacion readLugarExpedicion(Establecimiento establecimiento) {
+		logger.debug(EstablecimientoSql.READ_LUGAR_EXP);
+		return getJdbcTemplate().queryForObject(EstablecimientoSql.READ_LUGAR_EXP, MAPPER_LUGAR_EXP, establecimiento.getId());
+	}
+	
+	private static final RowMapper<TUbicacion> MAPPER_LUGAR_EXP = new RowMapper<TUbicacion>() {
+		
+		@Override
+		public TUbicacion mapRow(ResultSet rs, int rowNum) throws SQLException {
+			TUbicacion tu = new TUbicacion();
+			tu.setCalle(rs.getString(DomicilioSql.CALLE));
+			tu.setCodigoPostal(rs.getString(DomicilioSql.CODIGO_POSTAL));
+			tu.setColonia(rs.getString(DomicilioSql.COLONIA));
+			tu.setEstado(rs.getString(DomicilioSql.AS_ESTADO));
+			tu.setLocalidad(rs.getString(DomicilioSql.LOCALIDAD));
+			tu.setMunicipio(rs.getString(DomicilioSql.MUNICIPIO));
+			tu.setNoExterior(rs.getString(DomicilioSql.NO_EXTERIOR));
+			tu.setNoInterior(rs.getString(DomicilioSql.NO_INTERIOR));
+			tu.setPais(rs.getString(DomicilioSql.AS_PAIS));
+			return tu;
+		}
+	};
 	
 	private static final RowMapper<EmpresaEmisor> MAPPER_EMISOR = new RowMapper<EmpresaEmisor>() {
 
@@ -50,7 +77,7 @@ public class EmisorDaoImpl extends GenericJdbcDao implements EmisorDao{
 			
 			ubicacionFiscal.setCalle(rs.getString(EmisorSql.CALLE));
 			ubicacionFiscal.setNoExterior(rs.getString(EmisorSql.NO_EXTERIOR));
-			ubicacionFiscal.setNoInterior(rs.getString(EmisorSql.NO_INTERIOR));
+			ubicacionFiscal.setNoInterior(rs.getString(EmisorSql.NO_INTERIOR).length() < 1 ? null : rs.getString(EmisorSql.NO_INTERIOR));
 			ubicacionFiscal.setPais(rs.getString(EmisorSql.PAIS));
 			ubicacionFiscal.setEstado(rs.getString(EmisorSql.ESTADO));
 			ubicacionFiscal.setMunicipio(rs.getString(EmisorSql.MUNICIPIO));

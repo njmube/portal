@@ -5,7 +5,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ page import="java.util.Date" %>
 <html>
 <head>
 <title>Facturacion Corporativo</title>
@@ -45,8 +44,7 @@
 							<div class="form-group">
 								<label for="fechahora" class="col-lg-4 control-label"><small>Fecha y Hora: </small></label>
 								<div class="col-lg-8">
-									<c:set var="today" value="<%=new Date()%>"/>
-									<input id="fechahora" class="form-control input-sm" value="${today}" readonly="readonly"/>
+									<input id="fechahora" class="form-control input-sm" value="${ticket.transaccion.transaccionHeader.fechaHora}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">

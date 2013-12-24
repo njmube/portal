@@ -14,7 +14,15 @@ import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -40,10 +48,10 @@ import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
-//import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
+import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
-//import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
+import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago;
@@ -59,8 +67,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Autowired
 	private DocumentoXmlService documentoXmlService;
-//	@Autowired
-//	private EmisorDao emisorDao;
+	
+	@Autowired
+	private EmisorDao emisorDao;
 	
 	private ResourceLoader resourceLoader;
 	
@@ -177,6 +186,29 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 				break;
 			}
 		}
+
+		comprobante.setLugarExpedicion("El Lugar");
+		
+		//TODO
+		ticket.getTransaccion().getTransaccionHeader().setFechaHora("20131223100000");
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		SimpleDateFormat sdfOrigen = new SimpleDateFormat("yyyyMMddHHmmss");
+		try {
+			Date fechaTicket = sdfOrigen.parse(ticket.getTransaccion().getTransaccionHeader().getFechaHora());
+			logger.debug("fecha {}", sdf.format(fechaTicket));
+			ticket.getTransaccion().getTransaccionHeader().setFechaHora(sdf.format(fechaTicket));
+			GregorianCalendar fechaComprobante = new GregorianCalendar();
+			fechaComprobante.setTime(fechaTicket);
+			comprobante.setFecha(DatatypeFactory.newInstance().newXMLGregorianCalendar(fechaComprobante).normalize());
+		} catch (ParseException e) {
+			logger.error("Ocurrió un error al obtener la fecha del ticket");
+			e.printStackTrace();
+		} catch (DatatypeConfigurationException e) {
+			e.printStackTrace();
+		}
+		
+		comprobante.setVersion("3.2");
 		
 		tUbicacion.setCalle(domicilioCte.getCalle());
 		tUbicacion.setNoExterior(domicilioCte.getNoExterior());
@@ -225,9 +257,11 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		receptor.setNombre(cliente.getNombre());
 		receptor.setDomicilio(tUbicacion);
 		
-//		EmpresaEmisor empresaEisor = emisorDao.read(establecimiento.getEmpresaEmisor());
+		EmpresaEmisor empresaEmisor = emisorDao.read(establecimiento.getEmpresaEmisor());
 		
-//		comprobante.setEmisor(empresaEisor.getEmisor());
+		empresaEmisor.getEmisor().setExpedidoEn(emisorDao.readLugarExpedicion(establecimiento));
+		
+		comprobante.setEmisor(empresaEmisor.getEmisor());
 		comprobante.setReceptor(receptor);
 		comprobante.setConceptos(conceptos);
 		comprobante.setTipoDeComprobante("ingreso");

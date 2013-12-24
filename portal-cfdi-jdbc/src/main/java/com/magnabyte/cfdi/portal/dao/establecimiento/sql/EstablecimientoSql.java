@@ -1,6 +1,9 @@
 package com.magnabyte.cfdi.portal.dao.establecimiento.sql;
 
+import org.omg.CORBA.SetOverrideTypeHelper;
+
 import com.magnabyte.cfdi.portal.dao.GenericSql;
+import com.magnabyte.cfdi.portal.dao.cliente.sql.DomicilioSql;
 
 public class EstablecimientoSql extends GenericSql {
 	
@@ -37,6 +40,7 @@ public class EstablecimientoSql extends GenericSql {
 	public static final String GET_ROLES;
 	public static final String FIND_BY_CLAVE;
 	public static final String READ_BY_CLAVE;
+	public static final String READ_LUGAR_EXP;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -117,5 +121,50 @@ public class EstablecimientoSql extends GenericSql {
 		
 		READ_BY_CLAVE = qryBuilder.toString();
 		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append(SELECT).append(EOL).append(TAB);
+
+		qryBuilder.append(TAB).append(ALIAS_DOM_ESTAB).append(DOT).append(ID_DOM_ESTAB).append(EOL_);
+		qryBuilder.append(TAB).append(DomicilioSql.ALIAS_ESTADO).append(DOT).append(DomicilioSql.ID_ESTADO).append(EOL_);
+		qryBuilder.append(TAB).append(DomicilioSql.ALIAS_PAIS).append(DOT).append(DomicilioSql.ID_PAIS).append(EOL_);
+		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(ALIAS_DOM_ESTAB).append(DOT).append(DomicilioSql.CALLE);
+		qryBuilder.append(PARENTESIS_FIN).append(AS).append(DomicilioSql.CALLE).append(EOL_);
+		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(ALIAS_DOM_ESTAB).append(DOT).append(DomicilioSql.NO_EXTERIOR);
+		qryBuilder.append(PARENTESIS_FIN).append(AS).append(DomicilioSql.NO_EXTERIOR).append(EOL_);
+		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(ALIAS_DOM_ESTAB).append(DOT).append(DomicilioSql.NO_INTERIOR);
+		qryBuilder.append(PARENTESIS_FIN).append(AS).append(DomicilioSql.NO_INTERIOR).append(EOL_);
+		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(ALIAS_DOM_ESTAB).append(DOT).append(DomicilioSql.COLONIA);
+		qryBuilder.append(PARENTESIS_FIN).append(AS).append(DomicilioSql.COLONIA).append(EOL_);
+		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(ALIAS_DOM_ESTAB).append(DOT).append(DomicilioSql.MUNICIPIO);
+		qryBuilder.append(PARENTESIS_FIN).append(AS).append(DomicilioSql.MUNICIPIO).append(EOL_);
+		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(ALIAS_DOM_ESTAB).append(DOT).append(DomicilioSql.CODIGO_POSTAL);
+		qryBuilder.append(PARENTESIS_FIN).append(AS).append(DomicilioSql.CODIGO_POSTAL).append(EOL_);
+		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(ALIAS_DOM_ESTAB).append(DOT).append(LOCALIDAD);
+		qryBuilder.append(PARENTESIS_FIN).append(AS).append(LOCALIDAD).append(EOL_);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(DomicilioSql.ALIAS_ESTADO).append(DOT).append(NOMBRE);
+		qryBuilder.append(PARENTESIS_FIN).append(AS).append(DomicilioSql.AS_ESTADO).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(DomicilioSql.ALIAS_PAIS).append(DOT).append(NOMBRE);
+		qryBuilder.append(PARENTESIS_FIN).append(AS).append(DomicilioSql.AS_PAIS).append(EOL);
+		
+		qryBuilder.append(FROM).append(EOL).append(TAB);
+		qryBuilder.append(TABLE_DOM_ESTAB).append(AS).append(ALIAS_DOM_ESTAB).append(EOL).append(TAB);
+		qryBuilder.append(INNER).append(DomicilioSql.TABLE_ESTADO).append(AS);
+		qryBuilder.append(DomicilioSql.ALIAS_ESTADO).append(ON).append(DomicilioSql.ALIAS_ESTADO);
+		qryBuilder.append(DOT).append(DomicilioSql.ID_ESTADO).append(EQ).append(ALIAS_DOM_ESTAB);
+		qryBuilder.append(DOT).append(DomicilioSql.ID_ESTADO).append(EOL).append(TAB);
+		
+		qryBuilder.append(INNER).append(DomicilioSql.TABLE_PAIS).append(AS);
+		qryBuilder.append(DomicilioSql.ALIAS_PAIS).append(ON).append(DomicilioSql.ALIAS_PAIS);
+		qryBuilder.append(DOT).append(DomicilioSql.ID_PAIS).append(EQ).append(DomicilioSql.ALIAS_ESTADO);
+		qryBuilder.append(DOT).append(DomicilioSql.ID_PAIS).append(EOL).append(TAB);
+		
+		qryBuilder.append(INNER).append(TABLE_NAME).append(AS).append(ALIAS_TABLE);
+		qryBuilder.append(ON).append(ALIAS_DOM_ESTAB);
+		qryBuilder.append(DOT).append(ID_DOM_ESTAB).append(EQ).append(ALIAS_TABLE);
+		qryBuilder.append(DOT).append(ID_DOM_ESTAB).append(EOL);
+		
+		qryBuilder.append(WHERE).append(EOL).append(ALIAS_TABLE).append(DOT).append(ID_ESTABLECIMIENTO).append(SET_PARAM);
+		
+		READ_LUGAR_EXP = qryBuilder.toString();
 	}	
 }

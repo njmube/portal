@@ -64,7 +64,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
 				sambaService.writeProcessedCfdiFile(response.getXML(), (DocumentoCorporativo) documento);
 			} else if (documento instanceof DocumentoSucursal) {
-				
+				logger.debug("Aqui se va a guardar el cfdi sucursal");
 			}
 		} else {
 			logger.debug("El Web Service devolvió un error: {}", response.getMessage());
