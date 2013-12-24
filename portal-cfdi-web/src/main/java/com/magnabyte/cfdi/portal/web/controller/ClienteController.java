@@ -33,9 +33,6 @@ public class ClienteController {
 	private ClienteService clienteService;
 	
 	@Autowired
-	private DocumentoService documentoService;
-	
-	@Autowired
 	private OpcionDeCatalogoService opcionDeCatalogoService;
 	
 	@RequestMapping("/listaClientes")
@@ -85,11 +82,4 @@ public class ClienteController {
 		return "sucursal/clienteCorregir";
 	}
 	
-	@RequestMapping("/datosFacturacion/{idDomicilio}")
-	public String datosFacturacion(@ModelAttribute Cliente cliente, 
-			@ModelAttribute Ticket ticket, @PathVariable Integer idDomicilio, ModelMap model) {
-		model.put("comprobante", documentoService.obtenerComprobantePor(
-				cliente, ticket, idDomicilio));		
-		return "corporativo/facturaValidate";
-	}
 }

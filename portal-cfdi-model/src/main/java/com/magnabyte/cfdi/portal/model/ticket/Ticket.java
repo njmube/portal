@@ -235,6 +235,9 @@ public class Ticket {
                                 
                                 @XmlElement(name = "szDesc")
                                 protected String descripcion;
+                                
+                                @XmlElement(name = "szPriceUnitOfMeasureName")
+                                protected String unidad;
 
                                 @XmlElement(name = "szItemCategoryTypeCode")
                                 protected String tipoCategoria;
@@ -258,6 +261,14 @@ public class Ticket {
                                         this.descripcion = descripcion;
                                 }
 
+                                public String getUnidad() {
+									return unidad;
+								}
+                                
+                                public void setUnidad(String unidad) {
+									this.unidad = unidad;
+								}
+                                
                                 public String getTipoCategoria() {
                                         return tipoCategoria;
                                 }
@@ -274,21 +285,23 @@ public class Ticket {
                                         this.deptoId = deptoId;
                                 }
 
-                                @Override
-                                public String toString() {
-                                        StringBuilder builder = new StringBuilder();
-                                        builder.append("Articulo [id=");
-                                        builder.append(id);
-                                        builder.append(", descripcion=");
-                                        builder.append(descripcion);
-                                        builder.append(", tipoCategoria=");
-                                        builder.append(tipoCategoria);
-                                        builder.append(", deptoId=");
-                                        builder.append(deptoId);
-                                        builder.append("]");
-                                        return builder.toString();
-                                }
-                                
+								@Override
+								public String toString() {
+									StringBuilder builder = new StringBuilder();
+									builder.append("Articulo [id=");
+									builder.append(id);
+									builder.append(", descripcion=");
+									builder.append(descripcion);
+									builder.append(", unidad=");
+									builder.append(unidad);
+									builder.append(", tipoCategoria=");
+									builder.append(tipoCategoria);
+									builder.append(", deptoId=");
+									builder.append(deptoId);
+									builder.append("]");
+									return builder.toString();
+								}
+
                         }
 
                         @Override
@@ -380,7 +393,7 @@ public class Ticket {
                 public static class InformacionPago {
                 	
                 	@XmlElement(name = "szCardNmbr")
-                	protected String numeroCuenta;
+                	protected String numeroCuenta = "NO IDENTIFICADO";
                 	
                 	@XmlElement(name = "PAYMENT")
                 	protected Ticket.Transaccion.InformacionPago.Pago pago;
@@ -409,7 +422,7 @@ public class Ticket {
                 		protected String moneda;
                 		
                 		@XmlElement(name = "szDesc")
-                		protected String formaPago;
+                		protected String metodoPago;
                 		
                 		public String getMoneda() {
 							return moneda;
@@ -419,12 +432,12 @@ public class Ticket {
 							this.moneda = moneda;
 						}
                 
-                		public String getFormaPago() {
-							return formaPago;
+                		public String getMetodoPago() {
+							return metodoPago;
 						}
                 		
-                		public void setFormaPago(String formaPago) {
-							this.formaPago = formaPago;
+                		public void setMetodoPago(String formaPago) {
+							this.metodoPago = formaPago;
 						}
 
 						@Override
@@ -432,8 +445,8 @@ public class Ticket {
 							StringBuilder builder = new StringBuilder();
 							builder.append("Pago [moneda=");
 							builder.append(moneda);
-							builder.append(", formaPago=");
-							builder.append(formaPago);
+							builder.append(", metodoPago=");
+							builder.append(metodoPago);
 							builder.append("]");
 							return builder.toString();
 						}

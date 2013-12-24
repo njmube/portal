@@ -3,6 +3,7 @@ package com.magnabyte.cfdi.portal.service.documento.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -26,6 +27,7 @@ import javax.xml.transform.stream.StreamSource;
 import mx.gob.sat.cfd._3.Comprobante;
 import mx.gob.sat.cfd._3.Comprobante.Conceptos;
 import mx.gob.sat.cfd._3.Comprobante.Conceptos.Concepto;
+import mx.gob.sat.cfd._3.Comprobante.Impuestos;
 import mx.gob.sat.cfd._3.Comprobante.Receptor;
 import mx.gob.sat.cfd._3.TUbicacion;
 
@@ -41,7 +43,9 @@ import org.springframework.stereotype.Service;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDescuento;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 
@@ -60,7 +64,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		logger.debug("en sellar Documento");
 		//QUITAR
 		comprobante.getEmisor().setRfc("AAA010101AAA");
-		
 		//
 		String cadena = obtenerCadena(comprobante);
 		String sello = obtenerSelloDigital(cadena);
@@ -161,6 +164,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		DomicilioCliente domicilioCte = new DomicilioCliente();
 		domicilioCte.setId(domicilioFiscal);
 		
+		BigDecimal IVA = new BigDecimal(1.16);
+		
 		for(DomicilioCliente domicilio : cliente.getDomicilios()) {
 			if(domicilioCte.equals(domicilio)){
 				domicilioCte = domicilio;
@@ -179,13 +184,36 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		tUbicacion.setReferencia(domicilioCte.getReferencia());
 		tUbicacion.setLocalidad(domicilioCte.getLocalidad());
 		
+		BigDecimal subTotal = new BigDecimal(0);
 		for(Partida partida : ticket.getTransaccion().getPartidas()) {
 			Concepto concepto = new Concepto();
 			concepto.setCantidad(partida.getCantidad());
 			concepto.setDescripcion(partida.getArticulo().getDescripcion());
-			concepto.setImporte(partida.getPrecioTotal());
-			concepto.setValorUnitario(partida.getPrecioUnitario());
+			concepto.setUnidad(partida.getArticulo().getUnidad());
+			concepto.setImporte(partida.getPrecioTotal().divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
+			concepto.setValorUnitario(partida.getPrecioUnitario().divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
+			if (!partida.getArticulo().getTipoCategoria().equals("PROMOCIONES")) {
+				subTotal = subTotal.add(concepto.getImporte());
+			}
 			conceptos.getConcepto().add(concepto);
+		}
+		
+		comprobante.setSubTotal(subTotal);
+		Impuestos impuesto = new Impuestos();
+		impuesto.setTotalImpuestosTrasladados(ticket.getTransaccion().getTransaccionTotal().getTotalVenta().subtract(subTotal));
+		comprobante.setImpuestos(impuesto);
+		comprobante.setTotal(ticket.getTransaccion().getTransaccionTotal().getTotalVenta());
+
+		BigDecimal descuentoTotal = new BigDecimal(0);
+		for(PartidaDescuento descuento : ticket.getTransaccion().getPartidasDescuentos()) {
+			descuentoTotal = descuentoTotal.add(descuento.getDescuentoTotal());
+		}
+		comprobante.setDescuento(descuentoTotal.setScale(2));
+		
+		for(InformacionPago infoPago : ticket.getTransaccion().getInformacionPago()) {
+			comprobante.setNumCtaPago(infoPago.getNumeroCuenta());
+			comprobante.setMetodoDePago(infoPago.getPago().getMetodoPago().toUpperCase());
+			comprobante.setMoneda(infoPago.getPago().getMoneda());
 		}
 		
 		receptor.setRfc(cliente.getRfc());
@@ -194,6 +222,10 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		
 		comprobante.setReceptor(receptor);
 		comprobante.setConceptos(conceptos);
+		comprobante.setTipoDeComprobante("ingreso");
+		comprobante.setTipoCambio("1");
+		comprobante.setCondicionesDePago("PAGO DE CONTADO");
+		comprobante.setFormaDePago("PAGO EN UNA SOLA EXHIBICION");
 		
 		return comprobante;
 	}

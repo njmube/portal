@@ -9,7 +9,7 @@
 <body>
 	<div class="container main-content">
 		<div class="white-panel row">
-			<h2 class="text-primary">Confirmación</h2>
+			<h2 class="text-primary">Confirmación Datos Facturación</h2>
 			<hr>
 			<c:url var="altaUrl" value="/clienteForm"/>
 			<div class="form-group">
@@ -63,6 +63,7 @@
 				<p class="text-center"> 
 					<a id="continue" href="#" class="btn btn-success"><span>Continuar</span></a>
 					<a href="<c:url value="/clienteCorregir/${cliente.id}"/>" class="btn btn-warning"><span>Corregir</span></a>
+					<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger"><span>Cancelar</span></a>
 				</p>
 		</div>				
 	</div>

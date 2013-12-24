@@ -34,6 +34,7 @@
 					<div class="form-group">
 						<div class="centered">
 							<button id="buscarCliente" type="button" class="btn btn-primary">Buscar <span class="glyphicon glyphicon-search"></span></button>
+							<a id="cancelar" href="<c:url value="/buscaTicket"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
 						</div>
 					</div>
 				</form:form>
