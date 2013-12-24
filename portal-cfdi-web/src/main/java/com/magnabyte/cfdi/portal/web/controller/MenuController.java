@@ -27,7 +27,8 @@ public class MenuController {
 		logger.debug("Obteniendo usuario logeado");
 		Establecimiento establecimiento = new Establecimiento();
 		establecimiento.setClave(principal.getName());
-		model.put("establecimiento", establecimientoService.findByClave(establecimiento));
+		logger.debug(establecimiento.toString());
+		model.put("establecimiento", establecimientoService.readByClave(establecimiento));
 		return "redirect:/menuPage";
 	}
 	

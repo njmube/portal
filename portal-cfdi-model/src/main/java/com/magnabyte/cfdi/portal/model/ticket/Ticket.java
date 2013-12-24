@@ -47,6 +47,9 @@ public class Ticket {
                 @XmlElement(name = "TOTAL")
                 protected Ticket.Transaccion.TransaccionTotal transaccionTotal;
                 
+                @XmlElement(name = "MEDIA")
+                protected List<Ticket.Transaccion.InformacionPago> informacionPago;
+                
                 public Ticket.Transaccion.TransaccionHeader getTransaccionHeader() {
                         return transaccionHeader;
                 }
@@ -73,6 +76,13 @@ public class Ticket {
                 public Ticket.Transaccion.TransaccionTotal getTransaccionTotal() {
                         return transaccionTotal;
                 }
+                
+                public List<Ticket.Transaccion.InformacionPago> getInformacionPago() {
+                	if (informacionPago == null) {
+                		return new ArrayList<Ticket.Transaccion.InformacionPago>();
+                	}
+					return informacionPago;
+				}
                 
                 public void setTransaccionTotal(
                                 Ticket.Transaccion.TransaccionTotal transaccionTotal) {
@@ -366,23 +376,100 @@ public class Ticket {
                         
                 }
                 
+                @XmlAccessorType(XmlAccessType.FIELD)
+                public static class InformacionPago {
+                	
+                	@XmlElement(name = "szCardNmbr")
+                	protected String numeroCuenta;
+                	
+                	@XmlElement(name = "PAYMENT")
+                	protected Ticket.Transaccion.InformacionPago.Pago pago;
+                	
+                	public String getNumeroCuenta() {
+						return numeroCuenta;
+					}
+                	
+                	public void setNumeroCuenta(String numeroCuenta) {
+						this.numeroCuenta = numeroCuenta;
+					}
+                	
+                	public Ticket.Transaccion.InformacionPago.Pago getPago() {
+						return pago;
+					}
+                	
+                	public void setPago(
+							Ticket.Transaccion.InformacionPago.Pago pago) {
+						this.pago = pago;
+					}
+                	
+                	@XmlAccessorType(XmlAccessType.FIELD)
+                	public static class Pago {
+                		
+                		@XmlElement(name = "szPayCurrSymLC")
+                		protected String moneda;
+                		
+                		@XmlElement(name = "szDesc")
+                		protected String formaPago;
+                		
+                		public String getMoneda() {
+							return moneda;
+						}
+                		
+                		public void setMoneda(String moneda) {
+							this.moneda = moneda;
+						}
+                
+                		public String getFormaPago() {
+							return formaPago;
+						}
+                		
+                		public void setFormaPago(String formaPago) {
+							this.formaPago = formaPago;
+						}
 
-                @Override
-                public String toString() {
-                        StringBuilder builder = new StringBuilder();
-                        builder.append("Transaccion [transaccionHeader=");
-                        builder.append(transaccionHeader);
-                        builder.append(", partidas=");
-                        builder.append(partidas);
-                        builder.append(", partidasDescuentos=");
-                        builder.append(partidasDescuentos);
-                        builder.append(", transaccionTotal=");
-                        builder.append(transaccionTotal);
-                        builder.append("]");
-                        return builder.toString();
+						@Override
+						public String toString() {
+							StringBuilder builder = new StringBuilder();
+							builder.append("Pago [moneda=");
+							builder.append(moneda);
+							builder.append(", formaPago=");
+							builder.append(formaPago);
+							builder.append("]");
+							return builder.toString();
+						}
+                		
+                	}
+
+					@Override
+					public String toString() {
+						StringBuilder builder = new StringBuilder();
+						builder.append("InformacionPago [numeroCuenta=");
+						builder.append(numeroCuenta);
+						builder.append(", pago=");
+						builder.append(pago);
+						builder.append("]");
+						return builder.toString();
+					}
+                	
                 }
 
-                
+				@Override
+				public String toString() {
+					StringBuilder builder = new StringBuilder();
+					builder.append("Transaccion [transaccionHeader=");
+					builder.append(transaccionHeader);
+					builder.append(", partidas=");
+					builder.append(partidas);
+					builder.append(", partidasDescuentos=");
+					builder.append(partidasDescuentos);
+					builder.append(", transaccionTotal=");
+					builder.append(transaccionTotal);
+					builder.append(", informacionPago=");
+					builder.append(informacionPago);
+					builder.append("]");
+					return builder.toString();
+				}
+
         }
 
         @Override

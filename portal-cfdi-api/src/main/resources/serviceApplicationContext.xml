@@ -23,6 +23,9 @@
 	
 <!-- 	<task:scheduled-tasks> -->
 <!-- 		<task:scheduled ref="Trabajo" method="executeInternal" cron="0/10 * * * * ?"/> -->
+	
+<!-- 	<task:scheduled-tasks> -->
+<!-- 		<task:scheduled ref="Trabajo" method="executeInternal" cron="0 0/1 * 1/1 * ? *"/> -->
 <!-- 	</task:scheduled-tasks>	 -->
 	
 </beans>

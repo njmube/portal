@@ -34,7 +34,8 @@ public class CorporativoController {
 	@RequestMapping("/facturaCorp")
 	public String facturaCorp(@ModelAttribute Establecimiento sucursal, ModelMap model) {
 		logger.debug("facturaCorp...");
-		List<DocumentoCorporativo> documentos = sambaService.getFilesFromDirectory(sucursal.getRutaRepositorio());
+		List<DocumentoCorporativo> documentos = null;
+//	Corregir	sambaService.getFilesFromDirectory(sucursal.getRutaRepositorio());
 		model.put("documentos", documentos);
 		return "corporativo/facturaCorp";
 	}
@@ -43,12 +44,13 @@ public class CorporativoController {
 	public String validarFactura(@ModelAttribute Establecimiento sucursal, @PathVariable String fileName, ModelMap model) {
 		logger.debug("valida factura");
 		logger.debug(sucursal.getRutaRepositorio() + fileName);
-		Comprobante comprobante = documentoXmlService.convertXmlSapToCfdi(sambaService.getFileStream(sucursal.getRutaRepositorio(), fileName));
+		Comprobante comprobante = null; 
+//		Corregir		documentoXmlService.convertXmlSapToCfdi(sambaService.getFileStream(sucursal.getRutaRepositorio(), fileName));
 		DocumentoCorporativo documento = new DocumentoCorporativo();
 		documento.setComprobante(comprobante);
 		documento.setFolioSap(fileName.substring(1, 11));
 		documento.setNombreXmlPrevio(fileName);
-		documento.setRutaXmlPrevio(sucursal.getRutaRepositorio());
+//		documento.setRutaXmlPrevio(sucursal.getRutaRepositorio());
 		model.put("folioSap", documento.getFolioSap());
 		model.put("comprobante", comprobante);
 		model.put("documento", documento);
