@@ -1,9 +1,11 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator"
+	prefix="decorator"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,23 +25,31 @@
 	href="<c:url value="/resources/css/datepicker.css" />" />
 <link rel="stylesheet" type="text/css"
 	href="<c:url value="/resources/css/validationEngine.jquery.css" />" />
-<script src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
-<script src="<c:url value="/resources/js/jquery/jquery.dataTables.min.js" />"></script>
+<script
+	src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
+<script
+	src="<c:url value="/resources/js/jquery/jquery.dataTables.min.js" />"></script>
 
 <script src="<c:url value="/resources/js/jquery/jquery.validate.js" />"></script>
-<script src="<c:url value="/resources/js/jquery/jquery.validationEngine.js" />"></script>
-<script src="<c:url value="/resources/js/jquery/jquery.validationEngine-es.js" />"></script>
+<script
+	src="<c:url value="/resources/js/jquery/jquery.validationEngine.js" />"></script>
+<script
+	src="<c:url value="/resources/js/jquery/jquery.validationEngine-es.js" />"></script>
 
 <script src="<c:url value="/resources/js/datatable/datatable.js" />"></script>
-<script src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.js" />"></script>
-<script src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.es.js" />"></script>
+<script
+	src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.js" />"></script>
+<script
+	src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.es.js" />"></script>
 <script type="text/javascript">
-	var contextPath = "${pageContext.request.contextPath}"; 
-    
-    function autoClosingAlert(selector, delay) {
-            var alert = $(selector).alert();
-            window.setTimeout(function() {alert.fadeOut("slow");}, delay);
-    }
+	var contextPath = "${pageContext.request.contextPath}";
+
+	function autoClosingAlert(selector, delay) {
+		var alert = $(selector).alert();
+		window.setTimeout(function() {
+			alert.fadeOut("slow");
+		}, delay);
+	}
 </script>
 <decorator:head />
 </head>
@@ -54,28 +64,37 @@
 						<span class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="<c:url value="/menuPage" />"> Facturación
-						en Línea <span class="glyphicon glyphicon-globe"></span>
+					<a class="navbar-brand" href="<c:url value="/menuPage" />">
+						Facturación en Línea <span class="glyphicon glyphicon-globe"></span>
 					</a>
 				</div>
 				<div class="collapse navbar-collapse pull-right">
 					<ul class="nav navbar-nav">
-						<li><a href="<c:url value="/menuPage" />">Menu Principal <span
-								class="glyphicon glyphicon-home"></span>
-						</a></li>
-<%-- 						<li><a href="<c:url value="/about" />">Acerca de <span --%>
-<!-- 								class="glyphicon glyphicon-question-sign"></span></a></li> -->
+						<sec:authorize access="hasAnyRole('ROLE_ADMIN')">
+							<li><a href="<c:url value="/menuCatalogo" />">Catalogos
+									<span class="glyphicon glyphicon-home"></span>
+							</a></li>
+						</sec:authorize>
+							<li><a href="<c:url value="/menuPage" />">Menu Principal
+									<span class="glyphicon glyphicon-home"></span>
+							</a></li>
+						<%-- 						<li><a href="<c:url value="/about" />">Acerca de <span --%>
+						<!-- 								class="glyphicon glyphicon-question-sign"></span></a></li> -->
 					</ul>
-					<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_CORP')">
+					<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_CORP', 'ROLE_ADMIN')">
 						<div class="navbar-right">
 							<div class="btn-group">
-								<button type="button" class="btn btn-warning btn-sm dropdown-toggle"
-									data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> 
-									${fn:toUpperCase(sessionScope.establecimiento.nombre)} <span class="caret"></span>
+								<button type="button"
+									class="btn btn-warning btn-sm dropdown-toggle"
+									data-toggle="dropdown">
+									<span class="glyphicon glyphicon-user"></span>
+									${fn:toUpperCase(sessionScope.establecimiento.nombre)} <span
+										class="caret"></span>
 								</button>
 								<ul class="dropdown-menu" role="menu">
 									<c:url var="logoutUrl" value="/perform_logout" />
-									<li><a href="${logoutUrl}"><span class="glyphicon glyphicon-log-out"></span> Cerrar sesión</a></li>
+									<li><a href="${logoutUrl}"><span
+											class="glyphicon glyphicon-log-out"></span> Cerrar sesión</a></li>
 								</ul>
 							</div>
 						</div>
@@ -110,15 +129,16 @@
 					Modatelas S.A.P.I de C.V.</strong>
 			</p>
 			<p class="credit">
-<!-- 				<a href="#"><strong>Acerca de </strong><span -->
-<!-- 					class="glyphicon glyphicon-question-sign"></span></a> &middot;  -->
+				<!-- 				<a href="#"><strong>Acerca de </strong><span -->
+				<!-- 					class="glyphicon glyphicon-question-sign"></span></a> &middot;  -->
 				<a href="#"><strong> Ir arriba </strong><span
 					class="glyphicon glyphicon-circle-arrow-up"></span></a>
 			</p>
 		</div>
 	</div>
 	<script src="<c:url value="/resources/js/vendor/bootstrap.min.js" />"></script>
-	<script src="<c:url value="/resources/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js" />"></script>
+	<script
+		src="<c:url value="/resources/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js" />"></script>
 	<script src="<c:url value="/resources/js/main/modatelas.js"/>"></script>
 </body>
 </html>
