@@ -13,6 +13,7 @@ import com.certus.facturehoy.ws2.cfdi.WsServicioBO;
 import com.certus.facturehoy.ws2.cfdi.WsServicios;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
+import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
@@ -62,6 +63,8 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			if (documento instanceof DocumentoCorporativo) {
 				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
 				sambaService.writeProcessedCfdiFile(response.getXML(), (DocumentoCorporativo) documento);
+			} else if (documento instanceof DocumentoSucursal) {
+				
 			}
 		} else {
 			logger.debug("El Web Service devolvió un error: {}", response.getMessage());
