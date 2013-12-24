@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteFactura" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4a6ba1cb-2ea7-4218-8d09-5f9f932a9716">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="246"/>
+	<property name="ireport.y" value="0"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="0.0" lineColor="#000000"/>
@@ -291,6 +291,7 @@
 	<parameter name="FECHA_TIMBRADO" class="java.lang.Object"/>
 	<parameter name="FOLIO_FISCAL" class="java.lang.String"/>
 	<parameter name="NUM_SERIE_CERT" class="java.lang.String"/>
+	<parameter name="FOLIO_SAP" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -545,7 +546,7 @@ $F{emisor.domicilioFiscal.estado}+""]]></textFieldExpression>
 				</textField>
 			</frame>
 			<frame>
-				<reportElement x="0" y="69" width="272" height="54" uuid="403d469b-1c28-48f4-a0bc-4e59173d5929"/>
+				<reportElement x="0" y="69" width="240" height="54" uuid="403d469b-1c28-48f4-a0bc-4e59173d5929"/>
 				<staticText>
 					<reportElement x="0" y="0" width="138" height="12" uuid="86a689bf-6b8d-4320-a5a8-1b68f2164063"/>
 					<textElement verticalAlignment="Middle">
@@ -554,7 +555,7 @@ $F{emisor.domicilioFiscal.estado}+""]]></textFieldExpression>
 					<text><![CDATA[LUGAR DE EXPEDICIÓN]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="0" y="23" width="272" height="10" uuid="8f9d9ead-409f-4d13-88a6-7e16b1e089e2"/>
+					<reportElement x="0" y="23" width="240" height="10" uuid="8f9d9ead-409f-4d13-88a6-7e16b1e089e2"/>
 					<textElement>
 						<font size="8"/>
 					</textElement>
@@ -563,7 +564,7 @@ $F{emisor.domicilioFiscal.estado}+""]]></textFieldExpression>
 ($F{emisor.expedidoEn.noInterior} !=null ? $F{emisor.expedidoEn.noInterior}+" " : "")]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="0" y="33" width="272" height="10" uuid="afd72984-d715-4411-8c8e-b7b59ca35b98"/>
+					<reportElement x="0" y="33" width="240" height="10" uuid="afd72984-d715-4411-8c8e-b7b59ca35b98"/>
 					<textElement>
 						<font size="8"/>
 					</textElement>
@@ -572,7 +573,7 @@ $F{emisor.domicilioFiscal.estado}+""]]></textFieldExpression>
 $F{emisor.expedidoEn.pais}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="0" y="43" width="272" height="10" uuid="1e73dc26-5760-4244-b793-b439798c3ae9"/>
+					<reportElement x="0" y="43" width="240" height="10" uuid="1e73dc26-5760-4244-b793-b439798c3ae9"/>
 					<textElement>
 						<font size="8"/>
 					</textElement>
@@ -580,7 +581,7 @@ $F{emisor.expedidoEn.pais}]]></textFieldExpression>
 $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="1" y="14" width="271" height="10" uuid="14307857-01d0-43ee-8952-d9d860ef2ac7"/>
+					<reportElement x="1" y="14" width="239" height="10" uuid="14307857-01d0-43ee-8952-d9d860ef2ac7"/>
 					<textElement verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
@@ -616,6 +617,13 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 				</textElement>
 				<textFieldExpression><![CDATA["MÉTODO DE PAGO:  "+$F{metodoDePago}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="240" y="111" width="194" height="11" uuid="7a4377d5-5a97-4c67-b3ae-51a7aaff1fc4"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{FOLIO_SAP} !=null ? "FOLIO SAP: "+$P{FOLIO_SAP} : "")]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<detail>
@@ -626,28 +634,28 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 					<datasetRun subDataset="Table Dataset 2" uuid="f60a5bc5-b45e-4915-b53d-79a862af02a0">
 						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{conceptos.concepto})]]></dataSourceExpression>
 					</datasetRun>
-					<jr:column width="87" uuid="a6aa7a71-9232-49c2-97f7-3f7d6311443a">
-						<jr:columnHeader style="table 12_CH" height="19" rowSpan="1">
+					<jr:column width="71" uuid="a6aa7a71-9232-49c2-97f7-3f7d6311443a">
+						<jr:columnHeader style="table 12_CH" height="20" rowSpan="1">
 							<box>
 								<topPen lineWidth="0.5" lineColor="#010101"/>
 								<leftPen lineWidth="0.5" lineColor="#010101"/>
 								<bottomPen lineWidth="1.0" lineColor="#010101"/>
 							</box>
 							<staticText>
-								<reportElement x="0" y="1" width="87" height="18" uuid="d35b451c-e7a0-48ac-a9c1-177957395acf"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<reportElement x="1" y="1" width="70" height="18" uuid="d35b451c-e7a0-48ac-a9c1-177957395acf"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="9" isBold="true"/>
 								</textElement>
 								<text><![CDATA[Cantidad]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 12_TD" height="14" rowSpan="1">
+						<jr:detailCell style="table 12_TD" height="15" rowSpan="1">
 							<box>
 								<topPen lineWidth="0.0"/>
 								<bottomPen lineWidth="0.0"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="87" height="14" uuid="e604c543-78dd-4a98-8d8d-5dec853e27b3"/>
+								<reportElement x="0" y="0" width="71" height="15" uuid="e604c543-78dd-4a98-8d8d-5dec853e27b3"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="8"/>
 								</textElement>
@@ -655,8 +663,8 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="90" uuid="96c68ff5-e7f1-43d9-b1e7-199ced5285e6">
-						<jr:columnHeader style="table 12_CH" height="19" rowSpan="1">
+					<jr:column width="78" uuid="96c68ff5-e7f1-43d9-b1e7-199ced5285e6">
+						<jr:columnHeader style="table 12_CH" height="20" rowSpan="1">
 							<box>
 								<topPen lineWidth="0.5" lineColor="#010101"/>
 								<leftPen lineWidth="0.0"/>
@@ -664,20 +672,20 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 								<rightPen lineWidth="0.0"/>
 							</box>
 							<staticText>
-								<reportElement x="0" y="1" width="90" height="18" uuid="c1c6d86c-e351-43a7-9d0d-3876c08f9ce9"/>
+								<reportElement x="0" y="1" width="77" height="18" uuid="c1c6d86c-e351-43a7-9d0d-3876c08f9ce9"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9" isBold="true"/>
 								</textElement>
 								<text><![CDATA[Unidad]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 12_TD" height="14" rowSpan="1">
+						<jr:detailCell style="table 12_TD" height="15" rowSpan="1">
 							<box>
 								<topPen lineWidth="0.0"/>
 								<bottomPen lineWidth="0.0"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="90" height="14" uuid="86219524-3816-42df-8a0a-9cee496269c7"/>
+								<reportElement x="0" y="0" width="77" height="15" uuid="86219524-3816-42df-8a0a-9cee496269c7"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="8"/>
 								</textElement>
@@ -685,8 +693,8 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="207" uuid="5210af22-bcb1-4a86-892e-9a5ccf69598a">
-						<jr:columnHeader style="table 12_CH" height="19" rowSpan="1">
+					<jr:column width="258" uuid="5210af22-bcb1-4a86-892e-9a5ccf69598a">
+						<jr:columnHeader style="table 12_CH" height="20" rowSpan="1">
 							<box>
 								<topPen lineWidth="0.5" lineColor="#010101"/>
 								<leftPen lineWidth="0.0"/>
@@ -694,20 +702,20 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 								<rightPen lineWidth="0.0"/>
 							</box>
 							<staticText>
-								<reportElement x="0" y="0" width="207" height="19" uuid="a3e09e6a-cc14-46cd-a571-fe55f11b3ec3"/>
+								<reportElement x="0" y="2" width="258" height="18" uuid="a3e09e6a-cc14-46cd-a571-fe55f11b3ec3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9" isBold="true"/>
 								</textElement>
 								<text><![CDATA[Concepto]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 12_TD" height="14" rowSpan="1">
+						<jr:detailCell style="table 12_TD" height="15" rowSpan="1">
 							<box>
 								<topPen lineWidth="0.0"/>
 								<bottomPen lineWidth="0.0"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="207" height="14" uuid="b8b7052d-ad0f-44ff-89ec-30eba432e797"/>
+								<reportElement x="0" y="0" width="258" height="15" uuid="b8b7052d-ad0f-44ff-89ec-30eba432e797"/>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
 									<font size="8"/>
 								</textElement>
@@ -715,8 +723,8 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="96" uuid="4bfef24c-9c63-4399-961a-b7770d4228da">
-						<jr:columnHeader style="table 12_CH" height="19" rowSpan="1">
+					<jr:column width="84" uuid="4bfef24c-9c63-4399-961a-b7770d4228da">
+						<jr:columnHeader style="table 12_CH" height="20" rowSpan="1">
 							<box>
 								<topPen lineWidth="0.5" lineColor="#010101"/>
 								<leftPen lineWidth="0.0"/>
@@ -724,20 +732,20 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 								<rightPen lineWidth="0.0"/>
 							</box>
 							<staticText>
-								<reportElement x="0" y="1" width="96" height="18" uuid="35ff1e0c-c9b3-40b3-b9ab-abafac1f902a"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<reportElement x="0" y="2" width="84" height="18" uuid="35ff1e0c-c9b3-40b3-b9ab-abafac1f902a"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="9" isBold="true"/>
 								</textElement>
 								<text><![CDATA[Precio Unitario]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 12_TD" height="14" rowSpan="1">
+						<jr:detailCell style="table 12_TD" height="15" rowSpan="1">
 							<box>
 								<topPen lineWidth="0.0"/>
 								<bottomPen lineWidth="0.0"/>
 							</box>
 							<textField pattern="¤ #,##0.00">
-								<reportElement x="0" y="0" width="96" height="14" uuid="4bfdfe66-6155-4357-a0fa-871d9c69cb67"/>
+								<reportElement x="0" y="0" width="84" height="15" uuid="4bfdfe66-6155-4357-a0fa-871d9c69cb67"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="8"/>
 								</textElement>
@@ -745,8 +753,8 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="90" uuid="a9d3b230-8c9c-4a69-b746-adbb8b1cd7be">
-						<jr:columnHeader style="table 12_CH" height="19" rowSpan="1">
+					<jr:column width="91" uuid="a9d3b230-8c9c-4a69-b746-adbb8b1cd7be">
+						<jr:columnHeader style="table 12_CH" height="20" rowSpan="1">
 							<box>
 								<topPen lineWidth="0.5" lineColor="#010101"/>
 								<leftPen lineWidth="0.0"/>
@@ -754,20 +762,22 @@ $F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
 								<rightPen lineWidth="0.5" lineColor="#010101"/>
 							</box>
 							<staticText>
-								<reportElement x="0" y="0" width="90" height="19" uuid="da3c0895-aa25-4f5f-a660-9555a4d15cde"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<reportElement x="1" y="2" width="90" height="17" uuid="da3c0895-aa25-4f5f-a660-9555a4d15cde"/>
+								<box rightPadding="3"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="9" isBold="true"/>
 								</textElement>
 								<text><![CDATA[Importe]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table 12_TD" height="14" rowSpan="1">
+						<jr:detailCell style="table 12_TD" height="15" rowSpan="1">
 							<box>
 								<topPen lineWidth="0.0"/>
 								<bottomPen lineWidth="0.0"/>
 							</box>
 							<textField pattern="¤ #,##0.00">
-								<reportElement x="0" y="0" width="90" height="14" uuid="1e24a35e-9792-4957-b881-7ba637152cc7"/>
+								<reportElement x="0" y="0" width="90" height="15" uuid="1e24a35e-9792-4957-b881-7ba637152cc7"/>
+								<box rightPadding="3"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="8"/>
 								</textElement>
