@@ -1,5 +1,7 @@
 package com.magnabyte.cfdi.portal.web.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
@@ -9,6 +11,8 @@ import com.magnabyte.cfdi.portal.model.exception.PortalException;
 @ControllerAdvice
 public class GlobalHandlerExceptionController {
 
+	private static final Logger logger = LoggerFactory.getLogger(GlobalHandlerExceptionController.class);
+	
 	@ExceptionHandler(PortalException.class)
 	public ModelAndView handlePortalExceptions(PortalException ex) {
 		ModelAndView mav = new ModelAndView("error/portalError");
@@ -19,7 +23,8 @@ public class GlobalHandlerExceptionController {
 	@ExceptionHandler(Exception.class)
 	public ModelAndView handleAllExceptions(Exception ex) {
 		ModelAndView mav = new ModelAndView("error/genericError");
-		mav.addObject("errMsg", ex.getMessage());
+		logger.error("Ocurrió un error: ", ex);
+		mav.addObject("errMsg", ex);
 		return mav;
 	}
 }
