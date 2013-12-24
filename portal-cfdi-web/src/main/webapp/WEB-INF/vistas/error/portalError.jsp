@@ -14,7 +14,7 @@
 				<p class="text-danger">${errMsg}</p>
 				<hr>
 				<p class="text-center">
-					<a href="<c:url value="/facturaCorp" />" class="btn btn-warning btn-lg" role="button">Regresar
+					<a href="<c:url value="/menuPage" />" class="btn btn-warning btn-lg" role="button">Regresar
 						<span class="glyphicon glyphicon-arrow-left"></span>
 					</a>
 				</p>
