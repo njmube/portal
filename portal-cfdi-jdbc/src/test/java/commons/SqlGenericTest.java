@@ -9,8 +9,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.magnabyte.cfdi.portal.dao.cliente.sql.ClienteSql;
+import com.magnabyte.cfdi.portal.dao.cliente.sql.DomicilioSql;
+import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
+import com.magnabyte.cfdi.portal.dao.emisor.sql.EmisorSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.EstablecimientoDao;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
+import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -18,26 +22,26 @@ import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 public class SqlGenericTest {
 
 	@Autowired
-	EstablecimientoDao establecimientoDao;
+	EmisorDao emisorDao;
 	
 	public static final Logger logger = Logger.getLogger(SqlGenericTest.class);
 
-//	@Test
+	@Test
 	public void qryTest() {
-		String qryString = EstablecimientoSql.READ_BY_CLAVE;
+		String qryString = EmisorSql.READ;
 		logger.info(qryString);
 		Assert.assertNotNull(qryString);
 	}
 
 	@Test
 	public void test() {
-		Establecimiento es = new Establecimiento();
-		es.setClave("001");
+		EmpresaEmisor empresa = new EmpresaEmisor();
+		empresa.setId(4);
 		
-		Establecimiento esBD = establecimientoDao.readByClave(es);		
-		logger.info("---------------- Estab: " + esBD.toString());
+		EmpresaEmisor empresaBD = emisorDao.read(empresa);		
+		logger.info("---------------- Empresa: " + empresa.toString());
 		
-		Assert.assertEquals("ROLE_CORP", esBD.getTipoEstablecimiento().getRol());
+		Assert.assertEquals("MOD041014KI3", empresaBD.getEmisor().getRfc());
 	}
 
 }

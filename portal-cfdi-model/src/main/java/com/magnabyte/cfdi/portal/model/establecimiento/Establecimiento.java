@@ -2,7 +2,7 @@ package com.magnabyte.cfdi.portal.model.establecimiento;
 
 import java.io.Serializable;
 
-import com.magnabyte.cfdi.portal.model.emisor.Empresa;
+import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 
 public class Establecimiento implements Serializable {
 
@@ -12,7 +12,7 @@ public class Establecimiento implements Serializable {
 	private String clave;
 	private String nombre;
 	private String password;
-	private Empresa empresa;
+	private EmpresaEmisor empresa;
 	private RutaRepositorio rutaRepositorio;
 	private TipoEstablecimiento tipoEstablecimiento;
 	private DomicilioEstablecimiento domicilio;
@@ -57,11 +57,11 @@ public class Establecimiento implements Serializable {
 		this.tipoEstablecimiento = tipoEstablecimiento;
 	}
 
-	public Empresa getEmisor() {
+	public EmpresaEmisor getEmisor() {
 		return empresa;
 	}
 
-	public void setEmisor(Empresa emisor) {
+	public void setEmisor(EmpresaEmisor emisor) {
 		this.empresa = emisor;
 	}
 
@@ -73,11 +73,11 @@ public class Establecimiento implements Serializable {
 		this.domicilio = domicilio;
 	}
 
-	public Empresa getEmpresa() {
+	public EmpresaEmisor getEmpresaEmisor() {
 		return empresa;
 	}
 
-	public void setEmpresa(Empresa empresa) {
+	public void setEmpresaEmisor(EmpresaEmisor empresa) {
 		this.empresa = empresa;
 	}
 

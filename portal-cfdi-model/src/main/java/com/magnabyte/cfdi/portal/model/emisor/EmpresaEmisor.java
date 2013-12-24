@@ -2,14 +2,14 @@ package com.magnabyte.cfdi.portal.model.emisor;
 
 import mx.gob.sat.cfd._3.Comprobante.Emisor;
 
-public class Empresa {
+public class EmpresaEmisor {
 
 	private Integer id;
 	private Emisor emisor;
 	private String telefono;
 	private String email;
 
-	public Empresa() {
+	public EmpresaEmisor() {
 	}
 
 	public Integer getId() {
@@ -42,6 +42,12 @@ public class Empresa {
 
 	public void setEmisor(Emisor emisor) {
 		this.emisor = emisor;
+	}
+
+	@Override
+	public String toString() {
+		return "EmpresaEmisor [id=" + id + ", emisor=" + emisor + ", telefono="
+				+ telefono + ", email=" + email + "]";
 	}
 
 }

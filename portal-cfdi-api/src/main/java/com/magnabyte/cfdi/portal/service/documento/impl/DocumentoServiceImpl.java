@@ -40,8 +40,11 @@ import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
+import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
+import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
+import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
@@ -56,6 +59,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Autowired
 	private DocumentoXmlService documentoXmlService;
+	@Autowired
+	private EmisorDao emisorDao;
 	
 	private ResourceLoader resourceLoader;
 	
@@ -155,7 +160,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 
 	@Override
 	public Comprobante obtenerComprobantePor(Cliente cliente, Ticket ticket,
-			Integer domicilioFiscal) {
+			Integer domicilioFiscal, Establecimiento establecimiento) {
 		
 		Comprobante comprobante = new Comprobante();
 		Receptor receptor = new Receptor();
@@ -220,6 +225,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		receptor.setNombre(cliente.getNombre());
 		receptor.setDomicilio(tUbicacion);
 		
+		EmpresaEmisor empresaEisor = emisorDao.read(establecimiento.getEmpresaEmisor());
+		
+		comprobante.setEmisor(empresaEisor.getEmisor());
 		comprobante.setReceptor(receptor);
 		comprobante.setConceptos(conceptos);
 		comprobante.setTipoDeComprobante("ingreso");

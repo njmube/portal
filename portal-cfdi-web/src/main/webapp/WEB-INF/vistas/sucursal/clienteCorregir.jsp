@@ -21,7 +21,7 @@
 			$(tr).find("input:hidden[id=estadoOculto]").val($("option:selected", this).val());
 		});
 		
-		$("#cancelar").click(function() {
+		$(document.body).on("click","#cancelar",function() {
 			location.href = contextPath + "/confirmarDatos/${cliente.id}";
 		});
 	});
@@ -51,7 +51,7 @@
 						</div>
 					</div>
 					<p class="text-center">
-						<button id="agregarCorregir" type="button" class="btn btn-xs btn-warning">Agregar Dirección <span class="glyphicon glyphicon glyphicon-plus"></span> </button>
+						<button id="agregar" type="button" class="btn btn-xs btn-warning">Agregar Dirección <span class="glyphicon glyphicon glyphicon-plus"></span> </button>
 					</p>
 					<div class="white-panel row">
 						<table class="table table-hover" id="tblDireccion">
@@ -139,13 +139,14 @@
 						</table>
 					</div>
 					<hr>
-					<p class="text-center">
+					<p class="text-center" id="botones1">
 						<button id="continuar" type="button" class="btn btn-success">Continuar <span class="glyphicon glyphicon-arrow-right"></span></button>
 						<button id="cancelar" type="button" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></button>						
 					</p>
-					<p class="text-center" id="botones" style="display:none">
-						<button id="actualizar" type="submit" class="btn btn-primary">${valueButton} <span class="glyphicon glyphicon-refresh"></span></button>
+					<p class="text-center" id="botones2" style="display:none">
+						<button id="actualizar" type="submit" class="btn btn-primary">Actualizar <span class="glyphicon glyphicon-refresh"></span></button>
 						<button id="corregir" type="button" class="btn btn-warning">Corregir <span class="glyphicon glyphicon-arrow-left"></span></button>
+						<button id="cancelar" type="button" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></button>
 					</p>
 				</form:form>
 			</div>
