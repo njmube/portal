@@ -42,7 +42,7 @@ public class SambaServiceImpl implements SambaService {
 	
 	@Override
 	public InputStream getFileStream(String url, String fileName) {
-		logger.debug("sambaService filename...");
+		logger.debug("sambaService getFileStream...");
 		SmbFileInputStream smbIs = null;
 		BufferedInputStream bis = null;
 		Config.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
@@ -77,7 +77,7 @@ public class SambaServiceImpl implements SambaService {
 	public List<DocumentoCorporativo> getFilesFromDirectory(String url) {
 		List<DocumentoCorporativo> documentos = new ArrayList<DocumentoCorporativo>();
 		Config.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
-		logger.debug("sambaService documentos...");
+		logger.debug("sambaService getFilesFromDirectory...");
 		try {
 			SmbFile dir = new SmbFile(url);
 			if (dir.exists()) {
@@ -104,7 +104,7 @@ public class SambaServiceImpl implements SambaService {
 
 	@Override
 	public boolean ticketExists(Ticket ticket, Establecimiento establecimiento) {
-		logger.debug("buscando ticket");
+		logger.debug("buscando ticket ticketExists");
 		Config.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
 		String noSucursal = establecimiento.getClave();
 		String noCaja = ticket.getTransaccion().getTransaccionHeader().getIdCaja();
@@ -151,6 +151,7 @@ public class SambaServiceImpl implements SambaService {
 	
 	@Override
 	public void moveProcessedSapFile(DocumentoCorporativo documento) {
+		logger.debug("en moveProcessedSapFile");
 		try {
 			SmbFile sapFile = new SmbFile(documento.getRutaXmlPrevio(),
 				documento.getNombreXmlPrevio());
@@ -172,7 +173,7 @@ public class SambaServiceImpl implements SambaService {
 	
 	@Override
 	public void writeProcessedCfdiFile(byte[] xmlCfdi) {
-		logger.debug("Escribir archivo XML CFDI");
+		logger.debug("Escribir archivo XML CFDI, writeProcessedCfdiFile");
 		try {
 			SmbFile xmlFile = new SmbFile("smb://10.1.200.125/compartido/modatelas/corporativo/OUT/", "cfdi.xml");
 			SmbFileOutputStream smbFileOutputStream = new SmbFileOutputStream(xmlFile);

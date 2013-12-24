@@ -131,7 +131,7 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 		List<Attribute> list = element.getAttributes();
 		for (int contador = 0; contador < list.size(); contador ++) {
 			Attribute attribute = list.get(contador);
-			if (attribute.getValue() == null || attribute.getValue() == "") {
+			if (attribute.getValue() == null || attribute.getValue().isEmpty()) {
 				element.removeAttribute(attribute);
 				contador --;
 			}
