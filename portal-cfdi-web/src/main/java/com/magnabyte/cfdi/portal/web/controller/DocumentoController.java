@@ -79,7 +79,7 @@ public class DocumentoController {
 			model.put("SUCURSAL", documento.getEstablecimiento().getNombre());
 		}
 		if (documento.getComprobante().getTipoDeComprobante().equals("ingreso")) {
-			model.put("TIPO_DOC", "FCTURA");
+			model.put("TIPO_DOC", "FACTURA");
 		} else {
 			model.put("TIPO_DOC", "NOTA DE CREDITO");
 		}
