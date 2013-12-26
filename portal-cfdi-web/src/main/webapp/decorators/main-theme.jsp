@@ -68,20 +68,33 @@
 						Facturación en Línea <span class="glyphicon glyphicon-globe"></span>
 					</a>
 				</div>
+
 				<div class="collapse navbar-collapse pull-right">
 					<ul class="nav navbar-nav">
-						<sec:authorize access="hasAnyRole('ROLE_ADMIN')">
-							<li><a href="<c:url value="/menuCatalogo" />">Catalogos
-									<span class="glyphicon glyphicon-home"></span>
-							</a></li>
-						</sec:authorize>
-							<li><a href="<c:url value="/menuPage" />">Menu Principal
-									<span class="glyphicon glyphicon-home"></span>
-							</a></li>
+
+						<li><sec:authorize access="hasAnyRole('ROLE_ADMIN')">
+								<a data-toggle="dropdown"><span
+									class="glyphicon"></span>Catalogos <span
+										class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<c:url var="logoutUrl" value="/perform_logout" />
+									<li><a href="#"><span class="glyphicon "></span>Formas
+											de pago</a></li>
+									<li><a href="#"><span class="glyphicon "></span>Condiciones
+											de pago</a></li>
+									<li><a href="#"><span class="glyphicon "></span>Iva</a></li>
+
+								</ul>
+							</sec:authorize></li>
+						<li><a href="<c:url value="/menuPage" />">Menu Principal
+								<span class="glyphicon glyphicon-home"></span>
+						</a></li>
 						<%-- 						<li><a href="<c:url value="/about" />">Acerca de <span --%>
 						<!-- 								class="glyphicon glyphicon-question-sign"></span></a></li> -->
+
 					</ul>
-					<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_CORP', 'ROLE_ADMIN')">
+					<sec:authorize
+						access="hasAnyRole('ROLE_SUC', 'ROLE_CORP', 'ROLE_ADMIN')">
 						<div class="navbar-right">
 							<div class="btn-group">
 								<button type="button"
