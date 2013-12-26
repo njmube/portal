@@ -1,7 +1,5 @@
 package com.magnabyte.cfdi.portal.dao.establecimiento.sql;
 
-import org.omg.CORBA.SetOverrideTypeHelper;
-
 import com.magnabyte.cfdi.portal.dao.GenericSql;
 import com.magnabyte.cfdi.portal.dao.cliente.sql.DomicilioSql;
 
