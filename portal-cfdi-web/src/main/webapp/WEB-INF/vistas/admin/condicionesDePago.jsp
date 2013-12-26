@@ -7,6 +7,6 @@
 <title>Condiciones de pago</title>
 </head>
 <body>
-<H1>
+<H1></H1>
 </body>
 </html>

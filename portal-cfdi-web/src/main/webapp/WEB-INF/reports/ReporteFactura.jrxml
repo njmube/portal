@@ -292,6 +292,7 @@
 	<parameter name="FOLIO_FISCAL" class="java.lang.String"/>
 	<parameter name="NUM_SERIE_CERT" class="java.lang.String"/>
 	<parameter name="FOLIO_SAP" class="java.lang.String"/>
+	<parameter name="SUCURSAL" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -391,8 +392,8 @@
 					</textElement>
 					<textFieldExpression><![CDATA[($F{receptor.domicilio.colonia} !=null ? $F{receptor.domicilio.colonia}+", " : "")+
 ($F{receptor.domicilio.localidad} !=null ? $F{receptor.domicilio.localidad}+", " : "")+
-($F{receptor.domicilio.municipio} !=null ? $F{receptor.domicilio.municipio}+", " : "")+"C.P. "+
-$F{receptor.domicilio.codigoPostal}]]></textFieldExpression>
+($F{receptor.domicilio.municipio} !=null ? $F{receptor.domicilio.municipio}+", " : "")+
+($F{receptor.domicilio.codigoPostal} !=null ? "C.P. "+$F{receptor.domicilio.codigoPostal} : "")]]></textFieldExpression>
 				</textField>
 			</frame>
 			<frame>
@@ -577,15 +578,18 @@ $F{emisor.expedidoEn.pais}]]></textFieldExpression>
 					<textElement>
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{emisor.expedidoEn.estado}+" C.P. "+
-$F{emisor.expedidoEn.codigoPostal}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{emisor.expedidoEn.estado}+
+($F{emisor.expedidoEn.codigoPostal} !=null ?
+    " C.P. "+$F{emisor.expedidoEn.codigoPostal} : "")]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="1" y="14" width="239" height="10" uuid="14307857-01d0-43ee-8952-d9d860ef2ac7"/>
+					<reportElement x="1" y="14" width="239" height="10" uuid="14307857-01d0-43ee-8952-d9d860ef2ac7">
+						<printWhenExpression><![CDATA[$P{SUCURSAL} != null ]]></printWhenExpression>
+					</reportElement>
 					<textElement verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA["SUCURSAL: "+$F{receptor.domicilio.pais}]]></textFieldExpression>
+					<textFieldExpression><![CDATA["SUCURSAL: "+$P{SUCURSAL}]]></textFieldExpression>
 				</textField>
 			</frame>
 			<image>
