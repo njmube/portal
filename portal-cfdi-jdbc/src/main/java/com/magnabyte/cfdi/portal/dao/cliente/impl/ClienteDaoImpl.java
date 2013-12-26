@@ -14,6 +14,7 @@ import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
 import com.magnabyte.cfdi.portal.dao.cliente.ClienteDao;
 import com.magnabyte.cfdi.portal.dao.cliente.sql.ClienteSql;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
 @Repository("clienteDao")
 public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
@@ -21,15 +22,13 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 	@Override
 	public void save(Cliente cliente) {
 		try {
-			SimpleJdbcInsert simpleInsert = new SimpleJdbcInsert(
-					getJdbcTemplate());
+			SimpleJdbcInsert simpleInsert = new SimpleJdbcInsert(getJdbcTemplate());
 			simpleInsert.setTableName(ClienteSql.TABLE_NAME);
 			simpleInsert.setGeneratedKeyName(ClienteSql.ID_CLIENTE);
-			cliente.setId(simpleInsert.executeAndReturnKey(
-					getParameters(cliente)).intValue());
-		} catch (DataAccessException ex) {
-			logger.debug(
-					"No se pudo registrar el Cliente en la base de datos.", ex);
+			cliente.setId(simpleInsert.executeAndReturnKey(getParameters(cliente)).intValue());
+		} catch (DataAccessException ex) {			
+			logger.debug("No se pudo registrar el Cliente en la base de datos.", ex);
+			throw new PortalException("No se pudo registrar el Cliente en la base de datos.", ex);
 		}
 	}
 
