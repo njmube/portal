@@ -57,11 +57,4 @@ public class CorporativoController {
 		return "corporativo/facturaValidate";
 	}
 	
-//	@RequestMapping("/limpia")
-//	public String limpia(ModelMap model, HttpServletRequest request) {
-//		logger.debug("cleaning");
-//		model.remove("comprobante");
-//		WebUtils.setSessionAttribute(request, "comprobante", null);
-//		return "corporativo/pdf";
-//	}
 }
