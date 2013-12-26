@@ -28,12 +28,12 @@ public class SqlGenericTest {
 
 	@Test
 	public void qryTest() {
-		String qryString = EmisorSql.READ;
+		String qryString = EstablecimientoSql.READ_LUGAR_EXP;
 		logger.info(qryString);
 		Assert.assertNotNull(qryString);
 	}
 
-	@Test
+//	@Test
 	public void test() {
 		EmpresaEmisor empresa = new EmpresaEmisor();
 		empresa.setId(4);

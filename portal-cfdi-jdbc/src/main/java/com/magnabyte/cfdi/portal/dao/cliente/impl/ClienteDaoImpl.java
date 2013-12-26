@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -18,6 +20,8 @@ import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 @Repository("clienteDao")
 public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 
+	private static final Logger logger = LoggerFactory.getLogger(ClienteDaoImpl.class);
+	
 	@Override
 	public void save(Cliente cliente) {
 		try {

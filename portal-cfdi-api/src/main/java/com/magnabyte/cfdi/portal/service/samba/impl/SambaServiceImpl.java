@@ -188,10 +188,12 @@ public class SambaServiceImpl implements SambaService {
 	public void writeProcessedCfdiFile(byte[] xmlCfdi, DocumentoCorporativo documento) {
 		logger.debug("Escribir archivo XML CFDI, writeProcessedCfdiFile");
 		try {
-			String rutaXmlCfdi = documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() +
+			String rutaXmlCfdiDestino = documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() +
 					documento.getEstablecimiento().getRutaRepositorio().getRutaRepoOut();
-			//FIXME Modificar nombre cfdi xml
-			SmbFile xmlFile = new SmbFile(rutaXmlCfdi, "cfdi.xml");
+			
+			String nombreXmlCfdiDestino = "DOCUMENTO_" +documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".xml";
+			
+			SmbFile xmlFile = new SmbFile(rutaXmlCfdiDestino, nombreXmlCfdiDestino);
 			SmbFileOutputStream smbFileOutputStream = new SmbFileOutputStream(xmlFile);
 			if (!xmlFile.exists()) {
 				xmlFile.createNewFile();
