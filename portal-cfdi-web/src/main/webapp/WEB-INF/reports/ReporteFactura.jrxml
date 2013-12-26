@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteFactura" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4a6ba1cb-2ea7-4218-8d09-5f9f932a9716">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="89"/>
 	<property name="ireport.y" value="0"/>
 	<style name="table">
 		<box>
@@ -293,6 +293,7 @@
 	<parameter name="NUM_SERIE_CERT" class="java.lang.String"/>
 	<parameter name="FOLIO_SAP" class="java.lang.String"/>
 	<parameter name="SUCURSAL" class="java.lang.String"/>
+	<parameter name="TIPO_DOC" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -344,6 +345,7 @@
 	<field name="impuestos.totalImpuestosTrasladados" class="java.math.BigDecimal"/>
 	<field name="emisor.expedidoEn.localidad" class="java.lang.String"/>
 	<field name="receptor.domicilio.localidad" class="java.lang.String"/>
+	<field name="serie" class="java.lang.String"/>
 	<variable name="fecha" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
@@ -404,19 +406,12 @@
 				<line>
 					<reportElement x="0" y="87" width="134" height="1" uuid="66c0f021-2069-4a40-90d9-a7ddeb5f0121"/>
 				</line>
-				<staticText>
-					<reportElement x="0" y="2" width="134" height="13" uuid="8df4b4b6-94b3-439b-a5dc-ed7808ec24b8"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="11" isBold="true"/>
-					</textElement>
-					<text><![CDATA[FACTURA]]></text>
-				</staticText>
 				<textField>
-					<reportElement x="0" y="17" width="134" height="12" uuid="e5cd07f1-98a4-4d09-984b-3429a1e12d6d"/>
+					<reportElement x="0" y="18" width="134" height="12" uuid="e5cd07f1-98a4-4d09-984b-3429a1e12d6d"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{folio}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{serie}+"-"+$F{folio}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="47" width="134" height="10" uuid="49d545fa-55cb-4979-9e92-3f7fd5fb8104"/>
@@ -494,6 +489,13 @@
 				<line>
 					<reportElement x="1" y="173" width="133" height="1" uuid="81228ae3-4453-4f19-84cd-a7889337d8b1"/>
 				</line>
+				<textField>
+					<reportElement x="1" y="3" width="132" height="13" uuid="81f7d11e-9dea-42c4-b5e8-0dcb4073af29"/>
+					<textElement textAlignment="Center">
+						<font size="11" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{TIPO_DOC}]]></textFieldExpression>
+				</textField>
 			</frame>
 			<frame>
 				<reportElement x="201" y="0" width="233" height="65" uuid="670fa061-3add-4db8-8d7f-fbe80195ea99"/>
@@ -660,7 +662,8 @@ $F{emisor.expedidoEn.pais}]]></textFieldExpression>
 							</box>
 							<textField>
 								<reportElement x="0" y="0" width="71" height="15" uuid="e604c543-78dd-4a98-8d8d-5dec853e27b3"/>
-								<textElement textAlignment="Right" verticalAlignment="Middle">
+								<box rightPadding="0"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="8"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
