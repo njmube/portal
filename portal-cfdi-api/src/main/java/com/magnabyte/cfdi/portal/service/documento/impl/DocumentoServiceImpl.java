@@ -14,11 +14,11 @@ import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
@@ -36,6 +36,7 @@ import javax.xml.transform.stream.StreamSource;
 import mx.gob.sat.cfd._3.Comprobante;
 import mx.gob.sat.cfd._3.Comprobante.Conceptos;
 import mx.gob.sat.cfd._3.Comprobante.Conceptos.Concepto;
+import mx.gob.sat.cfd._3.Comprobante.Emisor;
 import mx.gob.sat.cfd._3.Comprobante.Impuestos;
 import mx.gob.sat.cfd._3.Comprobante.Receptor;
 import mx.gob.sat.cfd._3.TUbicacion;
@@ -82,7 +83,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		//
 		String cadena = obtenerCadena(comprobante);
 		String sello = obtenerSelloDigital(cadena);
-		logger.debug("sello {} y cadena {}", sello, cadena);
+		logger.debug("SELLO: {} y CADENA: {}", sello, cadena);
 		if(validSelloDigital(sello, cadena, comprobante)) {
 			comprobante.setSello(sello);
 			return true;
@@ -93,7 +94,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	private boolean validSelloDigital(String sello, String cadena, Comprobante comprobante) {
 		CertificateFactory certFactory;
 		try {
-			logger.debug("validando sello");
+			logger.debug("validando sello...");
 			certFactory = CertificateFactory.getInstance("X.509");
 			X509Certificate certificate = (X509Certificate) certFactory.generateCertificate(resourceLoader.getResource("classpath:/aaa010101aaa__csd_01.cer").getInputStream());
 			certificate.checkValidity();
@@ -170,16 +171,60 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 
 	@Override
 	public Comprobante obtenerComprobantePor(Cliente cliente, Ticket ticket,
-			Integer domicilioFiscal, Establecimiento establecimiento) {
+		Integer idDomicilioFiscal, Establecimiento establecimiento) {
 		
 		Comprobante comprobante = new Comprobante();
+		
+		inicializaComprobante(comprobante, ticket);
+		formatTicketDate(ticket);
+		comprobante.setEmisor(getEmisorPorEstablecimiento(establecimiento));
+		comprobante.setReceptor(createReceptor(cliente, idDomicilioFiscal));
+		getDetalleFromTicket(ticket, comprobante);
+		createFechaDocumento(comprobante);
+		comprobante.setLugarExpedicion(comprobante.getEmisor().getExpedidoEn().getLocalidad());
+		
+		comprobante.setTipoDeComprobante("ingreso");
+		comprobante.setTipoCambio("1");
+		comprobante.setCondicionesDePago("PAGO DE CONTADO");
+		comprobante.setFormaDePago("PAGO EN UNA SOLA EXHIBICION");
+		
+		return comprobante;
+	}
+
+	private void formatTicketDate(Ticket ticket) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		SimpleDateFormat sdfOrigen = new SimpleDateFormat("yyyyMMddHHmmss");
+		try {
+			Date fechaTicket = sdfOrigen.parse(ticket.getTransaccion().getTransaccionHeader().getFechaHora());
+			ticket.getTransaccion().getTransaccionHeader().setFechaHora(sdf.format(fechaTicket));
+		} catch (ParseException e) {
+			logger.error("Ocurrió un error al obtener la fecha del ticket: ", e);
+		} 
+	}
+
+	private void inicializaComprobante(Comprobante comprobante, Ticket ticket) {
+		comprobante.setVersion("3.2");
+		comprobante.setSello("");
+		comprobante.setNoCertificado("xxxxxxxxxxxxxxxxxxxx");
+		comprobante.setCertificado("");
+		for(InformacionPago infoPago : ticket.getTransaccion().getInformacionPago()) {
+			comprobante.setNumCtaPago(infoPago.getNumeroCuenta());
+			comprobante.setMetodoDePago(infoPago.getPago().getMetodoPago().toUpperCase());
+			comprobante.setMoneda(infoPago.getPago().getMoneda());
+		}
+	}
+
+	private Emisor getEmisorPorEstablecimiento(Establecimiento establecimiento) {
+		EmpresaEmisor empresaEmisor = emisorDao.read(establecimiento.getEmpresaEmisor());
+		empresaEmisor.getEmisor().setExpedidoEn(emisorDao.readLugarExpedicion(establecimiento));
+		return empresaEmisor.getEmisor();
+	}
+	
+	private Receptor createReceptor(Cliente cliente, Integer idDomicilioFiscal) {
 		Receptor receptor = new Receptor();
-		Conceptos conceptos = new Conceptos();
 		TUbicacion tUbicacion = new TUbicacion();
 		DomicilioCliente domicilioCte = new DomicilioCliente();
-		domicilioCte.setId(domicilioFiscal);
-		
-		BigDecimal IVA = new BigDecimal(1.16);
+		domicilioCte.setId(idDomicilioFiscal);
 		
 		for(DomicilioCliente domicilio : cliente.getDomicilios()) {
 			if(domicilioCte.equals(domicilio)){
@@ -187,40 +232,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 				break;
 			}
 		}
-
-		comprobante.setLugarExpedicion("El Lugar");
-		comprobante.setSello("");
-		comprobante.setNoCertificado("xxxxxxxxxxxxxxxxxxxx");
-		comprobante.setCertificado("");
-		
-		GregorianCalendar gc = new GregorianCalendar();
-		gc.setTime(new Date());
-		try {
-			comprobante.setFecha(DatatypeFactory.newInstance().newXMLGregorianCalendar(gc.get(Calendar.YEAR), gc.get(Calendar.MONTH) + 1, gc.get(Calendar.DAY_OF_MONTH), gc.get(Calendar.HOUR), gc.get(Calendar.MINUTE), gc.get(Calendar.SECOND), DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED));
-		} catch (DatatypeConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//TODO
-//		ticket.getTransaccion().getTransaccionHeader().setFechaHora("20131223100000");
-//		
-//		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-//		SimpleDateFormat sdfOrigen = new SimpleDateFormat("yyyyMMddHHmmss");
-//		try {
-//			Date fechaTicket = sdfOrigen.parse(ticket.getTransaccion().getTransaccionHeader().getFechaHora());
-//			logger.debug("fecha {}", sdf.format(fechaTicket));
-//			ticket.getTransaccion().getTransaccionHeader().setFechaHora(sdf.format(fechaTicket));
-//			GregorianCalendar fechaComprobante = new GregorianCalendar();
-//			fechaComprobante.setTime(fechaTicket);
-//			comprobante.setFecha(DatatypeFactory.newInstance().newXMLGregorianCalendar(fechaComprobante).normalize());
-//		} catch (ParseException e) {
-//			logger.error("Ocurrió un error al obtener la fecha del ticket");
-//			e.printStackTrace();
-//		} catch (DatatypeConfigurationException e) {
-//			e.printStackTrace();
-//		}
-		
-		comprobante.setVersion("3.2");
 		
 		tUbicacion.setCalle(domicilioCte.getCalle());
 		tUbicacion.setNoExterior(domicilioCte.getNoExterior());
@@ -233,6 +244,15 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		tUbicacion.setReferencia(domicilioCte.getReferencia());
 		tUbicacion.setLocalidad(domicilioCte.getLocalidad());
 		
+		receptor.setRfc(cliente.getRfc());
+		receptor.setNombre(cliente.getNombre());
+		receptor.setDomicilio(tUbicacion);
+		return receptor;
+	}
+	
+	private void getDetalleFromTicket(Ticket ticket, Comprobante comprobante) {
+		BigDecimal IVA = new BigDecimal(1.16);
+		Conceptos conceptos = new Conceptos();
 		BigDecimal subTotal = new BigDecimal(0);
 		for(Partida partida : ticket.getTransaccion().getPartidas()) {
 			Concepto concepto = new Concepto();
@@ -246,42 +266,31 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			}
 			conceptos.getConcepto().add(concepto);
 		}
-		
+		comprobante.setConceptos(conceptos);
 		comprobante.setSubTotal(subTotal);
 		Impuestos impuesto = new Impuestos();
 		impuesto.setTotalImpuestosTrasladados(ticket.getTransaccion().getTransaccionTotal().getTotalVenta().subtract(subTotal));
 		comprobante.setImpuestos(impuesto);
 		comprobante.setTotal(ticket.getTransaccion().getTransaccionTotal().getTotalVenta());
-
+		
 		BigDecimal descuentoTotal = new BigDecimal(0);
 		for(PartidaDescuento descuento : ticket.getTransaccion().getPartidasDescuentos()) {
 			descuentoTotal = descuentoTotal.add(descuento.getDescuentoTotal());
 		}
 		comprobante.setDescuento(descuentoTotal.setScale(2));
-		
-		for(InformacionPago infoPago : ticket.getTransaccion().getInformacionPago()) {
-			comprobante.setNumCtaPago(infoPago.getNumeroCuenta());
-			comprobante.setMetodoDePago(infoPago.getPago().getMetodoPago().toUpperCase());
-			comprobante.setMoneda(infoPago.getPago().getMoneda());
-		}
-		
-		receptor.setRfc(cliente.getRfc());
-		receptor.setNombre(cliente.getNombre());
-		receptor.setDomicilio(tUbicacion);
-		
-		EmpresaEmisor empresaEmisor = emisorDao.read(establecimiento.getEmpresaEmisor());
-		
-		empresaEmisor.getEmisor().setExpedidoEn(emisorDao.readLugarExpedicion(establecimiento));
-		
-		comprobante.setEmisor(empresaEmisor.getEmisor());
-		comprobante.setReceptor(receptor);
-		comprobante.setConceptos(conceptos);
-		comprobante.setTipoDeComprobante("ingreso");
-		comprobante.setTipoCambio("1");
-		comprobante.setCondicionesDePago("PAGO DE CONTADO");
-		comprobante.setFormaDePago("PAGO EN UNA SOLA EXHIBICION");
-		
-		return comprobante;
 	}
-
+	
+	private void createFechaDocumento(Comprobante comprobante) {
+		GregorianCalendar dateNow = new GregorianCalendar();
+		dateNow.setTime(new Date());
+		try {
+			XMLGregorianCalendar fechaComprobante = DatatypeFactory.newInstance().newXMLGregorianCalendar(dateNow.get(Calendar.YEAR), 
+					dateNow.get(Calendar.MONTH) + 1, dateNow.get(Calendar.DAY_OF_MONTH), 
+					dateNow.get(Calendar.HOUR), dateNow.get(Calendar.MINUTE), dateNow.get(Calendar.SECOND), 
+					DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED); 
+			comprobante.setFecha(fechaComprobante);
+		} catch (DatatypeConfigurationException e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -49,11 +49,8 @@ public class DocumentoController {
 	@RequestMapping(value = "/generaFactura", method = RequestMethod.POST)
 	public String generaFactura(@ModelAttribute Documento documento, ModelMap model) {
 		logger.debug("generando factura");
-		logger.debug("docu {}", documento);
 		if (documentoService.sellarComprobante(documento.getComprobante())) {
-			logger.debug("docu {}", documento);
 			documentoWebService.timbrarDocumento(documento);
-			logger.debug("docu {}", documento);
 			model.put("documento", documento);
 		}
 		

@@ -3,6 +3,7 @@ package com.magnabyte.cfdi.portal.service.samba;
 import java.io.InputStream;
 import java.util.List;
 
+import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
@@ -17,6 +18,6 @@ public interface SambaService {
 
 	void moveProcessedSapFile(DocumentoCorporativo documento);
 
-	void writeProcessedCfdiFile(byte[] xmlCfdi, DocumentoCorporativo documento);
+	void writeProcessedCfdiFile(byte[] xmlCfdi, Documento documento);
 
 }

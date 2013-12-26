@@ -27,6 +27,7 @@ import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.XmlMappingException;
 import org.springframework.stereotype.Service;
 
+import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
@@ -185,15 +186,19 @@ public class SambaServiceImpl implements SambaService {
 	}
 	
 	@Override
-	public void writeProcessedCfdiFile(byte[] xmlCfdi, DocumentoCorporativo documento) {
+	public void writeProcessedCfdiFile(byte[] xmlCfdi, Documento documento) {
 		logger.debug("Escribir archivo XML CFDI, writeProcessedCfdiFile");
 		try {
 			String rutaXmlCfdiDestino = documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() +
 					documento.getEstablecimiento().getRutaRepositorio().getRutaRepoOut();
+			logger.debug("Ruta: {}", rutaXmlCfdiDestino);
+			String nombreXmlCfdiDestino = "DOCUMENTO_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".xml";
 			
-			String nombreXmlCfdiDestino = "DOCUMENTO_" +documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".xml";
-			
-			SmbFile xmlFile = new SmbFile(rutaXmlCfdiDestino, nombreXmlCfdiDestino);
+			SmbFile xmlDirectory = new SmbFile(rutaXmlCfdiDestino);
+			SmbFile xmlFile = new SmbFile(xmlDirectory, nombreXmlCfdiDestino);
+			if (!xmlDirectory.exists()) {
+				xmlDirectory.mkdir();
+			}
 			SmbFileOutputStream smbFileOutputStream = new SmbFileOutputStream(xmlFile);
 			if (!xmlFile.exists()) {
 				xmlFile.createNewFile();
