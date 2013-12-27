@@ -8,7 +8,6 @@ import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
 
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
-import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 
 public abstract class Documento implements Serializable {
 	/**
@@ -16,12 +15,21 @@ public abstract class Documento implements Serializable {
 	 */
 	private static final long serialVersionUID = 383916791240840326L;
 
+	private Integer id;
 	private Comprobante comprobante;
 	private Cliente cliente;
 	private String cadenaOriginal;
 	private Date fechaFacturacion;
 	private Establecimiento establecimiento;
 	private TimbreFiscalDigital timbreFiscalDigital;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
 	public Comprobante getComprobante() {
 		return comprobante;

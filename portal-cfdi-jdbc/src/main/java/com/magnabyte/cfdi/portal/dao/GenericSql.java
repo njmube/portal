@@ -4,12 +4,16 @@ public class GenericSql {
 	
 //	SQL Srver dbo.TRIM
 	public static final String SELECT = "SELECT";
+	public static final String INSERT = "INSERT INTO";
 	public static final String UPDATE = "UPDATE";
+	public static final String VALUES = "VALUES";
 	public static final String ALL = " * ";
 	public static final String PARENTESIS_INIT = "(";
 	public static final String PARENTESIS_FIN = ")";
 	public static final String TRIM= "dbo.TRIM";
 	public static final String SET_PARAM = " = ?";
+	public static final String PARAM = "?,";
+	public static final String LAST_PARAM = "?";
 	public static final String FROM = "FROM";
 	public static final String WHERE = "WHERE";
 	public static final String INNER = " INNER JOIN ";

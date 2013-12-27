@@ -17,13 +17,10 @@ import java.security.cert.X509Certificate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -49,9 +46,11 @@ import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
+import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
+import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
@@ -71,6 +70,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Autowired
 	private EmisorDao emisorDao;
+	
+	@Autowired
+	DocumentoDao documentoDao;
 	
 	private ResourceLoader resourceLoader;
 	
@@ -282,6 +284,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		comprobante.setFormaDePago("PAGO EN UNA SOLA EXHIBICION");
 		
 		return comprobante;
+	}
+
+	@Override
+	public void save(Documento documento) {
+		documentoDao.save(documento);
+		
 	}
 
 }

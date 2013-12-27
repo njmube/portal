@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.magnabyte.cfdi.portal.dao.cliente.sql.ClienteSql;
 import com.magnabyte.cfdi.portal.dao.cliente.sql.DomicilioSql;
+import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoDetalleSql;
 import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
 import com.magnabyte.cfdi.portal.dao.emisor.sql.EmisorSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.EstablecimientoDao;
@@ -28,7 +29,7 @@ public class SqlGenericTest {
 
 	@Test
 	public void qryTest() {
-		String qryString = EstablecimientoSql.READ_LUGAR_EXP;
+		String qryString = DocumentoDetalleSql.INSERT_DETALLE_DOC;
 		logger.info(qryString);
 		Assert.assertNotNull(qryString);
 	}

@@ -81,13 +81,14 @@
 						</table>
 					</div>
 					<hr>
-					<p class="text-center">
+					<p class="text-center" id="botones1">
 						<button id="continuar" type="button" class="btn btn-success">Continuar <span class="glyphicon glyphicon-arrow-right"></span></button>
 						<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
 					</p>
-					<p class="text-center" id="botones" style="display:none">
+					<p class="text-center" id="botones2" style="display:none">
 						<button id="guardar" type="submit" class="btn btn-primary">Guardar <span class="glyphicon glyphicon-floppy-disk"></span></button>
 						<button id="corregir" type="button" class="btn btn-warning">Corregir <span class="glyphicon glyphicon-arrow-left"></span></button>
+						<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
 					</p>
 				</form:form>
 			</div>
