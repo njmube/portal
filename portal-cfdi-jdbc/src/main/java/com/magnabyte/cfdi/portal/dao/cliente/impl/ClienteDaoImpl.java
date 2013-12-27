@@ -7,7 +7,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -51,12 +51,10 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 	
 	@Override
 	public Cliente readClientesByNameRfc(Cliente cliente) {
-		logger.info("RFC: {}", cliente.getRfc());
-		logger.info("Nombre: {}", cliente.getNombre());
 		try {
 			return getJdbcTemplate().queryForObject(ClienteSql.FIND_BY_NAME_RFC,
 					CLIENTE_MAPPER, cliente.getRfc(), cliente.getNombre());
-		} catch (EmptyResultDataAccessException ex){
+		} catch (IncorrectResultSizeDataAccessException ex) {
 			logger.info("El cliente no existe, se insertara.");
 			return null;
 		}

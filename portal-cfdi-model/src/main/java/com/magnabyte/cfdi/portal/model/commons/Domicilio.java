@@ -162,11 +162,6 @@ public abstract class Domicilio {
 				return false;
 		} else if (!colonia.equals(other.colonia))
 			return false;
-		if (estado == null) {
-			if (other.estado != null)
-				return false;
-		} else if (!estado.equals(other.estado))
-			return false;
 		if (localidad == null) {
 			if (other.localidad != null)
 				return false;

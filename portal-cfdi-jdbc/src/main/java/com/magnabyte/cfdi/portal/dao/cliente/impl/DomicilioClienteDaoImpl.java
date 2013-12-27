@@ -72,6 +72,14 @@ public class DomicilioClienteDaoImpl extends GenericJdbcDao implements
 		getJdbcTemplate().update(qry, domicilio.getId());
 	}
 
+	@Override
+	public Estado readEstado(Estado estado) {
+		String qry = "select ce.id_estado, ce.id_pais, dbo.TRIM(ce.nombre) as nom_estado, dbo.TRIM(cp.nombre)"
+				+ " as nom_pais from c_estado as ce inner join c_pais as cp on ce.id_pais = cp.id_pais where ce.nombre = ?";
+		
+		return getJdbcTemplate().queryForObject(qry, ESTADO_MAPPER, estado.getNombre());
+	}
+	
 	private MapSqlParameterSource getParameters(DomicilioCliente domicilio) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue(DomicilioSql.ID_CLIENTE, domicilio.getCliente().getId());
@@ -123,4 +131,24 @@ public class DomicilioClienteDaoImpl extends GenericJdbcDao implements
 			return domicilio;
 		}
 	};
+	
+	private static final RowMapper<Estado> ESTADO_MAPPER = new RowMapper<Estado>() {
+
+		@Override
+		public Estado mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Pais pais = new Pais();
+			Estado estado = new Estado();
+			
+			pais.setId(rs.getInt(DomicilioSql.ID_PAIS));
+			pais.setNombre(rs.getString(DomicilioSql.AS_PAIS));
+			
+			estado.setId(rs.getInt(DomicilioSql.ID_ESTADO));
+			estado.setNombre(rs.getString(DomicilioSql.AS_ESTADO));
+			estado.setPais(pais);
+			
+			return estado;
+		}
+		
+	};
+
 }

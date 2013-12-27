@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
+import com.magnabyte.cfdi.portal.model.commons.Estado;
 
 public interface DomicilioClienteDao {
 
@@ -14,4 +15,6 @@ public interface DomicilioClienteDao {
 	public void update(DomicilioCliente domicilio);
 	
 	public void delete(DomicilioCliente domicilio);
+
+	public Estado readEstado(Estado estado);
 }
