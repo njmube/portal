@@ -1,13 +1,10 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import mx.gob.sat.cfd._3.Comprobante;
 import net.sf.jasperreports.engine.JRParameter;
@@ -59,6 +56,7 @@ public class DocumentoController {
 		logger.debug("generando factura");
 		if (documentoService.sellarComprobante(documento.getComprobante())) {
 			if (documentoWebService.timbrarDocumento(documento)) {
+				
 				documentoService.save(documento);
 			}
 			model.put("documento", documento);
@@ -91,12 +89,6 @@ public class DocumentoController {
 			model.put("TIPO_DOC", "NOTA DE CREDITO");
 		}
 
-//		  SimpleFileResolver fileResolver =
-//		    new SimpleFileResolver(
-//		      Arrays.asList(new File[]{new File("resources/img")})
-//		      );
-//		  fileResolver.setResolveAbsolutePath(true);
-//		model.put(JRExporterParameter.OUTPUT_FILE_NAME JRParameter.REPORT_FILE_RESOLVER, fileResolver);
 		model.put("NUM_SERIE_CERT", certificadoDao.obtenerCertificado());
 		model.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
 		model.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
