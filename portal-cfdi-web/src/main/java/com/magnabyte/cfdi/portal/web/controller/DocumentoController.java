@@ -59,7 +59,7 @@ public class DocumentoController {
 		logger.debug("generando factura");
 		if (documentoService.sellarComprobante(documento.getComprobante())) {
 			if (documentoWebService.timbrarDocumento(documento)) {
-//				documentoService.save(documento);
+				documentoService.save(documento);
 			}
 			model.put("documento", documento);
 		}

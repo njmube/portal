@@ -20,6 +20,9 @@ import com.magnabyte.cfdi.portal.model.exception.PortalException;
 @Repository("documentoDetalleDao")
 public class DocumentoDetalleDaoImpl extends GenericJdbcDao
 	implements DocumentoDetalleDao {
+	
+	private static final Logger logger = 
+			LoggerFactory.getLogger(DocumentoDetalleDaoImpl.class);
 
 	private static final Logger logger = LoggerFactory.getLogger(DocumentoDetalleDaoImpl.class);
 	
