@@ -1,5 +1,6 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -10,7 +11,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import mx.gob.sat.cfd._3.Comprobante;
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,44 +83,38 @@ public class DocumentoController {
 		return "documento/documentoSuccess";
 	}
 
-	@RequestMapping("/reporte")
-	public String reporte(@ModelAttribute Documento documento, ModelMap model, HttpServletRequest request) {
-		logger.debug("Creando reporte");
-		Locale locale = new Locale("es", "MX");
-		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
-		comprobantes.add(documento.getComprobante());
-		String pathImages = request.getSession().getServletContext().getRealPath("resources/img");
-		if (documento instanceof DocumentoCorporativo ) {
-			model.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
-		} else if (documento instanceof DocumentoSucursal) {
-			model.put("SUCURSAL", documento.getEstablecimiento().getNombre());
-		}
-		if (documento.getComprobante().getTipoDeComprobante().equals("ingreso")) {
-			model.put("TIPO_DOC", "FACTURA");
-		} else {
-			model.put("TIPO_DOC", "NOTA DE CREDITO");
-		}
-
-//		  SimpleFileResolver fileResolver =
-//		    new SimpleFileResolver(
-//		      Arrays.asList(new File[]{new File("resources/img")})
-//		      );
-//		  fileResolver.setResolveAbsolutePath(true);
-//		model.put(JRExporterParameter.OUTPUT_FILE_NAME JRParameter.REPORT_FILE_RESOLVER, fileResolver);
-		model.put("NUM_SERIE_CERT", certificadoDao.obtenerCertificado());
-		model.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
-		model.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
-		model.put("FECHA_TIMBRADO", documento.getTimbreFiscalDigital().getFechaTimbrado());
-		model.put("FOLIO_FISCAL", documento.getTimbreFiscalDigital().getUUID());
-		model.put("CADENA_ORIGINAL", documento.getCadenaOriginal());
-		model.put("PATH_IMAGES", pathImages);
-		model.put(JRParameter.REPORT_LOCALE, locale);
-		model.put("QRCODE", codigoQRService.generaCodigoQR(documento));
-		model.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
-		model.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
-		model.put("objetoKey", comprobantes);
-		return "reporte";
-	}
+//	@RequestMapping("/reporte")
+//	public String reporte(@ModelAttribute Documento documento, ModelMap model, HttpServletRequest request) {
+//		logger.debug("Creando reporte");
+//		Locale locale = new Locale("es", "MX");
+//		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
+//		comprobantes.add(documento.getComprobante());
+//		String pathImages = request.getSession().getServletContext().getRealPath("resources/img");
+//		if (documento instanceof DocumentoCorporativo ) {
+//			model.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
+//		} else if (documento instanceof DocumentoSucursal) {
+//			model.put("SUCURSAL", documento.getEstablecimiento().getNombre());
+//		}
+//		if (documento.getComprobante().getTipoDeComprobante().equals("ingreso")) {
+//			model.put("TIPO_DOC", "FACTURA");
+//		} else {
+//			model.put("TIPO_DOC", "NOTA DE CREDITO");
+//		}
+//
+//		model.put("NUM_SERIE_CERT", certificadoDao.obtenerCertificado());
+//		model.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
+//		model.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
+//		model.put("FECHA_TIMBRADO", documento.getTimbreFiscalDigital().getFechaTimbrado());
+//		model.put("FOLIO_FISCAL", documento.getTimbreFiscalDigital().getUUID());
+//		model.put("CADENA_ORIGINAL", documento.getCadenaOriginal());
+//		model.put("PATH_IMAGES", pathImages);
+//		model.put(JRParameter.REPORT_LOCALE, locale);
+//		model.put("QRCODE", codigoQRService.generaCodigoQR(documento));
+//		model.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
+//		model.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
+//		model.put("objetoKey", comprobantes);
+//		return "reporte";
+//	}
 	
 	@RequestMapping("/documentoXml")
 	public @ResponseBody Comprobante documentoXml(@ModelAttribute Documento documento) {
@@ -129,5 +133,78 @@ public class DocumentoController {
 //			e.printStackTrace();
 //		}
 //	}
+	
+	@RequestMapping("/reporte")
+	public void reporte(@ModelAttribute Documento documento, ModelMap model, HttpServletRequest request,
+			HttpServletResponse response) {
+		logger.debug("Creando reporte");
+		JasperDesign disenoReporte = null;
+		JasperPrint reporteCompleto = null;
+		JasperReport reporteCompilado = null;
+		String context = request.getContextPath();
+//		/src/main/webapp/WEB-INF/reports
+		
+		String pathPlantilla = context + "src" + 
+				File.separator + "main" + File.separator + "webapp" + File.separator +
+				"WEB-INF" + File.separator + "reports" + File.separator + "ReporteFactura.jrxml";
+		logger.debug(pathPlantilla);
+		
+		Locale locale = new Locale("es", "MX");
+		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
+		comprobantes.add(documento.getComprobante());
+		String pathImages = request.getSession().getServletContext().getRealPath("resources/img");
+		if (documento instanceof DocumentoCorporativo ) {
+			model.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
+		} else if (documento instanceof DocumentoSucursal) {
+			model.put("SUCURSAL", documento.getEstablecimiento().getNombre());
+		}
+		if (documento.getComprobante().getTipoDeComprobante().equals("ingreso")) {
+			model.put("TIPO_DOC", "FACTURA");
+		} else {
+			model.put("TIPO_DOC", "NOTA DE CREDITO");
+		}
+
+		model.put(JRParameter.REPORT_LOCALE, locale);
+		model.put("NUM_SERIE_CERT", certificadoDao.obtenerCertificado());
+		model.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
+		model.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
+		model.put("FECHA_TIMBRADO", documento.getTimbreFiscalDigital().getFechaTimbrado());
+		model.put("FOLIO_FISCAL", documento.getTimbreFiscalDigital().getUUID());
+		model.put("CADENA_ORIGINAL", documento.getCadenaOriginal());
+		model.put("PATH_IMAGES", pathImages);
+		model.put("QRCODE", codigoQRService.generaCodigoQR(documento));
+		model.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
+		model.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
+		model.put("objetoKey", comprobantes);
+		
+		JRBeanCollectionDataSource dataSource = 
+				new JRBeanCollectionDataSource(documento.getComprobante().getConceptos().getConcepto());
+		
+		try {
+			response.setHeader("Content-Disposition", "attachment; filename=reporteFactura.xml"); 
+			disenoReporte = JRXmlLoader.load(pathPlantilla);
+			reporteCompilado = JasperCompileManager.compileReport(disenoReporte);
+			reporteCompleto = JasperFillManager
+					.fillReport(reporteCompilado, model, dataSource);
+			
+			byte[] bytesReport = JasperExportManager.exportReportToPdf(reporteCompleto);
+			
+			OutputStream out = response.getOutputStream();
+			out.write(bytesReport);
+			out.flush();
+			out.close();
+			
+		} catch (JRException | IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public List<Comprobante> getModel(Documento documento) {
+		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
+		
+		
+		return comprobantes;
+	}
 	
 }
