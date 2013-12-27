@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.dao.cliente.ClienteDao;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
+import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 
@@ -43,7 +44,6 @@ public class ClienteServiceImpl implements ClienteService {
 			if(cliente.getId() != null) {
 				cteBD = clienteDao.read(cliente);
 				cteBD.setDomicilios(domicilioClienteService.getByCliente(cliente));
-				logger.debug("Nombre ClienteBD: " + cteBD.getNombre());
 			} else {
 				logger.debug("El id de cliente no puede ser nulo.");
 			}
@@ -82,5 +82,42 @@ public class ClienteServiceImpl implements ClienteService {
 			logger.debug("El cliente no puede ser nulo.");
 		}
 	}
+	
+	@Override
+	public Cliente readClientesByNameRfc(Cliente cliente) {
+		Cliente cteBD = null;
+		if(cliente != null) {
+			if(cliente.getRfc() != null && cliente.getNombre() != null) {
+				cteBD = clienteDao.readClientesByNameRfc(cliente);
+				cteBD.setDomicilios(domicilioClienteService.getByCliente(cliente));
+			} else {
+				logger.debug("El rfc y nombre de cliente no puede ser nulo.");
+			}
+		} else {
+			logger.debug("El cliente no puede ser nulo.");
+		}
+		return cteBD;
+	}
 
+	@Override
+	public boolean exist(Cliente cliente) {
+		Cliente clienteBD = readClientesByNameRfc(cliente); 
+		if(clienteBD != null) {
+			if(clienteBD.equals(cliente)) {
+				DomicilioCliente domicilio = cliente.getDomicilios().get(0);
+				if(domicilio != null) {
+					for(DomicilioCliente domicilioBD : clienteBD.getDomicilios()) {
+						return comparaDirecciones(domicilio, domicilioBD);
+					}
+				}
+				return false;
+			}
+		}
+		return false;
+	}
+
+	private boolean comparaDirecciones(DomicilioCliente domicilio,
+		DomicilioCliente domicilioBD) {
+		return domicilioBD.compara(domicilio);
+	}
 }

@@ -117,6 +117,8 @@ public abstract class Domicilio {
 	public void setEstado(Estado estado) {
 		this.estado = estado;
 	}
+	
+	
 
 	@Override
 	public int hashCode() {
@@ -139,6 +141,56 @@ public abstract class Domicilio {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+
+	public boolean compara(Object obj) {
+		Domicilio other = (Domicilio) obj;
+		if (calle == null) {
+			if (other.calle != null)
+				return false;
+		} else if (!calle.equals(other.calle))
+			return false;
+		if (codigoPostal == null) {
+			if (other.codigoPostal != null)
+				return false;
+		} else if (!codigoPostal.equals(other.codigoPostal))
+			return false;
+		if (colonia == null) {
+			if (other.colonia != null)
+				return false;
+		} else if (!colonia.equals(other.colonia))
+			return false;
+		if (estado == null) {
+			if (other.estado != null)
+				return false;
+		} else if (!estado.equals(other.estado))
+			return false;
+		if (localidad == null) {
+			if (other.localidad != null)
+				return false;
+		} else if (!localidad.equals(other.localidad))
+			return false;
+		if (municipio == null) {
+			if (other.municipio != null)
+				return false;
+		} else if (!municipio.equals(other.municipio))
+			return false;
+		if (noExterior == null) {
+			if (other.noExterior != null)
+				return false;
+		} else if (!noExterior.equals(other.noExterior))
+			return false;
+		if (noInterior == null) {
+			if (other.noInterior != null)
+				return false;
+		} else if (!noInterior.equals(other.noInterior))
+			return false;
+		if (referencia == null) {
+			if (other.referencia != null)
+				return false;
+		} else if (!referencia.equals(other.referencia))
 			return false;
 		return true;
 	}

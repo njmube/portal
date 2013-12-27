@@ -64,6 +64,7 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDescuento;
+import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoDetalleService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
@@ -88,6 +89,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Autowired
 	TicketService ticketService;
+	
+	@Autowired
+	ClienteService clienteService;
 	
 	private ResourceLoader resourceLoader;
 	
@@ -313,6 +317,11 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public void save(Documento documento) {
 		if(documento != null) {
+			if(documento.getCliente() != null) {
+				if(!clienteService.exist(documento.getCliente())) {
+					clienteService.save(documento.getCliente());
+				}
+			}
 			if(documento instanceof DocumentoSucursal) {
 				ticketService.save((DocumentoSucursal) documento);
 			}
