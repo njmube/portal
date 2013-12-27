@@ -20,7 +20,7 @@
 			<hr>
 			<div class="well">
 				<c:url var="altaUrl" value="/confirmarDatos/clienteForm"/>
-				<form:form id="receptorForm" action="${altaUrl}" method="POST" modelAttribute="cliente" cssClass="form-horizontal" role="form">
+				<form:form id="clienteForm" action="${altaUrl}" method="POST" modelAttribute="cliente" cssClass="form-horizontal" role="form">
 					<div class="form-group">
 						<label class="control-label col-lg-1">* RFC: </label>
 						<div class="col-lg-2">
@@ -28,7 +28,7 @@
 						</div>
 						<label class="control-label col-lg-2">* Nombre: </label>
 						<div class="col-lg-6">
-							<form:input path="nombre" id="nombre" cssClass="form-control input-sm validate[required]" required="true"/>
+							<form:input path="nombre" id="nombre" cssClass="form-control input-sm validate[required]"/>
 						</div>
 					</div>
 					<p class="text-center">

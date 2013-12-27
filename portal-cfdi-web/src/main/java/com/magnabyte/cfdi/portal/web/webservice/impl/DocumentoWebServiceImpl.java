@@ -37,7 +37,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	private SambaService sambaService;
 	
 	@Override
-	public void timbrarDocumento(Documento documento) {
+	public boolean timbrarDocumento(Documento documento) {
 		TimbreFiscalDigital timbre = null;
 		logger.debug("en timbrar Documento");
 		String user = "AAA010101AAA.Test.User";
@@ -57,15 +57,15 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			timbre.setUUID(response.getFolioUDDI());
 			documento.setCadenaOriginal(response.getCadenaOriginal());
 			documento.setTimbreFiscalDigital(timbre);
-			if (response.getXML() != null) {
-				documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(response.getXML()));
-			}
-			if (documento instanceof DocumentoCorporativo) {
-				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
-				sambaService.writeProcessedCfdiFile(response.getXML(), (DocumentoCorporativo) documento);
-			} else if (documento instanceof DocumentoSucursal) {
-				logger.debug("Aqui se va a guardar el cfdi sucursal");
-			}
+			documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(response.getXML()));
+			
+			return true;
+//			if (documento instanceof DocumentoCorporativo) {
+//				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
+//				sambaService.writeProcessedCfdiFile(response.getXML(), (DocumentoCorporativo) documento);
+//			} else if (documento instanceof DocumentoSucursal) {
+//				logger.debug("Aqui se va a guardar el cfdi sucursal");
+//			}
 		} else {
 			logger.debug("El Web Service devolvió un error: {}", response.getMessage());
 			throw new PortalException(response.getMessage());

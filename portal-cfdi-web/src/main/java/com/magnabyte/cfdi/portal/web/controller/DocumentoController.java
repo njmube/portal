@@ -52,7 +52,9 @@ public class DocumentoController {
 		logger.debug("docu {}", documento);
 		if (documentoService.sellarComprobante(documento.getComprobante())) {
 			logger.debug("docu {}", documento);
-			documentoWebService.timbrarDocumento(documento);
+			if(documentoWebService.timbrarDocumento(documento)){
+				documentoService.save(documento);
+			}
 			logger.debug("docu {}", documento);
 			model.put("documento", documento);
 		}

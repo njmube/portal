@@ -22,10 +22,6 @@
 	<listener>
 		<listener-class>com.magnabyte.cfdi.portal.web.utils.SessionCounterListener</listener-class>
 	</listener>
-	
-	<listener>
-		<listener-class>com.magnabyte.cfdi.portal.web.utils.AutocompleteController</listener-class>
-	</listener>
 
 	<filter>
 		<filter-name>CharacterEncodingFilter</filter-name>

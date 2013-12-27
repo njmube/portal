@@ -1,6 +1,7 @@
 $(document).ready(function() {
 	
-	$("#receptorForm").validationEngine();
+	$("#clienteForm").validationEngine();
+	$("#clienteCorregirForm").validationEngine();
 	
 	$("#continuar").click(function() {
 		$("#agregar").hide();

@@ -51,13 +51,17 @@ import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
+import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDescuento;
+import com.magnabyte.cfdi.portal.service.documento.DocumentoDetalleService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
+import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 
 @Service("documentoService")
@@ -73,6 +77,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Autowired
 	DocumentoDao documentoDao;
+	
+	@Autowired
+	DocumentoDetalleService documentoDetalleService;
+	
+	@Autowired
+	TicketService ticketService;
 	
 	private ResourceLoader resourceLoader;
 	
@@ -254,7 +264,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		impuesto.setTotalImpuestosTrasladados(ticket.getTransaccion().getTransaccionTotal().getTotalVenta().subtract(subTotal));
 		comprobante.setImpuestos(impuesto);
 		comprobante.setTotal(ticket.getTransaccion().getTransaccionTotal().getTotalVenta());
-
+			
 		BigDecimal descuentoTotal = new BigDecimal(0);
 		for(PartidaDescuento descuento : ticket.getTransaccion().getPartidasDescuentos()) {
 			descuentoTotal = descuentoTotal.add(descuento.getDescuentoTotal());
@@ -288,7 +298,16 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 
 	@Override
 	public void save(Documento documento) {
-		documentoDao.save(documento);
+		if(documento != null) {
+			if(documento instanceof DocumentoSucursal) {
+				ticketService.save((DocumentoSucursal) documento);
+			}
+			documentoDao.save(documento);
+			documentoDetalleService.save(documento);
+		} else {
+			logger.debug("El Documento no puede ser nulo.");
+			throw new PortalException("El Documento no puede ser nulo.");
+		}
 		
 	}
 
