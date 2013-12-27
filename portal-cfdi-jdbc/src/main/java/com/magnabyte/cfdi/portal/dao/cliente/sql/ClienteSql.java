@@ -12,7 +12,7 @@ public class ClienteSql extends GenericSql {
 	
 	public static final String FIND_BY_ID;
 	public static final String FIND_BY_NAME_RFC;
-	public static final String UPDATE_CLIENETE;
+	public static final String UPDATE_CLIENTE;
 
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -46,7 +46,7 @@ public class ClienteSql extends GenericSql {
 		qryBuilder.append(WHERE).append(EOL).append(TAB);
 		qryBuilder.append(ID_CLIENTE).append(SET_PARAM);
 		
-		UPDATE_CLIENETE = qryBuilder.toString();
+		UPDATE_CLIENTE = qryBuilder.toString();
 		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
 	}
 }

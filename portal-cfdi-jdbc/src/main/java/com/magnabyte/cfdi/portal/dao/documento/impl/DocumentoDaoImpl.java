@@ -56,4 +56,26 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		return params;
 	}
 
+	@Override
+	public void insertDocumentoFolio(Documento documento) {
+		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(getJdbcTemplate());
+		simpleJdbcInsert.setTableName(DocumentoSql.TABLE_ESTAB_SERIE);
+		simpleJdbcInsert.execute(getParametersDocumentoFolio(documento));
+	}
+	
+	
+	
+	private MapSqlParameterSource getParametersDocumentoFolio(Documento documento) {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue(DocumentoSql.ID_DOCUMENTO, documento.getId());
+		params.addValue(DocumentoSql.SERIE, documento.getComprobante().getSerie());
+		params.addValue(DocumentoSql.FOLIO, documento.getComprobante().getFolio());
+		params.addValue(DocumentoSql.ID_TIPO_DOCUMENTO, documento.getTipoDocumento().getId());
+		return params;
+	}
+
+	@Override
+	public void insertDocumentoCfdi(Documento documento) {
+		
+	}
 }

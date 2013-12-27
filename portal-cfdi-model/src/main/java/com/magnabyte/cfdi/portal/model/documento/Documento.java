@@ -22,6 +22,7 @@ public abstract class Documento implements Serializable {
 	private Date fechaFacturacion;
 	private Establecimiento establecimiento;
 	private TimbreFiscalDigital timbreFiscalDigital;
+	private TipoDocumento tipoDocumento;
 
 	public Integer getId() {
 		return id;
@@ -78,16 +79,34 @@ public abstract class Documento implements Serializable {
 	public void setEstablecimiento(Establecimiento establecimiento) {
 		this.establecimiento = establecimiento;
 	}
+	
+	public TipoDocumento getTipoDocumento() {
+		return tipoDocumento;
+	}
+	
+	public void setTipoDocumento(TipoDocumento tipoDocumento) {
+		this.tipoDocumento = tipoDocumento;
+	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Documento [comprobante=");
+		builder.append("Documento [id=");
+		builder.append(id);
+		builder.append(", comprobante=");
 		builder.append(comprobante);
-		builder.append(", timbreFiscalDigital=");
-		builder.append(timbreFiscalDigital);
+		builder.append(", cliente=");
+		builder.append(cliente);
 		builder.append(", cadenaOriginal=");
 		builder.append(cadenaOriginal);
+		builder.append(", fechaFacturacion=");
+		builder.append(fechaFacturacion);
+		builder.append(", establecimiento=");
+		builder.append(establecimiento);
+		builder.append(", timbreFiscalDigital=");
+		builder.append(timbreFiscalDigital);
+		builder.append(", tipoDocumento=");
+		builder.append(tipoDocumento);
 		builder.append("]");
 		return builder.toString();
 	}

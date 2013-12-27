@@ -16,9 +16,12 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
@@ -52,9 +55,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
+import com.magnabyte.cfdi.portal.dao.documento.DocumentoSerieDao;
+import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
+import com.magnabyte.cfdi.portal.model.commons.Estado;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
@@ -81,13 +87,16 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	private EmisorDao emisorDao;
 	
 	@Autowired
-	DocumentoDao documentoDao;
+	private DocumentoDao documentoDao;
 	
 	@Autowired
-	DocumentoDetalleService documentoDetalleService;
+	private DocumentoSerieDao documentoSerieDao;
 	
 	@Autowired
-	TicketService ticketService;
+	private DocumentoDetalleService documentoDetalleService;
+	
+	@Autowired
+	private TicketService ticketService;
 	
 	private ResourceLoader resourceLoader;
 	
@@ -323,6 +332,49 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			throw new PortalException("El Documento no puede ser nulo.");
 		}
 		
+	}
+	
+	@Transactional
+	@Override
+	public void insertDocumentoFolio(Documento documento) {
+		synchronized (documentoSerieDao) {
+			Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolio(documento);
+			documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
+			documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO_CONSECUTIVO));
+			documentoSerieDao.updateFolioSerie(documento);
+		}
+		documentoDao.insertDocumentoFolio(documento);
+	}
+	
+	@Transactional
+	@Override
+	public void insertDocumentoCfdi(Documento documento) {
+		documentoDao.insertDocumentoCfdi(documento);
+	}
+	
+	@Override
+	public Cliente obtenerClienteDeComprobante(Comprobante comprobante) {
+		Cliente cliente = new Cliente();
+		DomicilioCliente domicilio = new DomicilioCliente();
+		List<DomicilioCliente> domicilios = new ArrayList<DomicilioCliente>();
+		Estado estado = new Estado();
+		estado.setNombre(comprobante.getReceptor().getDomicilio().getEstado());
+		
+		cliente.setNombre(comprobante.getReceptor().getNombre());
+		cliente.setRfc(comprobante.getReceptor().getRfc());
+		
+		domicilio.setCalle(comprobante.getReceptor().getDomicilio().getCalle());
+		domicilio.setNoExterior(comprobante.getReceptor().getDomicilio().getNoExterior());
+		domicilio.setNoInterior(comprobante.getReceptor().getDomicilio().getNoInterior());
+		domicilio.setColonia(comprobante.getReceptor().getDomicilio().getColonia());
+		domicilio.setMunicipio(comprobante.getReceptor().getDomicilio().getMunicipio());
+		domicilio.setLocalidad(comprobante.getReceptor().getDomicilio().getLocalidad());
+		domicilio.setReferencia(comprobante.getReceptor().getDomicilio().getReferencia());
+		domicilio.setCodigoPostal(comprobante.getReceptor().getDomicilio().getCodigoPostal());
+		domicilio.setEstado(estado);
+		domicilios.add(domicilio);
+		cliente.setDomicilios(domicilios);
+		return cliente;
 	}
 
 }

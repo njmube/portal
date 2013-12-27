@@ -1,10 +1,13 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import mx.gob.sat.cfd._3.Comprobante;
 import net.sf.jasperreports.engine.JRParameter;
@@ -17,7 +20,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.magnabyte.cfdi.portal.dao.certificado.CertificadoDao;
@@ -54,12 +56,13 @@ public class DocumentoController {
 	@RequestMapping(value = "/generaFactura", method = RequestMethod.POST)
 	public String generaFactura(@ModelAttribute Documento documento, ModelMap model) {
 		logger.debug("generando factura");
+		documentoService.save(documento);
+		documentoService.insertDocumentoFolio(documento);
 		if (documentoService.sellarComprobante(documento.getComprobante())) {
 			if (documentoWebService.timbrarDocumento(documento)) {
-				
-				documentoService.save(documento);
+				documentoService.insertDocumentoCfdi(documento);
+				model.put("documento", documento);
 			}
-			model.put("documento", documento);
 		}
 		
 		return "redirect:/imprimirFactura";
@@ -105,21 +108,16 @@ public class DocumentoController {
 	}
 	
 	@RequestMapping("/documentoXml")
-	public @ResponseBody Comprobante documentoXml(@ModelAttribute Documento documento) {
-		return documento.getComprobante();
+	public void documentoXml(@ModelAttribute Documento documento, HttpServletResponse response) {
+		try {
+			response.setHeader("Content-Disposition", "attachment; filename=somefile.xml"); 
+			OutputStream out = response.getOutputStream();
+			out.write(documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-	
-//	@RequestMapping("/documentoXml")
-//	public void documentoXml(@ModelAttribute Documento documento, HttpServletResponse response) {
-//		try {
-//			response.setHeader("Content-Disposition", "attachment; filename=somefile.xml"); 
-//			OutputStream out = response.getOutputStream();
-//			out.write(documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
-//			out.flush();
-//			out.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
 	
 }

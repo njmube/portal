@@ -1,4 +1,4 @@
-package cliente;
+package com.magnabyte.test.cliente;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;

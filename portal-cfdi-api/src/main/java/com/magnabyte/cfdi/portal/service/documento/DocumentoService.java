@@ -16,4 +16,10 @@ public interface DocumentoService {
 	
 	void save(Documento documento);
 
+	void insertDocumentoFolio(Documento documento);
+
+	void insertDocumentoCfdi(Documento documento);
+
+	Cliente obtenerClienteDeComprobante(Comprobante comprobante);
+
 }

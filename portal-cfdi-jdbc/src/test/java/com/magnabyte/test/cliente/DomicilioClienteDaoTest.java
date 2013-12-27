@@ -1,4 +1,4 @@
-package cliente;
+package com.magnabyte.test.cliente;
 
 import java.util.List;
 
