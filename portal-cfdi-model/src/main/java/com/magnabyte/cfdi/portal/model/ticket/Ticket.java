@@ -14,15 +14,32 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.magnabyte.cfdi.portal.model.commons.OpcionDeCatalogo;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "TAS")
 public class Ticket {
-
+	
+		@XmlTransient
+		protected Integer id;
+		
         @Valid
         @XmlElement(name = "NEW_TA", required = true)
         protected Ticket.Transaccion transaccion;
         
-        public Ticket.Transaccion getTransaccion() {
+        @XmlTransient
+        protected OpcionDeCatalogo status;
+        
+        
+        public Integer getId() {
+			return id;
+		}
+
+		public void setId(Integer id) {
+			this.id = id;
+		}
+
+		public Ticket.Transaccion getTransaccion() {
                 return transaccion;
         }
 
@@ -30,7 +47,15 @@ public class Ticket {
                 this.transaccion = transaccion;
         }
 
-        @XmlAccessorType(XmlAccessType.FIELD)
+        public OpcionDeCatalogo getStatus() {
+			return status;
+		}
+
+		public void setStatus(OpcionDeCatalogo status) {
+			this.status = status;
+		}
+
+		@XmlAccessorType(XmlAccessType.FIELD)
         public static class Transaccion {
                 
                 @Valid

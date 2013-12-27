@@ -49,6 +49,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
@@ -308,6 +309,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 	}
 
+	@Transactional
 	@Override
 	public void save(Documento documento) {
 		if(documento != null) {

@@ -1,5 +1,7 @@
 package com.magnabyte.cfdi.portal.dao.documento.impl;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -27,7 +29,7 @@ public class TicketDaoImpl extends GenericJdbcDao
 			SimpleJdbcInsert simpleInsert = new SimpleJdbcInsert(getJdbcTemplate());
 			simpleInsert.setTableName(TicketSql.TABLE_NAME);
 			simpleInsert.setGeneratedKeyName(TicketSql.ID_TICKET);
-			documento.setId(simpleInsert.executeAndReturnKey(getParameters(documento)).intValue());
+			documento.getTicket().setId(simpleInsert.executeAndReturnKey(getParameters(documento)).intValue());
 		} catch (DataAccessException ex) {			
 			logger.debug("No se pudo registrar el Documento en la base de datos.", ex);
 			throw new PortalException("No se pudo registrar el Documento en la base de datos.", ex);
@@ -37,10 +39,10 @@ public class TicketDaoImpl extends GenericJdbcDao
 	private MapSqlParameterSource getParameters(DocumentoSucursal documento) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue(EstablecimientoSql.ID_ESTABLECIMIENTO, documento.getEstablecimiento().getId());
-		params.addValue(TicketSql.ID_STATUS, documento.getCliente().getId());
-		params.addValue(TicketSql.FECHA, documento.getComprobante().getDescuento());
-		params.addValue(TicketSql.NO_CAJA, documento.getFechaFacturacion());
-		params.addValue(TicketSql.NO_TICKET, documento.getComprobante().getSubTotal());
+		params.addValue(TicketSql.ID_STATUS, documento.getTicket().getStatus().getId());
+		params.addValue(TicketSql.FECHA, new Date());
+		params.addValue(TicketSql.NO_CAJA, documento.getTicket().getTransaccion().getTransaccionHeader().getIdCaja());
+		params.addValue(TicketSql.NO_TICKET, documento.getTicket().getTransaccion().getTransaccionHeader().getIdTicket());
 		
 		return params;
 	}

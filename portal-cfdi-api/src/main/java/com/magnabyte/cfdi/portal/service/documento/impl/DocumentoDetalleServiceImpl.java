@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoDetalleDao;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
@@ -19,6 +20,7 @@ public class DocumentoDetalleServiceImpl  implements DocumentoDetalleService {
 	@Autowired
 	DocumentoDetalleDao documentoDetalleDao;
 	
+	@Transactional
 	@Override
 	public void save(Documento documento) {
 		if(!documento.getComprobante().getConceptos()

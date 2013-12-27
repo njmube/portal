@@ -74,7 +74,7 @@
 
 						<li><sec:authorize access="hasAnyRole('ROLE_ADMIN')">
 								<a data-toggle="dropdown"><span
-									class="glyphicon"></span>Catalogos <span
+									class="glyphicon"></span>Catálogos <span
 										class="caret"></span></a>
 								<ul class="dropdown-menu">
 									<c:url var="logoutUrl" value="/perform_logout" />
@@ -86,7 +86,7 @@
 
 								</ul>
 							</sec:authorize></li>
-						<li><a href="<c:url value="/menuPage" />">Menu Principal
+						<li><a href="<c:url value="/menuPage" />">Menú Principal
 								<span class="glyphicon glyphicon-home"></span>
 						</a></li>
 						<%-- 						<li><a href="<c:url value="/about" />">Acerca de <span --%>
