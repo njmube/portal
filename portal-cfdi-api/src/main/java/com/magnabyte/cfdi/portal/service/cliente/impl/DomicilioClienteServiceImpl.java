@@ -21,6 +21,7 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 	@Autowired
 	private DomicilioClienteDao domicilioClienteDao;
 	
+	@Transactional(readOnly = true)
 	@Override
 	public List<DomicilioCliente> getByCliente(Cliente cliente) {
 		List<DomicilioCliente> domiciliosBD = null;
@@ -36,8 +37,8 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 		return domiciliosBD;
 	}
 
-	@Override
 	@Transactional
+	@Override
 	public void save(Cliente cliente) {
 		if(!cliente.getDomicilios().isEmpty()) {
 			for(DomicilioCliente domicilio : cliente.getDomicilios()) {
@@ -50,8 +51,8 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 		
 	}
 
-	@Override
 	@Transactional
+	@Override
 	public void update(Cliente cliente) {
 		List<DomicilioCliente> domNuevos = cliente.getDomicilios();		
 		List<DomicilioCliente> domAnteriores = getByCliente(cliente);
