@@ -1,5 +1,9 @@
 package com.magnabyte.cfdi.portal.dao.documento.impl;
 
+import java.util.Date;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -16,6 +20,9 @@ import com.magnabyte.cfdi.portal.model.exception.PortalException;
 @Repository("documentoDao")
 public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 
+	private static final Logger logger = 
+			LoggerFactory.getLogger(DocumentoDaoImpl.class);
+	
 	@Override
 	public void save(Documento documento) {
 		try {
@@ -35,13 +42,14 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		params.addValue(DocumentoSql.ID_CLIENTE, documento.getCliente().getId());
 		if(documento instanceof DocumentoSucursal) {
 			params.addValue(DocumentoSql.ID_TICKET, ((DocumentoSucursal) documento)
-					.getTicket().getTransaccion().getTransaccionHeader().getIdTicket());
+					.getTicket().getId());
 		} else if(documento instanceof DocumentoCorporativo){
 			params.addValue(DocumentoSql.FOLIO_SAP, ((DocumentoCorporativo) documento).getFolioSap());
 		}
-		params.addValue(DocumentoSql.FECHA_DOCUMENTO, documento.getFechaFacturacion());
+		params.addValue(DocumentoSql.FECHA_DOCUMENTO, new Date());
+		params.addValue(DocumentoSql.TOTAL_DESCUENTO, documento.getComprobante().getDescuento());
 		params.addValue(DocumentoSql.SUBTOTAL, documento.getComprobante().getSubTotal());
-		params.addValue(DocumentoSql.IVA, documento.getComprobante().getImpuestos());
+		params.addValue(DocumentoSql.IVA, documento.getComprobante().getImpuestos().getTotalImpuestosTrasladados());
 		params.addValue(DocumentoSql.TOTAL, documento.getComprobante().getTotal());
 		params.addValue(DocumentoSql.STATUS, true);
 		

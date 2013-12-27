@@ -13,7 +13,6 @@ import com.certus.facturehoy.ws2.cfdi.WsServicioBO;
 import com.certus.facturehoy.ws2.cfdi.WsServicios;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
-import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
@@ -37,7 +36,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	private SambaService sambaService;
 	
 	@Override
-	public void timbrarDocumento(Documento documento) {
+	public boolean timbrarDocumento(Documento documento) {
 		TimbreFiscalDigital timbre = null;
 		logger.debug("en timbrar Documento");
 		String user = "AAA010101AAA.Test.User";
@@ -57,15 +56,12 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			timbre.setUUID(response.getFolioUDDI());
 			documento.setCadenaOriginal(response.getCadenaOriginal());
 			documento.setTimbreFiscalDigital(timbre);
-			if (response.getXML() != null) {
-				documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(response.getXML()));
-			}
-			if (documento instanceof DocumentoCorporativo) {
-				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
-				sambaService.writeProcessedCfdiFile(response.getXML(), (DocumentoCorporativo) documento);
-			} else if (documento instanceof DocumentoSucursal) {
-				logger.debug("Aqui se va a guardar el cfdi sucursal");
-			}
+			documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(response.getXML()));
+			return true;
+//			if (documento instanceof DocumentoCorporativo) {
+//				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
+//			} 
+//			sambaService.writeProcessedCfdiFile(response.getXML(), documento);
 		} else {
 			logger.debug("El Web Service devolvió un error: {}", response.getMessage());
 			throw new PortalException(response.getMessage());
@@ -86,7 +82,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			throw new PortalException("No hay servicios contratados: " + serviciosContratados.getMensaje());
 		}
 		//FIXME Comentar para produccion
-		idServicio = 2764104;
+		idServicio = 5652422;
 		//
 		return idServicio;
 	}

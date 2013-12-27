@@ -5,8 +5,11 @@ import java.sql.SQLException;
 
 import mx.gob.sat.cfd._3.Comprobante.Conceptos.Concepto;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.stereotype.Repository;
 
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoDetalleDao;
@@ -14,8 +17,12 @@ import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoDetalleSql;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
+@Repository("documentoDetalleDao")
 public class DocumentoDetalleDaoImpl extends GenericJdbcDao
 	implements DocumentoDetalleDao {
+	
+	private static final Logger logger = 
+			LoggerFactory.getLogger(DocumentoDetalleDaoImpl.class);
 
 	public void save(final Documento documento) {
 		 

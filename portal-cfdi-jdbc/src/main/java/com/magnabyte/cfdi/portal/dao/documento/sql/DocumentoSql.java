@@ -14,9 +14,9 @@ public class DocumentoSql extends GenericSql {
 	public static final String FECHA_DOCUMENTO = "fecha_doc";
 	public static final String SUBTOTAL = "subtotal";
 	public static final String IVA = "iva";
-	public static final String TOTAL = "total";
+	public static final String TOTAL = "total_doc";
 	public static final String TOTAL_DESCUENTO = "total_descuento";
-	public static final String STATUS = "status";
+	public static final String STATUS = "status_doc";
 	
 	static {
 		

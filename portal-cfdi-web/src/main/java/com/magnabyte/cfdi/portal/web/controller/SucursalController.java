@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.factory.ClienteFactory;
+import com.magnabyte.cfdi.portal.model.commons.factory.OpcionDeCatalogoFactory;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
@@ -82,6 +83,8 @@ public class SucursalController {
 			@ModelAttribute Ticket ticket, @PathVariable Integer idDomicilio, ModelMap model) {
 		Comprobante comprobante = documentoService.obtenerComprobantePor(cliente, ticket, idDomicilio, establecimiento);
 		DocumentoSucursal documento = new DocumentoSucursal();
+		documento.setCliente(cliente);
+		ticket.setStatus(OpcionDeCatalogoFactory.newInstance(1));
 		documento.setTicket(ticket);
 		documento.setComprobante(comprobante);
 		documento.setEstablecimiento(establecimiento);
