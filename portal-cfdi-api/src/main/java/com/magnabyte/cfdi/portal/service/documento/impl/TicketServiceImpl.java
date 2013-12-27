@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.dao.documento.TicketDao;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
@@ -19,6 +20,7 @@ public class TicketServiceImpl implements TicketService {
 	@Autowired
 	TicketDao ticketDao;
 	
+	@Transactional
 	@Override
 	public void save(DocumentoSucursal documento) {
 		if(((DocumentoSucursal) documento).getTicket() != null) {

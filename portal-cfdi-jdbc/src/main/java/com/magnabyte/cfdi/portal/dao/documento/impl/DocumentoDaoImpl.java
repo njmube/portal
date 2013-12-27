@@ -42,7 +42,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		params.addValue(DocumentoSql.ID_CLIENTE, documento.getCliente().getId());
 		if(documento instanceof DocumentoSucursal) {
 			params.addValue(DocumentoSql.ID_TICKET, ((DocumentoSucursal) documento)
-					.getTicket().getTransaccion().getTransaccionHeader().getIdTicket());
+					.getTicket().getId());
 		} else if(documento instanceof DocumentoCorporativo){
 			params.addValue(DocumentoSql.FOLIO_SAP, ((DocumentoCorporativo) documento).getFolioSap());
 		}
