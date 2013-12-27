@@ -91,7 +91,9 @@ public class ClienteServiceImpl implements ClienteService {
 		if(cliente != null) {
 			if(cliente.getRfc() != null && cliente.getNombre() != null) {
 				cteBD = clienteDao.readClientesByNameRfc(cliente);
-				cteBD.setDomicilios(domicilioClienteService.getByCliente(cliente));
+				if(cteBD != null) {					
+					cteBD.setDomicilios(domicilioClienteService.getByCliente(cteBD));
+				}
 			} else {
 				logger.debug("El rfc y nombre de cliente no puede ser nulo.");
 			}

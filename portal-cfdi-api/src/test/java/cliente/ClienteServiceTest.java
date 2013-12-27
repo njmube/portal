@@ -18,9 +18,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.magnabyte.cfdi.portal.dao.cliente.ClienteDao;
 import com.magnabyte.cfdi.portal.dao.cliente.dummys.ClienteDummy;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
-import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
+import com.magnabyte.cfdi.portal.model.documento.Documento;
+import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
+import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/jdbcApplicationContext.xml",
@@ -39,12 +41,17 @@ public class ClienteServiceTest {
 	@Autowired
 	ClienteService clienteService;
 	
+	@Autowired
+	DocumentoService documentoService;
+	
 	public static Cliente CLIENTE = null;
 	public static Cliente CLIENTE_DIF = null;
+	public static Cliente CLIENTE_NO_EXISTE = null;
 	
 	static {
 		CLIENTE = ClienteDummy.generateCliente();
 		CLIENTE_DIF = ClienteDummy.generateClienteDif();
+		CLIENTE_NO_EXISTE = ClienteDummy.generateClienteNoExiste();
 	}
 	
 	@Before
@@ -99,13 +106,27 @@ public class ClienteServiceTest {
 	public void comparaFalse() {
 		logger.info("Comparando objetos cliente iguales.");
 		Cliente cliente = CLIENTE;
-		Assert.assertEquals(true, clienteService.exist(cliente));
+		Documento doc = new DocumentoCorporativo();
+		doc.setCliente(cliente);
+		documentoService.save(doc);
+//		Assert.assertEquals(true, clienteService.exist(cliente));
 	}
 	
-	@Test
+//	@Test
 	public void comparaTrue() {
 		logger.info("Comparando objetos cliente diferentes.");
 		Cliente cliente = CLIENTE_DIF;
-		clienteService.exist(cliente);
+		Documento doc = new DocumentoCorporativo();
+		doc.setCliente(cliente);
+		documentoService.save(doc);
+	}
+	
+	@Test
+	public void comparaNoExist() {
+		logger.info("Comparando objetos cliente diferentes.");
+		Cliente cliente = CLIENTE_NO_EXISTE;
+		Documento doc = new DocumentoCorporativo();
+		doc.setCliente(cliente);
+		documentoService.save(doc);
 	}
 }
