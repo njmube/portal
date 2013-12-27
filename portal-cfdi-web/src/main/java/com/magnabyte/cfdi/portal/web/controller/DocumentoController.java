@@ -1,16 +1,15 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
-<<<<<<< HEAD
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-=======
->>>>>>> 7ca04cca5b7ca84ba662b1ab26b044a586c859c1
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import mx.gob.sat.cfd._3.Comprobante;
 import net.sf.jasperreports.engine.JRException;
