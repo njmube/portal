@@ -64,7 +64,7 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 
 	@Override
 	public void update(Cliente cliente) {
-		getJdbcTemplate().update(ClienteSql.UPDATE_CLIENETE, new Object[] {
+		getJdbcTemplate().update(ClienteSql.UPDATE_CLIENTE, new Object[] {
 			cliente.getNombre(),
 			cliente.getRfc(),
 			cliente.getId()

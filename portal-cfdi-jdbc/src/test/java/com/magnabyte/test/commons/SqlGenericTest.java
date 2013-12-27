@@ -1,4 +1,4 @@
-package commons;
+package com.magnabyte.test.commons;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
