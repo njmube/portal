@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.service.establecimiento.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.dao.establecimiento.EstablecimientoDao;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
@@ -13,11 +14,13 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 	@Autowired
 	private EstablecimientoDao establecimientoDao;
 	
+	@Transactional(readOnly = true)
 	@Override
 	public Establecimiento findByClave(Establecimiento establecimiento) {
 		return establecimientoDao.findByClave(establecimiento);
 	}
 	
+	@Transactional(readOnly = true)
 	@Override
 	public Establecimiento readByClave(Establecimiento establecimiento) {
 		return establecimientoDao.readByClave(establecimiento);

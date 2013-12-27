@@ -24,6 +24,7 @@ public class ClienteServiceImpl implements ClienteService {
 	@Autowired
 	private DomicilioClienteService domicilioClienteService;
 	
+	@Transactional(readOnly = true)
 	@Override
 	public List<Cliente> findClientesByNameRfc(Cliente cliente) {
 		if (cliente.getRfc() != null && !cliente.getRfc().equals("")) {
@@ -36,6 +37,7 @@ public class ClienteServiceImpl implements ClienteService {
 		return clienteDao.findClientesByNameRfc(cliente);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public Cliente read(Cliente cliente) {
 		Cliente cteBD = null;
@@ -53,8 +55,8 @@ public class ClienteServiceImpl implements ClienteService {
 		return cteBD;
 	}
 
-	@Override
 	@Transactional
+	@Override
 	public void save(Cliente cliente) {
 		if(cliente != null) {
 			clienteDao.save(cliente);
@@ -68,8 +70,8 @@ public class ClienteServiceImpl implements ClienteService {
 		}
 	}
 
-	@Override
 	@Transactional
+	@Override
 	public void update(Cliente cliente) {
 		if(cliente != null) {
 			clienteDao.update(cliente);

@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.dao.commons.OpcionDeCatalogoDao;
 import com.magnabyte.cfdi.portal.model.commons.OpcionDeCatalogo;
@@ -19,6 +20,7 @@ public class OpcionDeCatalogoServiceImpl implements OpcionDeCatalogoService{
 	@Autowired
 	private OpcionDeCatalogoDao opcionDeCatalogoDao;
 	
+	@Transactional(readOnly = true)
 	@Override
 	public Collection<OpcionDeCatalogo> getCatalogo(String catalogo,
 			String orderBy) {
@@ -26,6 +28,7 @@ public class OpcionDeCatalogoServiceImpl implements OpcionDeCatalogoService{
 		return opcionDeCatalogoDao.getCatalogo(catalogo, orderBy);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public Collection<OpcionDeCatalogo> getCatalogoParam(String catalogo,
 			String campo, String param, String orderBy) {
