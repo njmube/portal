@@ -24,8 +24,6 @@ public class DocumentoDetalleDaoImpl extends GenericJdbcDao
 	private static final Logger logger = 
 			LoggerFactory.getLogger(DocumentoDetalleDaoImpl.class);
 
-	private static final Logger logger = LoggerFactory.getLogger(DocumentoDetalleDaoImpl.class);
-	
 	public void save(final Documento documento) {
 		 
 		String qry = DocumentoDetalleSql.INSERT_DETALLE_DOC;
