@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteFactura" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4a6ba1cb-2ea7-4218-8d09-5f9f932a9716">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.x" value="216"/>
+	<property name="ireport.y" value="725"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="0.0" lineColor="#000000"/>
@@ -383,7 +383,7 @@
 					<textElement>
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{receptor.domicilio.calle}+" "+
+					<textFieldExpression><![CDATA[($F{receptor.domicilio.calle} !=null ? $F{receptor.domicilio.calle}+", " : "")+
 ($F{receptor.domicilio.noExterior} !=null ? $F{receptor.domicilio.noExterior}+", " : "")+
 ($F{receptor.domicilio.noInterior} != null ? $F{receptor.domicilio.noInterior}+" " : "")]]></textFieldExpression>
 				</textField>
@@ -667,7 +667,7 @@ $F{emisor.expedidoEn.pais}]]></textFieldExpression>
 							</box>
 							<staticText>
 								<reportElement x="1" y="1" width="70" height="18" uuid="d35b451c-e7a0-48ac-a9c1-177957395acf"/>
-								<box rightPadding="5"/>
+								<box rightPadding="3"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="9" isBold="true"/>
 								</textElement>
@@ -681,7 +681,7 @@ $F{emisor.expedidoEn.pais}]]></textFieldExpression>
 							</box>
 							<textField>
 								<reportElement x="0" y="0" width="71" height="15" uuid="e604c543-78dd-4a98-8d8d-5dec853e27b3"/>
-								<box rightPadding="5"/>
+								<box rightPadding="6"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="8"/>
 								</textElement>
@@ -759,7 +759,7 @@ $F{emisor.expedidoEn.pais}]]></textFieldExpression>
 							</box>
 							<staticText>
 								<reportElement x="0" y="1" width="84" height="18" uuid="35ff1e0c-c9b3-40b3-b9ab-abafac1f902a"/>
-								<box rightPadding="5"/>
+								<box rightPadding="1"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="9" isBold="true"/>
 								</textElement>
@@ -773,7 +773,7 @@ $F{emisor.expedidoEn.pais}]]></textFieldExpression>
 							</box>
 							<textField pattern="¤ #,##0.00">
 								<reportElement x="0" y="0" width="84" height="15" uuid="4bfdfe66-6155-4357-a0fa-871d9c69cb67"/>
-								<box rightPadding="5"/>
+								<box rightPadding="6"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="8"/>
 								</textElement>
@@ -791,7 +791,7 @@ $F{emisor.expedidoEn.pais}]]></textFieldExpression>
 							</box>
 							<staticText>
 								<reportElement x="0" y="1" width="90" height="18" uuid="da3c0895-aa25-4f5f-a660-9555a4d15cde"/>
-								<box rightPadding="7"/>
+								<box rightPadding="4"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font size="9" isBold="true"/>
 								</textElement>
@@ -1063,7 +1063,7 @@ $F{emisor.expedidoEn.pais}]]></textFieldExpression>
 				</textField>
 				<textField evaluationTime="Report">
 					<reportElement x="417" y="29" width="40" height="12" uuid="e219ae0c-c1ab-4b71-8be4-57e33cf86f23"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
+					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>

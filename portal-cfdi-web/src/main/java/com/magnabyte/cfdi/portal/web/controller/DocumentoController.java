@@ -83,6 +83,13 @@ public class DocumentoController {
 		} else {
 			model.put("TIPO_DOC", "NOTA DE CREDITO");
 		}
+
+//		  SimpleFileResolver fileResolver =
+//		    new SimpleFileResolver(
+//		      Arrays.asList(new File[]{new File("resources/img")})
+//		      );
+//		  fileResolver.setResolveAbsolutePath(true);
+//		model.put(JRExporterParameter.OUTPUT_FILE_NAME JRParameter.REPORT_FILE_RESOLVER, fileResolver);
 		model.put("NUM_SERIE_CERT", certificadoDao.obtenerCertificado());
 		model.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
 		model.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
