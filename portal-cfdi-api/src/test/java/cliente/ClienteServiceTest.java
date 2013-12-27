@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.magnabyte.cfdi.portal.dao.cliente.ClienteDao;
 import com.magnabyte.cfdi.portal.dao.cliente.dummys.ClienteDummy;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
+import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 
@@ -38,11 +39,12 @@ public class ClienteServiceTest {
 	@Autowired
 	ClienteService clienteService;
 	
-	public static Cliente CLIENTE = null;	
-	
+	public static Cliente CLIENTE = null;
+	public static Cliente CLIENTE_DIF = null;
 	
 	static {
 		CLIENTE = ClienteDummy.generateCliente();
+		CLIENTE_DIF = ClienteDummy.generateClienteDif();
 	}
 	
 	@Before
@@ -62,7 +64,7 @@ public class ClienteServiceTest {
 		Mockito.verify(domicilioServiceMock, Mockito.atLeastOnce()).save(cliente);
 	}
 	
-	@Test
+//	@Test
 	public void update() {
 		logger.info("Actualizando un cliente completo.");
 		Cliente cliente = CLIENTE;
@@ -91,5 +93,19 @@ public class ClienteServiceTest {
 		logger.info("Recuperando la lista de clientes de la base de datos.");
 		List<Cliente> clientes = clienteService.findClientesByNameRfc(CLIENTE);
 		Assert.assertNotNull(clientes);		
+	}
+	
+//	@Test
+	public void comparaFalse() {
+		logger.info("Comparando objetos cliente iguales.");
+		Cliente cliente = CLIENTE;
+		Assert.assertEquals(true, clienteService.exist(cliente));
+	}
+	
+	@Test
+	public void comparaTrue() {
+		logger.info("Comparando objetos cliente diferentes.");
+		Cliente cliente = CLIENTE_DIF;
+		clienteService.exist(cliente);
 	}
 }

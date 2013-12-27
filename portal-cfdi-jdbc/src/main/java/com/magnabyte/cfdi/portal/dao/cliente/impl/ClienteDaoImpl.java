@@ -47,6 +47,12 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 		return getJdbcTemplate().queryForObject(ClienteSql.FIND_BY_ID,
 				CLIENTE_MAPPER, cliente.getId());
 	}
+	
+	@Override
+	public Cliente readClientesByNameRfc(Cliente cliente) {
+		return getJdbcTemplate().queryForObject(ClienteSql.FIND_BY_NAME_RFC,
+				CLIENTE_MAPPER, cliente.getRfc(), cliente.getNombre());
+	}
 
 	@Override
 	public void update(Cliente cliente) {

@@ -31,8 +31,8 @@ public class TicketDaoImpl extends GenericJdbcDao
 			simpleInsert.setGeneratedKeyName(TicketSql.ID_TICKET);
 			documento.getTicket().setId(simpleInsert.executeAndReturnKey(getParameters(documento)).intValue());
 		} catch (DataAccessException ex) {			
-			logger.debug("No se pudo registrar el Documento en la base de datos.", ex);
-			throw new PortalException("No se pudo registrar el Documento en la base de datos.", ex);
+			logger.debug("No se pudo registrar el Ticket en la base de datos.", ex);
+			throw new PortalException("No se pudo registrar el Ticket en la base de datos.", ex);
 		}
 	}
 	
