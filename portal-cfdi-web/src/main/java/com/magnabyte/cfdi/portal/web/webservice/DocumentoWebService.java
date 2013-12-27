@@ -4,6 +4,6 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 
 public interface DocumentoWebService {
 
-	void timbrarDocumento(Documento documento);
+	boolean timbrarDocumento(Documento documento);
 
 }

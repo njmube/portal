@@ -82,6 +82,7 @@ public class SucursalController {
 			@ModelAttribute Ticket ticket, @PathVariable Integer idDomicilio, ModelMap model) {
 		Comprobante comprobante = documentoService.obtenerComprobantePor(cliente, ticket, idDomicilio, establecimiento);
 		DocumentoSucursal documento = new DocumentoSucursal();
+		documento.setCliente(cliente);
 		documento.setTicket(ticket);
 		documento.setComprobante(comprobante);
 		documento.setEstablecimiento(establecimiento);

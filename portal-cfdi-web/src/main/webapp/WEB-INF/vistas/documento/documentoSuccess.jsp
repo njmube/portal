@@ -22,19 +22,19 @@
 				</div>
 				<div class="text-center row">
 					<p>
-						<a href="<c:url value="/reporte" />" target="_blank" class="btn btn-primary btn-lg">Descargar PDF<img id="pdfImg"
+						<a href="<c:url value="/reporte" />" target="_blank" class="btn btn-primary btn-lg">Ver PDF<img id="pdfImg"
 							src="<c:url value="/resources/img/pdf.png" />"
 							alt="PDF"></a>
 					</p>
 					<p>
-						<a href="#" class="btn btn-primary btn-lg">Descargar XML<img id="xmlImg"
+						<a href="<c:url value="/documentoXml" />" target="_blank" class="btn btn-primary btn-lg">Ver XML<img id="xmlImg"
 							src="<c:url value="/resources/img/xml.png" />"
 							alt="XML"></a>
 					</p>
 				</div>
 				<hr>
 				<div class="text-center row">
-					<a href="<c:url value="/facturaCorp" />" class="btn btn-danger btn-lg">Terminar</a>
+					<a href="<c:url value="/menuPage" />" class="btn btn-danger btn-lg">Terminar</a>
 				</div>
 			</div>
 		</div>
