@@ -20,6 +20,7 @@ import com.magnabyte.cfdi.portal.dao.cliente.dummys.ClienteDummy;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
+import com.magnabyte.cfdi.portal.service.cliente.impl.ClienteServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/jdbcApplicationContext.xml",
@@ -35,8 +36,7 @@ public class ClienteServiceTest {
 	DomicilioClienteService domicilioServiceMock;
 	
 	@InjectMocks
-	@Autowired
-	ClienteService clienteService;
+	ClienteService clienteService = new ClienteServiceImpl();
 	
 	public static Cliente CLIENTE = null;
 	public static Cliente CLIENTE_DIF = null;
@@ -53,7 +53,7 @@ public class ClienteServiceTest {
 		MockitoAnnotations.initMocks(this);
 	}
 	
-//	@Test
+	@Test
 	public void save() {
 		logger.info("Actualizando un cliente completo.");
 		Cliente cliente = CLIENTE;

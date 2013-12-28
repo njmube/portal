@@ -1,11 +1,13 @@
 package com.magnabyte.cfdi.portal.web.webservice.impl;
 
+import javax.servlet.http.HttpServletRequest;
+
 import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.certus.facturehoy.ws2.cfdi.WsEmisionTimbrado;
 import com.certus.facturehoy.ws2.cfdi.WsResponseBO;
@@ -18,7 +20,7 @@ import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
 
-@Component("documentoWebService")
+@Service("documentoWebService")
 public class DocumentoWebServiceImpl implements DocumentoWebService {
 
 	private static final Logger logger = LoggerFactory.getLogger(DocumentoWebServiceImpl.class);
@@ -36,7 +38,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	private SambaService sambaService;
 	
 	@Override
-	public boolean timbrarDocumento(Documento documento) {
+	public boolean timbrarDocumento(Documento documento, HttpServletRequest request) {
 		TimbreFiscalDigital timbre = null;
 		logger.debug("en timbrar Documento");
 		String user = "AAA010101AAA.Test.User";
@@ -57,11 +59,12 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			documento.setCadenaOriginal(response.getCadenaOriginal());
 			documento.setTimbreFiscalDigital(timbre);
 			documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(response.getXML()));
+			if (documento instanceof DocumentoCorporativo) {
+				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
+			} 
+			sambaService.writeProcessedCfdiXmlFile(response.getXML(), documento);
+			sambaService.writePdfFile(documento, request);
 			return true;
-//			if (documento instanceof DocumentoCorporativo) {
-//				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
-//			} 
-//			sambaService.writeProcessedCfdiFile(response.getXML(), documento);
 		} else {
 			logger.debug("El Web Service devolvió un error: {}", response.getMessage());
 			throw new PortalException(response.getMessage());

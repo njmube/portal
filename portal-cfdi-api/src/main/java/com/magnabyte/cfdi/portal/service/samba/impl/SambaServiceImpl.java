@@ -1,17 +1,24 @@
 package com.magnabyte.cfdi.portal.service.samba.impl;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.stream.StreamSource;
 
 import jcifs.Config;
@@ -19,6 +26,13 @@ import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
 import jcifs.smb.SmbFileOutputStream;
+import mx.gob.sat.cfd._3.Comprobante;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +41,17 @@ import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.XmlMappingException;
 import org.springframework.stereotype.Service;
 
+import com.magnabyte.cfdi.portal.dao.certificado.CertificadoDao;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
+import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
+import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
+import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
+import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
 
 @Service("sambaService")
 public class SambaServiceImpl implements SambaService {
@@ -41,6 +60,12 @@ public class SambaServiceImpl implements SambaService {
 
 	@Autowired
 	private Unmarshaller unmarshaller;
+	
+	@Autowired
+	private CertificadoDao certificadoDao;
+	
+	@Autowired
+	private CodigoQRService codigoQRService;
 	
 	@Override
 	public InputStream getFileStream(String url, String fileName) {
@@ -78,6 +103,8 @@ public class SambaServiceImpl implements SambaService {
 	@Override
 	public List<DocumentoCorporativo> getFilesFromDirectory(String url) {
 		List<DocumentoCorporativo> documentos = new ArrayList<DocumentoCorporativo>();
+		String regex = "(^[F-N]\\d{10}.+(\\.(?i)(xml))$)";
+		Pattern pattern = Pattern.compile(regex);
 		Config.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
 		logger.debug("sambaService getFilesFromDirectory...");
 		logger.debug(url);
@@ -88,10 +115,13 @@ public class SambaServiceImpl implements SambaService {
 				logger.debug("si hay {}", files.length);
 				for (SmbFile file : files) {
 					if (file.isFile()) {
-						DocumentoCorporativo documento = new DocumentoCorporativo();
-						documento.setFolioSap(file.getName().substring(1, 11));
-						documento.setNombreXmlPrevio(file.getName());
-						documentos.add(documento);
+						Matcher matcher = pattern.matcher(file.getName());
+						if (matcher.matches() && file.getName().length() > 11) {
+							DocumentoCorporativo documento = new DocumentoCorporativo();
+							documento.setFolioSap(file.getName().substring(1, 11));
+							documento.setNombreXmlPrevio(file.getName());
+							documentos.add(documento);
+						}
 					}
 				}
 			} else {
@@ -186,13 +216,13 @@ public class SambaServiceImpl implements SambaService {
 	}
 	
 	@Override
-	public void writeProcessedCfdiFile(byte[] xmlCfdi, Documento documento) {
+	public void writeProcessedCfdiXmlFile(byte[] xmlCfdi, Documento documento) {
 		logger.debug("Escribir archivo XML CFDI, writeProcessedCfdiFile");
 		try {
 			String rutaXmlCfdiDestino = documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() +
 					documento.getEstablecimiento().getRutaRepositorio().getRutaRepoOut();
 			logger.debug("Ruta: {}", rutaXmlCfdiDestino);
-			String nombreXmlCfdiDestino = "DOCUMENTO_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".xml";
+			String nombreXmlCfdiDestino = documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".xml";
 			
 			SmbFile xmlDirectory = new SmbFile(rutaXmlCfdiDestino);
 			SmbFile xmlFile = new SmbFile(xmlDirectory, nombreXmlCfdiDestino);
@@ -218,5 +248,58 @@ public class SambaServiceImpl implements SambaService {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public void writePdfFile(Documento documento, HttpServletRequest request) {
+		logger.debug("Creando reporte");
+		JasperPrint reporteCompleto = null;
+		String reporteCompilado = request.getSession().getServletContext().getRealPath("WEB-INF/reports/ReporteFactura.jasper");
 
+		Locale locale = new Locale("es", "MX");
+		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
+		comprobantes.add(documento.getComprobante());
+		String pathImages = request.getSession().getServletContext().getRealPath("resources/img");
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (documento instanceof DocumentoCorporativo) {
+			map.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
+		} else if (documento instanceof DocumentoSucursal) {
+			map.put("SUCURSAL", documento.getEstablecimiento().getNombre());
+		}
+		
+		map.put("TIPO_DOC", documento.getTipoDocumento().getNombre());
+		map.put(JRParameter.REPORT_LOCALE, locale);
+		map.put("NUM_SERIE_CERT", certificadoDao.obtenerCertificado());
+		map.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
+		map.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
+		map.put("FECHA_TIMBRADO", documento.getTimbreFiscalDigital().getFechaTimbrado());
+		map.put("FOLIO_FISCAL", documento.getTimbreFiscalDigital().getUUID());
+		map.put("CADENA_ORIGINAL", documento.getCadenaOriginal());
+		map.put("PATH_IMAGES", pathImages);
+		map.put("QRCODE", codigoQRService.generaCodigoQR(documento));
+		map.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
+		map.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
+
+		JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(comprobantes);
+
+		try {
+			reporteCompleto = JasperFillManager.fillReport(reporteCompilado, map, dataSource);
+			byte[] bytesReport = JasperExportManager.exportReportToPdf(reporteCompleto);
+			SmbFile filePdf = new SmbFile(documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() 
+					+ documento.getEstablecimiento().getRutaRepositorio().getRutaRepoOut(), 
+					documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".pdf");
+			SmbFileOutputStream out = new SmbFileOutputStream(filePdf);
+			BufferedOutputStream bos = new BufferedOutputStream(out);
+			bos.write(bytesReport);
+			bos.flush();
+			bos.close();
+		} catch (JRException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 }

@@ -62,6 +62,7 @@ import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.commons.Estado;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
+import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
@@ -104,7 +105,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	private TicketService ticketService;
 	
 	@Autowired
-	ClienteService clienteService;
+	private ClienteService clienteService;
 	
 	private ResourceLoader resourceLoader;
 	
@@ -121,6 +122,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			comprobante.setSello(sello);
 			return true;
 		}
+		//xml pendiente
 		return false;
 	}
 
@@ -326,17 +328,19 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 	}
 
-	@Transactional
+	//FIXME
 	@Override
 	public void save(Documento documento) {
 		if(documento != null) {
-			if(documento.getCliente() != null) {
-				if(!clienteService.exist(documento.getCliente())) {
-					logger.debug("Saveando.......");
-					clienteService.save(documento.getCliente());
-				} else {
-					documento.setCliente(clienteService
-							.readClientesByNameRfc(documento.getCliente()));
+			if(documento instanceof DocumentoCorporativo) {
+				if(documento.getCliente() != null) {
+					if(!clienteService.exist(documento.getCliente())) {
+						logger.debug("Saveando.......");
+						clienteService.save(documento.getCliente());
+					} else {
+						documento.setCliente(clienteService
+								.readClientesByNameRfc(documento.getCliente()));
+					}
 				}
 			}
 			if(documento instanceof DocumentoSucursal) {
@@ -350,7 +354,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 	}
 	
-	@Transactional
+	//FIXME
 	@Override
 	public void insertDocumentoFolio(Documento documento) {
 		synchronized (documentoSerieDao) {
@@ -358,14 +362,54 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
 			documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO_CONSECUTIVO));
 			documentoSerieDao.updateFolioSerie(documento);
+			documentoDao.insertDocumentoFolio(documento);
 		}
-		documentoDao.insertDocumentoFolio(documento);
 	}
 	
 	@Transactional
 	@Override
 	public void insertDocumentoCfdi(Documento documento) {
 		documentoDao.insertDocumentoCfdi(documento);
+	}
+	
+	@Transactional
+	@Override
+	public void guardarDocumento(Documento documento) {
+		if(documento != null) {
+			if(documento instanceof DocumentoCorporativo) {
+				if(documento.getCliente() != null) {
+					if(!clienteService.exist(documento.getCliente())) {
+						logger.debug("Saveando.......");
+						clienteService.save(documento.getCliente());
+					} else {
+						documento.setCliente(clienteService
+								.readClientesByNameRfc(documento.getCliente()));
+					}
+				}
+			}
+			if(documento instanceof DocumentoSucursal) {
+				ticketService.save((DocumentoSucursal) documento);
+			}
+			documentoDao.save(documento);
+			documentoDetalleService.save(documento);
+		} else {
+			logger.debug("El Documento no puede ser nulo.");
+			throw new PortalException("El Documento no puede ser nulo.");
+		}		
+		
+		synchronized (documentoSerieDao) {
+			Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolio(documento);
+			documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
+			documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO_CONSECUTIVO));
+			documentoSerieDao.updateFolioSerie(documento);
+			documentoDao.insertDocumentoFolio(documento);
+		}
+	}
+	
+	@Transactional
+	@Override
+	public void insertAcusePendiente(Documento documento) {
+		documentoDao.insertAcusePendiente(documento);
 	}
 	
 	@Override

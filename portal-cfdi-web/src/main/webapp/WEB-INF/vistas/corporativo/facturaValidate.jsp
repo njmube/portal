@@ -222,8 +222,8 @@
 			</p>
 		</div>
 	</div>
-	<c:url value="/generaFactura" var="urlFactura"/>
-	<form action="${urlFactura}" id="formPdf" method="post"></form>
+	<c:url value="/generaDocumento" var="urlDocumento"/>
+	<form action="${urlDocumento}" id="formPdf" method="post"></form>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$("#generaFactura").click(function() {
