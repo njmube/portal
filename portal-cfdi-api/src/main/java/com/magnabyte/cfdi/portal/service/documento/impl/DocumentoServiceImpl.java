@@ -328,6 +328,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 	}
 
+	//FIXME
 	@Override
 	public void save(Documento documento) {
 		if(documento != null) {
@@ -353,6 +354,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 	}
 	
+	//FIXME
 	@Override
 	public void insertDocumentoFolio(Documento documento) {
 		synchronized (documentoSerieDao) {
@@ -373,8 +375,35 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Transactional
 	@Override
 	public void guardarDocumento(Documento documento) {
-		save(documento);
-		insertDocumentoFolio(documento);		
+		if(documento != null) {
+			if(documento instanceof DocumentoCorporativo) {
+				if(documento.getCliente() != null) {
+					if(!clienteService.exist(documento.getCliente())) {
+						logger.debug("Saveando.......");
+						clienteService.save(documento.getCliente());
+					} else {
+						documento.setCliente(clienteService
+								.readClientesByNameRfc(documento.getCliente()));
+					}
+				}
+			}
+			if(documento instanceof DocumentoSucursal) {
+				ticketService.save((DocumentoSucursal) documento);
+			}
+			documentoDao.save(documento);
+			documentoDetalleService.save(documento);
+		} else {
+			logger.debug("El Documento no puede ser nulo.");
+			throw new PortalException("El Documento no puede ser nulo.");
+		}		
+		
+		synchronized (documentoSerieDao) {
+			Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolio(documento);
+			documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
+			documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO_CONSECUTIVO));
+			documentoSerieDao.updateFolioSerie(documento);
+			documentoDao.insertDocumentoFolio(documento);
+		}
 	}
 	
 	@Transactional
