@@ -89,7 +89,7 @@ public class DocumentoController {
 		} else if (documento instanceof DocumentoSucursal) {
 			model.put("SUCURSAL", documento.getEstablecimiento().getNombre());
 		}
-		model.put("TIPO_DOC", documento.getTipoDocumento());
+		model.put("TIPO_DOC", documento.getTipoDocumento().toString());
 		model.put("NUM_SERIE_CERT", certificadoDao.obtenerCertificado());
 		model.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
 		model.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());

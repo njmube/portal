@@ -358,8 +358,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
 			documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO_CONSECUTIVO));
 			documentoSerieDao.updateFolioSerie(documento);
+			documentoDao.insertDocumentoFolio(documento);
 		}
-		documentoDao.insertDocumentoFolio(documento);
 	}
 	
 	@Transactional

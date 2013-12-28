@@ -261,7 +261,7 @@ public class SambaServiceImpl implements SambaService {
 			map.put("SUCURSAL", documento.getEstablecimiento().getNombre());
 		}
 		
-		map.put("TIPO_DOC", documento.getTipoDocumento());
+		map.put("TIPO_DOC", documento.getTipoDocumento().toString());
 		map.put(JRParameter.REPORT_LOCALE, locale);
 		map.put("NUM_SERIE_CERT", certificadoDao.obtenerCertificado());
 		map.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
@@ -279,9 +279,10 @@ public class SambaServiceImpl implements SambaService {
 		try {
 			reporteCompleto = JasperFillManager.fillReport(reporteCompilado, map, dataSource);
 			byte[] bytesReport = JasperExportManager.exportReportToPdf(reporteCompleto);
-			File filePdf = new File(documento.getEstablecimiento().getRutaRepositorio().getRutaRepoOut(), 
+			SmbFile filePdf = new SmbFile(documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() 
+					+ documento.getEstablecimiento().getRutaRepositorio().getRutaRepoOut(), 
 					documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".pdf");
-			FileOutputStream out = new FileOutputStream(filePdf);
+			SmbFileOutputStream out = new SmbFileOutputStream(filePdf);
 			BufferedOutputStream bos = new BufferedOutputStream(out);
 			bos.write(bytesReport);
 			bos.flush();

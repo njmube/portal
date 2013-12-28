@@ -20,6 +20,7 @@ import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.factory.ClienteFactory;
 import com.magnabyte.cfdi.portal.model.commons.factory.OpcionDeCatalogoFactory;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
+import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
@@ -88,6 +89,7 @@ public class SucursalController {
 		documento.setTicket(ticket);
 		documento.setComprobante(comprobante);
 		documento.setEstablecimiento(establecimiento);
+		documento.setTipoDocumento(TipoDocumento.FACTURA);
 		model.put("documento", documento);
 		model.put("comprobante", comprobante);
 		model.put("ticket", ticket);

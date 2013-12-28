@@ -88,7 +88,8 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		params.addValue(DocumentoSql.CADENA, documento.getCadenaOriginal());
 		params.addValue(DocumentoSql.SELLO_CFDI, documento.getTimbreFiscalDigital().getSelloCFD());
 		params.addValue(DocumentoSql.UUID, documento.getTimbreFiscalDigital().getUUID());
-		params.addValue(DocumentoSql.FECHA_HORA, documento.getFechaFacturacion());
+		//FIXME
+		params.addValue(DocumentoSql.FECHA_HORA, new Date());
 		return params;
 	}
 }
