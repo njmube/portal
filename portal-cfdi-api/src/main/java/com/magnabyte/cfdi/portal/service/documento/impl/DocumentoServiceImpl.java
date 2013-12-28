@@ -71,6 +71,7 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDescuento;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
+import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoDetalleService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
@@ -95,6 +96,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Autowired
 	private DocumentoDetalleService documentoDetalleService;
+	
+	@Autowired
+	private DomicilioClienteService domicilioClienteService;
 	
 	@Autowired
 	private TicketService ticketService;
@@ -328,7 +332,11 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		if(documento != null) {
 			if(documento.getCliente() != null) {
 				if(!clienteService.exist(documento.getCliente())) {
+					logger.debug("Saveando.......");
 					clienteService.save(documento.getCliente());
+				} else {
+					documento.setCliente(clienteService
+							.readClientesByNameRfc(documento.getCliente()));
 				}
 			}
 			if(documento instanceof DocumentoSucursal) {
@@ -340,7 +348,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			logger.debug("El Documento no puede ser nulo.");
 			throw new PortalException("El Documento no puede ser nulo.");
 		}
-		
 	}
 	
 	@Transactional
@@ -369,6 +376,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		Estado estado = new Estado();
 		estado.setNombre(comprobante.getReceptor().getDomicilio().getEstado());
 		
+		Estado estadoBD = domicilioClienteService.readEstado(estado);
+		
 		cliente.setNombre(comprobante.getReceptor().getNombre());
 		cliente.setRfc(comprobante.getReceptor().getRfc());
 		
@@ -380,7 +389,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		domicilio.setLocalidad(comprobante.getReceptor().getDomicilio().getLocalidad());
 		domicilio.setReferencia(comprobante.getReceptor().getDomicilio().getReferencia());
 		domicilio.setCodigoPostal(comprobante.getReceptor().getDomicilio().getCodigoPostal());
-		domicilio.setEstado(estado);
+		domicilio.setEstado(estadoBD);
 		domicilios.add(domicilio);
 		cliente.setDomicilios(domicilios);
 		return cliente;

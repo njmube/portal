@@ -59,7 +59,7 @@ public class DocumentoController {
 			ModelMap model, HttpServletRequest request) {
 		logger.debug("generando factura");
 		documentoService.save(documento);
-		documentoService.insertDocumentoFolio(documento);
+//		documentoService.insertDocumentoFolio(documento);
 		if (documentoService.sellarComprobante(documento.getComprobante())) {
 			if (documentoWebService.timbrarDocumento(documento, request)) {
 				documentoService.insertDocumentoCfdi(documento);

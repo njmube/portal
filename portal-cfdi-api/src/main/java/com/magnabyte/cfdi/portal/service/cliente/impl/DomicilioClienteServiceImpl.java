@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.magnabyte.cfdi.portal.dao.cliente.DomicilioClienteDao;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
+import com.magnabyte.cfdi.portal.model.commons.Estado;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 
 @Service("domicilioClienteService")
@@ -75,5 +76,10 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 			}
 			
 		}
+	}
+
+	@Override
+	public Estado readEstado(Estado estado) {
+		return domicilioClienteDao.readEstado(estado);
 	}
 }
