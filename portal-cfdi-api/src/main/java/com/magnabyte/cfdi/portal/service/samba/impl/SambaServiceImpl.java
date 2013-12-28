@@ -266,7 +266,7 @@ public class SambaServiceImpl implements SambaService {
 			map.put("SUCURSAL", documento.getEstablecimiento().getNombre());
 		}
 		
-		map.put("TIPO_DOC", documento.getTipoDocumento().toString());
+		map.put("TIPO_DOC", documento.getTipoDocumento().getNombre());
 		map.put(JRParameter.REPORT_LOCALE, locale);
 		map.put("NUM_SERIE_CERT", certificadoDao.obtenerCertificado());
 		map.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
