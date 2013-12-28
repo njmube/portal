@@ -1,8 +1,8 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -11,16 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import mx.gob.sat.cfd._3.Comprobante;
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,8 +59,8 @@ public class DocumentoController {
 	public String generaFactura(@ModelAttribute Documento documento,
 			ModelMap model) {
 		logger.debug("generando factura");
-		documentoService.save(documento);
-		documentoService.insertDocumentoFolio(documento);
+		// documentoService.save(documento);
+		// documentoService.insertDocumentoFolio(documento);
 		if (documentoService.sellarComprobante(documento.getComprobante())) {
 			if (documentoWebService.timbrarDocumento(documento)) {
 				documentoService.insertDocumentoCfdi(documento);
@@ -86,70 +77,10 @@ public class DocumentoController {
 		return "documento/documentoSuccess";
 	}
 
-	// @RequestMapping("/reporte")
-	// public String reporte(@ModelAttribute Documento documento, ModelMap
-	// model, HttpServletRequest request) {
-	// logger.debug("Creando reporte");
-	// Locale locale = new Locale("es", "MX");
-	// List<Comprobante> comprobantes = new ArrayList<Comprobante>();
-	// comprobantes.add(documento.getComprobante());
-	// String pathImages =
-	// request.getSession().getServletContext().getRealPath("resources/img");
-	// if (documento instanceof DocumentoCorporativo ) {
-	// model.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
-	// } else if (documento instanceof DocumentoSucursal) {
-	// model.put("SUCURSAL", documento.getEstablecimiento().getNombre());
-	// }
-	// if (documento.getComprobante().getTipoDeComprobante().equals("ingreso"))
-	// {
-	// model.put("TIPO_DOC", "FACTURA");
-	// } else {
-	// model.put("TIPO_DOC", "NOTA DE CREDITO");
-	// }
-	//
-	// model.put("NUM_SERIE_CERT", certificadoDao.obtenerCertificado());
-	// model.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
-	// model.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
-	// model.put("FECHA_TIMBRADO",
-	// documento.getTimbreFiscalDigital().getFechaTimbrado());
-	// model.put("FOLIO_FISCAL", documento.getTimbreFiscalDigital().getUUID());
-	// model.put("CADENA_ORIGINAL", documento.getCadenaOriginal());
-	// model.put("PATH_IMAGES", pathImages);
-	// model.put(JRParameter.REPORT_LOCALE, locale);
-	// model.put("QRCODE", codigoQRService.generaCodigoQR(documento));
-	// model.put("LETRAS",
-	// NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
-	// model.put("REGIMEN",
-	// documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
-	// model.put("objetoKey", comprobantes);
-	// return "reporte";
-	// }
-
-//	@RequestMapping("/documentoXml")
-//	public @ResponseBody
-//	Comprobante documentoXml(@ModelAttribute Documento documento) {
-//		return documento.getComprobante();
-//	}
-
 	@RequestMapping("/reporte")
-	public void reporte(@ModelAttribute Documento documento, ModelMap model,
-			HttpServletRequest request, HttpServletResponse response) {
+	public String reporte(@ModelAttribute Documento documento, ModelMap model,
+			HttpServletRequest request) {
 		logger.debug("Creando reporte");
-		JasperDesign disenoReporte = null;
-		JasperPrint reporteCompleto = null;
-		JasperReport reporteCompilado = null;
-		String context = request.getContextPath();
-		// /src/main/webapp/WEB-INF/reports
-
-		String pathPlantilla = File.separator + "home" + File.separator
-				+ "desarrollo1" + File.separator + "Documents" + File.separator
-				+ "workspace-sts-3.4.0.RELEASE" + File.separator
-				+ "portal-cfdi" + File.separator + context + File.separator
-				+ "src" + File.separator + "main" + File.separator + "webapp"
-				+ File.separator + "WEB-INF" + File.separator + "reports"
-				+ File.separator + "ReporteFactura.jrxml";
-		logger.debug(pathPlantilla);
-
 		Locale locale = new Locale("es", "MX");
 		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
 		comprobantes.add(documento.getComprobante());
@@ -166,8 +97,6 @@ public class DocumentoController {
 		} else {
 			model.put("TIPO_DOC", "NOTA DE CREDITO");
 		}
-
-		model.put(JRParameter.REPORT_LOCALE, locale);
 		model.put("NUM_SERIE_CERT", certificadoDao.obtenerCertificado());
 		model.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
 		model.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
@@ -176,6 +105,7 @@ public class DocumentoController {
 		model.put("FOLIO_FISCAL", documento.getTimbreFiscalDigital().getUUID());
 		model.put("CADENA_ORIGINAL", documento.getCadenaOriginal());
 		model.put("PATH_IMAGES", pathImages);
+		model.put(JRParameter.REPORT_LOCALE, locale);
 		model.put("QRCODE", codigoQRService.generaCodigoQR(documento));
 		model.put(
 				"LETRAS",
@@ -184,51 +114,28 @@ public class DocumentoController {
 		model.put("REGIMEN", documento.getComprobante().getEmisor()
 				.getRegimenFiscal().get(0).getRegimen());
 		model.put("objetoKey", comprobantes);
+		return "reporte";
+	}
 
-		JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(
-				documento.getComprobante().getConceptos().getConcepto());
+	// @RequestMapping("/documentoXml")
+	// public @ResponseBody
+	// Comprobante documentoXml(@ModelAttribute Documento documento) {
+	// return documento.getComprobante();
+	// }
 
+	@RequestMapping("/documentoXml")
+	public void documentoXml(@ModelAttribute Documento documento,
+			HttpServletResponse response) {
 		try {
 			response.setHeader("Content-Disposition",
-					"attachment; filename=reporteFactura.xml");
-			disenoReporte = JRXmlLoader.load(pathPlantilla);
-			reporteCompilado = JasperCompileManager
-					.compileReport(disenoReporte);
-			reporteCompleto = JasperFillManager.fillReport(reporteCompilado,
-					model, dataSource);
-
-			byte[] bytesReport = JasperExportManager
-					.exportReportToPdf(reporteCompleto);
-
+					"attachment; filename=somefile.xml");
 			OutputStream out = response.getOutputStream();
-			out.write(bytesReport);
-			out.flush();
-			out.close();
-
-		} catch (JRException | IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-	
-	@RequestMapping("/documentoXml")
-	public void documentoXml(@ModelAttribute Documento documento, HttpServletResponse response) {
-		try {
-			response.setHeader("Content-Disposition", "attachment; filename=somefile.xml"); 
-			OutputStream out = response.getOutputStream();
-			out.write(documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
+			out.write(documentoXmlService
+					.convierteComprobanteAByteArray(documento.getComprobante()));
 			out.flush();
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-
-	public List<Comprobante> getModel(Documento documento) {
-		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
-
-		return comprobantes;
-	}
-
 }
