@@ -122,6 +122,8 @@ public class ClienteServiceImpl implements ClienteService {
 
 	private boolean comparaDirecciones(DomicilioCliente domicilio,
 		DomicilioCliente domicilioBD) {
+		logger.debug(domicilioBD.toString());
+		logger.debug(domicilio.toString());
 		return domicilioBD.compara(domicilio);
 	}
 }

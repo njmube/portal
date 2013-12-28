@@ -1,4 +1,4 @@
-package cliente;
+package com.magnabyte.test.cliente;
 
 import java.util.List;
 
@@ -22,6 +22,7 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
+import com.magnabyte.cfdi.portal.service.cliente.impl.ClienteServiceImpl;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -34,12 +35,11 @@ public class ClienteServiceTest {
 	@Mock
 	ClienteDao clienteDaoMock;
 	
-//	@Mock
+	@Mock
 	DomicilioClienteService domicilioServiceMock;
 	
 	@InjectMocks
-	@Autowired
-	ClienteService clienteService;
+	ClienteService clienteService = new ClienteServiceImpl();
 	
 	@Autowired
 	DocumentoService documentoService;
@@ -59,7 +59,7 @@ public class ClienteServiceTest {
 		MockitoAnnotations.initMocks(this);
 	}
 	
-//	@Test
+	@Test
 	public void save() {
 		logger.info("Actualizando un cliente completo.");
 		Cliente cliente = CLIENTE;
@@ -121,7 +121,7 @@ public class ClienteServiceTest {
 		documentoService.save(doc);
 	}
 	
-	@Test
+//	@Test
 	public void comparaNoExist() {
 		logger.info("Comparando objetos cliente diferentes.");
 		Cliente cliente = CLIENTE_NO_EXISTE;

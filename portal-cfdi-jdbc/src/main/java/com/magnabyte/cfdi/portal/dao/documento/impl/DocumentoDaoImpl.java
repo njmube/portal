@@ -1,6 +1,7 @@
 package com.magnabyte.cfdi.portal.dao.documento.impl;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,8 @@ import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
+import com.magnabyte.cfdi.portal.model.documento.EstadoDocumentoPendiente;
+import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
 @Repository("documentoDao")
@@ -59,7 +62,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	@Override
 	public void insertDocumentoFolio(Documento documento) {
 		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(getJdbcTemplate());
-		simpleJdbcInsert.setTableName(DocumentoSql.TABLE_ESTAB_SERIE);
+		simpleJdbcInsert.setTableName(DocumentoSql.TABLE_DOC_FOLIO);
 		simpleJdbcInsert.execute(getParametersDocumentoFolio(documento));
 	}
 	
@@ -76,6 +79,40 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 
 	@Override
 	public void insertDocumentoCfdi(Documento documento) {
-		
+		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(getJdbcTemplate());
+		simpleJdbcInsert.setTableName(DocumentoSql.TABLE_DOC_CFDI);
+		simpleJdbcInsert.execute(getParametersDocumentoCfdi(documento));
 	}
+	
+	private MapSqlParameterSource getParametersDocumentoCfdi(Documento documento) {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue(DocumentoSql.ID_DOCUMENTO, documento.getId());
+		params.addValue(DocumentoSql.SELLO_EMISOR, documento.getTimbreFiscalDigital().getSelloSAT());
+		params.addValue(DocumentoSql.CADENA, documento.getCadenaOriginal());
+		params.addValue(DocumentoSql.SELLO_CFDI, documento.getTimbreFiscalDigital().getSelloCFD());
+		params.addValue(DocumentoSql.UUID, documento.getTimbreFiscalDigital().getUUID());
+		//FIXME
+		params.addValue(DocumentoSql.FECHA_HORA, new Date());
+		return params;
+	}
+	
+	@Override
+	public void insertAcusePendiente(Documento documento) {
+		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(getJdbcTemplate());
+		simpleJdbcInsert.setTableName(DocumentoSql.TABLE_DOC_PEND);
+		simpleJdbcInsert.execute(getParametersAcusePendiente(documento));
+	}
+
+	private MapSqlParameterSource getParametersAcusePendiente(Documento documento) {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue(DocumentoSql.ID_DOCUMENTO, documento.getId());
+		params.addValue(DocumentoSql.SERIE, documento.getComprobante().getSerie());
+		params.addValue(DocumentoSql.FOLIO, documento.getComprobante().getFolio());
+		params.addValue(DocumentoSql.ID_TIPO_DOCUMENTO, documento.getTipoDocumento().getId());
+		params.addValue(DocumentoSql.ID_ESTABLECIMIENTO, documento.getEstablecimiento().getId());
+		params.addValue(DocumentoSql.ID_ESTADO_DOC, EstadoDocumentoPendiente.ACUSE_PENDIENTE);
+		return params;
+	}
+	
+	
 }

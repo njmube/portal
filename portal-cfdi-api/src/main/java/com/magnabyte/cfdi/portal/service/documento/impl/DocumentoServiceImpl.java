@@ -62,6 +62,7 @@ import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.commons.Estado;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
+import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
@@ -71,6 +72,7 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDescuento;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
+import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoDetalleService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
@@ -97,10 +99,13 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	private DocumentoDetalleService documentoDetalleService;
 	
 	@Autowired
+	private DomicilioClienteService domicilioClienteService;
+	
+	@Autowired
 	private TicketService ticketService;
 	
 	@Autowired
-	ClienteService clienteService;
+	private ClienteService clienteService;
 	
 	private ResourceLoader resourceLoader;
 	
@@ -117,6 +122,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			comprobante.setSello(sello);
 			return true;
 		}
+		//xml pendiente
 		return false;
 	}
 
@@ -322,13 +328,18 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 	}
 
-	@Transactional
 	@Override
 	public void save(Documento documento) {
 		if(documento != null) {
-			if(documento.getCliente() != null) {
-				if(!clienteService.exist(documento.getCliente())) {
-					clienteService.save(documento.getCliente());
+			if(documento instanceof DocumentoCorporativo) {
+				if(documento.getCliente() != null) {
+					if(!clienteService.exist(documento.getCliente())) {
+						logger.debug("Saveando.......");
+						clienteService.save(documento.getCliente());
+					} else {
+						documento.setCliente(clienteService
+								.readClientesByNameRfc(documento.getCliente()));
+					}
 				}
 			}
 			if(documento instanceof DocumentoSucursal) {
@@ -340,10 +351,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			logger.debug("El Documento no puede ser nulo.");
 			throw new PortalException("El Documento no puede ser nulo.");
 		}
-		
 	}
 	
-	@Transactional
 	@Override
 	public void insertDocumentoFolio(Documento documento) {
 		synchronized (documentoSerieDao) {
@@ -351,14 +360,27 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
 			documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO_CONSECUTIVO));
 			documentoSerieDao.updateFolioSerie(documento);
+			documentoDao.insertDocumentoFolio(documento);
 		}
-		documentoDao.insertDocumentoFolio(documento);
 	}
 	
 	@Transactional
 	@Override
 	public void insertDocumentoCfdi(Documento documento) {
 		documentoDao.insertDocumentoCfdi(documento);
+	}
+	
+	@Transactional
+	@Override
+	public void guardarDocumento(Documento documento) {
+		save(documento);
+		insertDocumentoFolio(documento);		
+	}
+	
+	@Transactional
+	@Override
+	public void insertAcusePendiente(Documento documento) {
+		documentoDao.insertAcusePendiente(documento);
 	}
 	
 	@Override
@@ -368,6 +390,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		List<DomicilioCliente> domicilios = new ArrayList<DomicilioCliente>();
 		Estado estado = new Estado();
 		estado.setNombre(comprobante.getReceptor().getDomicilio().getEstado());
+		
+		Estado estadoBD = domicilioClienteService.readEstado(estado);
 		
 		cliente.setNombre(comprobante.getReceptor().getNombre());
 		cliente.setRfc(comprobante.getReceptor().getRfc());
@@ -380,7 +404,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		domicilio.setLocalidad(comprobante.getReceptor().getDomicilio().getLocalidad());
 		domicilio.setReferencia(comprobante.getReceptor().getDomicilio().getReferencia());
 		domicilio.setCodigoPostal(comprobante.getReceptor().getDomicilio().getCodigoPostal());
-		domicilio.setEstado(estado);
+		domicilio.setEstado(estadoBD);
 		domicilios.add(domicilio);
 		cliente.setDomicilios(domicilios);
 		return cliente;
