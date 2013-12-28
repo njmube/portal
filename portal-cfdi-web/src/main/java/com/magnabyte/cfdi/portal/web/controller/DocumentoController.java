@@ -54,15 +54,16 @@ public class DocumentoController {
 	@Autowired
 	private CertificadoDao certificadoDao;
 	
-	@RequestMapping(value = "/generaFactura", method = RequestMethod.POST)
-	public String generaFactura(@ModelAttribute Documento documento,
+	@RequestMapping(value = "/generarDocumento", method = RequestMethod.POST)
+	public String generarDocumento(@ModelAttribute Documento documento,
 			ModelMap model, HttpServletRequest request) {
-		logger.debug("generando factura");
-		documentoService.save(documento);
-		documentoService.insertDocumentoFolio(documento);
+		logger.debug("generando documento");
+		
+		documentoService.guardarDocumento(documento);
 		if (documentoService.sellarComprobante(documento.getComprobante())) {
 			if (documentoWebService.timbrarDocumento(documento, request)) {
 				documentoService.insertDocumentoCfdi(documento);
+				documentoService.insertAcusePendiente(documento);
 				model.put("documento", documento);
 			}
 		}

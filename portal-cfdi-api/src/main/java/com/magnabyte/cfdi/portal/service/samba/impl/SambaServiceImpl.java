@@ -103,6 +103,8 @@ public class SambaServiceImpl implements SambaService {
 	@Override
 	public List<DocumentoCorporativo> getFilesFromDirectory(String url) {
 		List<DocumentoCorporativo> documentos = new ArrayList<DocumentoCorporativo>();
+		String regex = "(^[F-N]\\d{10}.+(\\.(?i)(xml))$)";
+		Pattern pattern = Pattern.compile(regex);
 		Config.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
 		logger.debug("sambaService getFilesFromDirectory...");
 		logger.debug(url);
@@ -113,10 +115,13 @@ public class SambaServiceImpl implements SambaService {
 				logger.debug("si hay {}", files.length);
 				for (SmbFile file : files) {
 					if (file.isFile()) {
-						DocumentoCorporativo documento = new DocumentoCorporativo();
-						documento.setFolioSap(file.getName().substring(1, 11));
-						documento.setNombreXmlPrevio(file.getName());
-						documentos.add(documento);
+						Matcher matcher = pattern.matcher(file.getName());
+						if (matcher.matches() && file.getName().length() > 11) {
+							DocumentoCorporativo documento = new DocumentoCorporativo();
+							documento.setFolioSap(file.getName().substring(1, 11));
+							documento.setNombreXmlPrevio(file.getName());
+							documentos.add(documento);
+						}
 					}
 				}
 			} else {

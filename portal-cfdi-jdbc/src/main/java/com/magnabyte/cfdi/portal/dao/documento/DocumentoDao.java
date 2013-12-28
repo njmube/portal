@@ -4,9 +4,11 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 
 public interface DocumentoDao {
 	
-	public void save(Documento documento);
+	void save(Documento documento);
 
-	public void insertDocumentoFolio(Documento documento);
+	void insertDocumentoFolio(Documento documento);
 
-	public void insertDocumentoCfdi(Documento documento);
+	void insertDocumentoCfdi(Documento documento);
+
+	void insertAcusePendiente(Documento documento);
 }

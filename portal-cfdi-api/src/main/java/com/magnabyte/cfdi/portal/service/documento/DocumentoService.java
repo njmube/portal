@@ -22,4 +22,8 @@ public interface DocumentoService {
 
 	Cliente obtenerClienteDeComprobante(Comprobante comprobante);
 
+	void insertAcusePendiente(Documento documento);
+
+	void guardarDocumento(Documento documento);
+
 }
