@@ -63,8 +63,6 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		simpleJdbcInsert.execute(getParametersDocumentoFolio(documento));
 	}
 	
-	
-	
 	private MapSqlParameterSource getParametersDocumentoFolio(Documento documento) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue(DocumentoSql.ID_DOCUMENTO, documento.getId());

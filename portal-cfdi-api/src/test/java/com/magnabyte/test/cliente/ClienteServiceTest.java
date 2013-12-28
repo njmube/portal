@@ -1,4 +1,4 @@
-package cliente;
+package com.magnabyte.test.cliente;
 
 import java.util.List;
 
@@ -18,11 +18,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.magnabyte.cfdi.portal.dao.cliente.ClienteDao;
 import com.magnabyte.cfdi.portal.dao.cliente.dummys.ClienteDummy;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
-import com.magnabyte.cfdi.portal.model.documento.Documento;
-import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
-import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/jdbcApplicationContext.xml",
@@ -34,15 +31,12 @@ public class ClienteServiceTest {
 	@Mock
 	ClienteDao clienteDaoMock;
 	
-//	@Mock
+	@Mock
 	DomicilioClienteService domicilioServiceMock;
 	
 	@InjectMocks
 	@Autowired
 	ClienteService clienteService;
-	
-	@Autowired
-	DocumentoService documentoService;
 	
 	public static Cliente CLIENTE = null;
 	public static Cliente CLIENTE_DIF = null;
@@ -67,8 +61,8 @@ public class ClienteServiceTest {
 		clienteService.save(cliente);
 		Assert.assertNotNull(cliente.getId());
 		
-		Mockito.verify(clienteDaoMock, Mockito.atLeastOnce()).save(cliente);
-		Mockito.verify(domicilioServiceMock, Mockito.atLeastOnce()).save(cliente);
+		Mockito.verify(clienteDaoMock, Mockito.atLeast(1)).save(cliente);
+		Mockito.verify(domicilioServiceMock, Mockito.atLeast(1)).save(cliente);
 	}
 	
 //	@Test
@@ -82,7 +76,7 @@ public class ClienteServiceTest {
 		Mockito.verify(domicilioServiceMock, Mockito.atLeastOnce()).update(cliente);
 	}
 	
-//	@Test
+	@Test
 	public void readCliente() {
 		logger.info("Recuperando el cliente de la base de datos.");
 		Cliente cliente = CLIENTE;
@@ -100,33 +94,5 @@ public class ClienteServiceTest {
 		logger.info("Recuperando la lista de clientes de la base de datos.");
 		List<Cliente> clientes = clienteService.findClientesByNameRfc(CLIENTE);
 		Assert.assertNotNull(clientes);		
-	}
-	
-//	@Test
-	public void comparaFalse() {
-		logger.info("Comparando objetos cliente iguales.");
-		Cliente cliente = CLIENTE;
-		Documento doc = new DocumentoCorporativo();
-		doc.setCliente(cliente);
-		documentoService.save(doc);
-//		Assert.assertEquals(true, clienteService.exist(cliente));
-	}
-	
-//	@Test
-	public void comparaTrue() {
-		logger.info("Comparando objetos cliente diferentes.");
-		Cliente cliente = CLIENTE_DIF;
-		Documento doc = new DocumentoCorporativo();
-		doc.setCliente(cliente);
-		documentoService.save(doc);
-	}
-	
-	@Test
-	public void comparaNoExist() {
-		logger.info("Comparando objetos cliente diferentes.");
-		Cliente cliente = CLIENTE_NO_EXISTE;
-		Documento doc = new DocumentoCorporativo();
-		doc.setCliente(cliente);
-		documentoService.save(doc);
 	}
 }
