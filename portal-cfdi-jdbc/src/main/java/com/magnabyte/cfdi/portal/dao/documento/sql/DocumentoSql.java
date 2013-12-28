@@ -5,6 +5,8 @@ import com.magnabyte.cfdi.portal.dao.GenericSql;
 public class DocumentoSql extends GenericSql {
 	
 	public static final String TABLE_NAME = "t_documento";
+	public static final String TABLE_DOC_FOLIO = "t_documento_folio";
+	public static final String TABLE_DOC_CFDI = "t_documento_cfdi";
 	public static final String TABLE_ESTAB_SERIE = "t_establecimiento_serie";
 	
 	public static final String ID_DOCUMENTO = "id_documento";
@@ -23,6 +25,11 @@ public class DocumentoSql extends GenericSql {
 	public static final String FOLIO = "folio";
 	public static final String FOLIO_CONSECUTIVO = "folio_consecutivo";
 	public static final String ID_TIPO_DOCUMENTO = "id_tipo_documento";
+	public static final String SELLO_CFDI = "sello_cfdi";
+	public static final String CADENA = "cadena";
+	public static final String SELLO_EMISOR = "sello_emisor";
+	public static final String UUID = "uuid";
+	public static final String FECHA_HORA = "fecha_hora";
 
 	public static final String READ_SERIE_FOLIO;
 	public static final String UPDATE_FOLIO_SERIE;

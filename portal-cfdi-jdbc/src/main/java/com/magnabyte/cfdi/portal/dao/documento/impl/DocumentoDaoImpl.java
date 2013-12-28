@@ -59,7 +59,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	@Override
 	public void insertDocumentoFolio(Documento documento) {
 		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(getJdbcTemplate());
-		simpleJdbcInsert.setTableName(DocumentoSql.TABLE_ESTAB_SERIE);
+		simpleJdbcInsert.setTableName(DocumentoSql.TABLE_DOC_FOLIO);
 		simpleJdbcInsert.execute(getParametersDocumentoFolio(documento));
 	}
 	
@@ -76,6 +76,19 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 
 	@Override
 	public void insertDocumentoCfdi(Documento documento) {
-		
+		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(getJdbcTemplate());
+		simpleJdbcInsert.setTableName(DocumentoSql.TABLE_DOC_CFDI);
+		simpleJdbcInsert.execute(getParametersDocumentoCfdi(documento));
+	}
+	
+	private MapSqlParameterSource getParametersDocumentoCfdi(Documento documento) {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue(DocumentoSql.ID_DOCUMENTO, documento.getId());
+		params.addValue(DocumentoSql.SELLO_EMISOR, documento.getTimbreFiscalDigital().getSelloSAT());
+		params.addValue(DocumentoSql.CADENA, documento.getCadenaOriginal());
+		params.addValue(DocumentoSql.SELLO_CFDI, documento.getTimbreFiscalDigital().getSelloCFD());
+		params.addValue(DocumentoSql.UUID, documento.getTimbreFiscalDigital().getUUID());
+		params.addValue(DocumentoSql.FECHA_HORA, documento.getFechaFacturacion());
+		return params;
 	}
 }
