@@ -7,7 +7,7 @@ import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.certus.facturehoy.ws2.cfdi.WsEmisionTimbrado;
 import com.certus.facturehoy.ws2.cfdi.WsResponseBO;
@@ -20,7 +20,7 @@ import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
 
-@Service("documentoWebService")
+@Component("documentoWebService")
 public class DocumentoWebServiceImpl implements DocumentoWebService {
 
 	private static final Logger logger = LoggerFactory.getLogger(DocumentoWebServiceImpl.class);
