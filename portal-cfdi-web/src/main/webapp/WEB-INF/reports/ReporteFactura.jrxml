@@ -360,7 +360,7 @@
 	<pageHeader>
 		<band height="197" splitType="Stretch">
 			<frame>
-				<reportElement x="1" y="126" width="429" height="50" uuid="ad819e88-b51c-4660-bc11-01cda1386685"/>
+				<reportElement x="1" y="126" width="424" height="50" uuid="ad819e88-b51c-4660-bc11-01cda1386685"/>
 				<box>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
