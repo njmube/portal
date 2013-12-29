@@ -51,7 +51,7 @@
 						</div>
 					</div>
 					<p class="text-center">
-						<button id="agregar" type="button" class="btn btn-xs btn-warning">Agregar Dirección <span class="glyphicon glyphicon glyphicon-plus"></span> </button>
+						<button id="agregarCorregir" type="button" class="btn btn-xs btn-warning">Agregar Dirección <span class="glyphicon glyphicon glyphicon-plus"></span> </button>
 					</p>
 					<div class="white-panel row">
 						<table class="table table-hover" id="tblDireccion">
@@ -65,8 +65,8 @@
 									<th><small>Municipio</small></th>
 									<th><small>Colonia</small></th>
 									<th><small>C.P.</small></th>
-									<th><small>Referencia</small></th>
-									<th><small>Localidad</small></th>
+<!-- 									<th><small>Referencia</small></th> -->
+<!-- 									<th><small>Localidad</small></th> -->
 									<th><small></small></th>
 								</tr>
 							</thead>
@@ -102,8 +102,8 @@
 												<td width="200px"><form:input  path="domicilios[${theCount.index}].colonia" id="colonia" cssClass="form-control input-xsm validate[required]"/></td>
 												<td width="70px"><form:input  path="domicilios[${theCount.index}].codigoPostal" id="codigoPostal" 
 													cssClass="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[6], minSize[5]"/></td>
-												<td><form:input path="domicilios[${theCount.index}].referencia" id="referencia" cssClass="form-control input-xsm "/></td>
-												<td><form:input path="domicilios[${theCount.index}].localidad" id="localidad" cssClass="form-control input-xsm"/></td>
+<%-- 												<td><form:input path="domicilios[${theCount.index}].referencia" id="referencia" cssClass="form-control input-xsm "/></td> --%>
+<%-- 												<td><form:input path="domicilios[${theCount.index}].localidad" id="localidad" cssClass="form-control input-xsm"/></td> --%>
 												<c:if test="${theCount.index > 0}">
 													<td><button id='delete' type='button' class='btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span></button></td>
 												</c:if>
@@ -116,7 +116,7 @@
 												<td width="65px"><input type="text" name="domicilios[0].noExterior" id="noExterior" class="form-control input-xsm validate[required, integer, minSize[1]]"/></td>
 												<td width="65px"><input type="text" name="domicilios[0].noInterior" id="noInteriorr" class="form-control input-xsm validate[integer]"/></td>
 												<td width="100px">
-												  	<select class="form-control-xsm validate[required]" id="pais" name="domicilios[0].estado.pais.id">
+												  	<select class="form-control-xsm validate[required]" id="pais" name="">
 												  		<option value="">- Seleccione una opción -</option>
 												  		<c:forEach items="${listaPaises}" var="pais">
 												    		<option value="${pais.id}">${pais.nombre}</option>
@@ -124,16 +124,17 @@
 															</select>
 												</td>
 												<td width="100px">
-													<select class="form-control-xsm validate[required]" id="estado" name="domicilios[0].estado.id">
+													<input type="hidden" name="domicilios[0].estado.id" id="estadoOculto"/>
+													<select class="form-control-xsm validate[required]" id="estado" >
 												  		<option value="">- Seleccione una opción -</option>									  		
-															</select>
+													</select>
 												</td>
 												<td><input type="text" name="domicilios[0].municipio" id="municipio" class="form-control input-xsm validate[required]"/></td>
 												<td width="200px"><input type="text" name="domicilios[0].colonia" id="colonia" class="form-control input-xsm validate[required]"/></td>
 												<td width="70px"><input type="text" name="domicilios[0].codigoPostal" id="codigoPostal" 
 													class="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[6], minSize[5]"/></td>
-												<td><input type="text" name="domicilios[0].referencia" id="referencia" class="form-control input-xsm"/></td>
-												<td><input type="text" name="domicilios[0].localidad" id="localidad" class="form-control input-xsm"/></td>
+<!-- 												<td><input type="text" name="domicilios[0].referencia" id="referencia" class="form-control input-xsm"/></td> -->
+<!-- 												<td><input type="text" name="domicilios[0].localidad" id="localidad" class="form-control input-xsm"/></td> -->
 											</tr>
 										</c:otherwise>
 									</c:choose>

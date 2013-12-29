@@ -281,8 +281,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		tUbicacion.setMunicipio(domicilioCte.getMunicipio());
 		tUbicacion.setColonia(domicilioCte.getColonia());
 		tUbicacion.setCodigoPostal(domicilioCte.getCodigoPostal());
-		tUbicacion.setReferencia(domicilioCte.getReferencia());
-		tUbicacion.setLocalidad(domicilioCte.getLocalidad());
+//		tUbicacion.setReferencia(domicilioCte.getReferencia());
+//		tUbicacion.setLocalidad(domicilioCte.getLocalidad());
 		
 		receptor.setRfc(cliente.getRfc());
 		receptor.setNombre(cliente.getNombre());
@@ -470,8 +470,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		domicilio.setNoInterior(comprobante.getReceptor().getDomicilio().getNoInterior());
 		domicilio.setColonia(comprobante.getReceptor().getDomicilio().getColonia());
 		domicilio.setMunicipio(comprobante.getReceptor().getDomicilio().getMunicipio());
-		domicilio.setLocalidad(comprobante.getReceptor().getDomicilio().getLocalidad());
-		domicilio.setReferencia(comprobante.getReceptor().getDomicilio().getReferencia());
+//		domicilio.setLocalidad(comprobante.getReceptor().getDomicilio().getLocalidad());
+//		domicilio.setReferencia(comprobante.getReceptor().getDomicilio().getReferencia());
 		domicilio.setCodigoPostal(comprobante.getReceptor().getDomicilio().getCodigoPostal());
 		domicilios.add(domicilio);
 		cliente.setDomicilios(domicilios);

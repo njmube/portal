@@ -10,7 +10,6 @@ public class DomicilioCliente extends Domicilio {
 	 * Constructor por default
 	 */
 	public DomicilioCliente() {
-		super();
 	}
 
 	public Cliente getCliente() {

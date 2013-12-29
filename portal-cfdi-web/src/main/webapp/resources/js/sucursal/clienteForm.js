@@ -56,11 +56,11 @@ $(document).ready(function() {
   		+ opEstado
 		+ "</select>"
 		+ "</td>"
-		+ "<td><input id=\'municipio" + aux +"\' name=\'domicilios["+ aux +"].municipio\' class=\'form-control input-xsm\' type=\'text\'></td>"
+		+ "<td><input id=\'municipio" + aux +"\' name=\'domicilios["+ aux +"].municipio\' class=\'form-control input-xsm validate[required]\' type=\'text\'></td>"
 		+ "<td width=\'200px\'><input id=\'colonia" + aux +"\' name=\'domicilios["+ aux +"].colonia\' class=\'form-control input-xsm validate[required]\' type=\'text\'></td>"
-		+ "<td width=\'70px\'><input id=\'codigoPostal" + aux +"\' name=\'domicilios["+ aux +"].codigoPostal\' class=\'form-control input-xsm validate[required]\' type=\'text\'></td>"
-		+ "<td><input id=\'referencia" + aux +"\' name=\'domicilios["+ aux +"].referencia\' class=\'form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[6], minSize[5]\' type=\'text\'></td>"
-		+ "<td><input id=\'localidad" + aux +"\' name=\'domicilios["+ aux +"].localidad\' class=\'form-control input-xsm\' type=\'text\'></td>"				
+		+ "<td width=\'70px\'><input id=\'codigoPostal" + aux +"\' name=\'domicilios["+ aux +"].codigoPostal\' class=\'form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[6], minSize[5]\' type=\'text\'></td>"
+//		+ "<td><input id=\'referencia" + aux +"\' name=\'domicilios["+ aux +"].referencia\' class=\'form-control input-xsm\' type=\'text\'></td>"
+//		+ "<td><input id=\'localidad" + aux +"\' name=\'domicilios["+ aux +"].localidad\' class=\'form-control input-xsm\' type=\'text\'></td>"				
 		+ "<td><button id=\'delete\' type=\'button\' class=\'btn btn-danger btn-xs\'><span class=\'glyphicon glyphicon-trash\'></span></button></td>"
 		+ "</tr>";
 		
@@ -107,8 +107,8 @@ $("#agregarCorregir").click(function() {
 		+ "<td><input id=\'municipio\' name=\'domicilios["+ aux +"].municipio\' class=\'form-control input-xsm\' type=\'text\'></td>"
 		+ "<td width=\'200px\'><input id=\'colonia\' name=\'domicilios["+ aux +"].colonia\' class=\'form-control input-xsm\' type=\'text\'></td>"
 		+ "<td width=\'70px\'><input id=\'codigoPostal\' name=\'domicilios["+ aux +"].codigoPostal\' class=\'form-control input-xsm\' type=\'text\'></td>"
-		+ "<td><input id=\'referencia\' name=\'domicilios["+ aux +"].referencia\' class=\'form-control input-xsm\' type=\'text\'></td>"
-		+ "<td><input id=\'localidad\' name=\'domicilios["+ aux +"].localidad\' class=\'form-control input-xsm\' type=\'text\'></td>"				
+//		+ "<td><input id=\'referencia\' name=\'domicilios["+ aux +"].referencia\' class=\'form-control input-xsm\' type=\'text\'></td>"
+//		+ "<td><input id=\'localidad\' name=\'domicilios["+ aux +"].localidad\' class=\'form-control input-xsm\' type=\'text\'></td>"				
 		+ "<td><button id=\'delete\' type=\'button\' class=\'btn btn-danger btn-xs\'><span class=\'glyphicon glyphicon-trash\'></span></button></td>"
 		+ "</tr>";
 		

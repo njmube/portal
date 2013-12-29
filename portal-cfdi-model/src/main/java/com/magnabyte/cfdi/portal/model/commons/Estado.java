@@ -17,7 +17,6 @@ public class Estado extends OpcionDeCatalogo {
 	 * Constructor por default
 	 */
 	public Estado() {
-		super();
 	}
 
 	public Pais getPais() {
