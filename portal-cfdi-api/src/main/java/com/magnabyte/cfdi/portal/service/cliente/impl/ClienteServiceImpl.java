@@ -60,13 +60,21 @@ public class ClienteServiceImpl implements ClienteService {
 	public void save(Cliente cliente) {
 		if(cliente != null) {
 			clienteDao.save(cliente);
-			if(!cliente.getDomicilios().isEmpty()) {
+			if(cliente.getDomicilios() != null && !cliente.getDomicilios().isEmpty()) {
 				domicilioClienteService.save(cliente);
 			} else {
 				logger.debug("La lista de direcciones no puede estar vacia.");
 			}
 		} else {
 			logger.debug("El cliente no puede ser nulo.");
+		}
+	}
+	
+	@Transactional
+	@Override
+	public void saveClienteCorporativo(Cliente cliente) {
+		if(cliente != null) {
+			clienteDao.save(cliente);
 		}
 	}
 

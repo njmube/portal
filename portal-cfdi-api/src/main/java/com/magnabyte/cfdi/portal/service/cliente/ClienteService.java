@@ -7,13 +7,13 @@ import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 
 public interface ClienteService {
 	
-	public Cliente read(Cliente cliente);
+	Cliente read(Cliente cliente);
 	
-	public boolean exist(Cliente cliente);
+	boolean exist(Cliente cliente);
 	
-	public void save(Cliente cliente);
+	void save(Cliente cliente);
 	
-	public void update(Cliente cliente);
+	void update(Cliente cliente);
 	
 	List<Cliente> findClientesByNameRfc(Cliente cliente);
 
@@ -21,4 +21,6 @@ public interface ClienteService {
 
 	boolean comparaDirecciones(DomicilioCliente domicilio,
 			DomicilioCliente domicilioBD);
+
+	void saveClienteCorporativo(Cliente cliente);
 }

@@ -402,12 +402,14 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			throw new PortalException("El Documento no puede ser nulo.");
 		}		
 		
-		synchronized (documentoSerieDao) {
-			Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolio(documento);
-			documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
-			documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO_CONSECUTIVO));
-			documentoSerieDao.updateFolioSerie(documento);
-			documentoDao.insertDocumentoFolio(documento);
+		if(documento instanceof DocumentoSucursal) {
+			synchronized (documentoSerieDao) {
+				Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolio(documento);
+				documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
+				documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO_CONSECUTIVO));
+				documentoSerieDao.updateFolioSerie(documento);
+				documentoDao.insertDocumentoFolio(documento);
+			}
 		}
 	}
 	
@@ -443,7 +445,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		
 		if(!clienteService.exist(cliente)) {
 			logger.debug("Saveando.......");
-			clienteService.save(cliente);
+			clienteService.saveClienteCorporativo(cliente);
 		} else {
 			cliente = clienteService.readClientesByNameRfc(cliente);
 		}
@@ -463,7 +465,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			}
 		}
 			
-		
 		domicilio.setCalle(comprobante.getReceptor().getDomicilio().getCalle());
 		domicilio.setNoExterior(comprobante.getReceptor().getDomicilio().getNoExterior());
 		domicilio.setNoInterior(comprobante.getReceptor().getDomicilio().getNoInterior());
