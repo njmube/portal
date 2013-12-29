@@ -12,6 +12,6 @@ public class Pais extends OpcionDeCatalogo {
 	 * Constructor por default
 	 */
 	public Pais() {
-
+		super();
 	}
 }

@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
  * 
  */
 public class Estado extends OpcionDeCatalogo {
-	
+
 	@NotNull
 	private Pais pais;
 	
@@ -17,7 +17,7 @@ public class Estado extends OpcionDeCatalogo {
 	 * Constructor por default
 	 */
 	public Estado() {
-		
+		super();
 	}
 
 	public Pais getPais() {
@@ -27,5 +27,4 @@ public class Estado extends OpcionDeCatalogo {
 	public void setPais(Pais pais) {
 		this.pais = pais;
 	}
-
 }

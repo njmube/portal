@@ -91,9 +91,9 @@ public class ClienteServiceImpl implements ClienteService {
 		if(cliente != null) {
 			if(cliente.getRfc() != null && cliente.getNombre() != null) {
 				cteBD = clienteDao.readClientesByNameRfc(cliente);
-				if(cteBD != null) {					
-					cteBD.setDomicilios(domicilioClienteService.getByCliente(cteBD));
-				}
+//				if(cteBD != null) {					
+//					cteBD.setDomicilios(domicilioClienteService.getByCliente(cteBD));
+//				}
 			} else {
 				logger.debug("El rfc y nombre de cliente no puede ser nulo.");
 			}
@@ -108,19 +108,21 @@ public class ClienteServiceImpl implements ClienteService {
 		Cliente clienteBD = readClientesByNameRfc(cliente); 
 		if(clienteBD != null) {
 			if(clienteBD.equals(cliente)) {
-				DomicilioCliente domicilio = cliente.getDomicilios().get(0);
-				if(domicilio != null) {
-					for(DomicilioCliente domicilioBD : clienteBD.getDomicilios()) {
-						return comparaDirecciones(domicilio, domicilioBD);
-					}
-				}
-				return false;
+//				DomicilioCliente domicilio = cliente.getDomicilios().get(0);
+//				if(domicilio != null) {
+//					for(DomicilioCliente domicilioBD : clienteBD.getDomicilios()) {
+//						return comparaDirecciones(domicilio, domicilioBD);
+//					}
+//				}
+//				return false;
+				return true;
 			}
 		}
 		return false;
 	}
 
-	private boolean comparaDirecciones(DomicilioCliente domicilio,
+	@Override
+	public boolean comparaDirecciones(DomicilioCliente domicilio,
 		DomicilioCliente domicilioBD) {
 		logger.debug(domicilioBD.toString());
 		logger.debug(domicilio.toString());

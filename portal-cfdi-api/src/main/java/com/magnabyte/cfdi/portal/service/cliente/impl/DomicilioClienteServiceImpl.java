@@ -11,6 +11,7 @@ import com.magnabyte.cfdi.portal.dao.cliente.DomicilioClienteDao;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.commons.Estado;
+import com.magnabyte.cfdi.portal.model.commons.Pais;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 
 @Service("domicilioClienteService")
@@ -65,7 +66,7 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 				}
 				if (domAnteriores.contains(domicilio) && domicilio.getCalle() != null) {
 					domicilioClienteDao.update(domicilio);
-				} else if (!domAnteriores.contains(domicilio) && domicilio.getCalle() != null) {
+				} if (!domAnteriores.contains(domicilio) && domicilio.getCalle() != null) {
 					domicilioClienteDao.save(domicilio);
 				}
 			}
@@ -77,9 +78,24 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 			
 		}
 	}
+	
+	@Override
+	public void saveEstado(Estado estado) {
+		domicilioClienteDao.saveEstado(estado);
+	}
+	
+	@Override
+	public void savePaisSinEstado(DomicilioCliente domicilio, Pais pais) {
+		domicilioClienteDao.savePaisSinEstado(domicilio, pais);
+	}
 
 	@Override
 	public Estado readEstado(Estado estado) {
 		return domicilioClienteDao.readEstado(estado);
+	}
+
+	@Override
+	public Pais readPais(Pais pais) {
+		return domicilioClienteDao.readPais(pais);
 	}
 }

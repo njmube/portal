@@ -35,5 +35,11 @@ public class OpcionDeCatalogoServiceImpl implements OpcionDeCatalogoService{
 		logger.debug("Obteniendo la opcion de catalogo de la base de datos");
 		return opcionDeCatalogoDao.getCatalogoParam(catalogo, campo, param, orderBy); 
 	}
-
+	
+	@Transactional
+	@Override
+	public void save(OpcionDeCatalogo opcionDeCatalogo, String catalogo, String campoId) {
+		logger.debug("Guardando la opción de catalogo en la base de datos");
+		opcionDeCatalogoDao.save(opcionDeCatalogo, catalogo, campoId);
+	}
 }
