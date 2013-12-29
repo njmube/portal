@@ -563,7 +563,7 @@
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[($F{emisor.domicilioFiscal.colonia} !=null ? $F{emisor.domicilioFiscal.colonia}+", ": "")+
-($F{emisor.domicilioFiscal.municipio} !=null ? $F{emisor.domicilioFiscal.municipio}+"" : "")+
+($F{emisor.domicilioFiscal.municipio} !=null ? $F{emisor.domicilioFiscal.municipio}+", " : "")+
 ($F{emisor.domicilioFiscal.localidad} !=null ? ""+$F{emisor.domicilioFiscal.localidad}+" " : "")]]></textFieldExpression>
 				</textField>
 				<textField>
