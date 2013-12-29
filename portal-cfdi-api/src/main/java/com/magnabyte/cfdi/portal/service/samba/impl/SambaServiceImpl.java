@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -45,13 +44,13 @@ import com.magnabyte.cfdi.portal.dao.certificado.CertificadoDao;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
-import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
+import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 
 @Service("sambaService")
 public class SambaServiceImpl implements SambaService {
@@ -63,6 +62,9 @@ public class SambaServiceImpl implements SambaService {
 	
 	@Autowired
 	private CertificadoDao certificadoDao;
+	
+	@Autowired
+	private DocumentoXmlService documentoXmlService;
 	
 	@Autowired
 	private CodigoQRService codigoQRService;
@@ -218,14 +220,28 @@ public class SambaServiceImpl implements SambaService {
 	@Override
 	public void writeProcessedCfdiXmlFile(byte[] xmlCfdi, Documento documento) {
 		logger.debug("Escribir archivo XML CFDI, writeProcessedCfdiFile");
+		String rutaXmlCfdiDestino = documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() +
+				documento.getEstablecimiento().getRutaRepositorio().getRutaRepoOut();
+		logger.debug("Ruta: {}", rutaXmlCfdiDestino);
+		String nombreXmlCfdiDestino = documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".xml";
+		writeFile(xmlCfdi, rutaXmlCfdiDestino, nombreXmlCfdiDestino);
+	}
+	
+	@Override
+	public void writeAcuseCfdiXmlFile(byte[] acuseCfdi, Documento documento) {
+		logger.debug("Escribir archivo ACUSE XML CFDI, writeAcuseCfdiXmlFile");
+		String rutaAcuseXmlCfdiDestino = documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() +
+				documento.getEstablecimiento().getRutaRepositorio().getRutaRepoOut();
+		logger.debug("Ruta: {}", rutaAcuseXmlCfdiDestino);
+		String nombreAcuseXmlCfdiDestino = documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + "_acuse" + ".xml";
+		writeFile(acuseCfdi, rutaAcuseXmlCfdiDestino, nombreAcuseXmlCfdiDestino);
+		
+	}
+	
+	public void writeFile(byte[] file, String destino, String nombreFile) {
 		try {
-			String rutaXmlCfdiDestino = documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() +
-					documento.getEstablecimiento().getRutaRepositorio().getRutaRepoOut();
-			logger.debug("Ruta: {}", rutaXmlCfdiDestino);
-			String nombreXmlCfdiDestino = documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".xml";
-			
-			SmbFile xmlDirectory = new SmbFile(rutaXmlCfdiDestino);
-			SmbFile xmlFile = new SmbFile(xmlDirectory, nombreXmlCfdiDestino);
+			SmbFile xmlDirectory = new SmbFile(destino);
+			SmbFile xmlFile = new SmbFile(xmlDirectory, nombreFile);
 			if (!xmlDirectory.exists()) {
 				xmlDirectory.mkdir();
 			}
@@ -234,7 +250,7 @@ public class SambaServiceImpl implements SambaService {
 				xmlFile.createNewFile();
 			}
 			
-			smbFileOutputStream.write(xmlCfdi);
+			smbFileOutputStream.write(file);
 			smbFileOutputStream.flush();
 			smbFileOutputStream.close();
 			logger.debug("Se ha escrito el xml correctamente.");
@@ -268,7 +284,7 @@ public class SambaServiceImpl implements SambaService {
 		
 		map.put("TIPO_DOC", documento.getTipoDocumento().getNombre());
 		map.put(JRParameter.REPORT_LOCALE, locale);
-		map.put("NUM_SERIE_CERT", certificadoDao.obtenerCertificado());
+		map.put("NUM_SERIE_CERT", documentoXmlService.obtenerNumCertificado(documento.getXmlCfdi()));
 		map.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
 		map.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
 		map.put("FECHA_TIMBRADO", documento.getTimbreFiscalDigital().getFechaTimbrado());

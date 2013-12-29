@@ -3,9 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:oxm="http://www.springframework.org/schema/oxm"
-	xmlns:task="http://www.springframework.org/schema/task"
-	xsi:schemaLocation="http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
-	    http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.2.xsd
+	xsi:schemaLocation="http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.2.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
@@ -15,17 +13,5 @@
 		<oxm:class-to-be-bound name="mx.gob.sat.cfd._3.Comprobante"/>
 		<oxm:class-to-be-bound name="com.magnabyte.cfdi.portal.model.ticket.Ticket"/>
 	</oxm:jaxb2-marshaller>
-	
-<!-- 	<task:scheduler id="scheduler" pool-size="10"/> -->
-<!-- 	<task:executor id="executor" pool-size="10"/> -->
-	
-<!-- 	<bean id="Trabajo" class="com.magnabyte.cfdi.portal.service.jobs.impl.TrabajoImpl" /> -->
-	
-<!-- 	<task:scheduled-tasks> -->
-<!-- 		<task:scheduled ref="Trabajo" method="executeInternal" cron="0/10 * * * * ?"/> -->
-	
-<!-- 	<task:scheduled-tasks> -->
-<!-- 		<task:scheduled ref="Trabajo" method="executeInternal" cron="0 0/1 * 1/1 * ? *"/> -->
-<!-- 	</task:scheduled-tasks>	 -->
 	
 </beans>

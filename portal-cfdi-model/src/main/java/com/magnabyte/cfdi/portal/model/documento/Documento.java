@@ -9,7 +9,7 @@ import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 
-public abstract class Documento implements Serializable {
+public class Documento implements Serializable {
 	/**
 	 * 
 	 */
@@ -23,6 +23,7 @@ public abstract class Documento implements Serializable {
 	private Establecimiento establecimiento;
 	private TimbreFiscalDigital timbreFiscalDigital;
 	private TipoDocumento tipoDocumento;
+	private byte[] xmlCfdi;
 
 	public Integer getId() {
 		return id;
@@ -86,6 +87,14 @@ public abstract class Documento implements Serializable {
 	
 	public void setTipoDocumento(TipoDocumento tipoDocumento) {
 		this.tipoDocumento = tipoDocumento;
+	}
+	
+	public byte[] getXmlCfdi() {
+		return xmlCfdi;
+	}
+	
+	public void setXmlCfdi(byte[] xmlCfdi) {
+		this.xmlCfdi = xmlCfdi;
 	}
 
 	@Override

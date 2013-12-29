@@ -1,5 +1,7 @@
 package com.magnabyte.cfdi.portal.service.documento;
 
+import java.util.List;
+
 import mx.gob.sat.cfd._3.Comprobante;
 
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
@@ -25,5 +27,7 @@ public interface DocumentoService {
 	void insertAcusePendiente(Documento documento);
 
 	void guardarDocumento(Documento documento);
+
+	List<Documento> obtenerAcusesPendientes();
 
 }

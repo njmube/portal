@@ -3,7 +3,6 @@ package com.magnabyte.cfdi.portal.service.xml;
 import java.io.InputStream;
 
 import mx.gob.sat.cfd._3.Comprobante;
-import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
 
 public interface DocumentoXmlService {
 
@@ -13,6 +12,8 @@ public interface DocumentoXmlService {
 	
 	byte[] convierteComprobanteAByteArray(Comprobante comprobante);
 
-	Comprobante convierteByteArrayAComprobante(byte[] xml);
+	Comprobante convierteByteArrayAComprobante(byte[] xmlCfdi);
+
+	String obtenerNumCertificado(byte[] xmlCfdi);
 
 }

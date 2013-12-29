@@ -36,6 +36,7 @@ public class DocumentoSql extends GenericSql {
 	
 	public static final String READ_SERIE_FOLIO;
 	public static final String UPDATE_FOLIO_SERIE;
+	public static final String READ_ACUSE_PEND;
 
 	
 	static {
@@ -57,6 +58,15 @@ public class DocumentoSql extends GenericSql {
 		qryBuilder.append("and status = 'A'");
 		
 		UPDATE_FOLIO_SERIE = qryBuilder.toString();
+		
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("select *").append(EOL);
+		qryBuilder.append("from t_documento_pendiente as tdp").append(EOL);
+		qryBuilder.append("inner join t_documento_cfdi as tdc on tdp.id_documento = tdc.id_documento").append(EOL);
+		qryBuilder.append("where tdp.id_estado_documento = 3").append(EOL);
+		
+		READ_ACUSE_PEND = qryBuilder.toString();
 	}
 	
 }

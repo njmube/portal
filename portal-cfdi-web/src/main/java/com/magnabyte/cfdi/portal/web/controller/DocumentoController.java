@@ -2,7 +2,6 @@ package com.magnabyte.cfdi.portal.web.controller;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -11,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import mx.gob.sat.cfd._3.Comprobante;
-import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
 import net.sf.jasperreports.engine.JRParameter;
 
 import org.slf4j.Logger;
@@ -93,7 +91,7 @@ public class DocumentoController {
 			model.put("SUCURSAL", documento.getEstablecimiento().getNombre());
 		}
 		model.put("TIPO_DOC", documento.getTipoDocumento().getNombre());
-		model.put("NUM_SERIE_CERT", ((TimbreFiscalDigital)documento.getComprobante().getComplemento().getAny().get(0)).getNoCertificadoSAT());
+		model.put("NUM_SERIE_CERT", documentoXmlService.obtenerNumCertificado(documento.getXmlCfdi()));
 		model.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
 		model.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
 		model.put("FECHA_TIMBRADO", documento.getTimbreFiscalDigital().getFechaTimbrado());
@@ -112,11 +110,9 @@ public class DocumentoController {
 	public void documentoXml(@ModelAttribute Documento documento,
 			HttpServletResponse response) {
 		try {
-			response.setHeader("Content-Disposition",
-					"attachment; filename=somefile.xml");
+			response.setHeader("Content-Disposition", "attachment; filename=somefile.xml");
 			OutputStream out = response.getOutputStream();
-			out.write(documentoXmlService
-					.convierteComprobanteAByteArray(documento.getComprobante()));
+			out.write(documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
 			out.flush();
 			out.close();
 		} catch (IOException e) {

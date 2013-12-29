@@ -1,5 +1,8 @@
 package com.magnabyte.cfdi.portal.web.webservice.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
@@ -16,6 +19,7 @@ import com.certus.facturehoy.ws2.cfdi.WsServicios;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
+import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
@@ -33,6 +37,9 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	
 	@Autowired
 	private DocumentoXmlService documentoXmlService;
+	
+	@Autowired
+	private DocumentoService documentoService;
 	
 	@Autowired
 	private SambaService sambaService;
@@ -56,9 +63,11 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			timbre.setSelloCFD(response.getSelloDigitalEmisor());
 			timbre.setSelloSAT(response.getSelloDigitalTimbreSAT());
 			timbre.setUUID(response.getFolioUDDI());
+			timbre.setNoCertificadoSAT(documentoXmlService.obtenerNumCertificado(response.getXML()));
 			documento.setCadenaOriginal(response.getCadenaOriginal());
 			documento.setTimbreFiscalDigital(timbre);
 			documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(response.getXML()));
+			documento.setXmlCfdi(response.getXML());
 			if (documento instanceof DocumentoCorporativo) {
 				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
 			} 
@@ -68,6 +77,38 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		} else {
 			logger.debug("El Web Service devolvió un error: {}", response.getMessage());
 			throw new PortalException(response.getMessage());
+		}
+	}
+	
+	@Override
+	public void recuperarAcusesPendientes() {
+		List<Documento> documentosPendientesAcuse = new ArrayList<Documento>();
+		
+		documentosPendientesAcuse = documentoService.obtenerAcusesPendientes();
+		
+		if (documentosPendientesAcuse != null) {
+			for (Documento documento : documentosPendientesAcuse) {
+				logger.debug("documento pendiente: {}", documento);
+				recuperarAcuse(documento);
+			}
+		}
+	}
+	
+	@Override
+	public void recuperarAcuse(Documento documento) {
+		logger.debug("recuperando acuse");
+		String user = "AAA010101AAA.Test.User";
+		String password = "Prueba$1";
+		
+		WsResponseBO response = new WsResponseBO();
+		response = wsEmisionTimbrado.recuperarAcuse(user, password, documento.getTimbreFiscalDigital().getUUID());
+		
+		//FIXME
+		response.setAcuse(new byte[]{});
+		if (response.getAcuse() != null) {
+			logger.debug(response.getAcuse().toString());
+			logger.debug("llamada a samba");
+//			sambaService.writeAcuseCfdiXmlFile(response.getAcuse(), documento);
 		}
 	}
 	

@@ -8,4 +8,7 @@ public interface DocumentoWebService {
 
 	boolean timbrarDocumento(Documento documento, HttpServletRequest request);
 
+	void recuperarAcusesPendientes();
+	
+	void recuperarAcuse(Documento documento);
 }

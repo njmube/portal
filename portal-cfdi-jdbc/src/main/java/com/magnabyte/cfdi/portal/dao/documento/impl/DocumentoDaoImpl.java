@@ -1,11 +1,18 @@
 package com.magnabyte.cfdi.portal.dao.documento.impl;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+
+import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -108,9 +115,28 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		params.addValue(DocumentoSql.FOLIO, documento.getComprobante().getFolio());
 		params.addValue(DocumentoSql.ID_TIPO_DOCUMENTO, documento.getTipoDocumento().getId());
 		params.addValue(DocumentoSql.ID_ESTABLECIMIENTO, documento.getEstablecimiento().getId());
-		params.addValue(DocumentoSql.ID_ESTADO_DOC, EstadoDocumentoPendiente.ACUSE_PENDIENTE);
+		params.addValue(DocumentoSql.ID_ESTADO_DOC, EstadoDocumentoPendiente.ACUSE_PENDIENTE.getId());
 		return params;
 	}
 	
-	
+	@Override
+	public List<Documento> obtenerAcusesPendientes() {
+		try {
+			return getJdbcTemplate().query(DocumentoSql.READ_ACUSE_PEND, new RowMapper<Documento>() {
+				@Override
+				public Documento mapRow(ResultSet rs, int rowNum) throws SQLException {
+					Documento documento = new Documento();
+					TimbreFiscalDigital timbreFiscalDigital = new TimbreFiscalDigital();
+					
+					timbreFiscalDigital.setUUID(rs.getString("uuid"));
+					
+					documento.setTimbreFiscalDigital(timbreFiscalDigital);
+					return documento;
+				}
+			});
+		} catch (EmptyResultDataAccessException ex) {
+			logger.debug("No hay acuses pendientes");
+			return null;
+		}
+	}
 }

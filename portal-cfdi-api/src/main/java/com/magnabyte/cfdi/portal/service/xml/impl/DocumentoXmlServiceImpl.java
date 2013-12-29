@@ -67,8 +67,7 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 		try {
 			SAXBuilder builder = new SAXBuilder();
 			
-			Document documentoCFD;
-			documentoCFD = (Document) builder.build(xmlSap);
+			Document documentoCFD = (Document) builder.build(xmlSap);
 			Element documentoPrevio = documentoCFD.getRootElement().getChild("Comprobante");
 			Element trasladosPrevio = documentoCFD.getRootElement().getChild("Comprobante").getChild("Traslados");
 			Element documento = (Element) documentoPrevio.clone();
@@ -185,13 +184,31 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	}
 
 	@Override
-	public Comprobante convierteByteArrayAComprobante(byte[] xml) {
+	public Comprobante convierteByteArrayAComprobante(byte[] xmlCfdi) {
 		try {
-			return (Comprobante) unmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(xml)));
+			return (Comprobante) unmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(xmlCfdi)));
 		} catch (IOException e) {
 			logger.error("Error al convertir el Arreglo de Bytes a Comprobante: ", e);
 			throw new PortalException("Error al convertir el Arreglo de Bytes a Comprobante: " + e.getMessage());
 		}
+	}
+	
+	@Override
+	public String obtenerNumCertificado(byte[] xmlCfdi) {
+		SAXBuilder builder = new SAXBuilder();
+		String noCertificadoSat = null;
+		try {
+			Document documentoCFDI = (Document) builder.build(new ByteArrayInputStream(xmlCfdi));
+			Namespace nsCfdi = Namespace.getNamespace(CustomNamespacePrefixMapper.CFDI_PREFIX, CustomNamespacePrefixMapper.CFDI_URI);
+			Namespace nsTfd = Namespace.getNamespace(CustomNamespacePrefixMapper.TFD_PREFIX, CustomNamespacePrefixMapper.TFD_URI);
+			noCertificadoSat = documentoCFDI.getRootElement().getChild("Complemento", nsCfdi).getChild("TimbreFiscalDigital", nsTfd).getAttributeValue("noCertificadoSAT");
+		} catch (JDOMException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return noCertificadoSat;
 	}
 	
 	@Override

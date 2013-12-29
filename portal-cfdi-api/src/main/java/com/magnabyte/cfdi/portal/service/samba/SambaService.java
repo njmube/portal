@@ -24,4 +24,6 @@ public interface SambaService {
 
 	void writePdfFile(Documento documento, HttpServletRequest request);
 
+	void writeAcuseCfdiXmlFile(byte[] acuseCfdi, Documento documento);
+
 }
