@@ -71,4 +71,9 @@ public class OpcionDeCatalogo {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "OpcionDeCatalogo [id=" + id + ", nombre=" + nombre + "]";
+	}
 }

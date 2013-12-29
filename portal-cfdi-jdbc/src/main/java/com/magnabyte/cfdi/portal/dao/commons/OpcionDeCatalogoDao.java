@@ -9,4 +9,6 @@ public interface OpcionDeCatalogoDao {
 	Collection<OpcionDeCatalogo> getCatalogo(String catalogo, String orderBy);
 	
 	Collection<OpcionDeCatalogo> getCatalogoParam(String catalogo, String campo, String param, String orderBy);
+	
+	void save(OpcionDeCatalogo opcionDeCatalogo,String catalogo, String campoId);
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -35,7 +36,7 @@ public class DomicilioClienteDaoImpl extends GenericJdbcDao implements
 			simpleInsert.setGeneratedKeyName(DomicilioSql.ID_DOMICILIO);
 			domicilio.setId(simpleInsert.executeAndReturnKey(getParameters(domicilio)).intValue());
 		} catch (DataAccessException ex) {
-			logger.debug("No se pudo registrar el Domicilio en la base de datos.",ex);
+			logger.debug("No se pudo registrar el DomicilioCliente en la base de datos.",ex);
 		}
 	}
 
@@ -76,8 +77,64 @@ public class DomicilioClienteDaoImpl extends GenericJdbcDao implements
 	public Estado readEstado(Estado estado) {
 		String qry = "select ce.id_estado, ce.id_pais, dbo.TRIM(ce.nombre) as nom_estado, dbo.TRIM(cp.nombre)"
 				+ " as nom_pais from c_estado as ce inner join c_pais as cp on ce.id_pais = cp.id_pais where ce.nombre = ?";
-		
-		return getJdbcTemplate().queryForObject(qry, ESTADO_MAPPER, estado.getNombre());
+		try {
+			return getJdbcTemplate().queryForObject(qry, ESTADO_MAPPER, estado.getNombre());
+		} catch (EmptyResultDataAccessException ex) {
+			logger.debug("El estado no existe, se insertará.");
+			return null;
+		}
+	}
+	
+	@Override
+	public Pais readPais(Pais pais) {
+		String qry = "select id_pais, dbo.TRIM(nombre) as nom_pais from c_pais where nombre = ?";
+		try {
+			return getJdbcTemplate().queryForObject(qry, PAIS_MAPPER, pais.getNombre());			
+		} catch (EmptyResultDataAccessException ex) {
+			logger.debug("El país no existe, se insertará.");
+			return null;
+		}
+	}
+
+	@Override
+	public void saveEstado(Estado estado) {
+		try {
+			SimpleJdbcInsert simpleInsert = new SimpleJdbcInsert(getJdbcTemplate());
+			simpleInsert.setTableName(DomicilioSql.TABLE_ESTADO);
+			simpleInsert.setGeneratedKeyName(DomicilioSql.ID_ESTADO);
+			estado.setId(simpleInsert.executeAndReturnKey(getParametersEstado(estado)).intValue());
+		} catch (DataAccessException ex) {
+			logger.debug("No se pudo registrar el Estado en la base de datos.",ex);
+		}
+	}
+	
+	@Override
+	public void savePaisSinEstado(DomicilioCliente domicilio, Pais pais) {
+		try {
+			SimpleJdbcInsert simpleInsert = new SimpleJdbcInsert(getJdbcTemplate());
+			simpleInsert.setTableName(DomicilioSql.TABLE_PAIS_SIN_ESTADO);
+			simpleInsert.setGeneratedKeyName(DomicilioSql.ID_ESTADO);
+			pais.setId(simpleInsert.executeAndReturnKey(getParamsPaisSinEstado(domicilio, pais)).intValue());
+		} catch (DataAccessException ex) {
+			logger.debug("No se pudo registrar el País sin Estado en la base de datos.",ex);
+		}
+	}
+	
+	private MapSqlParameterSource getParamsPaisSinEstado(DomicilioCliente domicilio
+			, Pais pais) {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue(DomicilioSql.ID_DOMICILIO, pais.getId());
+		params.addValue(DomicilioSql.ID_PAIS, domicilio.getId());
+
+		return params;
+	}
+	
+	private MapSqlParameterSource getParametersEstado(Estado estado) {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue(DomicilioSql.NOMBRE, estado.getNombre());
+		params.addValue(DomicilioSql.ID_PAIS, estado.getPais().getId());
+
+		return params;
 	}
 	
 	private MapSqlParameterSource getParameters(DomicilioCliente domicilio) {
@@ -147,6 +204,20 @@ public class DomicilioClienteDaoImpl extends GenericJdbcDao implements
 			estado.setPais(pais);
 			
 			return estado;
+		}
+		
+	};
+	
+	private static final RowMapper<Pais> PAIS_MAPPER = new RowMapper<Pais>() {
+
+		@Override
+		public Pais mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Pais pais = new Pais();
+			
+			pais.setId(rs.getInt(DomicilioSql.ID_PAIS));
+			pais.setNombre(rs.getString(DomicilioSql.AS_PAIS));
+			
+			return pais;
 		}
 		
 	};

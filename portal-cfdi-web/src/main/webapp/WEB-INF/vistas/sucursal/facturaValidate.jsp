@@ -220,7 +220,7 @@
 			</p>
 		</div>
 	</div>
-	<c:url value="/generaDocumento" var="urlDocumento"/>
+	<c:url value="/generarDocumento" var="urlDocumento"/>
 	<form action="${urlDocumento}" id="formPdf" method="post"></form>
 	<script type="text/javascript">
 		$(document).ready(function() {

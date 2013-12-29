@@ -3,6 +3,7 @@ package com.magnabyte.cfdi.portal.service.cliente;
 import java.util.List;
 
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
+import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 
 public interface ClienteService {
 	
@@ -17,4 +18,7 @@ public interface ClienteService {
 	List<Cliente> findClientesByNameRfc(Cliente cliente);
 
 	Cliente readClientesByNameRfc(Cliente cliente);
+
+	boolean comparaDirecciones(DomicilioCliente domicilio,
+			DomicilioCliente domicilioBD);
 }

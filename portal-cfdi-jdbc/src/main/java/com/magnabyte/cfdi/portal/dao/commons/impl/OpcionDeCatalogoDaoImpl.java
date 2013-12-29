@@ -5,12 +5,16 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
 import com.magnabyte.cfdi.portal.dao.commons.OpcionDeCatalogoDao;
 import com.magnabyte.cfdi.portal.model.commons.OpcionDeCatalogo;
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
 @Repository("opcionDeCatalodoDao")
 public class OpcionDeCatalogoDaoImpl extends GenericJdbcDao 
@@ -37,6 +41,19 @@ public class OpcionDeCatalogoDaoImpl extends GenericJdbcDao
 		return getJdbcTemplate().query(qry, OPCION_DE_CATALOGO_MAPPER, param);
 	}
 	
+	@Override
+	public void save(OpcionDeCatalogo opcionDeCatalogo, String catalogo, String campoId) {
+		try {
+			SimpleJdbcInsert simpleInsert = new SimpleJdbcInsert(getJdbcTemplate());
+			simpleInsert.setTableName(catalogo);
+			simpleInsert.setGeneratedKeyName(campoId);
+			opcionDeCatalogo.setId(simpleInsert.executeAndReturnKey(getParameters(opcionDeCatalogo)).intValue());
+		} catch (DataAccessException ex) {			
+			logger.debug("No se pudo registrar el Cliente en la base de datos.", ex);
+			throw new PortalException("No se pudo registrar el Cliente en la base de datos.", ex);
+		}
+	}
+	
 	private static final RowMapper<OpcionDeCatalogo> OPCION_DE_CATALOGO_MAPPER = 
 			new RowMapper<OpcionDeCatalogo>() {
 		
@@ -48,5 +65,11 @@ public class OpcionDeCatalogoDaoImpl extends GenericJdbcDao
 			return opcion;
 		}
 	};
+	
+	private MapSqlParameterSource getParameters(OpcionDeCatalogo opcionDeCatalogo) {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("nombre", opcionDeCatalogo.getNombre());
 
+		return params;
+	}
 }

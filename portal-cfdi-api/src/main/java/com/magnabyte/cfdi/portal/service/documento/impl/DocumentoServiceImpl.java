@@ -61,6 +61,7 @@ import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.commons.Estado;
+import com.magnabyte.cfdi.portal.model.commons.Pais;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
@@ -73,6 +74,7 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDescuento;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
+import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoDetalleService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
@@ -106,6 +108,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Autowired
 	private ClienteService clienteService;
+	
+	@Autowired
+	private OpcionDeCatalogoService opcionDeCatalogoService;
 	
 	private ResourceLoader resourceLoader;
 	
@@ -376,17 +381,17 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public void guardarDocumento(Documento documento) {
 		if(documento != null) {
-			if(documento instanceof DocumentoCorporativo) {
-				if(documento.getCliente() != null) {
-					if(!clienteService.exist(documento.getCliente())) {
-						logger.debug("Saveando.......");
-						clienteService.save(documento.getCliente());
-					} else {
-						documento.setCliente(clienteService
-								.readClientesByNameRfc(documento.getCliente()));
-					}
-				}
-			}
+//			if(documento instanceof DocumentoCorporativo) {
+//				if(documento.getCliente() != null) {
+//					if(!clienteService.exist(documento.getCliente())) {
+//						logger.debug("Saveando.......");
+//						clienteService.save(documento.getCliente());
+//					} else {
+//						documento.setCliente(clienteService
+//								.readClientesByNameRfc(documento.getCliente()));
+//					}
+//				}
+//			}
 			if(documento instanceof DocumentoSucursal) {
 				ticketService.save((DocumentoSucursal) documento);
 			}
@@ -417,13 +422,41 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		Cliente cliente = new Cliente();
 		DomicilioCliente domicilio = new DomicilioCliente();
 		List<DomicilioCliente> domicilios = new ArrayList<DomicilioCliente>();
+		
+		Pais pais = new Pais();
+		pais.setNombre(comprobante.getReceptor().getDomicilio().getPais());
+		
 		Estado estado = new Estado();
 		estado.setNombre(comprobante.getReceptor().getDomicilio().getEstado());
 		
-		Estado estadoBD = domicilioClienteService.readEstado(estado);
+		Pais paisBD;
+		boolean paisSinEstado = false;
 		
 		cliente.setNombre(comprobante.getReceptor().getNombre());
 		cliente.setRfc(comprobante.getReceptor().getRfc());
+		
+		if(!clienteService.exist(cliente)) {
+			logger.debug("Saveando.......");
+			clienteService.save(cliente);
+		} else {
+			cliente = clienteService.readClientesByNameRfc(cliente);
+		}
+		
+		if(!pais.getNombre().isEmpty()) {
+			paisBD = domicilioClienteService.readPais(pais);
+			if(paisBD == null) {
+				opcionDeCatalogoService.save(pais, "c_pais", "id_pais");
+				estado.setPais(pais);
+				if(!comprobarEstado(domicilio, estado)) {					
+					paisSinEstado = true;
+					domicilio.setEstado(new Estado());					
+				}
+			} else {
+				estado.setPais(paisBD);				
+				comprobarEstado(domicilio, estado);
+			}
+		}
+			
 		
 		domicilio.setCalle(comprobante.getReceptor().getDomicilio().getCalle());
 		domicilio.setNoExterior(comprobante.getReceptor().getDomicilio().getNoExterior());
@@ -433,10 +466,50 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		domicilio.setLocalidad(comprobante.getReceptor().getDomicilio().getLocalidad());
 		domicilio.setReferencia(comprobante.getReceptor().getDomicilio().getReferencia());
 		domicilio.setCodigoPostal(comprobante.getReceptor().getDomicilio().getCodigoPostal());
-		domicilio.setEstado(estadoBD);
 		domicilios.add(domicilio);
 		cliente.setDomicilios(domicilios);
+		
+		if(paisSinEstado) {
+			domicilioClienteService.save(cliente);
+			domicilioClienteService.savePaisSinEstado(cliente.getDomicilios().get(0), pais);
+		} else {
+			DomicilioCliente dom = cliente.getDomicilios().get(0);
+			if(dom != null) {
+				List<DomicilioCliente> domiciliosBD = 
+						domicilioClienteService.getByCliente(cliente);
+				if(domiciliosBD != null && !domiciliosBD.isEmpty()) {
+					boolean existeDom = false;
+					for(DomicilioCliente domicilioBD : domiciliosBD) {
+						if(clienteService.comparaDirecciones(dom, domicilioBD)) {
+							existeDom = true;
+							break;
+						}					
+					}
+					if(!existeDom) {
+						domicilioClienteService.save(cliente);
+					}
+				} else {
+					domicilioClienteService.save(cliente);
+				}
+			}
+		}
+		
 		return cliente;
+	}
+
+	private boolean comprobarEstado(DomicilioCliente domicilio, Estado estado) {
+		Estado estadoBD;
+		if(estado != null && !estado.getNombre().isEmpty()) {
+			estadoBD = domicilioClienteService.readEstado(estado);
+			if(estadoBD == null) {
+				domicilioClienteService.saveEstado(estado);
+				domicilio.setEstado(estado);
+			} else {
+				domicilio.setEstado(estadoBD);
+			}
+			return true;
+		}
+		return false;
 	}
 
 }

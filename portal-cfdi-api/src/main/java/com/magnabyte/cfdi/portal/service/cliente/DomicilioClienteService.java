@@ -5,6 +5,7 @@ import java.util.List;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.commons.Estado;
+import com.magnabyte.cfdi.portal.model.commons.Pais;
 
 public interface DomicilioClienteService {
 
@@ -14,6 +15,14 @@ public interface DomicilioClienteService {
 	
 	public void update(Cliente cliente);
 	
+	void saveEstado(Estado estado);
+	
+	void savePaisSinEstado(DomicilioCliente domicilio, Pais pais);
+	
 	public Estado readEstado(Estado estado);
+
+	public Pais readPais(Pais pais);
+
+
 	
 }

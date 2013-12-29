@@ -8,6 +8,7 @@ public class DomicilioSql extends GenericSql {
 	public static final String TABLE_ALIAS = "tdc";
 	public static final String TABLE_ESTADO = "c_estado";
 	public static final String TABLE_PAIS = "c_pais";
+	public static final String TABLE_PAIS_SIN_ESTADO = "t_domicilio_pais_sin_estado";
 	
 	public static final String ALIAS_ESTADO = "ce";
 	public static final String AS_ESTADO = "nom_estado";
