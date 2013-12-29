@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
+import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
@@ -52,6 +53,9 @@ public class CorporativoController {
 		Comprobante comprobante = documentoXmlService.convertXmlSapToCfdi(sambaService.getFileStream(urlSapFiles, fileName));
 		DocumentoCorporativo documento = new DocumentoCorporativo();
 		documento.setCliente(documentoService.obtenerClienteDeComprobante(comprobante));
+		TipoDocumento tipoDocumento = comprobante.getTipoDeComprobante().equalsIgnoreCase("ingreso") 
+				? TipoDocumento.FACTURA : TipoDocumento.NOTA_CREDITO;
+		documento.setTipoDocumento(tipoDocumento);
 		documento.setComprobante(comprobante);
 		documento.setFolioSap(fileName.substring(1, 11));
 		documento.setNombreXmlPrevio(fileName);
