@@ -127,6 +127,18 @@ $("#agregarCorregir").click(function() {
 		$(this).loadEstados(this, $(tr).find("#estado"));
 	});
 	
+	$("#personaFisica").click(function() {
+		if($("#personaMoral").is(":checked")) {
+			$("#personaMoral").prop('checked', false);		
+		}
+	});
+	
+	$("#personaMoral").click(function() {
+		if($("#personaFisica").is(":checked")) {
+			$("#personaFisica").prop('checked', false);		
+		}
+	});
+	
 	autoClosingAlert(".errorForm", 3500);
 	autoClosingAlert("#errorMessage", 3500);	
 	

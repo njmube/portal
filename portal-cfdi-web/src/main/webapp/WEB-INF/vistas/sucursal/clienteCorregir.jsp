@@ -38,7 +38,7 @@
 			<hr>
 			<div class="well">
 				<c:url var="altaUrl" value="/confirmarDatos/clienteCorregir"/>
-				<form:form id="clienteCorregirForm" action="${altaUrl}" method="POST" modelAttribute="cliente" cssClass="form-horizontal" role="form">
+				<form:form id="clienteCorregirForm" action="${altaUrl}" method="POST" modelAttribute="clienteCorregir" cssClass="form-horizontal" role="form">
 					<div class="form-group">
 						<form:hidden path="id" id="idCliente"/>
 						<label class="control-label col-lg-1">RFC: </label>
@@ -72,8 +72,8 @@
 							</thead>
 							<tbody>
 								<c:choose>
-									<c:when test="${not empty cliente.domicilios}">
-										<c:forEach items="${cliente.domicilios}" var="domicilio" varStatus="theCount">
+									<c:when test="${not empty clienteCorregir.domicilios}">
+										<c:forEach items="${clienteCorregir.domicilios}" var="domicilio" varStatus="theCount">
 											<tr>
 												<td width="200px"><form:input path="domicilios[${theCount.index}].calle" id="calle" cssClass="form-control input-xsm validate[required]"/></td>
 												<td width="65px"><form:input path="domicilios[${theCount.index}].noExterior" id="noExterior" cssClass="form-control input-xsm validate[required, integer, minSize[1]]"/></td>

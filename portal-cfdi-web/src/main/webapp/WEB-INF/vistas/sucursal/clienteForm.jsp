@@ -22,6 +22,16 @@
 				<c:url var="altaUrl" value="/confirmarDatos/clienteForm"/>
 				<form:form id="clienteForm" action="${altaUrl}" method="POST" modelAttribute="cliente" cssClass="form-horizontal" role="form">
 					<div class="form-group">
+						<label class="control-label col-lg-1">P.Fisica: </label>
+						<div class="col-lg-3">
+							<input type="radio" id="personaFisica" name="personaFisica" value="1">
+						</div>
+						<label class="control-label col-lg-1">P.Moral: </label>
+						<div class="col-lg-4">
+							<input type="radio" id="personaMoral" name="personaMoral" value="0">
+						</div>
+					</div>
+					<div class="form-group">
 						<label class="control-label col-lg-1">* RFC: </label>
 						<div class="col-lg-2">
 							<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfc]]" />
