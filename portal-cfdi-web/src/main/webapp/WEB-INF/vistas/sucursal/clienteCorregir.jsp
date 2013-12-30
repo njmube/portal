@@ -67,7 +67,7 @@
 									<th><small>C.P.</small></th>
 <!-- 									<th><small>Referencia</small></th> -->
 <!-- 									<th><small>Localidad</small></th> -->
-									<th><small></small></th>
+									<th><small></small></th>Dorado
 								</tr>
 							</thead>
 							<tbody>
@@ -132,7 +132,7 @@
 												<td><input type="text" name="domicilios[0].municipio" id="municipio" class="form-control input-xsm validate[required]"/></td>
 												<td width="200px"><input type="text" name="domicilios[0].colonia" id="colonia" class="form-control input-xsm validate[required]"/></td>
 												<td width="70px"><input type="text" name="domicilios[0].codigoPostal" id="codigoPostal" 
-													class="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[6], minSize[5]"/></td>
+													class="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[6], minSize[5]]"/></td>
 <!-- 												<td><input type="text" name="domicilios[0].referencia" id="referencia" class="form-control input-xsm"/></td> -->
 <!-- 												<td><input type="text" name="domicilios[0].localidad" id="localidad" class="form-control input-xsm"/></td> -->
 											</tr>
