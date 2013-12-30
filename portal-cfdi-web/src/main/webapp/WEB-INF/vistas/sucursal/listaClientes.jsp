@@ -16,15 +16,7 @@
 					</display:column>
 				</display:table>
 			</div>
-		</c:when>
-		<c:otherwise>
-			<div class="form-group">
-				<div class="centered">
-					<p class="alert alert-info">No se encontró ninguna coincidencia.</p>
-					<a id="crearCLiente" href="<c:url value="/clienteForm"/>" class="btn btn-warning btn-lg">Registrar Cliente <span class="glyphicon glyphicon-arrow-right"></span></a>
-				</div>
-			</div>
-		</c:otherwise>
+		</c:when>		
 	</c:choose>
 </c:if>
 <script src="<c:url value="/resources/js/sucursal/clientes.js" />"></script>

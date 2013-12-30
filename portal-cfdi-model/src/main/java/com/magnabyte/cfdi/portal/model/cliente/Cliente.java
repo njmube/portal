@@ -18,7 +18,7 @@ public class Cliente {
 	private Integer id;
 	
 	@NotEmpty
-	@Pattern(regexp = "[A-Za-z&]{3,4}[0-9]{6}[A-Za-z0-9]{3}")
+	@Pattern(regexp = "[A-Z,Ñ,&amp;]{3,4}[0-9]{2}[0-1][0-9][0-3][0-9][A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?")
 	private String rfc;
 	@NotEmpty
 	private String nombre;
