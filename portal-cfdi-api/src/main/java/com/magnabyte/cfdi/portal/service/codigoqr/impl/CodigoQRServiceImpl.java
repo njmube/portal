@@ -23,6 +23,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 
 @Service("CodigoQRService")
@@ -88,8 +89,8 @@ public class CodigoQRServiceImpl implements CodigoQRService {
 
 			stream = new ByteArrayInputStream(baos.toByteArray());
 		} catch (Exception e) {
-			logger.debug("Error al crear el codigoQr");
-			throw new RuntimeException("Error al crear el codigoQr");
+			logger.error("Error al crear el Codigo Qr");
+			throw new PortalException("Error al crear el Codigo Qr");
 		}
 		return stream;
 	}
