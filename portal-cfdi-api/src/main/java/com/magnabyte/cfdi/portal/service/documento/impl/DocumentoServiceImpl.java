@@ -243,11 +243,16 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		SimpleDateFormat sdfOrigen = new SimpleDateFormat("yyyyMMddHHmmss");
 		try {
+			
 			Date fechaTicket = sdfOrigen.parse(ticket.getTransaccion().getTransaccionHeader().getFechaHora());
 			ticket.getTransaccion().getTransaccionHeader().setFechaHora(sdf.format(fechaTicket));
 		} catch (ParseException e) {
-			logger.error("Ocurrió un error al obtener la fecha del ticket: ", e);
-			throw new PortalException("Ocurrió un error al obtener la fecha del ticket: ", e);
+			try {
+				sdf.parse(ticket.getTransaccion().getTransaccionHeader().getFechaHora());
+			} catch (ParseException e1) {
+				logger.error("Ocurrió un error al obtener la fecha del ticket: ", e);
+				throw new PortalException("Ocurrió un error al obtener la fecha del ticket: ", e);
+			}
 		} 
 	}
 
@@ -282,16 +287,23 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			}
 		}
 		
-		tUbicacion.setCalle(domicilioCte.getCalle());
-		tUbicacion.setNoExterior(domicilioCte.getNoExterior());
-		if (!domicilioCte.getNoInterior().trim().isEmpty()) {
+		if (domicilioCte.getCalle() != null) 
+			tUbicacion.setCalle(domicilioCte.getCalle());
+		if (domicilioCte.getNoExterior() != null) 
+			tUbicacion.setNoExterior(domicilioCte.getNoExterior());
+		if (domicilioCte.getNoInterior() != null && !domicilioCte.getNoInterior().trim().isEmpty()) {
 			tUbicacion.setNoInterior(domicilioCte.getNoInterior());
 		}
-		tUbicacion.setPais(domicilioCte.getEstado().getPais().getNombre());
-		tUbicacion.setEstado(domicilioCte.getEstado().getNombre());
-		tUbicacion.setMunicipio(domicilioCte.getMunicipio());
-		tUbicacion.setColonia(domicilioCte.getColonia());
-		tUbicacion.setCodigoPostal(domicilioCte.getCodigoPostal());
+		if (domicilioCte.getEstado() != null) {
+			tUbicacion.setPais(domicilioCte.getEstado().getPais().getNombre());
+			tUbicacion.setEstado(domicilioCte.getEstado().getNombre());
+		}
+		if (domicilioCte.getMunicipio() != null) 
+			tUbicacion.setMunicipio(domicilioCte.getMunicipio());
+		if (domicilioCte.getColonia() != null) 
+			tUbicacion.setColonia(domicilioCte.getColonia());
+		if (domicilioCte.getCodigoPostal() != null) 
+			tUbicacion.setCodigoPostal(domicilioCte.getCodigoPostal());
 //		tUbicacion.setReferencia(domicilioCte.getReferencia());
 //		tUbicacion.setLocalidad(domicilioCte.getLocalidad());
 		
@@ -303,6 +315,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	private void getDetalleFromTicket(Ticket ticket, Comprobante comprobante) {
 		BigDecimal IVA = new BigDecimal(1.16);
+		BigDecimal impuestosTrasladados = new BigDecimal(0);
 		Conceptos conceptos = new Conceptos();
 		BigDecimal subTotal = new BigDecimal(0);
 		for(Partida partida : ticket.getTransaccion().getPartidas()) {
@@ -324,15 +337,13 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 		
 		descuentoTotal = descuentoTotal.multiply(new BigDecimal(-1));
-		comprobante.setDescuento(descuentoTotal.setScale(2,BigDecimal.ROUND_HALF_UP));
+		comprobante.setDescuento(descuentoTotal.divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
 
-		subTotal = subTotal.subtract(descuentoTotal.divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
-		
-		comprobante.setSubTotal(subTotal);
+		comprobante.setSubTotal(subTotal.setScale(2, BigDecimal.ROUND_HALF_UP));
 		Impuestos impuesto = new Impuestos();
-		impuesto.setTotalImpuestosTrasladados(ticket.getTransaccion().getTransaccionTotal().getTotalVenta().subtract(subTotal));
+		impuesto.setTotalImpuestosTrasladados((comprobante.getSubTotal().subtract(comprobante.getDescuento())).multiply(IVA.subtract(new BigDecimal(1)).setScale(2, BigDecimal.ROUND_HALF_UP)));
 		comprobante.setImpuestos(impuesto);
-		comprobante.setTotal(ticket.getTransaccion().getTransaccionTotal().getTotalVenta());
+		comprobante.setTotal(comprobante.getSubTotal().subtract(comprobante.getDescuento()).add(comprobante.getImpuestos().getTotalImpuestosTrasladados()).setScale(2, BigDecimal.ROUND_UP));
 	}
 	
 	private void createFechaDocumento(Comprobante comprobante) {

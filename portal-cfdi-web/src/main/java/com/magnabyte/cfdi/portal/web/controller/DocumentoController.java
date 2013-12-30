@@ -110,7 +110,8 @@ public class DocumentoController {
 	public void documentoXml(@ModelAttribute Documento documento,
 			HttpServletResponse response) {
 		try {
-			response.setHeader("Content-Disposition", "attachment; filename=somefile.xml");
+			String filename = documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".xml";
+			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
 			OutputStream out = response.getOutputStream();
 			out.write(documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
 			out.flush();
