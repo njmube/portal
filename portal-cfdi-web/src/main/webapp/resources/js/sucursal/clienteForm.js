@@ -129,13 +129,18 @@ $("#agregarCorregir").click(function() {
 	
 	$("#personaFisica").click(function() {
 		if($("#personaMoral").is(":checked")) {
-			$("#personaMoral").prop('checked', false);		
-		}
+			$("#rfc").removeClass("validate[required, custom[rfcMoral]]");
+			$("#personaMoral").prop('checked', false);
+			$("#rfc").addClass("validate[required, custom[rfcFisica]]");
+		}		
 	});
 	
 	$("#personaMoral").click(function() {
 		if($("#personaFisica").is(":checked")) {
-			$("#personaFisica").prop('checked', false);		
+			$("#rfc").removeClass("validate[required, custom[rfcFisica]]");
+			$("#personaFisica").prop('checked', false);
+			$("#rfc").addClass("validate[required, custom[rfcMoral]]");
+			$("#clienteForm").validate().element("#rfc");
 		}
 	});
 	
