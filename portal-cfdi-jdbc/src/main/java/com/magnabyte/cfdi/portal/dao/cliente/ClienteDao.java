@@ -6,6 +6,8 @@ import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 
 public interface ClienteDao {
 
+	List<Cliente> getAll();
+	
 	List<Cliente> findClientesByNameRfc(Cliente cliente);
 	
 	Cliente readClientesByNameRfc(Cliente cliente);
@@ -15,5 +17,6 @@ public interface ClienteDao {
 	public void save(Cliente cliente);
 
 	public void update(Cliente cliente);
+
 
 }

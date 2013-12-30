@@ -29,6 +29,8 @@ public class ClienteServiceImpl implements ClienteService {
 	@Transactional(readOnly = true)
 	@Override
 	public List<Cliente> findClientesByNameRfc(Cliente cliente) {
+		List<Cliente> clientes = null;
+		
 		if (cliente.getRfc() != null && !cliente.getRfc().equals("")) {
 			cliente.setRfc("%" + cliente.getRfc() + "%");
 		}
@@ -36,7 +38,14 @@ public class ClienteServiceImpl implements ClienteService {
 		if (cliente.getNombre() != null && !cliente.getNombre().equals("")) {
 			cliente.setNombre("%" + cliente.getNombre() + "%");
 		}
-		return clienteDao.findClientesByNameRfc(cliente);
+		
+		if(cliente.getNombre().equals("") && cliente.getRfc().equals("")) {
+			clientes = clienteDao.getAll();
+		} else if(!cliente.getNombre().equals("") || !cliente.getRfc().equals("")) {			
+			clientes = clienteDao.findClientesByNameRfc(cliente);
+		}
+		
+		return clientes;
 	}
 
 	@Transactional(readOnly = true)
@@ -144,5 +153,10 @@ public class ClienteServiceImpl implements ClienteService {
 		logger.debug(domicilioBD.toString());
 		logger.debug(domicilio.toString());
 		return domicilioBD.compara(domicilio);
+	}
+
+	@Override
+	public List<Cliente> getAll() {		
+		return clienteDao.getAll();
 	}
 }

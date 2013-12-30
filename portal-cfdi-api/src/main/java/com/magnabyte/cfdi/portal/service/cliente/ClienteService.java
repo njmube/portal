@@ -17,10 +17,13 @@ public interface ClienteService {
 	
 	List<Cliente> findClientesByNameRfc(Cliente cliente);
 
+	List<Cliente> getAll();
+	
 	Cliente readClientesByNameRfc(Cliente cliente);
 
 	boolean comparaDirecciones(DomicilioCliente domicilio,
 			DomicilioCliente domicilioBD);
 
 	void saveClienteCorporativo(Cliente cliente);
+
 }

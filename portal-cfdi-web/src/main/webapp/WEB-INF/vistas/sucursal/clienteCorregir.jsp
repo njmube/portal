@@ -51,7 +51,7 @@
 						</div>
 					</div>
 					<p class="text-center">
-						<button id="agregarCorregir" type="button" class="btn btn-xs btn-warning">Agregar Dirección <span class="glyphicon glyphicon glyphicon-plus"></span> </button>
+						<button id="agregarCorregir" type="button" class="btn btn-xs btn-warning">Agregar Dirección <span class="glyphicon glyphicon-plus"></span> </button>
 					</p>
 					<div class="white-panel row">
 						<table class="table table-hover" id="tblDireccion">

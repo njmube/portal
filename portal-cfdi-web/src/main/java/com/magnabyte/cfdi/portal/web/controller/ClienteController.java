@@ -36,10 +36,11 @@ public class ClienteController {
 	private OpcionDeCatalogoService opcionDeCatalogoService;
 	
 	@RequestMapping("/listaClientes")
-	public String listaClientes(ModelMap model, @ModelAttribute Cliente cliente) {
+	public String listaClientes(ModelMap model, @ModelAttribute Cliente cliente) {		
 		List<Cliente> clientes = clienteService.findClientesByNameRfc(cliente);
-		if(!clientes.isEmpty())
+		if(!clientes.isEmpty()) {
 			model.put("emptyList", false);
+		}
 		model.put("clientes", clientes);
 		return "sucursal/listaClientes";
 	}
