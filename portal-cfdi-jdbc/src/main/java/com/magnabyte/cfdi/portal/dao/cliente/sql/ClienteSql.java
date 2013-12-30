@@ -18,7 +18,7 @@ public class ClienteSql extends GenericSql {
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
 		
-		qryBuilder.append("select * from t_cliente where rfc like ? AND nombre like ?");
+		qryBuilder.append("select * from t_cliente where rfc like ? OR nombre like ?");
 		
 		FIND_BY_NAME_RFC = qryBuilder.toString();
 		qryBuilder = clearAndReuseStringBuilder(qryBuilder);

@@ -212,21 +212,29 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public Comprobante obtenerComprobantePor(Cliente cliente, Ticket ticket,
 		Integer idDomicilioFiscal, Establecimiento establecimiento) {
-		
 		Comprobante comprobante = new Comprobante();
 		
-		inicializaComprobante(comprobante, ticket);
-		formatTicketDate(ticket);
-		comprobante.setEmisor(getEmisorPorEstablecimiento(establecimiento));
-		comprobante.setReceptor(createReceptor(cliente, idDomicilioFiscal));
-		getDetalleFromTicket(ticket, comprobante);
-		createFechaDocumento(comprobante);
-		comprobante.setLugarExpedicion(comprobante.getEmisor().getExpedidoEn().getLocalidad());
+		if (ticket != null && ticket.getTransaccion().getTransaccionHeader().getIdTicket() != null &&
+				ticket.getTransaccion().getTransaccionHeader().getIdCaja() != null &&
+				ticket.getTransaccion().getTransaccionHeader().getIdSucursal() != null &&
+				ticket.getTransaccion().getTransaccionHeader().getFechaHora() != null) {
 		
-		comprobante.setTipoDeComprobante("ingreso");
-		comprobante.setTipoCambio("1");
-		comprobante.setCondicionesDePago("PAGO DE CONTADO");
-		comprobante.setFormaDePago("PAGO EN UNA SOLA EXHIBICION");
+			
+			inicializaComprobante(comprobante, ticket);
+			formatTicketDate(ticket);
+			comprobante.setEmisor(getEmisorPorEstablecimiento(establecimiento));
+			comprobante.setReceptor(createReceptor(cliente, idDomicilioFiscal));
+			getDetalleFromTicket(ticket, comprobante);
+			createFechaDocumento(comprobante);
+			comprobante.setLugarExpedicion(comprobante.getEmisor().getExpedidoEn().getLocalidad());
+			
+			comprobante.setTipoDeComprobante("ingreso");
+			comprobante.setTipoCambio("1");
+			comprobante.setCondicionesDePago("PAGO DE CONTADO");
+			comprobante.setFormaDePago("PAGO EN UNA SOLA EXHIBICION");
+		} else {
+			throw new PortalException("El ticket no puedo ser nulo.");
+		}
 		
 		return comprobante;
 	}
@@ -388,7 +396,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	public void guardarDocumento(Documento documento) {
 		if(documento != null) {
 			if(documento instanceof DocumentoSucursal) {
-				ticketService.save((DocumentoSucursal) documento);
+				if (!ticketService.ticketProcesado(((DocumentoSucursal) documento).getTicket(), documento.getEstablecimiento())) {
+					ticketService.save((DocumentoSucursal) documento);
+				} else {
+					logger.debug("El ticket ya fue facturado.");
+					throw new PortalException("El ticket ya fue facturado con anterioridad.");
+				}
 			}
 			documentoDao.save(documento);
 			documentoDetalleService.save(documento);
