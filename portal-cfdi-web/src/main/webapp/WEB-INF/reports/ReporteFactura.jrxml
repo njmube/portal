@@ -348,7 +348,7 @@
 	<field name="serie" class="java.lang.String"/>
 	<field name="condicionesDePago" class="java.lang.String"/>
 	<variable name="subtotal" class="java.math.BigDecimal">
-		<variableExpression><![CDATA[$F{descuento}.subtract($F{subTotal})]]></variableExpression>
+		<variableExpression><![CDATA[$F{subTotal}.subtract($F{descuento})]]></variableExpression>
 	</variable>
 	<variable name="totalPaginas" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER} == $V{PAGE_NUMBER}]]></variableExpression>
