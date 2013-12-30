@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteFactura" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4a6ba1cb-2ea7-4218-8d09-5f9f932a9716">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="117"/>
 	<property name="ireport.y" value="308"/>
 	<style name="table">
 		<box>
@@ -348,7 +348,7 @@
 	<field name="serie" class="java.lang.String"/>
 	<field name="condicionesDePago" class="java.lang.String"/>
 	<variable name="subtotal" class="java.math.BigDecimal">
-		<variableExpression><![CDATA[$F{descuento}.add($F{subTotal})]]></variableExpression>
+		<variableExpression><![CDATA[$F{descuento}.subtract($F{subTotal})]]></variableExpression>
 	</variable>
 	<variable name="totalPaginas" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[$V{PAGE_NUMBER} == $V{PAGE_NUMBER}]]></variableExpression>
@@ -392,9 +392,7 @@
 					<textFieldExpression><![CDATA[($F{receptor.domicilio.calle} !=null ? $F{receptor.domicilio.calle}+"" : "")+
 ($F{receptor.domicilio.colonia} !=null ? ", "+$F{receptor.domicilio.colonia} : "")+
 ($F{receptor.domicilio.noExterior} !=null ? ", "+$F{receptor.domicilio.noExterior} : "")+
-($F{receptor.domicilio.noInterior} != null ? ", "+$F{receptor.domicilio.noInterior} : "")
-
-]]></textFieldExpression>
+($F{receptor.domicilio.noInterior} != null ? ", "+$F{receptor.domicilio.noInterior} : "")]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="33" width="302" height="10" uuid="0ec53e7d-e2a7-41b6-8ce0-58fd6cde96b4"/>
@@ -598,14 +596,7 @@ $F{emisor.domicilioFiscal.estado}+""]]></textFieldExpression>
 					<textFieldExpression><![CDATA[($F{emisor.expedidoEn.calle} !=null ? $F{emisor.expedidoEn.calle} : "")+
 ($F{emisor.expedidoEn.colonia} !=null ? ", "+$F{emisor.expedidoEn.colonia} : "")+
 ($F{emisor.expedidoEn.noExterior} !=null ? $F{emisor.expedidoEn.noExterior} : "")+
-($F{emisor.expedidoEn.noInterior} !=null ? ", "+$F{emisor.expedidoEn.noInterior} : "")
-
-
-
-
-
-
-]]></textFieldExpression>
+($F{emisor.expedidoEn.noInterior} !=null ? ", "+$F{emisor.expedidoEn.noInterior} : "")]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="18" width="240" height="10" uuid="afd72984-d715-4411-8c8e-b7b59ca35b98"/>
@@ -1081,14 +1072,6 @@ $F{emisor.expedidoEn.pais}+
 					<text><![CDATA[TOTAL :]]></text>
 				</staticText>
 				<textField pattern="¤ #,##0.00">
-					<reportElement positionType="Float" x="92" y="3" width="98" height="12" uuid="c849d2fc-ec5e-4ce0-8359-397f386edb76"/>
-					<box rightPadding="3"/>
-					<textElement textAlignment="Right" verticalAlignment="Bottom">
-						<font size="8"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{subtotal}]]></textFieldExpression>
-				</textField>
-				<textField pattern="¤ #,##0.00">
 					<reportElement positionType="Float" x="92" y="14" width="98" height="12" uuid="f601440c-6dae-46b2-bf0e-2049c9dd3cd5"/>
 					<box rightPadding="3"/>
 					<textElement textAlignment="Right" verticalAlignment="Bottom">
@@ -1097,7 +1080,7 @@ $F{emisor.expedidoEn.pais}+
 					<textFieldExpression><![CDATA[$F{descuento}]]></textFieldExpression>
 				</textField>
 				<textField pattern="¤ #,##0.00">
-					<reportElement positionType="Float" x="92" y="25" width="98" height="12" uuid="1e43ceea-1360-48b9-a055-d249cb15637b"/>
+					<reportElement positionType="Float" x="92" y="3" width="98" height="12" uuid="1e43ceea-1360-48b9-a055-d249cb15637b"/>
 					<box rightPadding="3"/>
 					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font size="8"/>
@@ -1119,6 +1102,14 @@ $F{emisor.expedidoEn.pais}+
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+				</textField>
+				<textField pattern="¤ #,##0.00">
+					<reportElement positionType="Float" x="92" y="25" width="98" height="12" uuid="c849d2fc-ec5e-4ce0-8359-397f386edb76"/>
+					<box rightPadding="3"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{subtotal}]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>
