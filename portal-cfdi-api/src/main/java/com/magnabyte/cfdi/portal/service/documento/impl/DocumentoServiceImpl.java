@@ -439,7 +439,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		cliente.setRfc(comprobante.getReceptor().getRfc());
 		
 		if(!clienteService.exist(cliente)) {
-			logger.debug("Saveando.......");
 			clienteService.saveClienteCorporativo(cliente);
 		} else {
 			cliente = clienteService.readClientesByNameRfc(cliente);

@@ -64,12 +64,13 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 				if(domicilio.getCliente() == null) {
 					domicilio.setCliente(cliente);
 				}
-				if (domAnteriores.contains(domicilio) && domicilio.getCalle() != null) {
+				if (domAnteriores.contains(domicilio)) {
 					domicilioClienteDao.update(domicilio);
-				} if (!domAnteriores.contains(domicilio) && domicilio.getCalle() != null) {
+				} if (!domAnteriores.contains(domicilio)) {
 					domicilioClienteDao.save(domicilio);
 				}
 			}
+			
 			for (DomicilioCliente domicilio : domAnteriores) {
 				if (!domNuevos.contains(domicilio)) {
 					domicilioClienteDao.delete(domicilio);

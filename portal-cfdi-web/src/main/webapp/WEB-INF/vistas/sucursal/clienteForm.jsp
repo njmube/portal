@@ -22,6 +22,16 @@
 				<c:url var="altaUrl" value="/confirmarDatos/clienteForm"/>
 				<form:form id="clienteForm" action="${altaUrl}" method="POST" modelAttribute="cliente" cssClass="form-horizontal" role="form">
 					<div class="form-group">
+						<label class="control-label col-lg-1">P.Fisica: </label>
+						<div class="col-lg-3">
+							<input type="radio" id="personaFisica" name="personaFisica" value="1">
+						</div>
+						<label class="control-label col-lg-1">P.Moral: </label>
+						<div class="col-lg-4">
+							<input type="radio" id="personaMoral" name="personaMoral" value="0">
+						</div>
+					</div>
+					<div class="form-group">
 						<label class="control-label col-lg-1">* RFC: </label>
 						<div class="col-lg-2">
 							<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfc]]" />
@@ -54,7 +64,7 @@
 							<tbody>
 								<tr>
 									<td width="200px"><form:input path="domicilios[0].calle" id="calle" 
-										cssClass="form-control input-xsm validate[required]" required="true"/></td>
+										cssClass="form-control input-xsm validate[required]"/></td>
 									<td width="68px"><form:input path="domicilios[0].noExterior" id="noExterior" cssClass="form-control input-xsm validate[required, integer, minSize[1]]"/></td>
 									<td width="68px"><form:input path="domicilios[0].noInterior" id="noInteriorr" cssClass="form-control input-xsm validate[integer]" /></td>
 									<td width="100px">
@@ -73,7 +83,7 @@
 									<td><form:input path="domicilios[0].municipio" id="municipio" cssClass="form-control input-xsm validate[required]" /></td>
 									<td width="200px"><form:input path="domicilios[0].colonia" id="colonia" cssClass="form-control input-xsm validate[required]" /></td>
 									<td width="70px"><form:input path="domicilios[0].codigoPostal" id="codigoPostal" 
-										cssClass="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[6], minSize[5]"/></td>
+										cssClass="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[6], minSize[5]]"/></td>
 <%-- 									<td><form:input path="domicilios[0].referencia" id="referencia" cssClass="form-control input-xsm" /></td> --%>
 <%-- 									<td><form:input path="domicilios[0].localidad" id="localidad" cssClass="form-control input-xsm" /></td> --%>
 								</tr>

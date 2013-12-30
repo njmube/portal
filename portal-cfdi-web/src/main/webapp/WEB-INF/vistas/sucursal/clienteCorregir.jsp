@@ -38,7 +38,7 @@
 			<hr>
 			<div class="well">
 				<c:url var="altaUrl" value="/confirmarDatos/clienteCorregir"/>
-				<form:form id="clienteCorregirForm" action="${altaUrl}" method="POST" modelAttribute="cliente" cssClass="form-horizontal" role="form">
+				<form:form id="clienteCorregirForm" action="${altaUrl}" method="POST" modelAttribute="clienteCorregir" cssClass="form-horizontal" role="form">
 					<div class="form-group">
 						<form:hidden path="id" id="idCliente"/>
 						<label class="control-label col-lg-1">RFC: </label>
@@ -67,13 +67,13 @@
 									<th><small>C.P.</small></th>
 <!-- 									<th><small>Referencia</small></th> -->
 <!-- 									<th><small>Localidad</small></th> -->
-									<th><small></small></th>
+									<th><small></small></th>Dorado
 								</tr>
 							</thead>
 							<tbody>
 								<c:choose>
-									<c:when test="${not empty cliente.domicilios}">
-										<c:forEach items="${cliente.domicilios}" var="domicilio" varStatus="theCount">
+									<c:when test="${not empty clienteCorregir.domicilios}">
+										<c:forEach items="${clienteCorregir.domicilios}" var="domicilio" varStatus="theCount">
 											<tr>
 												<td width="200px"><form:input path="domicilios[${theCount.index}].calle" id="calle" cssClass="form-control input-xsm validate[required]"/></td>
 												<td width="65px"><form:input path="domicilios[${theCount.index}].noExterior" id="noExterior" cssClass="form-control input-xsm validate[required, integer, minSize[1]]"/></td>
@@ -132,7 +132,7 @@
 												<td><input type="text" name="domicilios[0].municipio" id="municipio" class="form-control input-xsm validate[required]"/></td>
 												<td width="200px"><input type="text" name="domicilios[0].colonia" id="colonia" class="form-control input-xsm validate[required]"/></td>
 												<td width="70px"><input type="text" name="domicilios[0].codigoPostal" id="codigoPostal" 
-													class="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[6], minSize[5]"/></td>
+													class="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[6], minSize[5]]"/></td>
 <!-- 												<td><input type="text" name="domicilios[0].referencia" id="referencia" class="form-control input-xsm"/></td> -->
 <!-- 												<td><input type="text" name="domicilios[0].localidad" id="localidad" class="form-control input-xsm"/></td> -->
 											</tr>
