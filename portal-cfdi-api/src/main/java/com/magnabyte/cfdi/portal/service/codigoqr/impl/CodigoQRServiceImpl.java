@@ -62,9 +62,9 @@ public class CodigoQRServiceImpl implements CodigoQRService {
 
 			BitMatrix matrix = null;
 
-			int h = 550;
+			int h = 600;
 
-			int w = 550;
+			int w = 600;
 
 			Writer writer = new QRCodeWriter();
 

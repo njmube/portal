@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteFactura" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4a6ba1cb-2ea7-4218-8d09-5f9f932a9716">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="117"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="308"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="0.0" lineColor="#000000"/>
@@ -389,9 +389,12 @@
 					<textElement>
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[($F{receptor.domicilio.calle} !=null ? $F{receptor.domicilio.calle}+", " : "")+
-($F{receptor.domicilio.noExterior} !=null ? $F{receptor.domicilio.noExterior}+", " : "")+
-($F{receptor.domicilio.noInterior} != null ? $F{receptor.domicilio.noInterior}+" " : "")]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{receptor.domicilio.calle} !=null ? $F{receptor.domicilio.calle}+"" : "")+
+($F{receptor.domicilio.colonia} !=null ? ", "+$F{receptor.domicilio.colonia} : "")+
+($F{receptor.domicilio.noExterior} !=null ? ", "+$F{receptor.domicilio.noExterior} : "")+
+($F{receptor.domicilio.noInterior} != null ? ", "+$F{receptor.domicilio.noInterior} : "")
+
+]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="33" width="302" height="10" uuid="0ec53e7d-e2a7-41b6-8ce0-58fd6cde96b4"/>
@@ -400,9 +403,10 @@
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[($F{receptor.domicilio.colonia} !=null ? $F{receptor.domicilio.colonia}+" " : "")+
-($F{receptor.domicilio.localidad} !=null ? $F{receptor.domicilio.localidad}+" " : "")+
-($F{receptor.domicilio.municipio} !=null ? $F{receptor.domicilio.municipio}+" " : "")+
-($F{receptor.domicilio.codigoPostal} !=null ? "C.P. "+$F{receptor.domicilio.codigoPostal} : "")]]></textFieldExpression>
+($F{receptor.domicilio.localidad} !=null ? $F{receptor.domicilio.localidad} : "")+
+($F{receptor.domicilio.municipio} !=null ? " "+$F{receptor.domicilio.municipio} : "")+
+($F{receptor.domicilio.pais} !=null ? ", "+$F{receptor.domicilio.pais} :"")+
+($F{receptor.domicilio.codigoPostal} !=null ? " C.P. "+$F{receptor.domicilio.codigoPostal} : "")]]></textFieldExpression>
 				</textField>
 			</frame>
 			<frame>
@@ -563,8 +567,8 @@
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[($F{emisor.domicilioFiscal.colonia} !=null ? $F{emisor.domicilioFiscal.colonia}+", ": "")+
-($F{emisor.domicilioFiscal.municipio} !=null ? $F{emisor.domicilioFiscal.municipio}+", " : "")+
-($F{emisor.domicilioFiscal.localidad} !=null ? ""+$F{emisor.domicilioFiscal.localidad}+" " : "")]]></textFieldExpression>
+($F{emisor.domicilioFiscal.municipio} !=null ? $F{emisor.domicilioFiscal.municipio}+" " : "")+
+($F{emisor.domicilioFiscal.localidad} !=null ? $F{emisor.domicilioFiscal.localidad}+" " : "")]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="39" width="228" height="10" uuid="605574b6-78e0-4619-b7b2-338313a0ba3e"/>
@@ -591,9 +595,17 @@ $F{emisor.domicilioFiscal.estado}+""]]></textFieldExpression>
 					<textElement>
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{emisor.expedidoEn.calle}+" "+
-($F{emisor.expedidoEn.noExterior} !=null ? $F{emisor.expedidoEn.noExterior}+", " : "")+
-($F{emisor.expedidoEn.noInterior} !=null ? $F{emisor.expedidoEn.noInterior}+" " : "")]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{emisor.expedidoEn.calle} !=null ? $F{emisor.expedidoEn.calle} : "")+
+($F{emisor.expedidoEn.colonia} !=null ? ", "+$F{emisor.expedidoEn.colonia} : "")+
+($F{emisor.expedidoEn.noExterior} !=null ? $F{emisor.expedidoEn.noExterior} : "")+
+($F{emisor.expedidoEn.noInterior} !=null ? ", "+$F{emisor.expedidoEn.noInterior} : "")
+
+
+
+
+
+
+]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="18" width="240" height="10" uuid="afd72984-d715-4411-8c8e-b7b59ca35b98"/>
@@ -601,15 +613,15 @@ $F{emisor.domicilioFiscal.estado}+""]]></textFieldExpression>
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[($F{emisor.expedidoEn.localidad} !=null ? $F{emisor.expedidoEn.localidad}+", " : "")+
-($F{emisor.expedidoEn.municipio} !=null ? $F{emisor.expedidoEn.municipio}+", " : "")+
-$F{emisor.expedidoEn.pais}]]></textFieldExpression>
+($F{emisor.expedidoEn.municipio} !=null ? $F{emisor.expedidoEn.municipio}+", " : "")]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="27" width="240" height="10" uuid="1e73dc26-5760-4244-b793-b439798c3ae9"/>
 					<textElement>
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{emisor.expedidoEn.estado}+
+					<textFieldExpression><![CDATA[$F{emisor.expedidoEn.estado}+" "+
+$F{emisor.expedidoEn.pais}+
 ($F{emisor.expedidoEn.codigoPostal} !=null ?
     " C.P. "+$F{emisor.expedidoEn.codigoPostal} : "")]]></textFieldExpression>
 				</textField>
@@ -892,7 +904,7 @@ $F{emisor.expedidoEn.pais}]]></textFieldExpression>
 					<text><![CDATA[CADENA ORIGINAL]]></text>
 				</staticText>
 				<image scaleImage="RealHeight" isUsingCache="true" onErrorType="Blank">
-					<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="9" y="54" width="80" height="80" uuid="c2f3d05a-f1f5-4a8f-bfa9-948fc02d4299"/>
+					<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="9" y="53" width="86" height="86" uuid="c2f3d05a-f1f5-4a8f-bfa9-948fc02d4299"/>
 					<imageExpression><![CDATA[$P{QRCODE}]]></imageExpression>
 				</image>
 				<staticText>
