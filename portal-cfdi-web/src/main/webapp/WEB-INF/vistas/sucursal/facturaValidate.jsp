@@ -220,11 +220,25 @@
 			</p>
 		</div>
 	</div>
+	<div id="page_loader" class="page_loader">
+	</div>
+	<div class="page_loader_content text-center">
+		<div class="row">
+			<div class="panel col-md-4 col-md-offset-4">
+				<h3>Generando Factura...</h3>
+				<div class="progress progress-striped active">
+				  	<div class="progress-bar"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+				</div>
+			</div>
+		</div>
+	</div>
 	<c:url value="/generarDocumento" var="urlDocumento"/>
 	<form action="${urlDocumento}" id="formPdf" method="post"></form>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$("#generaFactura").click(function() {
+				$("#page_loader").show();
+				$(".page_loader_content").show();
 				$(this).attr("disabled", "disabled");
 				$("#cancel").attr("disabled", "disabled");
 				$("#formPdf").submit();

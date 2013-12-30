@@ -315,7 +315,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 		
 		descuentoTotal = descuentoTotal.multiply(new BigDecimal(-1));
-		comprobante.setDescuento(descuentoTotal.setScale(2));
+		comprobante.setDescuento(descuentoTotal.setScale(2,BigDecimal.ROUND_HALF_UP));
 
 		subTotal = subTotal.subtract(descuentoTotal.divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
 		
