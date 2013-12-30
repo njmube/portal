@@ -241,6 +241,8 @@
 			$("#generaFactura").click(function() {
 				$("#page_loader").show();
 				$(".page_loader_content").show();
+				$(this).attr("disabled", "disabled");
+				$("#cancel").attr("disabled", "disabled");
 				$("#formPdf").submit();
 			});
 		});

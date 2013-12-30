@@ -30,4 +30,6 @@ public interface DocumentoService {
 
 	List<Documento> obtenerAcusesPendientes();
 
+	void deleteFromAcusePendiente(Documento documento);
+
 }

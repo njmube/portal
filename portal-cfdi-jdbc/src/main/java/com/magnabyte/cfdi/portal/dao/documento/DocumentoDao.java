@@ -15,4 +15,6 @@ public interface DocumentoDao {
 	void insertAcusePendiente(Documento documento);
 
 	List<Documento> obtenerAcusesPendientes();
+
+	void deleteFromAcusePendiente(Documento documento);
 }

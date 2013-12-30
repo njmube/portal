@@ -275,7 +275,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		
 		tUbicacion.setCalle(domicilioCte.getCalle());
 		tUbicacion.setNoExterior(domicilioCte.getNoExterior());
-		tUbicacion.setNoInterior(domicilioCte.getNoInterior());
+		if (!domicilioCte.getNoInterior().trim().isEmpty()) {
+			tUbicacion.setNoInterior(domicilioCte.getNoInterior());
+		}
 		tUbicacion.setPais(domicilioCte.getEstado().getPais().getNombre());
 		tUbicacion.setEstado(domicilioCte.getEstado().getNombre());
 		tUbicacion.setMunicipio(domicilioCte.getMunicipio());
@@ -307,16 +309,21 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			conceptos.getConcepto().add(concepto);
 		}
 		comprobante.setConceptos(conceptos);
+		BigDecimal descuentoTotal = new BigDecimal(0);
+		for(PartidaDescuento descuento : ticket.getTransaccion().getPartidasDescuentos()) {
+			descuentoTotal = descuentoTotal.add(descuento.getDescuentoTotal());
+		}
+		
+		descuentoTotal = descuentoTotal.multiply(new BigDecimal(-1));
+		comprobante.setDescuento(descuentoTotal.setScale(2,BigDecimal.ROUND_HALF_UP));
+
+		subTotal = subTotal.subtract(descuentoTotal.divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
+		
 		comprobante.setSubTotal(subTotal);
 		Impuestos impuesto = new Impuestos();
 		impuesto.setTotalImpuestosTrasladados(ticket.getTransaccion().getTransaccionTotal().getTotalVenta().subtract(subTotal));
 		comprobante.setImpuestos(impuesto);
 		comprobante.setTotal(ticket.getTransaccion().getTransaccionTotal().getTotalVenta());
-		BigDecimal descuentoTotal = new BigDecimal(0);
-		for(PartidaDescuento descuento : ticket.getTransaccion().getPartidasDescuentos()) {
-			descuentoTotal = descuentoTotal.add(descuento.getDescuentoTotal());
-		}
-		comprobante.setDescuento(descuentoTotal.setScale(2,BigDecimal.ROUND_HALF_UP));
 	}
 	
 	private void createFechaDocumento(Comprobante comprobante) {
@@ -343,8 +350,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 						logger.debug("Saveando.......");
 						clienteService.save(documento.getCliente());
 					} else {
-						documento.setCliente(clienteService
-								.readClientesByNameRfc(documento.getCliente()));
+						documento.setCliente(clienteService.readClientesByNameRfc(documento.getCliente()));
 					}
 				}
 			}
@@ -381,17 +387,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public void guardarDocumento(Documento documento) {
 		if(documento != null) {
-//			if(documento instanceof DocumentoCorporativo) {
-//				if(documento.getCliente() != null) {
-//					if(!clienteService.exist(documento.getCliente())) {
-//						logger.debug("Saveando.......");
-//						clienteService.save(documento.getCliente());
-//					} else {
-//						documento.setCliente(clienteService
-//								.readClientesByNameRfc(documento.getCliente()));
-//					}
-//				}
-//			}
 			if(documento instanceof DocumentoSucursal) {
 				ticketService.save((DocumentoSucursal) documento);
 			}
@@ -423,6 +418,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public List<Documento> obtenerAcusesPendientes() {
 		return documentoDao.obtenerAcusesPendientes();
+	}
+	
+	@Transactional
+	@Override
+	public void deleteFromAcusePendiente(Documento documento) {
+		documentoDao.deleteFromAcusePendiente(documento);
 	}
 	
 	@Override

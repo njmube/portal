@@ -172,6 +172,7 @@ public class SambaServiceImpl implements SambaService {
 							return false;
 						}
 						ticket.setTransaccion(ticketXml.getTransaccion());
+						ticket.getTransaccion().getTransaccionHeader().setFecha(fechaXml);
 						return true;
 					}
 				}
