@@ -23,7 +23,7 @@ public class ClienteSql extends GenericSql {
 		FIND_BY_NAME_RFC = qryBuilder.toString();
 		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
 		
-		qryBuilder.append("select * from t_cliente where rfc = ? or nombre = ?");
+		qryBuilder.append("select * from t_cliente where rfc = ? and nombre = ?");
 		
 		READ_BY_NAME_RFC = qryBuilder.toString();
 		qryBuilder = clearAndReuseStringBuilder(qryBuilder);

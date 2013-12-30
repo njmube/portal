@@ -151,7 +151,15 @@
                 "rfc": {
                 	"regex": /^[A-Za-z]{3,4}[0-9]{6}[A-Za-z0-9]{3}$/,
                 	"alertText": "* RFC inválido"
-                },                
+                },
+                "rfcMoral": {
+                	"regex": /^[A-Za-z&]{3}[0-9]{6}[A-Za-z0-9]{3}$/,
+                	"alertText": "* RFC moral inválido"
+                },
+                "rfcFisica": {
+                	"regex": /^[A-Za-z&]{4}[0-9]{6}[A-Za-z0-9]{3}$/,
+                	"alertText": "* RFC fiscal inválido"
+                },
                 "regimenComplemento": {
                 	"alertText": "* El régimen complemento no puede ser vacío"
                 },
