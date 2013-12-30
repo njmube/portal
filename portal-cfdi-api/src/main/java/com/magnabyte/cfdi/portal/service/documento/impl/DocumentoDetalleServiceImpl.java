@@ -27,7 +27,7 @@ public class DocumentoDetalleServiceImpl  implements DocumentoDetalleService {
 				.getConcepto().isEmpty()) {
 			documentoDetalleDao.save(documento);
 		} else {
-			logger.debug("La lista de Conceptos no puede ser nula.");
+			logger.error("La lista de Conceptos no puede ser nula.");
 			throw new PortalException("La lista de Conceptos no puede ser nula.");
 		}
 	}

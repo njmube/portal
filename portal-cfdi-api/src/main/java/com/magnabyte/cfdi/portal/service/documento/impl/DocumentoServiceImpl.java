@@ -247,6 +247,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			ticket.getTransaccion().getTransaccionHeader().setFechaHora(sdf.format(fechaTicket));
 		} catch (ParseException e) {
 			logger.error("Ocurrió un error al obtener la fecha del ticket: ", e);
+			throw new PortalException("Ocurrió un error al obtener la fecha del ticket: ", e);
 		} 
 	}
 
