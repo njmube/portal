@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import mx.gob.sat.cfd._3.Comprobante;
 import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
 
 import org.slf4j.Logger;
@@ -24,6 +25,8 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.documento.EstadoDocumentoPendiente;
+import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
+import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
 @Repository("documentoDao")
@@ -119,6 +122,11 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	}
 	
 	@Override
+	public void deleteFromAcusePendiente(Documento documento) {
+		getJdbcTemplate().update("delete from t_documento_pendiente where id_documento = ?", documento.getId());
+	}
+	
+	@Override
 	public List<Documento> obtenerAcusesPendientes() {
 		try {
 			return getJdbcTemplate().query(DocumentoSql.READ_ACUSE_PEND, new RowMapper<Documento>() {
@@ -126,10 +134,19 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 				public Documento mapRow(ResultSet rs, int rowNum) throws SQLException {
 					Documento documento = new Documento();
 					TimbreFiscalDigital timbreFiscalDigital = new TimbreFiscalDigital();
+					Establecimiento establecimiento = new Establecimiento();
+					Comprobante comprobante = new Comprobante();
 					
+					documento.setId(rs.getInt(1));
+					TipoDocumento tipoDocumento = rs.getInt("id_tipo_documento") == 1 ? TipoDocumento.FACTURA : TipoDocumento.NOTA_CREDITO;
+					documento.setTipoDocumento(tipoDocumento);
+					comprobante.setSerie(rs.getString("serie"));
+					comprobante.setFolio(rs.getString("folio"));
+					establecimiento.setId(rs.getInt("id_establecimiento"));
 					timbreFiscalDigital.setUUID(rs.getString("uuid"));
-					
 					documento.setTimbreFiscalDigital(timbreFiscalDigital);
+					documento.setComprobante(comprobante);
+					documento.setEstablecimiento(establecimiento);
 					return documento;
 				}
 			});

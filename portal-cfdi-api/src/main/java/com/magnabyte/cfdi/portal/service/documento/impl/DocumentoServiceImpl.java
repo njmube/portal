@@ -420,6 +420,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		return documentoDao.obtenerAcusesPendientes();
 	}
 	
+	@Transactional
+	@Override
+	public void deleteFromAcusePendiente(Documento documento) {
+		documentoDao.deleteFromAcusePendiente(documento);
+	}
+	
 	@Override
 	public Cliente obtenerClienteDeComprobante(Comprobante comprobante) {
 		Cliente cliente = new Cliente();

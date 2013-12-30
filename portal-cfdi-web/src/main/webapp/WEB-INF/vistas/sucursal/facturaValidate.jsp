@@ -225,6 +225,8 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$("#generaFactura").click(function() {
+				$(this).attr("disabled", "disabled");
+				$("#cancel").attr("disabled", "disabled");
 				$("#formPdf").submit();
 			});
 		});

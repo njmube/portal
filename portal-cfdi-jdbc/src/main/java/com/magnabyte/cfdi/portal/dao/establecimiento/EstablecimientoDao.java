@@ -10,5 +10,7 @@ public interface EstablecimientoDao {
 	String getRoles(Establecimiento establecimiento);
 
 	Establecimiento readByClave(Establecimiento establecimiento);
+
+	Establecimiento readById(Establecimiento establecimiento);
 	
 }

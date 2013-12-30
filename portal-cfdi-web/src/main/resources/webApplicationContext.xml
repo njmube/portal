@@ -40,12 +40,12 @@
 		<property name="order" value="0" />
 	</bean>
 
-<!-- 	<task:executor id="executor" pool-size="10"/> -->
-<!-- 	<task:scheduler id="scheduler" pool-size="10"/> -->
+	<task:executor id="executor" pool-size="10"/>
+	<task:scheduler id="scheduler" pool-size="10"/>
 	
-<!-- 	<task:scheduled-tasks> -->
-<!-- 		<task:scheduled ref="documentoWebService" method="recuperarAcusesPendientes" cron="1/30 * * * * ?"/> -->
-<!-- 	</task:scheduled-tasks>	 -->
+	<task:scheduled-tasks>
+		<task:scheduled ref="documentoWebService" method="recuperarAcusesPendientes" cron="1/30 * * * * ?"/>
+	</task:scheduled-tasks>	
 
 	<bean id="comprobanteFactory" class="mx.gob.sat.cfd._3.ObjectFactory" />
 

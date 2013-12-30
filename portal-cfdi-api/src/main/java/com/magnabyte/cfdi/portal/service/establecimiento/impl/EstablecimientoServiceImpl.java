@@ -25,4 +25,10 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 	public Establecimiento readByClave(Establecimiento establecimiento) {
 		return establecimientoDao.readByClave(establecimiento);
 	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public Establecimiento readById(Establecimiento establecimiento) {
+		return establecimientoDao.readById(establecimiento);
+	}
 }
