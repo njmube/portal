@@ -316,7 +316,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		for(PartidaDescuento descuento : ticket.getTransaccion().getPartidasDescuentos()) {
 			descuentoTotal = descuentoTotal.add(descuento.getDescuentoTotal());
 		}
-		comprobante.setDescuento(descuentoTotal.setScale(2));
+		comprobante.setDescuento(descuentoTotal.setScale(2,BigDecimal.ROUND_HALF_UP));
 	}
 	
 	private void createFechaDocumento(Comprobante comprobante) {
