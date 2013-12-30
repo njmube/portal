@@ -54,10 +54,5 @@
 		</div>
 	</div>
 	<script src="<c:url value="/resources/js/login/login.js" />"></script>
-	<script type="text/javascript">
-		$(document).ready(function() {
-			
-		});
-	</script>
 </body>
 </html>

@@ -17,3 +17,11 @@ $(function() {
 		}
 	});
 });
+
+$(document).ready(function() {
+	$(document.body).on('focusout',"input[type=text]",function(){
+		$(this).val(function () {
+			return this.value.toUpperCase();
+		})
+	});
+});
