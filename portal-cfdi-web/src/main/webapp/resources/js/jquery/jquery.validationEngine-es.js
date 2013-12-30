@@ -149,7 +149,7 @@
                     "alertText": "* La extensión del archivo no es permitida "
                 },
                 "rfc": {
-                	"regex": /^[A-Z]{3,4}[0-9]{6}[A-Z0-9]{3}$/,
+                	"regex": /^[A-Za-z]{3,4}[0-9]{6}[A-Za-z0-9]{3}$/,
                 	"alertText": "* RFC inválido"
                 },                
                 "regimenComplemento": {

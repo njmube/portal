@@ -61,8 +61,8 @@ public class DomicilioClienteDaoImpl extends GenericJdbcDao implements
 				domicilio.getMunicipio(),
 				domicilio.getColonia(),
 				domicilio.getCodigoPostal(),
-				domicilio.getReferencia(),
-				domicilio.getLocalidad(),
+//				domicilio.getReferencia(),
+//				domicilio.getLocalidad(),
 				domicilio.getId()
 			});
 	}
@@ -147,8 +147,9 @@ public class DomicilioClienteDaoImpl extends GenericJdbcDao implements
 		params.addValue(DomicilioSql.MUNICIPIO, domicilio.getMunicipio());
 		params.addValue(DomicilioSql.ID_ESTADO, domicilio.getEstado().getId());
 		params.addValue(DomicilioSql.CODIGO_POSTAL, domicilio.getCodigoPostal());
-		params.addValue(DomicilioSql.LOCALIDAD, domicilio.getLocalidad());
-		params.addValue(DomicilioSql.REFERENCIA, domicilio.getReferencia());
+//		params.addValue(DomicilioSql.LOCALIDAD, domicilio.getLocalidad());
+//		params.addValue(DomicilioSql.REFERENCIA, 
+//				domicilio.getReferencia().isEmpty() ? null : domicilio.getReferencia());
 
 		return params;
 	}
@@ -182,8 +183,8 @@ public class DomicilioClienteDaoImpl extends GenericJdbcDao implements
 			domicilio.setMunicipio(rs.getString(DomicilioSql.MUNICIPIO));
 			domicilio.setColonia(rs.getString(DomicilioSql.COLONIA));
 			domicilio.setCodigoPostal(rs.getString(DomicilioSql.CODIGO_POSTAL));
-			domicilio.setLocalidad(rs.getString(DomicilioSql.LOCALIDAD));
-			domicilio.setReferencia(rs.getString(DomicilioSql.REFERENCIA));
+//			domicilio.setLocalidad(rs.getString(DomicilioSql.LOCALIDAD));
+//			domicilio.setReferencia(rs.getString(DomicilioSql.REFERENCIA));
 
 			return domicilio;
 		}

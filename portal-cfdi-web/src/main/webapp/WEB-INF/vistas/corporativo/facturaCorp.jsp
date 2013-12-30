@@ -30,7 +30,7 @@
  							<display:column title="#" headerClass="text-primary">${document_rowNum}</display:column>
  							<display:column title="${foliosap}" property="folioSap" headerClass="text-primary"></display:column>
  							<display:column title="${titlename}" property="nombreXmlPrevio" headerClass="text-primary"/>
- 							<display:column title="Generar Factura" headerClass="text-primary text-center" class="text-center">
+ 							<display:column title="Seleccionar" headerClass="text-primary text-center" class="text-center">
  								<a href="<c:url value="/facturaCorp/validate/${document.nombreXmlPrevio}"/>" class="btn btn-xs btn-success"><span class="glyphicon glyphicon-print"></span></a>
  							</display:column>
  						</display:table>

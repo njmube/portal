@@ -52,10 +52,10 @@ public class DomicilioSql extends GenericSql {
 		qryBuilder.append(PARENTESIS_FIN).append(AS).append(MUNICIPIO).append(EOL_);
 		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(CODIGO_POSTAL);
 		qryBuilder.append(PARENTESIS_FIN).append(AS).append(CODIGO_POSTAL).append(EOL_);
-		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(REFERENCIA);
-		qryBuilder.append(PARENTESIS_FIN).append(AS).append(REFERENCIA).append(EOL_);
-		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(LOCALIDAD);
-		qryBuilder.append(PARENTESIS_FIN).append(AS).append(LOCALIDAD).append(EOL_);
+//		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(REFERENCIA);
+//		qryBuilder.append(PARENTESIS_FIN).append(AS).append(REFERENCIA).append(EOL_);
+//		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(LOCALIDAD);
+//		qryBuilder.append(PARENTESIS_FIN).append(AS).append(LOCALIDAD).append(EOL_);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_ESTADO).append(DOT).append(NOMBRE);
 		qryBuilder.append(PARENTESIS_FIN).append(AS).append(AS_ESTADO).append(EOL_).append(TAB);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_PAIS).append(DOT).append(NOMBRE);
@@ -90,9 +90,9 @@ public class DomicilioSql extends GenericSql {
 		qryBuilder.append(TAB).append(NO_INTERIOR).append(SET_PARAM).append(EOL_);
 		qryBuilder.append(TAB).append(MUNICIPIO).append(SET_PARAM).append(EOL_);
 		qryBuilder.append(TAB).append(COLONIA).append(SET_PARAM).append(EOL_);
-		qryBuilder.append(TAB).append(CODIGO_POSTAL).append(SET_PARAM).append(EOL_);
-		qryBuilder.append(TAB).append(REFERENCIA).append(SET_PARAM).append(EOL_);
-		qryBuilder.append(TAB).append(LOCALIDAD).append(SET_PARAM).append(EOL);
+		qryBuilder.append(TAB).append(CODIGO_POSTAL).append(SET_PARAM).append(EOL);
+//		qryBuilder.append(TAB).append(REFERENCIA).append(SET_PARAM).append(EOL_);
+//		qryBuilder.append(TAB).append(LOCALIDAD).append(SET_PARAM).append(EOL);
 		
 		qryBuilder.append(WHERE).append(EOL).append(TAB);
 		qryBuilder.append(ID_DOMICILIO).append(SET_PARAM);
