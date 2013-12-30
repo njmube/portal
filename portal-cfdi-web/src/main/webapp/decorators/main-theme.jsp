@@ -25,6 +25,8 @@
 	href="<c:url value="/resources/css/datepicker.css" />" />
 <link rel="stylesheet" type="text/css"
 	href="<c:url value="/resources/css/validationEngine.jquery.css" />" />
+<link rel="stylesheet" type="text/css"
+	href="<c:url value="/resources/css/prettyLoader.css" />" />
 <script
 	src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
 <script
@@ -41,6 +43,8 @@
 	src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.js" />"></script>
 <script
 	src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.es.js" />"></script>
+<script
+	src="<c:url value="/resources/js/jquery/jquery.prettyLoader.js" />"></script>
 <script type="text/javascript">
 	var contextPath = "${pageContext.request.contextPath}";
 
@@ -49,7 +53,10 @@
 		window.setTimeout(function() {
 			alert.fadeOut("slow");
 		}, delay);
-	}
+	}	
+	$(function() {
+		$.prettyLoader();
+	});
 </script>
 <decorator:head />
 </head>

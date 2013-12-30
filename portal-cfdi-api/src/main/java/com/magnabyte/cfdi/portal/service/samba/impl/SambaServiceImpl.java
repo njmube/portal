@@ -128,6 +128,7 @@ public class SambaServiceImpl implements SambaService {
 				}
 			} else {
 				logger.debug("El directorio no existe...");
+				throw new PortalException("El directorio no existe...");
 			}
 		} catch (MalformedURLException e) {
 			logger.error("La URL del archivo no es valida: {}", e);
@@ -172,6 +173,7 @@ public class SambaServiceImpl implements SambaService {
 							return false;
 						}
 						ticket.setTransaccion(ticketXml.getTransaccion());
+						ticket.getTransaccion().getTransaccionHeader().setFecha(fechaXml);
 						return true;
 					}
 				}

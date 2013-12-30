@@ -130,6 +130,27 @@ hr {
 	word-break: break-all;
 	white-space: normal;
 }
+.page_loader {
+	display: none;
+	position: fixed;
+	top: 0;
+	bottom: 0%;
+	left: 0;
+	right: 0%;
+	background-color: black;
+	opacity: 0.5;
+	z-index: 99;
+}
+.page_loader_content {
+	display: none;
+	margin-top: 250px;
+	position: fixed;
+	top: 0;
+	bottom: 0%;
+	left: 0;
+	right: 0%;
+	z-index: 99;
+}
 
 /* ===RESONSIVE DESIGN=== */
 

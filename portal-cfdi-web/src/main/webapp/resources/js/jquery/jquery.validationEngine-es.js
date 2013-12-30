@@ -151,7 +151,15 @@
                 "rfc": {
                 	"regex": /^[A-Za-z]{3,4}[0-9]{6}[A-Za-z0-9]{3}$/,
                 	"alertText": "* RFC inválido"
-                },                
+                },
+                "rfcMoral": {
+                	"regex": /^[A-Z,Ñ,&amp;]{3}[0-9]{2}[0-1][0-9][0-3][0-9][A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?/,
+                	"alertText": "* RFC moral inválido"
+                },
+                "rfcFisica": {
+                	"regex": /^[A-Z,Ñ,&amp;]{4}[0-9]{2}[0-1][0-9][0-3][0-9][A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?/,
+                	"alertText": "* RFC fisica inválido"
+                },
                 "regimenComplemento": {
                 	"alertText": "* El régimen complemento no puede ser vacío"
                 },

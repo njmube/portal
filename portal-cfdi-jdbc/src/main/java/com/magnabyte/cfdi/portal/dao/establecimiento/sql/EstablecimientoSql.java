@@ -111,7 +111,7 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(DOT).append(ID_RUTA_ESTAB).append(EOL).append(TAB);
 		
 		qryBuilder.append(INNER).append(TABLE_DOM_ESTAB).append(AS).append(ALIAS_DOM_ESTAB);
-		qryBuilder.append(ON).append(ALIAS_TABLE).append(DOT).append(ID_RUTA_ESTAB).append(EQ).append(ALIAS_DOM_ESTAB);
+		qryBuilder.append(ON).append(ALIAS_TABLE).append(DOT).append(ID_DOM_ESTAB).append(EQ).append(ALIAS_DOM_ESTAB);
 		qryBuilder.append(DOT).append(ID_DOM_ESTAB).append(EOL);
 				
 		qryBuilder.append(WHERE).append(EOL).append(TAB);

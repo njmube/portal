@@ -41,6 +41,26 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 		return getJdbcTemplate().queryForObject(qry, MAPPER_ESTAB_COMPLETO,
 				establecimiento.getClave());
 	}
+	
+	@Override
+	public Establecimiento readById(Establecimiento establecimiento) {
+		String qry = "select * from t_establecimiento as te inner join t_ruta_establecimiento as tre on te.id_ruta_establecimiento = "
+				+ "tre.id_ruta_establecimiento where te.id_establecimiento = ?";
+		return getJdbcTemplate().queryForObject(qry, new RowMapper<Establecimiento>() {
+			@Override
+			public Establecimiento mapRow(ResultSet rs, int rowNum)
+					throws SQLException {
+				Establecimiento establecimiento = new Establecimiento();
+				RutaRepositorio rutaRepositorio = new RutaRepositorio();
+
+				rutaRepositorio.setRutaRepositorio(rs.getString("ruta_repo"));
+				rutaRepositorio.setRutaRepoOut(rs.getString("ruta_out"));
+				
+				establecimiento.setRutaRepositorio(rutaRepositorio);
+				return establecimiento;
+			}
+		}, establecimiento.getId());
+	}
 
 	@Override
 	public String getRoles(Establecimiento establecimiento) {

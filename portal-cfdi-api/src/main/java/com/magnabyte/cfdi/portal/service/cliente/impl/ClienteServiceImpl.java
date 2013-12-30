@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.magnabyte.cfdi.portal.dao.cliente.ClienteDao;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 
@@ -28,6 +29,8 @@ public class ClienteServiceImpl implements ClienteService {
 	@Transactional(readOnly = true)
 	@Override
 	public List<Cliente> findClientesByNameRfc(Cliente cliente) {
+		List<Cliente> clientes = null;
+		
 		if (cliente.getRfc() != null && !cliente.getRfc().equals("")) {
 			cliente.setRfc("%" + cliente.getRfc() + "%");
 		}
@@ -35,7 +38,14 @@ public class ClienteServiceImpl implements ClienteService {
 		if (cliente.getNombre() != null && !cliente.getNombre().equals("")) {
 			cliente.setNombre("%" + cliente.getNombre() + "%");
 		}
-		return clienteDao.findClientesByNameRfc(cliente);
+		
+		if(cliente.getNombre().equals("") && cliente.getRfc().equals("")) {
+			clientes = clienteDao.getAll();
+		} else if(!cliente.getNombre().equals("") || !cliente.getRfc().equals("")) {			
+			clientes = clienteDao.findClientesByNameRfc(cliente);
+		}
+		
+		return clientes;
 	}
 
 	@Transactional(readOnly = true)
@@ -47,10 +57,12 @@ public class ClienteServiceImpl implements ClienteService {
 				cteBD = clienteDao.read(cliente);
 				cteBD.setDomicilios(domicilioClienteService.getByCliente(cliente));
 			} else {
-				logger.debug("El id de cliente no puede ser nulo.");
+				logger.error("El id de cliente no puede ser nulo.");
+				throw new PortalException("El id de cliente no puede ser nulo.");
 			}
 		} else {
-			logger.debug("El cliente no puede ser nulo.");
+			logger.error("El cliente no puede ser nulo.");
+			throw new PortalException("El cliente no puede ser nulo.");
 		}
 		return cteBD;
 	}
@@ -63,10 +75,12 @@ public class ClienteServiceImpl implements ClienteService {
 			if(cliente.getDomicilios() != null && !cliente.getDomicilios().isEmpty()) {
 				domicilioClienteService.save(cliente);
 			} else {
-				logger.debug("La lista de direcciones no puede estar vacia.");
+				logger.error("La lista de direcciones no puede estar vacia.");
+				throw new PortalException("La lista de direcciones no puede estar vacia.");
 			}
 		} else {
-			logger.debug("El cliente no puede ser nulo.");
+			logger.error("El cliente no puede ser nulo.");
+			throw new PortalException("El cliente no puede ser nulo.");
 		}
 	}
 	
@@ -86,10 +100,12 @@ public class ClienteServiceImpl implements ClienteService {
 			if(!cliente.getDomicilios().isEmpty()) {
 				domicilioClienteService.update(cliente);
 			} else {
-				logger.debug("La lista de direcciones de cliente está vacía.");
+				logger.error("La lista de direcciones de cliente está vacía.");
+				throw new PortalException("La lista de direcciones de cliente está vacía.");
 			}
 		} else {
-			logger.debug("El cliente no puede ser nulo.");
+			logger.error("El cliente no puede ser nulo.");
+			throw new PortalException("El cliente no puede ser nulo.");
 		}
 	}
 	
@@ -103,10 +119,12 @@ public class ClienteServiceImpl implements ClienteService {
 //					cteBD.setDomicilios(domicilioClienteService.getByCliente(cteBD));
 //				}
 			} else {
-				logger.debug("El rfc y nombre de cliente no puede ser nulo.");
+				logger.error("El rfc y nombre de cliente no puede ser nulo.");
+				throw new PortalException("El rfc y nombre de cliente no puede ser nulo.");
 			}
 		} else {
-			logger.debug("El cliente no puede ser nulo.");
+			logger.error("El cliente no puede ser nulo.");
+			throw new PortalException("El cliente no puede ser nulo.");
 		}
 		return cteBD;
 	}
@@ -135,5 +153,10 @@ public class ClienteServiceImpl implements ClienteService {
 		logger.debug(domicilioBD.toString());
 		logger.debug(domicilio.toString());
 		return domicilioBD.compara(domicilio);
+	}
+
+	@Override
+	public List<Cliente> getAll() {		
+		return clienteDao.getAll();
 	}
 }

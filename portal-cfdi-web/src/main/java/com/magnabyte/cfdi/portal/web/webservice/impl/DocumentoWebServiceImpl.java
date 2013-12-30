@@ -20,6 +20,7 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
+import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
@@ -43,6 +44,9 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	
 	@Autowired
 	private SambaService sambaService;
+	
+	@Autowired
+	private EstablecimientoService establecimientoService;
 	
 	@Override
 	public boolean timbrarDocumento(Documento documento, HttpServletRequest request) {
@@ -89,6 +93,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		if (documentosPendientesAcuse != null) {
 			for (Documento documento : documentosPendientesAcuse) {
 				logger.debug("documento pendiente: {}", documento);
+				documento.setEstablecimiento(establecimientoService.readById(documento.getEstablecimiento()));
 				recuperarAcuse(documento);
 			}
 		}
@@ -106,9 +111,9 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		//FIXME
 		response.setAcuse(new byte[]{});
 		if (response.getAcuse() != null) {
-			logger.debug(response.getAcuse().toString());
 			logger.debug("llamada a samba");
-//			sambaService.writeAcuseCfdiXmlFile(response.getAcuse(), documento);
+			sambaService.writeAcuseCfdiXmlFile(response.getAcuse(), documento);
+			documentoService.deleteFromAcusePendiente(documento);
 		}
 	}
 	

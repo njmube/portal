@@ -10,6 +10,7 @@ public class ClienteSql extends GenericSql {
 	public static String NOMBRE = "nombre";
 	public static String ID_CLIENTE = "id_cliente";
 	
+	public static final String GET_ALL;
 	public static final String FIND_BY_ID;
 	public static final String FIND_BY_NAME_RFC;
 	public static final String UPDATE_CLIENTE;
@@ -18,12 +19,18 @@ public class ClienteSql extends GenericSql {
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
 		
-		qryBuilder.append("select * from t_cliente where rfc like ? or nombre like ?");
+		qryBuilder.append(SELECT).append(EOL).append(TAB).append(ALL).append(EOL);
+		qryBuilder.append(FROM).append(EOL).append(TAB).append(TABLE_NAME);
+		
+		GET_ALL = qryBuilder.toString();
+		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("select * from t_cliente where rfc like ? OR nombre like ?");
 		
 		FIND_BY_NAME_RFC = qryBuilder.toString();
 		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
 		
-		qryBuilder.append("select * from t_cliente where rfc = ? or nombre = ?");
+		qryBuilder.append("select * from t_cliente where rfc = ? AND nombre = ?");
 		
 		READ_BY_NAME_RFC = qryBuilder.toString();
 		qryBuilder = clearAndReuseStringBuilder(qryBuilder);

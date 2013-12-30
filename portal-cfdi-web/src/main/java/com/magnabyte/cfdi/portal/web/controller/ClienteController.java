@@ -36,10 +36,11 @@ public class ClienteController {
 	private OpcionDeCatalogoService opcionDeCatalogoService;
 	
 	@RequestMapping("/listaClientes")
-	public String listaClientes(ModelMap model, @ModelAttribute Cliente cliente) {
+	public String listaClientes(ModelMap model, @ModelAttribute Cliente cliente) {		
 		List<Cliente> clientes = clienteService.findClientesByNameRfc(cliente);
-		if(!clientes.isEmpty())
+		if(!clientes.isEmpty()) {
 			model.put("emptyList", false);
+		}
 		model.put("clientes", clientes);
 		return "sucursal/listaClientes";
 	}
@@ -54,7 +55,7 @@ public class ClienteController {
 	}
 	
 	@RequestMapping(value = "/confirmarDatos/{viewError}", method = RequestMethod.POST)
-	public String confirmarDatos(@Valid @ModelAttribute Cliente cliente, BindingResult result, ModelMap model, 
+	public String confirmarDatos(@Valid @ModelAttribute("clienteCorregir") Cliente cliente, BindingResult result, ModelMap model, 
 			@PathVariable String viewError) {
 		logger.debug("Confimar datos");	
 		if (result.hasErrors()) {
@@ -76,7 +77,7 @@ public class ClienteController {
 	@RequestMapping("/clienteCorregir/{id}")
 	public String corregirDatos(@PathVariable Integer id, ModelMap model) {
 		logger.debug("confirmarDatos page");
-		model.put("cliente", clienteService.read(ClienteFactory.newInstance(id)));
+		model.put("clienteCorregir", clienteService.read(ClienteFactory.newInstance(id)));
 		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
 		model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
 		return "sucursal/clienteCorregir";

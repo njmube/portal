@@ -25,6 +25,7 @@ import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
+import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 
 @Controller
@@ -35,6 +36,9 @@ public class SucursalController {
 	private ClienteService clienteService;
 	
 	@Autowired
+	private TicketService ticketService;
+	
+	@Autowired
 	private SambaService sambaService;
 	
 	@Autowired
@@ -42,10 +46,12 @@ public class SucursalController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(SucursalController.class);
 	
+	private static String buscaTicketPage = "sucursal/buscaTicket"; 
+	
 	@RequestMapping("/buscaTicket")
 	public String buscaTicket(ModelMap model) {
 		model.put("ticket", new Ticket());
-		return "sucursal/buscaTicket";
+		return buscaTicketPage;
 	}
 	
 	@RequestMapping(value = "/validaTicket", method = RequestMethod.POST)
@@ -53,14 +59,19 @@ public class SucursalController {
 			@ModelAttribute Establecimiento establecimiento, ModelMap model) {
 		logger.debug("controller--{}", ticket);
 		if (resultTicket.hasErrors()) {
-			return "sucursal/buscaTicket";
+			return buscaTicketPage;
 		}
 		if (sambaService.ticketExists(ticket, establecimiento)) {
-			model.put("ticket", ticket);
-			return "redirect:/buscaRfc";
+			if (!ticketService.ticketProcesado(ticket, establecimiento)) {
+				model.put("ticket", ticket);
+				return "redirect:/buscaRfc";
+			} else {
+				model.put("ticketProcessed", true);
+			}
+		} else {
+			model.put("invalidTicket", true);
 		}
-		model.put("invalidTicket", true);
-		return "sucursal/buscaTicket";
+		return buscaTicketPage;
 	}
 	
 	@RequestMapping("/buscaRfc")

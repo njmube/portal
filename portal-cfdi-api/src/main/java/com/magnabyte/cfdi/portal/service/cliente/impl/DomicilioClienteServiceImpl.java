@@ -12,6 +12,7 @@ import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.commons.Estado;
 import com.magnabyte.cfdi.portal.model.commons.Pais;
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 
 @Service("domicilioClienteService")
@@ -31,10 +32,12 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 			if(cliente.getId() != null) {
 				domiciliosBD = domicilioClienteDao.readByCliente(cliente);
 			} else {
-				logger.debug("El id de cliente no puede ser nulo.");
+				logger.error("El id de cliente no puede ser nulo.");
+				throw new PortalException("El id de cliente no puede ser nulo.");
 			}
 		} else {
-			logger.debug("El cliente no puede ser nulo.");
+			logger.error("El cliente no puede ser nulo.");
+			throw new PortalException("El cliente no puede ser nulo.");
 		}
 		return domiciliosBD;
 	}
@@ -48,7 +51,8 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 				domicilioClienteDao.save(domicilio);
 			}
 		} else {
-			logger.debug("La lista de domicilios no puede ser vacia.");
+			logger.error("La lista de domicilios no puede ser vacia.");
+			throw new PortalException("La lista de domicilios no puede ser vacia.");
 		}
 		
 	}
@@ -64,29 +68,43 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 				if(domicilio.getCliente() == null) {
 					domicilio.setCliente(cliente);
 				}
-				if (domAnteriores.contains(domicilio) && domicilio.getCalle() != null) {
+				if (domAnteriores.contains(domicilio)) {
 					domicilioClienteDao.update(domicilio);
-				} if (!domAnteriores.contains(domicilio) && domicilio.getCalle() != null) {
+				} if (!domAnteriores.contains(domicilio)) {
 					domicilioClienteDao.save(domicilio);
 				}
 			}
+			
 			for (DomicilioCliente domicilio : domAnteriores) {
 				if (!domNuevos.contains(domicilio)) {
 					domicilioClienteDao.delete(domicilio);
 				}
 			}
 			
+		} else {
+			logger.error("La lista de domicilios no puede ser vacia.");
+			throw new PortalException("La lista de domicilios no puede ser vacia.");
 		}
 	}
 	
 	@Override
 	public void saveEstado(Estado estado) {
-		domicilioClienteDao.saveEstado(estado);
+		if(estado != null) {
+			domicilioClienteDao.saveEstado(estado);
+		} else {
+			logger.error("El estado no puede ser nulo.");
+			throw new PortalException("El estado no puede ser nulo.");
+		}
 	}
 	
 	@Override
 	public void savePaisSinEstado(DomicilioCliente domicilio, Pais pais) {
-		domicilioClienteDao.savePaisSinEstado(domicilio, pais);
+		if(pais != null) {
+			domicilioClienteDao.savePaisSinEstado(domicilio, pais);
+		} else {
+			logger.error("El país no puede ser nulo.");
+			throw new PortalException("El país no puede ser nulo.");
+		}
 	}
 
 	@Override

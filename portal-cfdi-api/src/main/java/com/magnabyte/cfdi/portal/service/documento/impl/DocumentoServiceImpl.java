@@ -212,21 +212,29 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public Comprobante obtenerComprobantePor(Cliente cliente, Ticket ticket,
 		Integer idDomicilioFiscal, Establecimiento establecimiento) {
-		
 		Comprobante comprobante = new Comprobante();
 		
-		inicializaComprobante(comprobante, ticket);
-		formatTicketDate(ticket);
-		comprobante.setEmisor(getEmisorPorEstablecimiento(establecimiento));
-		comprobante.setReceptor(createReceptor(cliente, idDomicilioFiscal));
-		getDetalleFromTicket(ticket, comprobante);
-		createFechaDocumento(comprobante);
-		comprobante.setLugarExpedicion(comprobante.getEmisor().getExpedidoEn().getLocalidad());
+		if (ticket != null && ticket.getTransaccion().getTransaccionHeader().getIdTicket() != null &&
+				ticket.getTransaccion().getTransaccionHeader().getIdCaja() != null &&
+				ticket.getTransaccion().getTransaccionHeader().getIdSucursal() != null &&
+				ticket.getTransaccion().getTransaccionHeader().getFechaHora() != null) {
 		
-		comprobante.setTipoDeComprobante("ingreso");
-		comprobante.setTipoCambio("1");
-		comprobante.setCondicionesDePago("PAGO DE CONTADO");
-		comprobante.setFormaDePago("PAGO EN UNA SOLA EXHIBICION");
+			
+			inicializaComprobante(comprobante, ticket);
+			formatTicketDate(ticket);
+			comprobante.setEmisor(getEmisorPorEstablecimiento(establecimiento));
+			comprobante.setReceptor(createReceptor(cliente, idDomicilioFiscal));
+			getDetalleFromTicket(ticket, comprobante);
+			createFechaDocumento(comprobante);
+			comprobante.setLugarExpedicion(comprobante.getEmisor().getExpedidoEn().getLocalidad());
+			
+			comprobante.setTipoDeComprobante("ingreso");
+			comprobante.setTipoCambio("1");
+			comprobante.setCondicionesDePago("PAGO DE CONTADO");
+			comprobante.setFormaDePago("PAGO EN UNA SOLA EXHIBICION");
+		} else {
+			throw new PortalException("El ticket no puedo ser nulo.");
+		}
 		
 		return comprobante;
 	}
@@ -239,6 +247,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			ticket.getTransaccion().getTransaccionHeader().setFechaHora(sdf.format(fechaTicket));
 		} catch (ParseException e) {
 			logger.error("Ocurrió un error al obtener la fecha del ticket: ", e);
+			throw new PortalException("Ocurrió un error al obtener la fecha del ticket: ", e);
 		} 
 	}
 
@@ -275,7 +284,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		
 		tUbicacion.setCalle(domicilioCte.getCalle());
 		tUbicacion.setNoExterior(domicilioCte.getNoExterior());
-		tUbicacion.setNoInterior(domicilioCte.getNoInterior());
+		if (!domicilioCte.getNoInterior().trim().isEmpty()) {
+			tUbicacion.setNoInterior(domicilioCte.getNoInterior());
+		}
 		tUbicacion.setPais(domicilioCte.getEstado().getPais().getNombre());
 		tUbicacion.setEstado(domicilioCte.getEstado().getNombre());
 		tUbicacion.setMunicipio(domicilioCte.getMunicipio());
@@ -307,16 +318,21 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			conceptos.getConcepto().add(concepto);
 		}
 		comprobante.setConceptos(conceptos);
+		BigDecimal descuentoTotal = new BigDecimal(0);
+		for(PartidaDescuento descuento : ticket.getTransaccion().getPartidasDescuentos()) {
+			descuentoTotal = descuentoTotal.add(descuento.getDescuentoTotal());
+		}
+		
+		descuentoTotal = descuentoTotal.multiply(new BigDecimal(-1));
+		comprobante.setDescuento(descuentoTotal.setScale(2,BigDecimal.ROUND_HALF_UP));
+
+		subTotal = subTotal.subtract(descuentoTotal.divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
+		
 		comprobante.setSubTotal(subTotal);
 		Impuestos impuesto = new Impuestos();
 		impuesto.setTotalImpuestosTrasladados(ticket.getTransaccion().getTransaccionTotal().getTotalVenta().subtract(subTotal));
 		comprobante.setImpuestos(impuesto);
 		comprobante.setTotal(ticket.getTransaccion().getTransaccionTotal().getTotalVenta());
-		BigDecimal descuentoTotal = new BigDecimal(0);
-		for(PartidaDescuento descuento : ticket.getTransaccion().getPartidasDescuentos()) {
-			descuentoTotal = descuentoTotal.add(descuento.getDescuentoTotal());
-		}
-		comprobante.setDescuento(descuentoTotal.setScale(2));
 	}
 	
 	private void createFechaDocumento(Comprobante comprobante) {
@@ -343,8 +359,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 						logger.debug("Saveando.......");
 						clienteService.save(documento.getCliente());
 					} else {
-						documento.setCliente(clienteService
-								.readClientesByNameRfc(documento.getCliente()));
+						documento.setCliente(clienteService.readClientesByNameRfc(documento.getCliente()));
 					}
 				}
 			}
@@ -381,19 +396,13 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public void guardarDocumento(Documento documento) {
 		if(documento != null) {
-//			if(documento instanceof DocumentoCorporativo) {
-//				if(documento.getCliente() != null) {
-//					if(!clienteService.exist(documento.getCliente())) {
-//						logger.debug("Saveando.......");
-//						clienteService.save(documento.getCliente());
-//					} else {
-//						documento.setCliente(clienteService
-//								.readClientesByNameRfc(documento.getCliente()));
-//					}
-//				}
-//			}
 			if(documento instanceof DocumentoSucursal) {
-				ticketService.save((DocumentoSucursal) documento);
+				if (!ticketService.ticketProcesado(((DocumentoSucursal) documento).getTicket(), documento.getEstablecimiento())) {
+					ticketService.save((DocumentoSucursal) documento);
+				} else {
+					logger.debug("El ticket ya fue facturado.");
+					throw new PortalException("El ticket ya fue facturado con anterioridad.");
+				}
 			}
 			documentoDao.save(documento);
 			documentoDetalleService.save(documento);
@@ -425,6 +434,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		return documentoDao.obtenerAcusesPendientes();
 	}
 	
+	@Transactional
+	@Override
+	public void deleteFromAcusePendiente(Documento documento) {
+		documentoDao.deleteFromAcusePendiente(documento);
+	}
+	
 	@Override
 	public Cliente obtenerClienteDeComprobante(Comprobante comprobante) {
 		Cliente cliente = new Cliente();
@@ -444,7 +459,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		cliente.setRfc(comprobante.getReceptor().getRfc());
 		
 		if(!clienteService.exist(cliente)) {
-			logger.debug("Saveando.......");
 			clienteService.saveClienteCorporativo(cliente);
 		} else {
 			cliente = clienteService.readClientesByNameRfc(cliente);

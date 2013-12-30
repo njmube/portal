@@ -127,6 +127,23 @@ $("#agregarCorregir").click(function() {
 		$(this).loadEstados(this, $(tr).find("#estado"));
 	});
 	
+	$("#personaFisica").click(function() {
+		if($("#personaMoral").is(":checked")) {
+			$("#rfc").removeClass("validate[required, custom[rfcMoral]]");
+			$("#personaMoral").prop('checked', false);
+			$("#rfc").addClass("validate[required, custom[rfcFisica]]");
+		}		
+	});
+	
+	$("#personaMoral").click(function() {
+		if($("#personaFisica").is(":checked")) {
+			$("#rfc").removeClass("validate[required, custom[rfcFisica]]");
+			$("#personaFisica").prop('checked', false);
+			$("#rfc").addClass("validate[required, custom[rfcMoral]]");
+			$("#clienteForm").validate().element("#rfc");
+		}
+	});
+	
 	autoClosingAlert(".errorForm", 3500);
 	autoClosingAlert("#errorMessage", 3500);	
 	

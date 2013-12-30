@@ -21,18 +21,33 @@
 			<div class="well">
 				<c:url var="altaUrl" value="/confirmarDatos/clienteForm"/>
 				<form:form id="clienteForm" action="${altaUrl}" method="POST" modelAttribute="cliente" cssClass="form-horizontal" role="form">
+					<div class="row">
+    					<div class="col-md-4 col-md-offset-4">
+    						<div class="form-group">
+								<label class="control-label col-lg-4">P.Fisica: </label>
+								<div class="col-lg-2">
+									<input type="radio" id="personaFisica" name="personaFisica" checked="checked">
+								</div>
+								<label class="control-label col-lg-4">P.Moral: </label>
+								<div class="col-lg-2">
+									<input type="radio" id="personaMoral" name="personaMoral">
+								</div>
+    						</div>
+    					</div>
+					</div>
 					<div class="form-group">
 						<label class="control-label col-lg-1">* RFC: </label>
 						<div class="col-lg-2">
-							<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfc]]" />
+							<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfcFisica]]"/>
 						</div>
+						
 						<label class="control-label col-lg-2">* Nombre: </label>
 						<div class="col-lg-6">
 							<form:input path="nombre" id="nombre" cssClass="form-control input-sm validate[required]"/>
 						</div>
 					</div>
 					<p class="text-center">
-						<button id="agregar" type="button" class="btn btn-xs btn-warning">Agregar Dirección <span class="glyphicon glyphicon glyphicon-plus"></span> </button>
+						<button id="agregar" type="button" class="btn btn-xs btn-warning">Agregar Dirección <span class="glyphicon glyphicon-plus"></span> </button>
 					</p>
 					<div class="white-panel row">
 						<table class="table table-hover" id="tblDireccion">
