@@ -106,9 +106,8 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		//FIXME
 		response.setAcuse(new byte[]{});
 		if (response.getAcuse() != null) {
-			logger.debug(response.getAcuse().toString());
 			logger.debug("llamada a samba");
-//			sambaService.writeAcuseCfdiXmlFile(response.getAcuse(), documento);
+			sambaService.writeAcuseCfdiXmlFile(response.getAcuse(), documento);
 		}
 	}
 	

@@ -37,6 +37,15 @@
 					</div>
 				</div>
 			</c:if>
+			<c:if test="${ticketProcessed}">
+				<div class="col-md-offset-2 col-md-8">
+					<div class="alert alert-danger alert-dismissable">
+						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+						Ticket Facturado
+						<br><br> <strong><spring:message code="messages.ticket.processed" /></strong> 
+					</div>
+				</div>
+			</c:if>
 			<div class="well col-md-offset-2 col-md-8">
 				<c:url var="urlTicket" value="/validaTicket"/>
 				<form:form id="ticketForm" action="${urlTicket}" method="post" modelAttribute="ticket" cssClass="form-horizontal" role="form">

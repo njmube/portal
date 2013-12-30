@@ -1,8 +1,12 @@
 package com.magnabyte.cfdi.portal.service.documento;
 
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
+import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 
 public interface TicketService {
 
 	void save(DocumentoSucursal documento);
+
+	boolean ticketProcesado(Ticket ticket, Establecimiento establecimiento);
 }

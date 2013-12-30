@@ -8,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.dao.documento.TicketDao;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
+import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
 
 @Service("ticketService")
@@ -18,17 +20,24 @@ public class TicketServiceImpl implements TicketService {
 			LoggerFactory.getLogger(TicketServiceImpl.class);
 	
 	@Autowired
-	TicketDao ticketDao;
+	private TicketDao ticketDao;
 	
 	@Transactional
 	@Override
 	public void save(DocumentoSucursal documento) {
-		if(((DocumentoSucursal) documento).getTicket() != null) {
-			ticketDao.save((DocumentoSucursal) documento);
+		if(documento.getTicket() != null) {
+			ticketDao.save(documento);
 		} else {
 			logger.debug("El Ticket no puede ser nulo.");
 			throw new PortalException("El Ticket no puede ser nulo.");
 		}
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public boolean ticketProcesado(Ticket ticket, Establecimiento establecimiento) {
+		Ticket ticketDB = ticketDao.read(ticket, establecimiento);
+		return ticketDB != null ? true : false;
 	}
 
 }
