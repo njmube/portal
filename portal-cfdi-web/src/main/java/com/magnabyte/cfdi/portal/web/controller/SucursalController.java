@@ -61,7 +61,7 @@ public class SucursalController {
 		if (resultTicket.hasErrors()) {
 			return buscaTicketPage;
 		}
-		if (sambaService.ticketExists(ticket, establecimiento)) {
+		if (ticketService.ticketExists(ticket, establecimiento)) {
 			if (!ticketService.ticketProcesado(ticket, establecimiento)) {
 				model.put("ticket", ticket);
 				return "redirect:/buscaRfc";

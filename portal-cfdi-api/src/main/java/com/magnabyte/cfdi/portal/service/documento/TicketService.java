@@ -7,6 +7,8 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 public interface TicketService {
 
 	void save(DocumentoSucursal documento);
+	
+	boolean ticketExists(Ticket ticket, Establecimiento establecimiento);
 
 	boolean ticketProcesado(Ticket ticket, Establecimiento establecimiento);
 }
