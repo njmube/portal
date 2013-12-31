@@ -40,7 +40,7 @@
 						</div>
 					</div>
 					<p class="form-grup text-center" >
-						<a class="btn btn-primary" href="<c:url value="/guardarEstblecimiento" />"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</a>
+						<a class="btn btn-primary" href="<c:url value="/guardarEstablecimiento" />"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</a>
 					</p>
 				</form:form>
 		</div>

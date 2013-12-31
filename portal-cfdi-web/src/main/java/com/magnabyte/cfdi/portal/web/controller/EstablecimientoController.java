@@ -15,12 +15,15 @@ public class EstablecimientoController {
 	private static final Logger logger = LoggerFactory.getLogger(EstablecimientoController.class);
 	
 	private static  String establecimiento = "/admin/establecimiento";
-	
 	@RequestMapping("/catalogoEstablecimiento")
 	public String catalogoEstablecimiento(ModelMap model) {
 		logger.debug("-- catalogoEstablecimiento");
 		model.put("establecimiento", new  Establecimiento());
 		return establecimiento;
 	}
-
+	
+	@RequestMapping("/guardarEstablecimiento")
+	public String guardarEstablecimiento() {
+		return "admin/establecimientoForm";
+	}
 }
