@@ -85,11 +85,14 @@
 										class="caret"></span></a>
 								<ul class="dropdown-menu">
 									<c:url var="logoutUrl" value="/perform_logout" />
+									<c:url var="catalogoEstablecimiento" value="/catalogoEstablecimiento" />
+									
 									<li><a href="#"><span class="glyphicon "></span>Formas
 											de pago</a></li>
 									<li><a href="#"><span class="glyphicon "></span>Condiciones
 											de pago</a></li>
 									<li><a href="#"><span class="glyphicon "></span>Iva</a></li>
+									<li><a href="${catalogoEstablecimiento}"><span class="glyphicon "></span>Establecimiento</a></li>
 
 								</ul>
 							</sec:authorize></li>
