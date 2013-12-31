@@ -77,6 +77,11 @@
 				</div>
 
 				<div class="collapse navbar-collapse pull-right">
+					<c:set var="urlMenu" value="/portal/cfdi/menu"/>	
+					<sec:authorize
+							access="hasAnyRole('ROLE_SUC', 'ROLE_CORP', 'ROLE_ADMIN')">
+						<c:set var="urlMenu" value="/menuPage"/>		
+					</sec:authorize>
 					<ul class="nav navbar-nav">
 
 						<li><sec:authorize access="hasAnyRole('ROLE_ADMIN')">
@@ -93,12 +98,11 @@
 
 								</ul>
 							</sec:authorize></li>
-						<li><a href="<c:url value="/menuPage" />">Menú Principal
-								<span class="glyphicon glyphicon-home"></span>
-						</a></li>
-						<%-- 						<li><a href="<c:url value="/about" />">Acerca de <span --%>
-						<!-- 								class="glyphicon glyphicon-question-sign"></span></a></li> -->
-
+						<c:if test="${!isLoginPage}">	
+							<li><a href="<c:url value="${urlMenu}" />">Menú Principal
+									<span class="glyphicon glyphicon-home"></span>
+							</a></li>
+						</c:if>
 					</ul>
 					<sec:authorize
 						access="hasAnyRole('ROLE_SUC', 'ROLE_CORP', 'ROLE_ADMIN')">

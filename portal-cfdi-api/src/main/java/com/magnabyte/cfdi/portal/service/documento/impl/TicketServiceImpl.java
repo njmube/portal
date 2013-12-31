@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -120,5 +122,16 @@ public class TicketServiceImpl implements TicketService {
 		Ticket ticketDB = ticketDao.read(ticket, establecimiento);
 		return ticketDB != null ? true : false;
 	}
-
+	
+	@Override
+	public String formatTicketClave(Ticket ticket) {
+		NumberFormat nf = new DecimalFormat("000");
+		Integer numeroSucursal = 0;
+		try {
+			numeroSucursal = Integer.valueOf(ticket.getTransaccion().getTransaccionHeader().getIdSucursal());
+		} catch (NumberFormatException nfe) {
+			logger.error("El numero de sucursal es invalido:", nfe);
+		}
+		return nf.format(numeroSucursal);
+	}
 }

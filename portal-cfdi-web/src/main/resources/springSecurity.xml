@@ -18,7 +18,7 @@
 		<intercept-url pattern="/about" access="permitAll" />
 		<intercept-url pattern="/sessionTimeout" access="permitAll" />
 		<intercept-url pattern="/resources/**" access="permitAll" />
-		<intercept-url pattern="/cfdi/**" access="permitAll" />
+		<intercept-url pattern="/portal/cfdi/**" access="permitAll" />
 		<intercept-url pattern="/**" access="hasAnyRole('ROLE_SUC', 'ROLE_CORP', 'ROLE_ADMIN')" />
 		<form-login login-page="/login" authentication-failure-url="/loginFailed"
 			default-target-url="/menu" always-use-default-target="true" />
