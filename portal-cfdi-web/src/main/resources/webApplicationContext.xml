@@ -44,7 +44,7 @@
 	<task:scheduler id="scheduler" pool-size="10"/>
 	
 	<task:scheduled-tasks>
-		<task:scheduled ref="documentoWebService" method="recuperarAcusesPendientes" cron="5 * * * * ?"/>
+		<task:scheduled ref="documentoWebService" method="recuperarAcusesPendientes" cron="3 * * * * ?"/>
 	</task:scheduled-tasks>	
 
 	<bean id="wsServicios"
