@@ -18,10 +18,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.factory.ClienteFactory;
-import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
-import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 
 @Controller
 @SessionAttributes({"cliente", "ticket"})
@@ -35,6 +33,12 @@ public class ClienteController {
 	@Autowired
 	private OpcionDeCatalogoService opcionDeCatalogoService;
 	
+	@RequestMapping("/buscaPorRfc")
+	public String buscaPorRfc(ModelMap model, @ModelAttribute Cliente cliente) {
+		model.put("cliente", clienteService.findClientByRfc(cliente));
+		return "";
+	}
+	
 	@RequestMapping("/listaClientes")
 	public String listaClientes(ModelMap model, @ModelAttribute Cliente cliente) {		
 		List<Cliente> clientes = clienteService.findClientesByNameRfc(cliente);
@@ -45,7 +49,7 @@ public class ClienteController {
 		return "sucursal/listaClientes";
 	}
 	
-	@RequestMapping("/clienteForm")
+	@RequestMapping(value = {"/clienteForm", "/portal/cfdi/clienteForm"})
 	public String clienteForm(ModelMap model) {
 		logger.debug("regresando forma cliente");
 		model.put("cliente", new Cliente());

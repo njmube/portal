@@ -21,6 +21,7 @@ public class LoginController {
 	@RequestMapping("/login")
 	public String login(ModelMap model) {
 		logger.debug("login");
+		model.put("isLoginPage", true);
 		return loginView;
 	}
 	

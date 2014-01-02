@@ -1,6 +1,7 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <html>
 <head>
 <title>Registrar Cliente</title>
@@ -19,7 +20,12 @@
 			</blockquote>
 			<hr>
 			<div class="well">
-				<c:url var="altaUrl" value="/confirmarDatos/clienteForm"/>
+				<sec:authorize access="hasAnyRole('ROLE_SUC')">
+					<c:url var="altaUrl" value="/confirmarDatos/clienteForm"/>
+				</sec:authorize>
+				<sec:authorize access="isAnonymous()">
+					<c:url var="altaUrl" value="/portal/cfdi/confirmarDatos/clienteForm"/>
+				</sec:authorize>
 				<form:form id="clienteForm" action="${altaUrl}" method="POST" modelAttribute="cliente" cssClass="form-horizontal" role="form">
 					<div class="row">
     					<div class="col-md-4 col-md-offset-4">
@@ -98,12 +104,22 @@
 					<hr>
 					<p class="text-center" id="botones1">
 						<button id="continuar" type="button" class="btn btn-success">Continuar <span class="glyphicon glyphicon-arrow-right"></span></button>
-						<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
+						<sec:authorize access="hasAnyRole('ROLE_SUC')">
+							<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
+						</sec:authorize>
+						<sec:authorize access="isAnonymous()">
+							<a href="<c:url value="/portal/cfdi/buscaRfc"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
+						</sec:authorize>
 					</p>
 					<p class="text-center" id="botones2" style="display:none">
 						<button id="guardar" type="submit" class="btn btn-primary">Guardar <span class="glyphicon glyphicon-floppy-disk"></span></button>
 						<button id="corregir" type="button" class="btn btn-warning">Corregir <span class="glyphicon glyphicon-arrow-left"></span></button>
-						<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
+						<sec:authorize access="hasAnyRole('ROLE_SUC')">
+							<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
+						</sec:authorize>
+						<sec:authorize access="isAnonymous()">
+							<a href="<c:url value="/portal/cfdi/buscaRfc"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
+						</sec:authorize>
 					</p>
 				</form:form>
 			</div>

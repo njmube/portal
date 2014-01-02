@@ -16,8 +16,6 @@ public interface SambaService {
 
 	List<DocumentoCorporativo> getFilesFromDirectory(String url);
 
-	boolean ticketExists(Ticket ticket, Establecimiento establecimiento);
-
 	void moveProcessedSapFile(DocumentoCorporativo documento);
 
 	void writeProcessedCfdiXmlFile(byte[] xmlCfdi, Documento documento);

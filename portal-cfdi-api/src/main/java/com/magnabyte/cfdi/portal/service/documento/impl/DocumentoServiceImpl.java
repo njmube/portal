@@ -315,7 +315,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	private void getDetalleFromTicket(Ticket ticket, Comprobante comprobante) {
 		BigDecimal IVA = new BigDecimal(1.16);
-		BigDecimal impuestosTrasladados = new BigDecimal(0);
 		Conceptos conceptos = new Conceptos();
 		BigDecimal subTotal = new BigDecimal(0);
 		for(Partida partida : ticket.getTransaccion().getPartidas()) {
