@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import mx.gob.sat.cfd._3.Comprobante;
 import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
@@ -155,4 +154,26 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			return null;
 		}
 	}
+
+	@Override
+	public List<Documento> getNombreDocumento(List<Integer> idDocumentos) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("idDocumentos", idDocumentos);
+		return getJdbcTemplate().query(DocumentoSql.READ_DOCUMENTO, DOCUMENTO_MAPPER, map);
+	}
+	
+	private static final RowMapper<Documento> DOCUMENTO_MAPPER = new RowMapper<Documento>() {
+
+		@Override
+		public Documento mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Documento documento = new Documento();
+			Comprobante comprobante = new Comprobante();
+			comprobante.setFolio(rs.getString("folio.folio"));
+			comprobante.setSerie(rs.getString("folio.serie"));
+			documento.setId(rs.getInt("folio.id_documento"));
+			documento.setTipoDocumento(TipoDocumento.FACTURA);
+			documento.setComprobante(comprobante);
+			return documento;
+		}
+	};
 }

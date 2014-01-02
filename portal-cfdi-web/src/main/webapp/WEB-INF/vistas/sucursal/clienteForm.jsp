@@ -88,7 +88,7 @@
 									<td><form:input path="domicilios[0].municipio" id="municipio" cssClass="form-control input-xsm validate[required]" /></td>
 									<td width="200px"><form:input path="domicilios[0].colonia" id="colonia" cssClass="form-control input-xsm validate[required]" /></td>
 									<td width="70px"><form:input path="domicilios[0].codigoPostal" id="codigoPostal" 
-										cssClass="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[6], minSize[5]]"/></td>
+										cssClass="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]]"/></td>
 <%-- 									<td><form:input path="domicilios[0].referencia" id="referencia" cssClass="form-control input-xsm" /></td> --%>
 <%-- 									<td><form:input path="domicilios[0].localidad" id="localidad" cssClass="form-control input-xsm" /></td> --%>
 								</tr>

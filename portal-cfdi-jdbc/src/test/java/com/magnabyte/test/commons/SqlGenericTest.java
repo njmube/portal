@@ -1,5 +1,8 @@
 package com.magnabyte.test.commons;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,11 +13,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.magnabyte.cfdi.portal.dao.cliente.sql.ClienteSql;
 import com.magnabyte.cfdi.portal.dao.cliente.sql.DomicilioSql;
+import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoDetalleSql;
+import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
 import com.magnabyte.cfdi.portal.dao.emisor.sql.EmisorSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.EstablecimientoDao;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
+import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 
@@ -25,24 +31,28 @@ public class SqlGenericTest {
 	@Autowired
 	EmisorDao emisorDao;
 	
+	@Autowired
+	DocumentoDao documentoDao;
+	
 	public static final Logger logger = Logger.getLogger(SqlGenericTest.class);
 
 	@Test
 	public void qryTest() {
-		String qryString = DocumentoDetalleSql.INSERT_DETALLE_DOC;
+		String qryString = DocumentoSql.READ_DOCUMENTO;
 		logger.info(qryString);
 		Assert.assertNotNull(qryString);
 	}
-
-//	@Test
-	public void test() {
-		EmpresaEmisor empresa = new EmpresaEmisor();
-		empresa.setId(4);
+	
+	@Test
+	public void daoTest() {
+		List<Integer> documentos = new ArrayList<>();
 		
-		EmpresaEmisor empresaBD = emisorDao.read(empresa);		
-		logger.info("---------------- Empresa: " + empresa.toString());
+		documentos.add(86);
+		documentos.add(95);
 		
-		Assert.assertEquals("MOD041014KI3", empresaBD.getEmisor().getRfc());
+		List<Documento> docsDB = documentoDao.getNombreDocumento(documentos);
+		
+		Assert.assertNotNull(docsDB);
 	}
 
 }

@@ -3,6 +3,10 @@ $(document).ready(function() {
 	$("#clienteForm").validationEngine();
 	$("#clienteCorregirForm").validationEngine();
 	
+	if($("#pais option:selected").val() > 1){			
+		$("#rfc").attr('readonly', true);
+	}
+	
 	$("#continuar").click(function() {
 		$("#agregar").hide();
 		$("input[type=text]").attr("readonly", true);
@@ -15,15 +19,19 @@ $(document).ready(function() {
 	$("#corregir").click(function() {
 		$("#agregar").show();
 		$("input[type=text]").attr("readonly", false);
+		if($("#pais option:selected").val() > 1){			
+			$("#rfc").attr('readonly', true);
+		}
 		$("select").attr("disabled", false);
 		$("#botones1").show();
 		$("#botones2").hide();
 		$("#tblDireccion tbody > tr").find("#delete").attr("disabled", false);
 		
 		$(".formError").fadeOut(150, function() {
-			 $(this).parent('.formErrorOuter').remove();
-			 $(this).remove();
-		 });
+            $(this).parent('.formErrorOuter').remove();
+            $(this).remove();
+        });
+
 	});
 	
 	$("#guardar").click(function() {
@@ -59,7 +67,7 @@ $(document).ready(function() {
 			+ "</td>"
 			+ "<td><input id=\'municipio"+ aux +"\' name=\'domicilios["+ aux +"].municipio\' class=\'form-control input-xsm validate[required]\' type=\'text\'></td>"
 			+ "<td width=\'200px\'><input id=\'colonia"+ aux +"\' name=\'domicilios["+ aux +"].colonia\' class=\'form-control input-xsm validate[required]\' type=\'text\'></td>"
-			+ "<td width=\'70px\'><input id=\'codigoPostal"+ aux +"\' name=\'domicilios["+ aux +"].codigoPostal\' class=\'form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[6], minSize[5]]\' type=\'text\'></td>"
+			+ "<td width=\'70px\'><input id=\'codigoPostal"+ aux +"\' name=\'domicilios["+ aux +"].codigoPostal\' class=\'form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]]\' type=\'text\'></td>"
 	//		+ "<td><input id=\'referencia" + aux +"\' name=\'domicilios["+ aux +"].referencia\' class=\'form-control input-xsm\' type=\'text\'></td>"
 	//		+ "<td><input id=\'localidad" + aux +"\' name=\'domicilios["+ aux +"].localidad\' class=\'form-control input-xsm\' type=\'text\'></td>"				
 			+ "<td><button id=\'delete\' type=\'button\' class=\'btn btn-danger btn-xs\'><span class=\'glyphicon glyphicon-trash\'></span></button></td>"
@@ -110,7 +118,7 @@ $("#agregarCorregir").click(function() {
 			+ "</td>"
 			+ "<td><input id=\'municipio"+ aux +"\' name=\'domicilios["+ aux +"].municipio\' class=\'form-control input-xsm validate[required]\' type=\'text\'></td>"
 			+ "<td width=\'200px\'><input id=\'colonia"+ aux +"\' name=\'domicilios["+ aux +"].colonia\' class=\'form-control input-xsm validate[required]\' type=\'text\'></td>"
-			+ "<td width=\'70px\'><input id=\'codigoPostal"+ aux +"\' name=\'domicilios["+ aux +"].codigoPostal\' class=\'form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[6], minSize[5]]\' type=\'text\'></td>"
+			+ "<td width=\'70px\'><input id=\'codigoPostal"+ aux +"\' name=\'domicilios["+ aux +"].codigoPostal\' class=\'form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]]\' type=\'text\'></td>"
 	//		+ "<td><input id=\'referencia\' name=\'domicilios["+ aux +"].referencia\' class=\'form-control input-xsm\' type=\'text\'></td>"
 	//		+ "<td><input id=\'localidad\' name=\'domicilios["+ aux +"].localidad\' class=\'form-control input-xsm\' type=\'text\'></td>"				
 			+ "<td><button id=\'delete\' type=\'button\' class=\'btn btn-danger btn-xs\'><span class=\'glyphicon glyphicon-trash\'></span></button></td>"
@@ -141,6 +149,16 @@ $("#agregarCorregir").click(function() {
 			$("#personaFisica").prop('checked', false);
 			$("#rfc").addClass("validate[required, custom[rfcMoral]]");
 			$("#clienteForm").validate().element("#rfc");
+		}
+	});
+	
+	$(document.body).on('change',"#pais",function(){
+		if($("option:selected", this).val() > 1){
+			$("#rfc").val("XAXX010101000");
+			$("#rfc").attr('readonly', true);
+		} else {
+			$("#rfc").val("");
+			$("#rfc").attr('readonly', false);
 		}
 	});
 	

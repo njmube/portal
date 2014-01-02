@@ -23,7 +23,7 @@ public abstract class Domicilio {
 	@NotNull
 	protected Estado estado;
 	@NotEmpty
-	@Length(min=5, max = 6)
+	@Length(min=6, max = 6)
 	protected String codigoPostal;
 	protected String localidad;
 	protected String referencia;
