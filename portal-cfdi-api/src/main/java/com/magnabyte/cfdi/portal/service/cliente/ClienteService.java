@@ -26,6 +26,6 @@ public interface ClienteService {
 
 	void saveClienteCorporativo(Cliente cliente);
 
-	Cliente findClientByRfc(Cliente cliente);
+	Cliente findClienteByRfc(Cliente cliente);
 
 }

@@ -33,10 +33,16 @@ public class ClienteController {
 	@Autowired
 	private OpcionDeCatalogoService opcionDeCatalogoService;
 	
-	@RequestMapping("/buscaPorRfc")
+	@RequestMapping("/portal/cfdi/buscaPorRfc")
 	public String buscaPorRfc(ModelMap model, @ModelAttribute Cliente cliente) {
-		model.put("cliente", clienteService.findClientByRfc(cliente));
-		return "";
+		Cliente clienteBD = clienteService.findClienteByRfc(cliente);
+		if (clienteBD != null) {
+			model.put("cliente", clienteBD);
+			return "portal/confirmarDatos";
+		} else {
+			model.put("cliente", cliente);
+			return "portal/buscaRfc";
+		}
 	}
 	
 	@RequestMapping("/listaClientes")
@@ -78,6 +84,29 @@ public class ClienteController {
 		return "redirect:/confirmarDatos/" + cliente.getId();
 	}
 	
+	@RequestMapping(value = "/portal/cfdi/confirmarDatos/{viewError}", method = RequestMethod.POST)
+	public String confirmarDatosPortal(@Valid @ModelAttribute("clienteCorregir") Cliente cliente, BindingResult result, ModelMap model, 
+			@PathVariable String viewError) {
+		logger.debug("Confimar datos");	
+		if (result.hasErrors()) {
+			model.put("error", result.getAllErrors());
+			logger.debug(result.getAllErrors().toString());
+			if (viewError.equals("clienteForm")) {
+				return "sucursal/" + viewError;
+			}
+			return "portal/" + viewError;
+		}
+		
+		if(cliente.getId() != null) {		
+			clienteService.update(cliente);
+		} else {
+			clienteService.save(cliente);
+		}
+		model.put("cliente", cliente);
+		logger.debug("Cliente: {}", cliente.getId());		
+		return "redirect:/portal/cfdi/confirmarDatos/" + cliente.getId();
+	}
+	
 	@RequestMapping("/clienteCorregir/{id}")
 	public String corregirDatos(@PathVariable Integer id, ModelMap model) {
 		logger.debug("confirmarDatos page");
@@ -85,6 +114,15 @@ public class ClienteController {
 		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
 		model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
 		return "sucursal/clienteCorregir";
+	}
+	
+	@RequestMapping("/portal/cfdi/clienteCorregir/{id}")
+	public String corregirDatosPortal(@PathVariable Integer id, ModelMap model) {
+		logger.debug("confirmarDatos page");
+		model.put("clienteCorregir", clienteService.read(ClienteFactory.newInstance(id)));
+		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
+		model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
+		return "portal/clienteCorregir";
 	}
 	
 }

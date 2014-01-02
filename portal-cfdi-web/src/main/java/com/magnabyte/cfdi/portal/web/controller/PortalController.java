@@ -9,20 +9,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
+import com.magnabyte.cfdi.portal.model.cliente.factory.ClienteFactory;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
+import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 
 @Controller
-@SessionAttributes({"ticket"})
+@SessionAttributes({"establecimiento", "ticket", "cliente"})
 @RequestMapping("/portal/cfdi")
 public class PortalController {
 
@@ -36,6 +39,9 @@ public class PortalController {
 	
 	@Autowired
 	private OpcionDeCatalogoService opcionDeCatalogoService;
+	
+	@Autowired
+	private ClienteService clienteService;
 	
 	@RequestMapping("/menu")
 	public String menu() {
@@ -78,7 +84,15 @@ public class PortalController {
 		logger.debug("buscaRfc page");
 		logger.debug("Ticket: ---{}", (Ticket)model.get("ticket"));
 		model.put("cliente", new Cliente());
+		model.put("emptyList", true);
 		return "portal/buscaRfc";
+	}
+	
+	@RequestMapping("/confirmarDatos/{id}")
+	public String confirmarDatos(@PathVariable Integer id, ModelMap model) {
+		logger.debug("confirmarDatos page");
+		model.put("cliente", clienteService.read(ClienteFactory.newInstance(id)));
+		return "portal/confirmarDatos";
 	}
 	
 }
