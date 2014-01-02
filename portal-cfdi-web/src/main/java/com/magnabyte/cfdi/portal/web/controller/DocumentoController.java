@@ -54,7 +54,7 @@ public class DocumentoController {
 	@Autowired
 	private CertificadoDao certificadoDao;
 	
-	@RequestMapping(value = "/generarDocumento", method = RequestMethod.POST)
+	@RequestMapping(value = {"/generarDocumento", "/portal/cfdi/generarDocumento"}, method = RequestMethod.POST)
 	public String generarDocumento(@ModelAttribute Documento documento,
 			ModelMap model, HttpServletRequest request) {
 		logger.debug("generando documento");
@@ -68,16 +68,16 @@ public class DocumentoController {
 			}
 		}
 
-		return "redirect:/imprimirFactura";
+		return "redirect:/portal/cfdi/imprimirFactura";
 	}
 
-	@RequestMapping("/imprimirFactura")
+	@RequestMapping(value = {"/imprimirFactura", "/portal/cfdi/imprimirFactura"})
 	public String imprimirFactura() {
 		logger.debug("Factura generada...");
 		return "documento/documentoSuccess";
 	}
 
-	@RequestMapping("/reporte")
+	@RequestMapping(value = {"/reporte", "/portal/cfdi/reporte"})
 	public String reporte(@ModelAttribute Documento documento, ModelMap model,
 			HttpServletRequest request) {
 		logger.debug("Creando reporte");
@@ -106,7 +106,7 @@ public class DocumentoController {
 		return "reporte";
 	}
 
-	@RequestMapping("/documentoXml")
+	@RequestMapping(value = {"/documentoXml", "/portal/cfdi/documentoXml"})
 	public void documentoXml(@ModelAttribute Documento documento,
 			HttpServletResponse response) {
 		try {

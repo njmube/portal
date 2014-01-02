@@ -34,7 +34,7 @@ public class ClienteController {
 	private OpcionDeCatalogoService opcionDeCatalogoService;
 	
 	@RequestMapping("/portal/cfdi/buscaPorRfc")
-	public String buscaPorRfc(ModelMap model, @ModelAttribute Cliente cliente) {
+	public String buscaPorRfc(@ModelAttribute Cliente cliente, ModelMap model) {
 		Cliente clienteBD = clienteService.findClienteByRfc(cliente);
 		if (clienteBD != null) {
 			model.put("cliente", clienteBD);

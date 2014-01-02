@@ -37,7 +37,7 @@
 			</blockquote>
 			<hr>
 			<div class="well">
-				<c:url var="altaUrl" value="/confirmarDatos/clienteCorregir"/>
+				<c:url var="altaUrl" value="/portal/cfdi/confirmarDatos/clienteCorregir"/>
 				<form:form id="clienteCorregirForm" action="${altaUrl}" method="POST" modelAttribute="clienteCorregir" cssClass="form-horizontal" role="form">
 					<div class="form-group">
 						<form:hidden path="id" id="idCliente"/>

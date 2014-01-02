@@ -318,16 +318,18 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		Conceptos conceptos = new Conceptos();
 		BigDecimal subTotal = new BigDecimal(0);
 		for(Partida partida : ticket.getTransaccion().getPartidas()) {
-			Concepto concepto = new Concepto();
-			concepto.setCantidad(partida.getCantidad());
-			concepto.setDescripcion(partida.getArticulo().getDescripcion());
-			concepto.setUnidad(partida.getArticulo().getUnidad());
-			concepto.setImporte(partida.getPrecioTotal().divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
-			concepto.setValorUnitario(partida.getPrecioUnitario().divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
-			if (!partida.getArticulo().getTipoCategoria().equals("PROMOCIONES")) {
-				subTotal = subTotal.add(concepto.getImporte());
+			if (!isArticuloSinPrecio(partida.getArticulo().getId())) {
+				Concepto concepto = new Concepto();
+				concepto.setCantidad(partida.getCantidad());
+				concepto.setDescripcion(partida.getArticulo().getDescripcion());
+				concepto.setUnidad(partida.getArticulo().getUnidad());
+				concepto.setImporte(partida.getPrecioTotal().divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
+				concepto.setValorUnitario(partida.getPrecioUnitario().divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
+				if (!partida.getArticulo().getTipoCategoria().equals("PROMOCIONES")) {
+					subTotal = subTotal.add(concepto.getImporte());
+				}
+				conceptos.getConcepto().add(concepto);
 			}
-			conceptos.getConcepto().add(concepto);
 		}
 		comprobante.setConceptos(conceptos);
 		BigDecimal descuentoTotal = new BigDecimal(0);
@@ -345,6 +347,15 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		comprobante.setTotal(comprobante.getSubTotal().subtract(comprobante.getDescuento()).add(comprobante.getImpuestos().getTotalImpuestosTrasladados()).setScale(2, BigDecimal.ROUND_UP));
 	}
 	
+	private boolean isArticuloSinPrecio(String idArticulo) {
+		String [] articuloSinPrecio = {"4032700", "4032800", "4032900"};
+		for (String articulo : articuloSinPrecio) {
+			if (idArticulo.equals(articulo))
+				return true;
+		}
+		return false;
+	}
+
 	private void createFechaDocumento(Comprobante comprobante) {
 		GregorianCalendar dateNow = new GregorianCalendar();
 		dateNow.setTime(new Date());

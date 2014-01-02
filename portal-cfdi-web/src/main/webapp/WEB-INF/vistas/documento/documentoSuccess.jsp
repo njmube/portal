@@ -8,15 +8,25 @@
 <title>Factura Generada</title>
 </head>
 <body>
+	<sec:authorize access="hasAnyRole('ROLE_CORP', 'ROLE_SUC')">
+		<c:url var="urlReportePDF" value="/reporte" />
+		<c:url var="urlReporteXML" value="/documentoXml" />
+		<c:url var="urlMenu" value="/menuPage" />
+	</sec:authorize>
+	<sec:authorize access="isAnonymous()">
+		<c:url var="urlReportePDF" value="/portal/cfdi/reporte" />
+		<c:url var="urlReporteXML" value="/portal/cfdi/documentoXml" />
+		<c:url var="urlMenu" value="/portal/cfdi/menu" />
+	</sec:authorize>
 	<div class="container main-content">
 		<div class="white-panel row">
 			<h2>
-				Facturación Electrónica - 
+				Facturación Electrónica 
 				<sec:authorize access="hasRole('ROLE_SUC')">
-					<span class="text-info">${fn:toUpperCase(sessionScope.establecimiento.nombre)}</span>
+					- <span class="text-info">${fn:toUpperCase(sessionScope.establecimiento.nombre)}</span>
 				</sec:authorize>
 				<sec:authorize access="hasRole('ROLE_CORP')">
-					<span class="text-info">Corporativo</span>
+					- <span class="text-info">Corporativo</span>
 				</sec:authorize>
 				
 				<span class="label label-primary">@</span>
@@ -32,19 +42,19 @@
 				</div>
 				<div class="text-center row">
 					<p>
-						<a href="<c:url value="/reporte" />" target="_blank" class="btn btn-primary btn-lg">Ver PDF<img id="pdfImg"
+						<a href="${urlReportePDF}" target="_blank" class="btn btn-primary btn-lg">Ver PDF<img id="pdfImg"
 							src="<c:url value="/resources/img/pdf.png" />"
 							alt="PDF"></a>
 					</p>
 					<p>
-						<a href="<c:url value="/documentoXml" />" target="_blank" class="btn btn-primary btn-lg">Ver XML<img id="xmlImg"
+						<a href="${urlReporteXML}" target="_blank" class="btn btn-primary btn-lg">Ver XML<img id="xmlImg"
 							src="<c:url value="/resources/img/xml.png" />"
 							alt="XML"></a>
 					</p>
 				</div>
 				<hr>
 				<div class="text-center row">
-					<a href="<c:url value="/menuPage" />" class="btn btn-danger btn-lg">Terminar</a>
+					<a href="${urlMenu}" class="btn btn-danger btn-lg">Terminar</a>
 				</div>
 			</div>
 		</div>
