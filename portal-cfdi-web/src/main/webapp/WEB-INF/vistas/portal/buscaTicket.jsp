@@ -24,7 +24,10 @@
 <body>
 	<div class="container main-content">
 		<div class="white-panel row">
-			<h2>Facturación Electrónica <span class="text-info"> - ${fn:toUpperCase(sessionScope.establecimiento.nombre)}</span>
+			<h2>Facturación Electrónica
+				<sec:authorize access="hasAnyRole('ROLE_SUC')">
+					<span class="text-info"> - ${fn:toUpperCase(sessionScope.establecimiento.nombre)}</span>
+				</sec:authorize>
 				<span class="label label-primary">@</span></h2>
 			<blockquote>
 				<p class="text-info">Ingresa los Datos del Ticket.</p>
@@ -49,8 +52,22 @@
 				</div>
 			</c:if>
 			<div class="well col-md-offset-2 col-md-8">
-				<c:url var="urlTicket" value="/validaTicket"/>
+				<sec:authorize access="hasAnyRole('ROLE_SUC')">
+					<c:url var="urlTicket" value="/validaTicket"/>
+				</sec:authorize>
+				<sec:authorize access="isAnonymous()">
+					<c:url var="urlTicket" value="/portal/cfdi/validaTicket"/>
+				</sec:authorize>
 				<form:form id="ticketForm" action="${urlTicket}" method="post" modelAttribute="ticket" cssClass="form-horizontal" role="form">
+					<sec:authorize access="isAnonymous()">
+						<div class="form-group">
+							<label for="noSucursal" class="col-lg-5 control-label">No. de Sucursal: </label>
+							<div class="col-lg-3">
+								<form:input path="transaccion.transaccionHeader.idSucursal" id="noSucursal" cssClass="form-control input-sm validate[required]" />
+							</div>
+							<small class="errorForm"><strong><form:errors path="transaccion.transaccionHeader.idSucursal" cssClass="text-danger"/></strong></small>
+						</div>
+					</sec:authorize>
 					<div class="form-group">
 						<label for="noTicket" class="col-lg-5 control-label">No. de Ticket: </label>
 						<div class="col-lg-3">

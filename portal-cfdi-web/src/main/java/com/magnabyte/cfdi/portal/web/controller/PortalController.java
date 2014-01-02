@@ -46,7 +46,7 @@ public class PortalController {
 	@RequestMapping("/buscaTicket")
 	public String buscaTicket(ModelMap model) {
 		model.put("ticket", new Ticket());
-		return "sucursal/buscaTicket";
+		return "portal/buscaTicket";
 	}
 	
 	@RequestMapping(value = "/validaTicket", method = RequestMethod.POST)
@@ -58,7 +58,7 @@ public class PortalController {
 		establecimiento = establecimientoService.readByClave(establecimiento);
 		logger.debug("establecimiento {}", establecimiento);
 		if (resultTicket.hasErrors()) {
-			return "sucursal/buscaTicket";
+			return "portal/buscaTicket";
 		}
 		if (ticketService.ticketExists(ticket, establecimiento)) {
 			if (!ticketService.ticketProcesado(ticket, establecimiento)) {
@@ -70,7 +70,7 @@ public class PortalController {
 		} else {
 			model.put("invalidTicket", true);
 		}
-		return "sucursal/buscaTicket";
+		return "portal/buscaTicket";
 	}
 	
 	@RequestMapping("/buscaRfc")
@@ -78,16 +78,7 @@ public class PortalController {
 		logger.debug("buscaRfc page");
 		logger.debug("Ticket: ---{}", (Ticket)model.get("ticket"));
 		model.put("cliente", new Cliente());
-		model.put("emptyList", true);
 		return "portal/buscaRfc";
 	}
 	
-	@RequestMapping("/clienteForm")
-	public String clienteForm(ModelMap model) {
-		logger.debug("regresando forma cliente");
-		model.put("cliente", new Cliente());
-		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
-		model.put("emptyList", true);
-		return "sucursal/clienteForm";
-	}
 }

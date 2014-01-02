@@ -33,6 +33,12 @@ public class ClienteController {
 	@Autowired
 	private OpcionDeCatalogoService opcionDeCatalogoService;
 	
+	@RequestMapping("/buscaPorRfc")
+	public String buscaPorRfc(ModelMap model, @ModelAttribute Cliente cliente) {
+		model.put("cliente", clienteService.findClientByRfc(cliente));
+		return "";
+	}
+	
 	@RequestMapping("/listaClientes")
 	public String listaClientes(ModelMap model, @ModelAttribute Cliente cliente) {		
 		List<Cliente> clientes = clienteService.findClientesByNameRfc(cliente);
@@ -43,7 +49,7 @@ public class ClienteController {
 		return "sucursal/listaClientes";
 	}
 	
-	@RequestMapping("/clienteForm")
+	@RequestMapping(value = {"/clienteForm", "/portal/cfdi/clienteForm"})
 	public String clienteForm(ModelMap model) {
 		logger.debug("regresando forma cliente");
 		model.put("cliente", new Cliente());
