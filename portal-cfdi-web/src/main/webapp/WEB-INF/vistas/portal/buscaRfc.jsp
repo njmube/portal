@@ -6,6 +6,7 @@
 <html>
 <head>
 <title>Ingresa tu RFC</title>
+<script type="text/javascript" src="<c:url value="/resources/js/sucursal/clientes.js"/>"></script>
 </head>
 <body>
 	<div class="container main-content">
@@ -16,8 +17,8 @@
 			</blockquote>
 			<hr>
 			<div class="well col-md-offset-2 col-md-8">
-				<c:url var="urlBuscaRfc" value="" />
-				<form:form id="receptorForm" action="#" method="GET" modelAttribute="cliente" cssClass="form-horizontal" role="form">
+				<c:url var="urlBuscaRfc" value="/portal/cfdi/buscaPorRfc" />
+				<form:form id="receptorForm" action="${urlBuscaRfc}" method="GET" modelAttribute="cliente" cssClass="form-horizontal" role="form">
 					<div class="form-group">
 						<label for="rfc" class="col-lg-4 control-label">RFC: </label>
 						<div class="col-lg-5">
@@ -28,7 +29,7 @@
 					<div class="form-group">
 						<div class="centered">
 							<a id="crearCliente" href="<c:url value="/portal/cfdi/clienteForm"/>" class="btn btn-warning">Registrar RFC <span class="glyphicon glyphicon-plus"></span></a>
-							<button id="buscarCliente" type="submit" class="btn btn-primary">Buscar <span class="glyphicon glyphicon-search"></span></button>
+							<button id="buscarClienteRfc" type="submit" class="btn btn-primary">Buscar <span class="glyphicon glyphicon-search"></span></button>
 							<a id="cancelar" href="<c:url value="/portal/cfdi/buscaTicket"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
 						</div>
 					</div>

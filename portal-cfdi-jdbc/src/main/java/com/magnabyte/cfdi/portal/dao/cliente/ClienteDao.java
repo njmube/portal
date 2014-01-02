@@ -18,5 +18,7 @@ public interface ClienteDao {
 
 	public void update(Cliente cliente);
 
+	Cliente findClienteByRfc(Cliente cliente);
+
 
 }
