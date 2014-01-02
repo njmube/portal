@@ -157,7 +157,6 @@ $("#agregarCorregir").click(function() {
 			$("#rfc").val("XAXX010101000");
 			$("#rfc").attr('readonly', true);
 		} else {
-			$("#rfc").val("");
 			$("#rfc").attr('readonly', false);
 		}
 	});

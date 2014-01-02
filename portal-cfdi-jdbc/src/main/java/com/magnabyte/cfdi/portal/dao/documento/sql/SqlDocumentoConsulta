@@ -3,12 +3,3 @@ inner join t_cliente as cte on doc.id_cliente = cte.id_cliente
 inner join t_establecimiento as estab on doc.id_establecimiento = estab.id_establecimiento
 inner join t_ruta_establecimiento as ruta on estab.id_ruta_establecimiento = ruta.id_ruta_establecimiento
 WHERE cte.rfc like 'P%';
-
-
-select folio.id_documento, folio.serie, folio.folio, folio.id_tipo_documento
-from t_documento as doc 
-inner join t_documento_cfdi as cfdi 
-on doc.id_documento = cfdi.id_documento
-inner join t_documento_folio as folio
-on cfdi.id_documento = folio.id_documento
-where cfdi.id_documento in (86,95,99)
