@@ -543,4 +543,20 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		return false;
 	}
 
+	@Override
+	public List<Documento> getDocumentos(Cliente cliente) {
+		List<Documento> rutasEstab = documentoDao.getDocumentoByCliente(cliente);
+		List<Integer> idDocumentos = new ArrayList<Integer>();
+		List<Documento> documentos = null;
+		
+		if(rutasEstab != null && !rutasEstab.isEmpty()) {			
+			for(Documento ruta : rutasEstab) {
+				idDocumentos.add(ruta.getId());
+			}
+		
+			documentos = documentoDao.getNombreDocumento(idDocumentos);		
+		}
+		return documentos;
+	}
+
 }
