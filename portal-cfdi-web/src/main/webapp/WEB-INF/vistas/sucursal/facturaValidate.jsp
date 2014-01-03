@@ -217,6 +217,7 @@
 			<p class="text-center">
 				<button id="generaFactura" type="button" class="btn btn-primary btn-lg"><small>Generar ${tipoComprobante}</small> <span class="glyphicon glyphicon-list-alt"></span></button>
 				<a id="cancel" href="<c:url value="/buscaTicket" />" class="btn btn-danger btn-lg"><small>Cancelar</small> <span class="glyphicon glyphicon-remove"></span></a>
+				<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger btn-lg"><small>Regresar</small> <span class="glyphicon glyphicon-step-backward"></span></a>
 			</p>
 		</div>
 	</div>
