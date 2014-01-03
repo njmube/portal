@@ -29,6 +29,7 @@ public class LoginController {
 	public String loginError(ModelMap model) {
 		logger.debug("loginFailed");
 		model.put("error", true);
+		model.put("isLoginPage", true);
 		return loginView;
 	}
 	
@@ -40,6 +41,7 @@ public class LoginController {
 	
 	@RequestMapping("logout")
 	public String logout(ModelMap model) {
+		model.put("isLoginPage", true);
 		return "login/logoutSuccess";
 	}
 	

@@ -71,7 +71,7 @@
 		$(document).ready(function () {
 			$("#continue").click(function () {
 				var idDom = $("input[id=domFiscal]:checked").val();
-				location.href = contextPath + "/datosFacturacion/" + idDom;
+				location.href = contextPath + "/portal/cfdi/datosFacturacion/" + idDom;
 			});
 		});
 	</script>

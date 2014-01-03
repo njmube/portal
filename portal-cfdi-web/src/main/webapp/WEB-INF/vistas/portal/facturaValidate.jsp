@@ -12,9 +12,7 @@
 <body>
 	<div class="container main-content">
 		<div class="white-panel row">
-			<h2>
-				Facturación Electrónica - <span class="text-info">Corporativo</span> <span class="label label-primary">@</span>
-			</h2>
+			<h2>Facturación Electrónica <span class="label label-primary">@</span></h2>
 			<hr>
 			<fmt:setLocale value="en_US" scope="session"/>
 			<c:choose>
@@ -29,24 +27,30 @@
 				<div class="col-md-4">
 					<div class="white-panel form-horizontal">
 						<fieldset>
-							<h5 class="text-primary">Datos ${tipoComprobante}</h5>
+							<h5 class="text-primary">Datos Ticket</h5>
 							<hr>
 							<div class="form-group">
-								<label for="folioSap" class="col-lg-4 control-label"><small>Folio SAP: </small></label>
+								<label for="noSucursal" class="col-lg-4 control-label"><small>No. Sucursal: </small></label>
 								<div class="col-lg-8">
-									<input id="folioSap" class="form-control input-sm" value="${folioSap}" readonly="readonly"/>
+									<input id="noSucursal" class="form-control input-sm" value="${ticket.transaccion.transaccionHeader.idSucursal}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="factura" class="col-lg-4 control-label"><small>Factura: </small></label>
+								<label for="noTicket" class="col-lg-4 control-label"><small>No. de Ticket: </small></label>
 								<div class="col-lg-8">
-									<input id="factura" class="form-control input-sm" value="${comprobante.serie}${comprobante.folio}" readonly="readonly"/>
+									<input id="noTicket" class="form-control input-sm" value="${ticket.transaccion.transaccionHeader.idTicket}" readonly="readonly"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="noCaja" class="col-lg-4 control-label"><small>No. de Caja: </small></label>
+								<div class="col-lg-8">
+									<input id="noCaja" class="form-control input-sm" value="${ticket.transaccion.transaccionHeader.idCaja}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="fechahora" class="col-lg-4 control-label"><small>Fecha y Hora: </small></label>
 								<div class="col-lg-8">
-									<input id="fechahora" class="form-control input-sm" value="${comprobante.fecha}" readonly="readonly"/>
+									<input id="fechahora" class="form-control input-sm" value="${ticket.transaccion.transaccionHeader.fechaHora}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
@@ -66,7 +70,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-lg-12">
-									<textarea id="expedicion" class="form-control input-sm" rows="2" readonly="readonly">${comprobante.lugarExpedicion}</textarea>
+									<textarea id="expedicion" class="form-control input-sm" rows="2" readonly="readonly">${establecimiento.domicilio.localidad}</textarea>
 								</div>
 							</div>
 						</fieldset>
@@ -217,8 +221,8 @@
 				</div>
 			</div>
 			<p class="text-center">
-				<button id="generaFactura" type="button" class="btn btn-primary btn-lg"><small>Sellar ${tipoComprobante}</small> <span class="glyphicon glyphicon-list-alt"></span></button>
-				<a id="cancel" href="<c:url value="/facturaCorp" />" class="btn btn-danger btn-lg"><small>Cancelar</small> <span class="glyphicon glyphicon-remove"></span></a>
+				<button id="generaFactura" type="button" class="btn btn-primary btn-lg"><small>Generar ${tipoComprobante}</small> <span class="glyphicon glyphicon-list-alt"></span></button>
+				<a id="cancel" href="<c:url value="/portal/cfdi/buscaTicket" />" class="btn btn-danger btn-lg"><small>Cancelar</small> <span class="glyphicon glyphicon-remove"></span></a>
 			</p>
 		</div>
 	</div>
@@ -227,15 +231,14 @@
 	<div class="page_loader_content text-center">
 		<div class="row">
 			<div class="panel col-md-4 col-md-offset-4">
-				<h3>Generando Factura</h3>
-				<p>Espere por favor...<span class="glyphicon glyphicon-time"></span></p>
+				<h3>Generando Factura...</h3>
 				<div class="progress progress-striped active">
 				  	<div class="progress-bar"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<c:url value="/generarDocumento" var="urlDocumento"/>
+	<c:url value="/portal/cfdi/generarDocumento" var="urlDocumento"/>
 	<form action="${urlDocumento}" id="formPdf" method="post"></form>
 	<script type="text/javascript">
 		$(document).ready(function() {

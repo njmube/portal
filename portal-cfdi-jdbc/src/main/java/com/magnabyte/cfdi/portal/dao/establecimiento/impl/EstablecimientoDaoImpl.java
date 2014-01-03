@@ -2,9 +2,11 @@ package com.magnabyte.cfdi.portal.dao.establecimiento.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -28,9 +30,13 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 	public Establecimiento findByClave(Establecimiento establecimiento) {
 		String qry = EstablecimientoSql.FIND_BY_CLAVE;
 		logger.debug(qry);
-
-		return getJdbcTemplate().queryForObject(qry, MAPPER_ESTABLECIMIENTO,
-				establecimiento.getClave());
+		try {
+			return getJdbcTemplate().queryForObject(qry, MAPPER_ESTABLECIMIENTO,
+					establecimiento.getClave());
+		} catch (EmptyResultDataAccessException ex) {
+			logger.debug("No existe el establecimiento");
+			return null;
+		}
 	}
 	
 	@Override
@@ -66,6 +72,14 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 	public String getRoles(Establecimiento establecimiento) {
 		return getJdbcTemplate().queryForObject(EstablecimientoSql.GET_ROLES,
 				new Object[] { establecimiento.getId() }, String.class);
+	}
+	
+	@Override
+	public List<Establecimiento> readAll() {
+		String qry = EstablecimientoSql.READ_ALL;
+		logger.debug("--readAll Establecimientos.  -"+qry);
+
+		return getJdbcTemplate().query(qry, MAPPER_ESTABLECIMIENTO);
 	}
 
 	private static final RowMapper<Establecimiento> MAPPER_ESTABLECIMIENTO = new RowMapper<Establecimiento>() {

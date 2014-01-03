@@ -225,7 +225,8 @@
 	<div class="page_loader_content text-center">
 		<div class="row">
 			<div class="panel col-md-4 col-md-offset-4">
-				<h3>Generando Factura...</h3>
+				<h3>Generando Factura</h3>
+				<p>Espere por favor...<span class="glyphicon glyphicon-time"></span></p>
 				<div class="progress progress-striped active">
 				  	<div class="progress-bar"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
 				</div>

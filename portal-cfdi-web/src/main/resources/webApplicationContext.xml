@@ -17,7 +17,7 @@
 
 	<mvc:resources location="/resources/" mapping="/resources/**" />
 
-	<context:property-placeholder location="classpath*:/webservices.properties"/>
+	<context:property-placeholder location="classpath*:/modatelas.properties"/>
 
 	<bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
@@ -44,7 +44,7 @@
 	<task:scheduler id="scheduler" pool-size="10"/>
 	
 	<task:scheduled-tasks>
-		<task:scheduled ref="documentoWebService" method="recuperarAcusesPendientes" cron="5 * * * * ?"/>
+		<task:scheduled ref="documentoWebService" method="recuperarAcusesPendientes" cron="3 * * * * ?"/>
 	</task:scheduled-tasks>	
 
 	<bean id="wsServicios"

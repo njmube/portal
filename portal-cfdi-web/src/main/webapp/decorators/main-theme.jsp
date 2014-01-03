@@ -77,25 +77,25 @@
 				</div>
 
 				<div class="collapse navbar-collapse pull-right">
-					<c:set var="urlMenu" value="/portal/cfdi/menu"/>	
+					<sec:authorize access="isAnonymous()">
+						<c:set var="urlMenu" value="/portal/cfdi/menu"/>	
+					</sec:authorize>
 					<sec:authorize
 							access="hasAnyRole('ROLE_SUC', 'ROLE_CORP', 'ROLE_ADMIN')">
 						<c:set var="urlMenu" value="/menuPage"/>		
 					</sec:authorize>
 					<ul class="nav navbar-nav">
 
-						<li><sec:authorize access="hasAnyRole('ROLE_ADMIN')">
-								<a data-toggle="dropdown"><span
-									class="glyphicon"></span>Catálogos <span
-										class="caret"></span></a>
+						<li class="dropdown"><sec:authorize access="hasAnyRole('ROLE_ADMIN')">
+<!-- 								<a class="dropdown-toggle" data-toggle="dropdown">Catálogos <b class="caret"></b></a> -->
+								<a class="dropdown-toggle" data-toggle="dropdown">Catálogos <b class="caret"></b></a>
 								<ul class="dropdown-menu">
 									<c:url var="logoutUrl" value="/perform_logout" />
-									<li><a href="#"><span class="glyphicon "></span>Formas
-											de pago</a></li>
-									<li><a href="#"><span class="glyphicon "></span>Condiciones
-											de pago</a></li>
+									<c:url var="catalogoEstablecimiento" value="/catalogoEstablecimiento" />
+									<li><a href="#"><span class="glyphicon "></span>Formas de pago</a></li>
+									<li><a href="#"><span class="glyphicon "></span>Condiciones de pago</a></li>
 									<li><a href="#"><span class="glyphicon "></span>Iva</a></li>
-
+									<li><a href="${catalogoEstablecimiento}"><span class="glyphicon "></span>Establecimiento</a></li>
 								</ul>
 							</sec:authorize></li>
 						<c:if test="${!isLoginPage}">	

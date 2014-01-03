@@ -23,7 +23,7 @@ public class AutocompleteController {
 	@Autowired
 	private OpcionDeCatalogoService opcionDeCatalogoService;
 		
-	@RequestMapping(value = "/listaEstados", method = RequestMethod.POST)
+	@RequestMapping(value = "/portal/cfdi/listaEstados", method = RequestMethod.POST)
 	public @ResponseBody Collection<OpcionDeCatalogo> getEstados(@RequestParam String pais) {
 		logger.debug("Identificador del pais: {}", pais);
 		Collection<OpcionDeCatalogo> response = opcionDeCatalogoService.
