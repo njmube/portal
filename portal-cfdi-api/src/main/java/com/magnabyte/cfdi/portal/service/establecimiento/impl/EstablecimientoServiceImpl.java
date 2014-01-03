@@ -1,5 +1,7 @@
 package com.magnabyte.cfdi.portal.service.establecimiento.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,5 +32,11 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 	@Override
 	public Establecimiento readById(Establecimiento establecimiento) {
 		return establecimientoDao.readById(establecimiento);
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public List<Establecimiento> readAll() {
+		return establecimientoDao.readAll();
 	}
 }
