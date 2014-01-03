@@ -270,7 +270,13 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 
 	private Emisor getEmisorPorEstablecimiento(Establecimiento establecimiento) {
 		EmpresaEmisor empresaEmisor = emisorDao.read(establecimiento.getEmpresaEmisor());
-		empresaEmisor.getEmisor().setExpedidoEn(emisorDao.readLugarExpedicion(establecimiento));
+		TUbicacion expedidoEn = emisorDao.readLugarExpedicion(establecimiento);
+		if (expedidoEn.getNoExterior() != null && expedidoEn.getNoExterior().trim().isEmpty()) 
+			expedidoEn.setNoExterior(null);
+		if (expedidoEn.getNoInterior() != null && expedidoEn.getNoInterior().trim().isEmpty()) {
+			expedidoEn.setNoInterior(null);
+		}
+		empresaEmisor.getEmisor().setExpedidoEn(expedidoEn);
 		return empresaEmisor.getEmisor();
 	}
 	

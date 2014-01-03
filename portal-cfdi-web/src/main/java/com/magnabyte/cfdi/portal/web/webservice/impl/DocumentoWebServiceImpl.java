@@ -112,6 +112,9 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			logger.debug("llamada a samba");
 			sambaService.writeAcuseCfdiXmlFile(response.getAcuse(), documento);
 			documentoService.deleteFromAcusePendiente(documento);
+		} else {
+			logger.debug("El webservice no devolvio el acuse");
+			logger.debug(response.getMessage());
 		}
 	}
 	

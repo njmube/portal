@@ -77,7 +77,9 @@
 				</div>
 
 				<div class="collapse navbar-collapse pull-right">
-					<c:set var="urlMenu" value="/portal/cfdi/menu"/>	
+					<sec:authorize access="isAnonymous()">
+						<c:set var="urlMenu" value="/portal/cfdi/menu"/>	
+					</sec:authorize>
 					<sec:authorize
 							access="hasAnyRole('ROLE_SUC', 'ROLE_CORP', 'ROLE_ADMIN')">
 						<c:set var="urlMenu" value="/menuPage"/>		
