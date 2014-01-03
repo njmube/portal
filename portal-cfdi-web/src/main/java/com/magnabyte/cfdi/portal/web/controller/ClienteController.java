@@ -41,6 +41,7 @@ public class ClienteController {
 			return "portal/confirmarDatos";
 		} else {
 			model.put("cliente", cliente);
+			model.put("errorMsg", true);
 			return "portal/buscaRfc";
 		}
 	}

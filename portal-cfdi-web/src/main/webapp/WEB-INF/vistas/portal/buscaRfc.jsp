@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="display" uri="http://displaytag.sf.net"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
 <title>Ingresa tu RFC</title>
@@ -16,13 +17,22 @@
 				<p class="text-info">Ingresa tu RFC.</p>
 			</blockquote>
 			<hr>
+			<c:if test="${errorMsg}">
+				<div class="col-md-offset-2 col-md-8">
+					<div class="alert alert-danger alert-dismissable">
+						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+						<spring:message code="message.rfc.nonexistent.title"/>
+						<br><br> <strong><spring:message code="message.rfc.nonexistent"/></strong> 
+					</div>
+				</div>
+			</c:if>
 			<div class="well col-md-offset-2 col-md-8">
 				<c:url var="urlBuscaRfc" value="/portal/cfdi/buscaPorRfc" />
-				<form:form id="receptorForm" action="${urlBuscaRfc}" method="GET" modelAttribute="cliente" cssClass="form-horizontal" role="form">
+				<form:form id="receptorFormPortal" action="${urlBuscaRfc}" method="GET" modelAttribute="cliente" cssClass="form-horizontal" role="form">
 					<div class="form-group">
 						<label for="rfc" class="col-lg-4 control-label">RFC: </label>
 						<div class="col-lg-5">
-							<form:input path="rfc" id="rfc" cssClass="form-control input-sm" />
+							<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfc]]" />
 						</div>
 					</div>
 					<hr>
@@ -37,5 +47,6 @@
 			</div>
 		</div>
 	</div>
+	<script src="<c:url value="/resources/js/login/login.js" />"></script>
 </body>
 </html>

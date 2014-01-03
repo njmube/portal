@@ -354,6 +354,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	}
 	
 	private boolean isArticuloSinPrecio(String idArticulo) {
+		//FIXME
 		String [] articuloSinPrecio = {"4032700", "4032800", "4032900"};
 		for (String articulo : articuloSinPrecio) {
 			if (idArticulo.equals(articulo))
