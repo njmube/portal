@@ -38,7 +38,51 @@
 			<hr>
 			<div class="well">
 				<c:url var="altaUrl" value="/confirmarDatos/clienteCorregir"/>
-				<form:form id="clienteCorregirForm" action="${altaUrl}" method="POST" modelAttribute="clienteCorregir" cssClass="form-horizontal" role="form">
+				<form:form id="clienteCorregirForm" action="${altaUrl}" method="POST" modelAttribute="clienteCorregir" cssClass="form-horizontal" role="form">				
+					<div class="row">
+						<div class="col-md-offset-1 col-md-3">
+							    <c:choose>
+							    	<c:when test="${clienteCorregir.ventasMostrador eq 0}">
+										<div class="checkbox">
+										    <label>
+									     		<strong>Ventas Mostrador</strong> <input type="checkbox" id="ventasMostrador" name="ventasMostrador" value="${clienteCorregir.ventasMostrador}"/> 
+										    </label>
+									    </div>
+							    	</c:when>
+							    	<c:when test="${clienteCorregir.ventasMostrador eq 1}">
+							    		<div class="checkbox">
+								    		<label>
+								    			<strong>Ventas Mostrador</strong> <input type="checkbox" id="ventasMostrador" name="ventasMostrador" value="${clienteCorregir.ventasMostrador}" checked="checked"/>
+											</label>
+										</div>
+							    	</c:when>
+							    </c:choose>
+					  	</div>
+    					<div class="col-md-4">
+    						<div class="form-group">
+    							<c:choose >
+    								<c:when test="${clienteCorregir.tipoPersona.id eq 1}">
+										<input type="hidden" id="tipoPersona" name="tipoPersona.id" value="${clienteCorregir.tipoPersona.id}"/>
+	    								<label class="checkbox-inline">
+	    									<strong>Persona Fisica:</strong> <input type="radio" id="personaFisica" name="personaFisica" checked="checked">
+										</label>
+										<label class="checkbox-inline">
+										  	<strong>Persona Moral:</strong> <input type="radio" id="personaMoral" name="personaMoral">
+										</label>
+    								</c:when>
+	    							<c:otherwise>
+	    								<input type="hidden" id="tipoPersona" name="tipoPersona.id" value="${clienteCorregir.tipoPersona.id}"/>
+	    								<label class="checkbox-inline">
+	    									Persona Fisica: <input type="radio" id="personaFisica" name="personaFisica">
+										</label>
+										<label class="checkbox-inline">
+										  	Persona Moral: <input type="radio" id="personaMoral" name="personaMoral" checked="checked">
+										</label>
+	    							</c:otherwise>
+    							</c:choose>
+    						</div>
+    					</div>
+					</div>
 					<div class="form-group">
 						<form:hidden path="id" id="idCliente"/>
 						<label class="control-label col-lg-1">RFC: </label>
@@ -49,7 +93,7 @@
 						<div class="col-lg-6">
 							<form:input path="nombre" id="nombre" cssClass="form-control input-sm validate[required]"/>
 						</div>
-					</div>
+					</div>					
 					<p class="text-center">
 						<button id="agregarCorregir" type="button" class="btn btn-xs btn-warning">Agregar Dirección <span class="glyphicon glyphicon-plus"></span> </button>
 					</p>
@@ -82,10 +126,8 @@
 													<form:hidden path="domicilios[${theCount.index}].estado.pais.id" id="paisOculto"/>
 												  	<select class="form-control-xsm validate[required]" id="pais">
 												  		<option value="">- Seleccione una opción -</option>
-												  		<c:forEach items="${listaPaises}" var="pais">
-												    		<option value="${pais.id}" ${domicilio.estado.pais.id eq pais.id ? 'selected' : ''}>
-												    			${pais.nombre}</option>
-												  		</c:forEach>
+												    	<option value="${domicilio.estado.pais.id}" selected>
+												    		${domicilio.estado.pais.nombre}</option>
 			  										</select>
 												</td>
 												<td width="100px">
@@ -118,10 +160,9 @@
 												<td width="100px">
 												  	<select class="form-control-xsm validate[required]" id="pais" name="">
 												  		<option value="">- Seleccione una opción -</option>
-												  		<c:forEach items="${listaPaises}" var="pais">
-												    		<option value="${pais.id}">${pais.nombre}</option>
-												  		</c:forEach>
-															</select>
+												    	<option value="${domicilio.estado.pais.id}" selected>
+												    		${domicilio.estado.pais.nombre}</option>
+												    </select>
 												</td>
 												<td width="100px">
 													<input type="hidden" name="domicilios[0].estado.id" id="estadoOculto"/>

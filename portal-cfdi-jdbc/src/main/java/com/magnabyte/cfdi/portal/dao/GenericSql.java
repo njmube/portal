@@ -22,6 +22,7 @@ public class GenericSql {
 	public static final String AS = " AS ";
 	public static final String ON = " ON ";
 	public static final String EQ = " = ";
+	public static final String DIF = " != ";
 	public static final String TAB = "	";
 	public static final String EOL = "\n";
 	public static final String EOL_ = ",\n";

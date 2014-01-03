@@ -111,7 +111,7 @@ public class DocumentoController {
 	@RequestMapping(value = {"/documentoXml", "/portal/cfdi/documentoXml"})
 	public void documentoXml(@ModelAttribute Documento documento,
 			HttpServletResponse response) {
-		try {
+		try {			
 			String filename = documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".xml";
 			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
 			OutputStream out = response.getOutputStream();

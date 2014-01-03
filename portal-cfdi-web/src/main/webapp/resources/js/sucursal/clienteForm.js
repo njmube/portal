@@ -46,7 +46,8 @@ $(document).ready(function() {
 	});
 	
 	$("#agregar").click(function() {
-		var opPais = $("#pais").html();
+		var opPais = "<option value=" +$("#pais option:selected").val()+ ">" 
+			+ $("#pais option:selected").text() + "</option>" ;
 		var opEstado = $("#estado").html();	
 		
 		if($("#clienteForm").validationEngine('validate')) {
@@ -136,6 +137,7 @@ $("#agregarCorregir").click(function() {
 	});
 	
 	$("#personaFisica").click(function() {
+		$("input:hidden[id=tipoPersona]").val("1");
 		if($("#personaMoral").is(":checked")) {
 			$("#rfc").removeClass("validate[required, custom[rfcMoral]]");
 			$("#personaMoral").prop('checked', false);
@@ -144,11 +146,17 @@ $("#agregarCorregir").click(function() {
 	});
 	
 	$("#personaMoral").click(function() {
-		if($("#personaFisica").is(":checked")) {
+		$("input:hidden[id=tipoPersona]").val("2");
+		if($("#personaFisica").is(":checked")) {			
 			$("#rfc").removeClass("validate[required, custom[rfcFisica]]");
 			$("#personaFisica").prop('checked', false);
 			$("#rfc").addClass("validate[required, custom[rfcMoral]]");
-			$("#clienteForm").validate().element("#rfc");
+			var formName = $(this).closest("form").attr('id');
+			if(formName === 'clienteForm') {
+				$("#clienteForm").validate().element("#rfc");				
+			} else {
+				$("#clienteCorregirForm").validate().element("#rfc");
+			}
 		}
 	});
 	
@@ -158,6 +166,16 @@ $("#agregarCorregir").click(function() {
 			$("#rfc").attr('readonly', true);
 		} else {
 			$("#rfc").attr('readonly', false);
+		}
+	});
+	
+	$("#ventasMostrador").change(function() {
+		if($(this).is(":checked")) {
+			$(this).val("1");
+			$("#rfc").val("XAXX010101000");
+		} else {
+			$(this).val("0");
+			$("#rfc").val("");
 		}
 	});
 	

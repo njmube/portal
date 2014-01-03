@@ -28,16 +28,22 @@
 				</sec:authorize>
 				<form:form id="clienteForm" action="${altaUrl}" method="POST" modelAttribute="cliente" cssClass="form-horizontal" role="form">
 					<div class="row">
-    					<div class="col-md-4 col-md-offset-4">
+						<div class="col-md-offset-1 col-md-3">
+							<div class="checkbox">
+							    <label>
+							     <strong>Ventas Mostrador</strong> <input type="checkbox" id="ventasMostrador" name="ventasMostrador" value="0"/> 
+							    </label>
+						    </div>
+					  	</div>
+    					<div class="col-md-4">
     						<div class="form-group">
-								<label class="control-label col-lg-4">P.Fisica: </label>
-								<div class="col-lg-2">
-									<input type="radio" id="personaFisica" name="personaFisica" checked="checked">
-								</div>
-								<label class="control-label col-lg-4">P.Moral: </label>
-								<div class="col-lg-2">
-									<input type="radio" id="personaMoral" name="personaMoral">
-								</div>
+								<input type="hidden" id="tipoPersona" name="tipoPersona.id" value="${clienteCorregir.tipoPersona.id}"/>
+   								<label class="checkbox-inline">
+   									<strong>Persona Fisica:</strong> <input type="radio" id="personaFisica" name="personaFisica" checked="checked">
+								</label>
+								<label class="checkbox-inline">
+								  	<strong>Persona Moral:</strong> <input type="radio" id="personaMoral" name="personaMoral">
+								</label>
     						</div>
     					</div>
 					</div>
@@ -46,12 +52,11 @@
 						<div class="col-lg-2">
 							<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfcFisica]]"/>
 						</div>
-						
 						<label class="control-label col-lg-2">* Nombre: </label>
 						<div class="col-lg-6">
 							<form:input path="nombre" id="nombre" cssClass="form-control input-sm validate[required]"/>
 						</div>
-					</div>
+					</div>					
 					<p class="text-center">
 						<button id="agregar" type="button" class="btn btn-xs btn-warning">Agregar Dirección <span class="glyphicon glyphicon-plus"></span> </button>
 					</p>
