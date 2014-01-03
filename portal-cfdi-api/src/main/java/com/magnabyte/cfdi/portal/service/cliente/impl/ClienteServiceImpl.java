@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.magnabyte.cfdi.portal.dao.cliente.ClienteDao;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
+import com.magnabyte.cfdi.portal.model.cliente.comparator.ComparadorNombre;
+import com.magnabyte.cfdi.portal.model.cliente.comparator.ComparadorRfc;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
@@ -25,6 +27,12 @@ public class ClienteServiceImpl implements ClienteService {
 	
 	@Autowired
 	private DomicilioClienteService domicilioClienteService;
+	
+	@Autowired
+	private ComparadorRfc comparadorRfc;
+	
+	@Autowired
+	private ComparadorNombre comparadorNombre;
 	
 	@Transactional(readOnly = true)
 	@Override
@@ -81,12 +89,14 @@ public class ClienteServiceImpl implements ClienteService {
 	@Override
 	public void save(Cliente cliente) {
 		if(cliente != null) {
-			clienteDao.save(cliente);
-			if(cliente.getDomicilios() != null && !cliente.getDomicilios().isEmpty()) {
-				domicilioClienteService.save(cliente);
-			} else {
-				logger.error("La lista de direcciones no puede estar vacia.");
-				throw new PortalException("La lista de direcciones no puede estar vacia.");
+			if(!exist(cliente)) {				
+				clienteDao.save(cliente);
+				if(cliente.getDomicilios() != null && !cliente.getDomicilios().isEmpty()) {
+					domicilioClienteService.save(cliente);
+				} else {
+					logger.error("La lista de direcciones no puede estar vacia.");
+					throw new PortalException("La lista de direcciones no puede estar vacia.");
+				}
 			}
 		} else {
 			logger.error("El cliente no puede ser nulo.");
@@ -141,21 +151,19 @@ public class ClienteServiceImpl implements ClienteService {
 
 	@Override
 	public boolean exist(Cliente cliente) {
-		Cliente clienteBD = readClientesByNameRfc(cliente); 
+		Cliente clienteBD = readClientesByNameRfc(cliente);
+		
 		if(clienteBD != null) {
 			if(clienteBD.equals(cliente)) {
-//				DomicilioCliente domicilio = cliente.getDomicilios().get(0);
-//				if(domicilio != null) {
-//					for(DomicilioCliente domicilioBD : clienteBD.getDomicilios()) {
-//						return comparaDirecciones(domicilio, domicilioBD);
-//					}
-//				}
-//				return false;
 				return true;
 			}
 		}
 		return false;
 	}
+	
+//	private boolean existRfc(Cliente cliente) {
+//		
+//	}
 
 	@Override
 	public boolean comparaDirecciones(DomicilioCliente domicilio,
