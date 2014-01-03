@@ -1,6 +1,7 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="display" uri="http://displaytag.sf.net"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <c:if test="${!emptyList}">
 	<c:choose>
 		<c:when test="${not empty documentos}">
@@ -9,13 +10,14 @@
 					class="table table-hover table-striped table-condensed"
 					requestURI="">
 					<display:column title="#" property="id" headerClass="text-primary"></display:column>
+					<display:column title="Tipo" property="tipoDocumento" headerClass="text-primary" />
 					<display:column title="Serie" property="comprobante.serie" headerClass="text-primary"></display:column>
 					<display:column title="Folio" property="comprobante.folio" headerClass="text-primary" />
 					<display:column title="PDF" headerClass="text-primary text-center" class="text-center">
-						<a href="<c:url value="/documentoPdf/${documento.id}"/>" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-download-alt"></span></a>
+						<a href="<c:url value="/documentoPdf"/>" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-download-alt"></span></a>
 					</display:column>
 					<display:column title="XML" headerClass="text-primary text-center" class="text-center">
-						<a href="<c:url value="/documentoXml/${documento.id}"/>" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-download-alt"></span></a>
+						<a href="<c:url value="/documentoXml"/>" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-download-alt"></span></a>
 					</display:column>
 				</display:table>
 			</div>

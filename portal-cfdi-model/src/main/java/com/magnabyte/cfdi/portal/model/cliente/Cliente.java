@@ -7,6 +7,8 @@ import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.magnabyte.cfdi.portal.model.cliente.enumeration.TipoPersona;
+
 /**
  * Clase que representa un cliente
  * 
@@ -25,6 +27,8 @@ public class Cliente {
 	@NotEmpty
 	@Valid
 	private List<DomicilioCliente> domicilios;
+	private TipoPersona tipoPersona;
+	private Integer ventasMostrador;
 	
 	/**
 	 * Constructos por default
@@ -63,6 +67,22 @@ public class Cliente {
 
 	public void setDomicilios(List<DomicilioCliente> domicilios) {
 		this.domicilios = domicilios;
+	}
+
+	public TipoPersona getTipoPersona() {
+		return tipoPersona;
+	}
+
+	public void setTipoPersona(TipoPersona tipoCliente) {
+		this.tipoPersona = tipoCliente;
+	}
+
+	public Integer getVentasMostrador() {
+		return ventasMostrador;
+	}
+
+	public void setVentasMostrador(Integer ventasMostrador) {
+		this.ventasMostrador = ventasMostrador;
 	}
 
 	@Override

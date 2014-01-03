@@ -17,6 +17,7 @@ import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
 import com.magnabyte.cfdi.portal.dao.cliente.ClienteDao;
 import com.magnabyte.cfdi.portal.dao.cliente.sql.ClienteSql;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
+import com.magnabyte.cfdi.portal.model.cliente.enumeration.TipoPersona;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
 @Repository("clienteDao")
@@ -82,6 +83,8 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 		getJdbcTemplate().update(ClienteSql.UPDATE_CLIENTE, new Object[] {
 			cliente.getNombre(),
 			cliente.getRfc(),
+			cliente.getTipoPersona().getId(),
+			cliente.getVentasMostrador(),
 			cliente.getId()
 		});
 	}
@@ -90,6 +93,8 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue(ClienteSql.NOMBRE, cliente.getNombre());
 		params.addValue(ClienteSql.RFC, cliente.getRfc());
+		params.addValue(ClienteSql.TIPO, cliente.getTipoPersona().getId());
+		params.addValue(ClienteSql.VENTAS_MOSTRADOR, cliente.getVentasMostrador());
 
 		return params;
 	}
@@ -99,9 +104,19 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 		@Override
 		public Cliente mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Cliente cliente = new Cliente();
+			TipoPersona tipoPersona = new TipoPersona();
+			
 			cliente.setId(rs.getInt(ClienteSql.ID_CLIENTE));
 			cliente.setRfc(rs.getString(ClienteSql.RFC));
 			cliente.setNombre(rs.getString(ClienteSql.NOMBRE));
+			if(rs.getInt(ClienteSql.TIPO) == 1) {
+				tipoPersona.setId(TipoPersona.PERSONA_FISICA);				
+				cliente.setTipoPersona(tipoPersona);
+			} else if(rs.getInt(ClienteSql.TIPO) == 2) {
+				tipoPersona.setId(TipoPersona.PERSONA_FISICA);				
+				cliente.setTipoPersona(tipoPersona);
+			}
+			cliente.setVentasMostrador(rs.getInt(ClienteSql.VENTAS_MOSTRADOR));
 			return cliente;
 		}
 	};

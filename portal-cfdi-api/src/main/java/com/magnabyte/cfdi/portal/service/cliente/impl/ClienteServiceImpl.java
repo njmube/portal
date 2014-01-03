@@ -169,10 +169,4 @@ public class ClienteServiceImpl implements ClienteService {
 	public List<Cliente> getAll() {		
 		return clienteDao.getAll();
 	}
-
-	@Override
-	public Cliente findClientByRfc(Cliente cliente) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

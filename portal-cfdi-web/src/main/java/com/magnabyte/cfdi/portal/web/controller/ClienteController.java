@@ -110,8 +110,9 @@ public class ClienteController {
 	@RequestMapping("/clienteCorregir/{id}")
 	public String corregirDatos(@PathVariable Integer id, ModelMap model) {
 		logger.debug("confirmarDatos page");
-		model.put("clienteCorregir", clienteService.read(ClienteFactory.newInstance(id)));
-		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
+		Cliente cliente = clienteService.read(ClienteFactory.newInstance(id));
+		model.put("clienteCorregir", cliente);
+//		model.put("listaPaises", cliente.getDomicilios().get(0).getEstado().getPais());
 		model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
 		return "sucursal/clienteCorregir";
 	}

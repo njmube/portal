@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.magnabyte.cfdi.portal.dao.cliente.sql.ClienteSql;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
@@ -30,12 +31,12 @@ public class SqlGenericTest {
 
 	@Test
 	public void qryTest() {
-		String qryString = DocumentoSql.READ_DOCUMENTO_RUTA;
+		String qryString = ClienteSql.GET_ALL;
 		logger.info(qryString);
 		Assert.assertNotNull(qryString);
 	}
 	
-	@Test
+//	@Test
 	public void daoTest() {
 		Cliente cliente = new Cliente();
 		cliente.setRfc("XEXX010101000");

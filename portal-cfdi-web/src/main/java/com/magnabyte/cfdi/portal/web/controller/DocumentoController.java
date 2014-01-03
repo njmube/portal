@@ -108,10 +108,10 @@ public class DocumentoController {
 		return "reporte";
 	}
 
-	@RequestMapping("/documentoXml")
-	public void documentoXml(@ModelAttribute Documento documento,
+	@RequestMapping("/documentoXml/{doc}")
+	public void documentoXml(Documento documento,
 			HttpServletResponse response) {
-		try {
+		try {			
 			String filename = documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".xml";
 			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
 			OutputStream out = response.getOutputStream();
