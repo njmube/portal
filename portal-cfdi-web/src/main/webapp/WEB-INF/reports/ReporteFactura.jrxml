@@ -628,7 +628,7 @@ $F{emisor.expedidoEn.pais}+
 			</frame>
 			<image>
 				<reportElement x="1" y="2" width="195" height="63" uuid="42d8fe3c-d2c8-498e-a62f-ff12b4e49f61"/>
-				<imageExpression><![CDATA[$P{PATH_IMAGES} + "//modatelas_logo.jpg"]]></imageExpression>
+				<imageExpression><![CDATA[$P{PATH_IMAGES} + "//logoModatelasHD.jpg"]]></imageExpression>
 			</image>
 			<textField>
 				<reportElement x="1" y="181" width="281" height="12" uuid="3e478ff0-d6cf-445e-bf15-c75eef99821f"/>
