@@ -30,6 +30,7 @@ import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
+import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
@@ -56,6 +57,9 @@ public class DocumentoController {
 	@Autowired
 	private CertificadoDao certificadoDao;
 	
+	@Autowired
+	private TicketService ticketService;
+	
 	@RequestMapping(value = {"/generarDocumento", "/portal/cfdi/generarDocumento"}, method = RequestMethod.POST)
 	public String generarDocumento(@ModelAttribute Documento documento,
 			ModelMap model, HttpServletRequest request) {
@@ -66,6 +70,9 @@ public class DocumentoController {
 			if (documentoWebService.timbrarDocumento(documento, request)) {
 				documentoService.insertDocumentoCfdi(documento);
 				documentoService.insertAcusePendiente(documento);
+				if(documento instanceof DocumentoSucursal) {
+					ticketService.updateEstadoFacturado((DocumentoSucursal) documento);
+				}
 				model.put("documento", documento);
 			}
 		}

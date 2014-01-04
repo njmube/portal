@@ -28,6 +28,7 @@ import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
+import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 
@@ -50,7 +51,20 @@ public class TicketServiceImpl implements TicketService {
 	@Override
 	public void save(DocumentoSucursal documento) {
 		if(documento.getTicket() != null) {
+			documento.getTicket().setTipoEstadoTicket(TipoEstadoTicket.GUARDADO);
 			ticketDao.save(documento);
+		} else {
+			logger.debug("El Ticket no puede ser nulo.");
+			throw new PortalException("El Ticket no puede ser nulo.");
+		}
+	}
+	
+	@Transactional
+	@Override
+	public void updateEstadoFacturado(DocumentoSucursal documento) {
+		if(documento.getTicket() != null) {
+			documento.getTicket().setTipoEstadoTicket(TipoEstadoTicket.FACTURADO);
+			ticketDao.updateEstadoFacturado(documento);
 		} else {
 			logger.debug("El Ticket no puede ser nulo.");
 			throw new PortalException("El Ticket no puede ser nulo.");
@@ -119,7 +133,7 @@ public class TicketServiceImpl implements TicketService {
 	@Transactional(readOnly = true)
 	@Override
 	public boolean ticketProcesado(Ticket ticket, Establecimiento establecimiento) {
-		Ticket ticketDB = ticketDao.read(ticket, establecimiento);
+		Ticket ticketDB = ticketDao.readFacturado(ticket, establecimiento);
 		return ticketDB != null ? true : false;
 	}
 	

@@ -52,8 +52,8 @@ public class ClienteSql extends GenericSql {
 		qryBuilder.append(PARENTESIS_FIN).append(AS).append(NOMBRE).append(EOL_);
 		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(RFC);
 		qryBuilder.append(PARENTESIS_FIN).append(AS).append(RFC).append(EOL_);
-		qryBuilder.append(TAB).append(TIPO).append(EOL_);
-		qryBuilder.append(TAB).append(VENTAS_MOSTRADOR).append(EOL);
+		qryBuilder.append(TAB).append(TIPO).append(EOL);
+//		qryBuilder.append(TAB).append(VENTAS_MOSTRADOR).append(EOL);
 		qryBuilder.append(FROM).append(EOL);
 		qryBuilder.append(TAB).append(TABLE_NAME).append(EOL);
 		qryBuilder.append(WHERE).append(EOL).append(TAB);

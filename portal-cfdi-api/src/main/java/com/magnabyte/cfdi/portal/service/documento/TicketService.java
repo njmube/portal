@@ -13,4 +13,6 @@ public interface TicketService {
 	boolean ticketProcesado(Ticket ticket, Establecimiento establecimiento);
 
 	String formatTicketClave(Ticket ticket);
+
+	void updateEstadoFacturado(DocumentoSucursal documento);
 }

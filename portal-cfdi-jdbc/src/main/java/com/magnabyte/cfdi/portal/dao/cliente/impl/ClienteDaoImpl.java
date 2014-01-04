@@ -116,7 +116,7 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 				tipoPersona.setId(TipoPersona.PERSONA_FISICA);				
 				cliente.setTipoPersona(tipoPersona);
 			}
-			cliente.setVentasMostrador(rs.getInt(ClienteSql.VENTAS_MOSTRADOR));
+//			cliente.setVentasMostrador(rs.getInt(ClienteSql.VENTAS_MOSTRADOR));
 			return cliente;
 		}
 	};

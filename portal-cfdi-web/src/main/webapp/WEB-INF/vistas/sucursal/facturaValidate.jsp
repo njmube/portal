@@ -117,13 +117,13 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="localidad" class="col-lg-2 control-label"><small>Ciudad: </small></label>
-								<div class="col-lg-4">
-									<input id="localidad" class="form-control input-sm" value="${comprobante.receptor.domicilio.localidad}" readonly="readonly"/>
-								</div>
 								<label for="estado" class="col-lg-2 control-label"><small>Estado: </small></label>
 								<div class="col-lg-4">
 									<input id="estado" class="form-control input-sm" value="${comprobante.receptor.domicilio.estado}" readonly="readonly"/>
+								</div>
+								<label for="pais" class="col-lg-2 control-label"><small>País: </small></label>
+								<div class="col-lg-4">
+									<input id="pais" class="form-control input-sm" value="${comprobante.receptor.domicilio.pais}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
@@ -216,8 +216,8 @@
 			</div>
 			<p class="text-center">
 				<button id="generaFactura" type="button" class="btn btn-primary btn-lg"><small>Generar ${tipoComprobante}</small> <span class="glyphicon glyphicon-list-alt"></span></button>
+				<a href="<c:url value="/buscaRfc"/>" class="btn btn-warning btn-lg"><small>Regresar</small> <span class="glyphicon glyphicon-arrow-left"></span></a>
 				<a id="cancel" href="<c:url value="/buscaTicket" />" class="btn btn-danger btn-lg"><small>Cancelar</small> <span class="glyphicon glyphicon-remove"></span></a>
-				<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger btn-lg"><small>Regresar</small> <span class="glyphicon glyphicon-step-backward"></span></a>
 			</p>
 		</div>
 	</div>

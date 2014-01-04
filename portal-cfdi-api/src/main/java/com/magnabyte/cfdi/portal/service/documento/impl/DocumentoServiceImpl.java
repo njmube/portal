@@ -117,9 +117,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public boolean sellarComprobante(Comprobante comprobante) {
 		logger.debug("en sellar Documento");
-		//QUITAR
+		//FIXME QUITAR
 		comprobante.getEmisor().setRfc("AAA010101AAA");
-		//
 		String cadena = obtenerCadena(comprobante);
 		String sello = obtenerSelloDigital(cadena);
 		logger.debug("SELLO: {} y CADENA: {}", sello, cadena);
@@ -127,7 +126,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			comprobante.setSello(sello);
 			return true;
 		}
-		//xml pendiente
 		return false;
 	}
 
@@ -148,17 +146,21 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			
 			return signature.verify(Base64.decode(sello));
 		} catch (CertificateException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al obtener la fecha del ticket: ", e);
+			throw new PortalException("Ocurrió un error al obtener la fecha del ticket: ", e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al validar el Sello Digital, no se pudo cargar el certificado.", e);
+			throw new PortalException("Ocurrió un error al validar el Sello Digital, no se pudo cargar el certificado.", e);
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al validar el Sello Digital.", e);
+			throw new PortalException("Ocurrió un error al validar el Sello Digital.", e);
 		} catch (InvalidKeyException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al validar el Sello Digital, el certificado es invalido", e);
+			throw new PortalException("Ocurrió un error al validar el Sello Digital, el certificado es invalido", e);
 		} catch (SignatureException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al validar el Sello Digital, el certificado es invalido", e);
+			throw new PortalException("Ocurrió un error al validar el Sello Digital, el certificado es invalido", e);
 		}
-		return false;
 	}
 
 	private String obtenerSelloDigital(String cadena) {
@@ -175,11 +177,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			logger.debug("regresando sello");
 			return new String(Base64.encode(firma));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al obtener el Sello Digital, no se pudo cargar la llave del certificado.", e);
+			throw new PortalException("Ocurrió un error al obtener el Sello Digital, no se pudo cargar la llave del certificado.", e);
 		} catch (GeneralSecurityException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al obtener el Sello Digital.", e);
+			throw new PortalException("Ocurrió un error al obtener el Sello Digital.", e);
 		}
-		return null;
 	}
 
 	private String obtenerCadena(Comprobante comprobante) {
@@ -195,13 +198,17 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			logger.debug("regresando Cadena");
 			return writer.toString();
 		} catch (TransformerConfigurationException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al obtener la Cadena Original.", e);
+			throw new PortalException("Ocurrió un error al obtener la Cadena Original.", e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al obtener la Cadena Original, "
+					+ "no se pudo recuperar el xslt para generar la cadena original", e);
+			throw new PortalException("Ocurrió un error al obtener la Cadena Original, "
+					+ "no se pudo recuperar el xslt para generar la cadena original", e);
 		} catch (TransformerException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al obtener la Cadena Original.", e);
+			throw new PortalException("Ocurrió un error al obtener la Cadena Original.", e);
 		}
-		return null;
 	}
 	
 	@Override
@@ -373,7 +380,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 					DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED); 
 			comprobante.setFecha(fechaComprobante);
 		} catch (DatatypeConfigurationException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al asignar la fecha del Documento.", e);
+			throw new PortalException("Ocurrió un error al asignar la fecha del Documento.", e);
 		}
 	}
 
