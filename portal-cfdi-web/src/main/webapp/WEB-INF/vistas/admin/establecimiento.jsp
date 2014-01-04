@@ -4,46 +4,50 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="display" uri="http://displaytag.sf.net"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Catalogo Establecimiento</title>
+<title>Formulario de alta establecimiento</title>
 </head>
 <body>
 	<div class="container main-content">
 		<div class="white-panel row">
-			<h2>Catalogo Establecimientos</h2>
-			<blockquote>
-				<p class="text-info">Ingresa los datos del Establecimiento.</p>
-			</blockquote>
+			<h2>
+				Facturación Electrónica - <span class="text-info">ADMINISTRADOR</span> <span class="label label-primary">@</span>
+			</h2>
 				<hr>
-				<form:form id="establecimientoForm" action="" method="post"
-					modelAttribute="establecimiento" cssClass="form-horizontal"
-					role="form">
-					<div class="form-group">
-						<label for="txtClave" class="col-lg-5 control-label">Clave: </label>
-						<div class="col-lg-2">
-							<form:input path="clave" cssClass="form-control input-sm validate[required]" />
-						</div>
+			<div class="col-md-offset-1 col-md-10">
+				<div class="panel panel-danger">
+					<div class="panel-heading">
+						<strong>Establecimientos registrados</strong>
+						<a href="<c:url value="/catalogoEstablecimiento"/>" class="pull-right btn btn-primary btn-xs">
+							Recargar <span class="glyphicon glyphicon-refresh"></span>
+						</a>
 					</div>
-					<div class="form-group">
-						<label for="txtNombre" class="col-lg-5 control-label">Nombre:</label>
-						<div class="col-lg-2">
-							<form:input path="nombre" cssClass="form-control input-sm validate[required]" />
-						</div>
+					<div class="table-responsive">
+						<c:set var="nombre" value="Establecimiento <span class='glyphicon glyphicon-sort text-warning'></span>"/>
+						<c:set var="clave" value="Clave <span class='glyphicon glyphicon-sort text-warning'></span>"/>
+						<c:set var="password" value="Password <span class='glyphicon glyphicon-sort text-warning'></span>"/>
+						<display:table htmlId="documents" id="document" name="${establecimientos}" 
+ 							class="table table-hover table-striped table-condensed"
+ 							requestURI="/facturaCorp"> 
+ 							<display:column title="#" headerClass="text-primary">${document_rowNum}</display:column>
+ 							<display:column title="${nombre}" property="nombre" headerClass="text-primary"></display:column>
+ 							<display:column title="${clave}" property="clave" headerClass="text-primary"/>
+ 							<display:column title="${password}" property="password" headerClass="text-primary"/>
+ 							<display:column title="Seleccionar" headerClass="text-primary text-center" class="text-center">
+ 								<a href="<c:url value="/actualizarEstablecimiento/${document.id}"/>" class="btn btn-xs btn-success">
+ 								<span class="glyphicon glyphicon-print"></span></a>
+ 							</display:column>
+ 						</display:table>
 					</div>
-					<div class="form-group">
-						<label for="txtPassword" class="col-lg-5 control-label">Password:</label>
-						<div class="col-lg-2">
-							<form:input path="password" cssClass="form-control input-sm validate[required]" />
-						</div>
-					</div>
-					<p class="form-grup text-center" >
-						<a class="btn btn-primary" href="<c:url value="/guardarEstablecimiento" />"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</a>
-					</p>
-				</form:form>
+				</div>
+				</div>
 		</div>
 	</div>
-</body>
+	<script src="<c:url value="/resources/js/corporativo/corporativo.js" />"></script>
+</body> 	
 </html>

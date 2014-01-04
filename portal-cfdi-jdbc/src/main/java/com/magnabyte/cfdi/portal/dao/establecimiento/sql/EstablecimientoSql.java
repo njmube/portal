@@ -39,6 +39,7 @@ public class EstablecimientoSql extends GenericSql {
 	public static final String FIND_BY_CLAVE;
 	public static final String READ_BY_CLAVE;
 	public static final String READ_LUGAR_EXP;
+	public static final String READ_ALL;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -164,5 +165,12 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(WHERE).append(EOL).append(ALIAS_TABLE).append(DOT).append(ID_ESTABLECIMIENTO).append(SET_PARAM);
 		
 		READ_LUGAR_EXP = qryBuilder.toString();
+		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append(SELECT).append(EOL).append(TAB);
+		qryBuilder.append(ALL).append(FROM).append(EOL);
+		qryBuilder.append(TAB).append(TABLE_NAME);
+		READ_ALL = qryBuilder.toString();
+		
 	}	
 }
