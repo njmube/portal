@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.dao.documento;
 
 import java.util.List;
 
+import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 
 public interface DocumentoDao {
@@ -15,6 +16,10 @@ public interface DocumentoDao {
 	void insertAcusePendiente(Documento documento);
 
 	List<Documento> obtenerAcusesPendientes();
+	
+	List<Documento> getNombreDocumento(List<Integer> idDocumentos);
+	
+	List<Documento> getDocumentoByCliente(Cliente cliente);
 
 	void deleteFromAcusePendiente(Documento documento);
 }

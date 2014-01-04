@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import mx.gob.sat.cfd._3.Comprobante;
 import net.sf.jasperreports.engine.JRParameter;
 
+import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.magnabyte.cfdi.portal.dao.certificado.CertificadoDao;
+import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
@@ -54,7 +56,7 @@ public class DocumentoController {
 	@Autowired
 	private CertificadoDao certificadoDao;
 	
-	@RequestMapping(value = "/generarDocumento", method = RequestMethod.POST)
+	@RequestMapping(value = {"/generarDocumento", "/portal/cfdi/generarDocumento"}, method = RequestMethod.POST)
 	public String generarDocumento(@ModelAttribute Documento documento,
 			ModelMap model, HttpServletRequest request) {
 		logger.debug("generando documento");
@@ -68,16 +70,16 @@ public class DocumentoController {
 			}
 		}
 
-		return "redirect:/imprimirFactura";
+		return "redirect:/portal/cfdi/imprimirFactura";
 	}
 
-	@RequestMapping("/imprimirFactura")
+	@RequestMapping(value = {"/imprimirFactura", "/portal/cfdi/imprimirFactura"})
 	public String imprimirFactura() {
 		logger.debug("Factura generada...");
 		return "documento/documentoSuccess";
 	}
 
-	@RequestMapping("/reporte")
+	@RequestMapping(value = {"/reporte", "/portal/cfdi/reporte"})
 	public String reporte(@ModelAttribute Documento documento, ModelMap model,
 			HttpServletRequest request) {
 		logger.debug("Creando reporte");
@@ -106,11 +108,12 @@ public class DocumentoController {
 		return "reporte";
 	}
 
-	@RequestMapping("/documentoXml")
+	@RequestMapping(value = {"/documentoXml", "/portal/cfdi/documentoXml"})
 	public void documentoXml(@ModelAttribute Documento documento,
 			HttpServletResponse response) {
 		try {
-			response.setHeader("Content-Disposition", "attachment; filename=somefile.xml");
+			String filename = documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".xml";
+			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
 			OutputStream out = response.getOutputStream();
 			out.write(documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
 			out.flush();
@@ -118,5 +121,24 @@ public class DocumentoController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@RequestMapping("/buscarDocs")	
+	public String buscaDocumentos(ModelMap model) {
+		model.put("cliente", new Cliente());
+		model.put("emptyList", true);
+		return "documento/buscaDocumentos";
+	}
+	
+	@RequestMapping("listaDocumentos")
+	public String listaDocumentos(ModelMap model, @ModelAttribute Cliente cliente) {
+		Log.debug("Opteniendo la lista de documentos");
+		List<Documento> documentos = documentoService.getDocumentos(cliente);
+		if(documentos != null && !documentos.isEmpty()) {
+			model.put("emptyList", false);
+		}
+		model.put("documentos", documentos);
+		
+		return "documento/listaDocumentos";
 	}
 }

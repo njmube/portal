@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import mx.gob.sat.cfd._3.Comprobante;
 import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
@@ -21,12 +20,14 @@ import org.springframework.stereotype.Repository;
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
+import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.documento.EstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.establecimiento.RutaRepositorio;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
 @Repository("documentoDao")
@@ -154,5 +155,50 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			logger.debug("No hay acuses pendientes");
 			return null;
 		}
+	}
+
+	@Override
+	public List<Documento> getNombreDocumento(List<Integer> idDocumentos) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("idDocumentos", idDocumentos);
+		return getNamedParameterJdbcTemplate().query(DocumentoSql.READ_DOCUMENTO, map, DOCUMENTO_MAPPER);
+	}
+	
+	private static final RowMapper<Documento> DOCUMENTO_MAPPER = new RowMapper<Documento>() {
+
+		@Override
+		public Documento mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Documento documento = new Documento();
+			Comprobante comprobante = new Comprobante();
+			comprobante.setFolio(rs.getString("folio"));
+			comprobante.setSerie(rs.getString("serie"));
+			documento.setId(rs.getInt("id_documento"));
+			documento.setTipoDocumento(TipoDocumento.FACTURA);
+			documento.setComprobante(comprobante);
+			return documento;
+		}
+	};
+	
+	private static final RowMapper<Documento> DOCUMENTO_RUTA_MAPPER = new RowMapper<Documento>() {
+		@Override
+		public Documento mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Documento documento = new Documento();
+			Establecimiento establecimiento = new Establecimiento();
+			RutaRepositorio ruta = new RutaRepositorio();
+			
+			
+			ruta.setRutaRepositorio(rs.getString("ruta_repo"));
+			ruta.setRutaRepoOut(rs.getString("ruta_out"));
+			
+			establecimiento.setRutaRepositorio(ruta);			
+			documento.setEstablecimiento(establecimiento);
+			documento.setId(rs.getInt("id_documento"));
+			return documento;
+		}
+	};
+
+	@Override
+	public List<Documento> getDocumentoByCliente(Cliente cliente) {		
+		return getJdbcTemplate().query(DocumentoSql.READ_DOCUMENTO_RUTA, DOCUMENTO_RUTA_MAPPER, cliente.getRfc());
 	}
 }

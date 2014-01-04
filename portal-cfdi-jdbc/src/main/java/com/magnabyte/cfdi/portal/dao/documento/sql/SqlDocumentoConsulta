@@ -1,0 +1,5 @@
+SELECT doc.id_documento, ruta.ruta_repo, ruta.ruta_out FROM t_documento as doc
+inner join t_cliente as cte on doc.id_cliente = cte.id_cliente
+inner join t_establecimiento as estab on doc.id_establecimiento = estab.id_establecimiento
+inner join t_ruta_establecimiento as ruta on estab.id_ruta_establecimiento = ruta.id_ruta_establecimiento
+WHERE cte.rfc like 'P%';

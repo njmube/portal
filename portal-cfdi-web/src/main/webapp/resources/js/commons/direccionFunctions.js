@@ -6,7 +6,7 @@
       
       if(val !== null || val !== "") {
     	  
-    	  var url = contextPath + "/listaEstados?ajax=true";
+    	  var url = contextPath + "/portal/cfdi/listaEstados?ajax=true";
     	  $.ajax ({
     		url : url,
     		data : {pais : val},

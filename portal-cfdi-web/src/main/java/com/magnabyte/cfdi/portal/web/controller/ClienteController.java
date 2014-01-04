@@ -18,10 +18,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.factory.ClienteFactory;
-import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
-import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 
 @Controller
 @SessionAttributes({"cliente", "ticket"})
@@ -35,6 +33,18 @@ public class ClienteController {
 	@Autowired
 	private OpcionDeCatalogoService opcionDeCatalogoService;
 	
+	@RequestMapping("/portal/cfdi/buscaPorRfc")
+	public String buscaPorRfc(@ModelAttribute Cliente cliente, ModelMap model) {
+		Cliente clienteBD = clienteService.findClienteByRfc(cliente);
+		if (clienteBD != null) {
+			model.put("cliente", clienteBD);
+			return "portal/confirmarDatos";
+		} else {
+			model.put("cliente", cliente);
+			return "portal/buscaRfc";
+		}
+	}
+	
 	@RequestMapping("/listaClientes")
 	public String listaClientes(ModelMap model, @ModelAttribute Cliente cliente) {		
 		List<Cliente> clientes = clienteService.findClientesByNameRfc(cliente);
@@ -45,7 +55,7 @@ public class ClienteController {
 		return "sucursal/listaClientes";
 	}
 	
-	@RequestMapping("/clienteForm")
+	@RequestMapping(value = {"/clienteForm", "/portal/cfdi/clienteForm"})
 	public String clienteForm(ModelMap model) {
 		logger.debug("regresando forma cliente");
 		model.put("cliente", new Cliente());
@@ -74,6 +84,29 @@ public class ClienteController {
 		return "redirect:/confirmarDatos/" + cliente.getId();
 	}
 	
+	@RequestMapping(value = "/portal/cfdi/confirmarDatos/{viewError}", method = RequestMethod.POST)
+	public String confirmarDatosPortal(@Valid @ModelAttribute("clienteCorregir") Cliente cliente, BindingResult result, ModelMap model, 
+			@PathVariable String viewError) {
+		logger.debug("Confimar datos");	
+		if (result.hasErrors()) {
+			model.put("error", result.getAllErrors());
+			logger.debug(result.getAllErrors().toString());
+			if (viewError.equals("clienteForm")) {
+				return "sucursal/" + viewError;
+			}
+			return "portal/" + viewError;
+		}
+		
+		if(cliente.getId() != null) {		
+			clienteService.update(cliente);
+		} else {
+			clienteService.save(cliente);
+		}
+		model.put("cliente", cliente);
+		logger.debug("Cliente: {}", cliente.getId());		
+		return "redirect:/portal/cfdi/confirmarDatos/" + cliente.getId();
+	}
+	
 	@RequestMapping("/clienteCorregir/{id}")
 	public String corregirDatos(@PathVariable Integer id, ModelMap model) {
 		logger.debug("confirmarDatos page");
@@ -81,6 +114,15 @@ public class ClienteController {
 		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
 		model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
 		return "sucursal/clienteCorregir";
+	}
+	
+	@RequestMapping("/portal/cfdi/clienteCorregir/{id}")
+	public String corregirDatosPortal(@PathVariable Integer id, ModelMap model) {
+		logger.debug("confirmarDatos page");
+		model.put("clienteCorregir", clienteService.read(ClienteFactory.newInstance(id)));
+		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
+		model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
+		return "portal/clienteCorregir";
 	}
 	
 }

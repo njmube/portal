@@ -28,6 +28,16 @@ public class ClienteServiceImpl implements ClienteService {
 	
 	@Transactional(readOnly = true)
 	@Override
+	public Cliente findClienteByRfc(Cliente cliente) {
+		Cliente clienteBD = clienteDao.findClienteByRfc(cliente);
+		if (clienteBD != null) {
+			clienteBD.setDomicilios(domicilioClienteService.getByCliente(clienteBD));
+		}
+		return clienteBD;
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
 	public List<Cliente> findClientesByNameRfc(Cliente cliente) {
 		List<Cliente> clientes = null;
 		
@@ -159,4 +169,5 @@ public class ClienteServiceImpl implements ClienteService {
 	public List<Cliente> getAll() {		
 		return clienteDao.getAll();
 	}
+
 }

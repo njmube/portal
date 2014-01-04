@@ -243,11 +243,16 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		SimpleDateFormat sdfOrigen = new SimpleDateFormat("yyyyMMddHHmmss");
 		try {
+			
 			Date fechaTicket = sdfOrigen.parse(ticket.getTransaccion().getTransaccionHeader().getFechaHora());
 			ticket.getTransaccion().getTransaccionHeader().setFechaHora(sdf.format(fechaTicket));
 		} catch (ParseException e) {
-			logger.error("Ocurrió un error al obtener la fecha del ticket: ", e);
-			throw new PortalException("Ocurrió un error al obtener la fecha del ticket: ", e);
+			try {
+				sdf.parse(ticket.getTransaccion().getTransaccionHeader().getFechaHora());
+			} catch (ParseException e1) {
+				logger.error("Ocurrió un error al obtener la fecha del ticket: ", e);
+				throw new PortalException("Ocurrió un error al obtener la fecha del ticket: ", e);
+			}
 		} 
 	}
 
@@ -265,7 +270,13 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 
 	private Emisor getEmisorPorEstablecimiento(Establecimiento establecimiento) {
 		EmpresaEmisor empresaEmisor = emisorDao.read(establecimiento.getEmpresaEmisor());
-		empresaEmisor.getEmisor().setExpedidoEn(emisorDao.readLugarExpedicion(establecimiento));
+		TUbicacion expedidoEn = emisorDao.readLugarExpedicion(establecimiento);
+		if (expedidoEn.getNoExterior() != null && expedidoEn.getNoExterior().trim().isEmpty()) 
+			expedidoEn.setNoExterior(null);
+		if (expedidoEn.getNoInterior() != null && expedidoEn.getNoInterior().trim().isEmpty()) {
+			expedidoEn.setNoInterior(null);
+		}
+		empresaEmisor.getEmisor().setExpedidoEn(expedidoEn);
 		return empresaEmisor.getEmisor();
 	}
 	
@@ -282,16 +293,23 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			}
 		}
 		
-		tUbicacion.setCalle(domicilioCte.getCalle());
-		tUbicacion.setNoExterior(domicilioCte.getNoExterior());
-		if (!domicilioCte.getNoInterior().trim().isEmpty()) {
+		if (domicilioCte.getCalle() != null) 
+			tUbicacion.setCalle(domicilioCte.getCalle());
+		if (domicilioCte.getNoExterior() != null) 
+			tUbicacion.setNoExterior(domicilioCte.getNoExterior());
+		if (domicilioCte.getNoInterior() != null && !domicilioCte.getNoInterior().trim().isEmpty()) {
 			tUbicacion.setNoInterior(domicilioCte.getNoInterior());
 		}
-		tUbicacion.setPais(domicilioCte.getEstado().getPais().getNombre());
-		tUbicacion.setEstado(domicilioCte.getEstado().getNombre());
-		tUbicacion.setMunicipio(domicilioCte.getMunicipio());
-		tUbicacion.setColonia(domicilioCte.getColonia());
-		tUbicacion.setCodigoPostal(domicilioCte.getCodigoPostal());
+		if (domicilioCte.getEstado() != null) {
+			tUbicacion.setPais(domicilioCte.getEstado().getPais().getNombre());
+			tUbicacion.setEstado(domicilioCte.getEstado().getNombre());
+		}
+		if (domicilioCte.getMunicipio() != null) 
+			tUbicacion.setMunicipio(domicilioCte.getMunicipio());
+		if (domicilioCte.getColonia() != null) 
+			tUbicacion.setColonia(domicilioCte.getColonia());
+		if (domicilioCte.getCodigoPostal() != null) 
+			tUbicacion.setCodigoPostal(domicilioCte.getCodigoPostal());
 //		tUbicacion.setReferencia(domicilioCte.getReferencia());
 //		tUbicacion.setLocalidad(domicilioCte.getLocalidad());
 		
@@ -306,16 +324,18 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		Conceptos conceptos = new Conceptos();
 		BigDecimal subTotal = new BigDecimal(0);
 		for(Partida partida : ticket.getTransaccion().getPartidas()) {
-			Concepto concepto = new Concepto();
-			concepto.setCantidad(partida.getCantidad());
-			concepto.setDescripcion(partida.getArticulo().getDescripcion());
-			concepto.setUnidad(partida.getArticulo().getUnidad());
-			concepto.setImporte(partida.getPrecioTotal().divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
-			concepto.setValorUnitario(partida.getPrecioUnitario().divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
-			if (!partida.getArticulo().getTipoCategoria().equals("PROMOCIONES")) {
-				subTotal = subTotal.add(concepto.getImporte());
+			if (!isArticuloSinPrecio(partida.getArticulo().getId())) {
+				Concepto concepto = new Concepto();
+				concepto.setCantidad(partida.getCantidad());
+				concepto.setDescripcion(partida.getArticulo().getDescripcion());
+				concepto.setUnidad(partida.getArticulo().getUnidad());
+				concepto.setImporte(partida.getPrecioTotal().divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
+				concepto.setValorUnitario(partida.getPrecioUnitario().divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
+				if (!partida.getArticulo().getTipoCategoria().equals("PROMOCIONES")) {
+					subTotal = subTotal.add(concepto.getImporte());
+				}
+				conceptos.getConcepto().add(concepto);
 			}
-			conceptos.getConcepto().add(concepto);
 		}
 		comprobante.setConceptos(conceptos);
 		BigDecimal descuentoTotal = new BigDecimal(0);
@@ -324,17 +344,24 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 		
 		descuentoTotal = descuentoTotal.multiply(new BigDecimal(-1));
-		comprobante.setDescuento(descuentoTotal.setScale(2,BigDecimal.ROUND_HALF_UP));
+		comprobante.setDescuento(descuentoTotal.divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
 
-		subTotal = subTotal.subtract(descuentoTotal.divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
-		
-		comprobante.setSubTotal(subTotal);
+		comprobante.setSubTotal(subTotal.setScale(2, BigDecimal.ROUND_HALF_UP));
 		Impuestos impuesto = new Impuestos();
-		impuesto.setTotalImpuestosTrasladados(ticket.getTransaccion().getTransaccionTotal().getTotalVenta().subtract(subTotal));
+		impuesto.setTotalImpuestosTrasladados((comprobante.getSubTotal().subtract(comprobante.getDescuento())).multiply(IVA.subtract(new BigDecimal(1)).setScale(2, BigDecimal.ROUND_HALF_UP)));
 		comprobante.setImpuestos(impuesto);
-		comprobante.setTotal(ticket.getTransaccion().getTransaccionTotal().getTotalVenta());
+		comprobante.setTotal(comprobante.getSubTotal().subtract(comprobante.getDescuento()).add(comprobante.getImpuestos().getTotalImpuestosTrasladados()).setScale(2, BigDecimal.ROUND_UP));
 	}
 	
+	private boolean isArticuloSinPrecio(String idArticulo) {
+		String [] articuloSinPrecio = {"4032700", "4032800", "4032900"};
+		for (String articulo : articuloSinPrecio) {
+			if (idArticulo.equals(articulo))
+				return true;
+		}
+		return false;
+	}
+
 	private void createFechaDocumento(Comprobante comprobante) {
 		GregorianCalendar dateNow = new GregorianCalendar();
 		dateNow.setTime(new Date());
@@ -531,6 +558,22 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<Documento> getDocumentos(Cliente cliente) {
+		List<Documento> rutasEstab = documentoDao.getDocumentoByCliente(cliente);
+		List<Integer> idDocumentos = new ArrayList<Integer>();
+		List<Documento> documentos = null;
+		
+		if(rutasEstab != null && !rutasEstab.isEmpty()) {			
+			for(Documento ruta : rutasEstab) {
+				idDocumentos.add(ruta.getId());
+			}
+		
+			documentos = documentoDao.getNombreDocumento(idDocumentos);		
+		}
+		return documentos;
 	}
 
 }

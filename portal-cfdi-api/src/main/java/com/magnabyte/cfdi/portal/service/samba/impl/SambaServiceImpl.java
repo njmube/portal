@@ -2,11 +2,9 @@ package com.magnabyte.cfdi.portal.service.samba.impl;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -18,7 +16,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.transform.stream.StreamSource;
 
 import jcifs.Config;
 import jcifs.smb.SmbException;
@@ -36,17 +33,13 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.oxm.Unmarshaller;
-import org.springframework.oxm.XmlMappingException;
 import org.springframework.stereotype.Service;
 
 import com.magnabyte.cfdi.portal.dao.certificado.CertificadoDao;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
-import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
-import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
@@ -57,9 +50,6 @@ public class SambaServiceImpl implements SambaService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SambaServiceImpl.class);
 
-	@Autowired
-	private Unmarshaller unmarshaller;
-	
 	@Autowired
 	private CertificadoDao certificadoDao;
 	
@@ -142,58 +132,6 @@ public class SambaServiceImpl implements SambaService {
 		return documentos;
 	}
 
-	@Override
-	public boolean ticketExists(Ticket ticket, Establecimiento establecimiento) {
-		logger.debug("buscando ticket ticketExists");
-		Config.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
-		String noSucursal = establecimiento.getClave();
-		String noCaja = ticket.getTransaccion().getTransaccionHeader().getIdCaja();
-		String noTicket = ticket.getTransaccion().getTransaccionHeader().getIdTicket();
-		String fechaXml = ticket.getTransaccion().getTransaccionHeader().getFecha();
-		BigDecimal importe = ticket.getTransaccion().getTransaccionTotal().getTotalVenta();
-		String fecha = fechaXml.substring(6, 10) + fechaXml.substring(3, 5) + fechaXml.substring(0, 2);
-		String regex = noSucursal + "_" + noCaja + "_" + noTicket + "_" + fecha + "\\d\\d\\d\\d\\d\\d\\.xml";
-		String urlTicketFiles = establecimiento.getRutaRepositorio().getRutaRepositorio() 
-				+ establecimiento.getRutaRepositorio().getRutaRepoIn() + fecha + File.separator ; 
-		logger.debug("Ruta ticket {}", urlTicketFiles);
-		Pattern pattern = Pattern.compile(regex);
-		SmbFile dir = null;
-		try {
-			dir = new SmbFile(urlTicketFiles);
-			if(dir.exists()) {
-				SmbFile[] files = dir.listFiles();
-				for (SmbFile file : files) {
-					Matcher matcher = pattern.matcher(file.getName());
-					if (matcher.matches()) {
-						
-						Ticket ticketXml = (Ticket) unmarshaller.unmarshal(new StreamSource(getFileStream(urlTicketFiles, file.getName())));
-						
-						if (!ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase("SA") 
-								|| ticketXml.getTransaccion().getTransaccionTotal().getTotalVenta().compareTo(importe) != 0) {
-							return false;
-						}
-						ticket.setTransaccion(ticketXml.getTransaccion());
-						ticket.getTransaccion().getTransaccionHeader().setFecha(fechaXml);
-						return true;
-					}
-				}
-			}
-		} catch (MalformedURLException e) {
-			logger.error("La URL del archivo no es valida: {}", e);
-			throw new PortalException("La URL del archivo no es válida: "+ e.getMessage());
-		} catch (SmbException e) {
-			logger.error("Ocurrió un error al intentar recuperar el ticket: {}", e);
-			throw new PortalException("Ocurrió un error al intentar recuperar el ticket: " + e.getMessage());
-		} catch (XmlMappingException e) {
-			logger.error("Ocurrió un error al leer ticket: {}", e);
-			throw new PortalException("Ocurrió un error al leer el ticket: " + e.getMessage());
-		} catch (IOException e) {
-			logger.error("Ocurrió un error al intentar recuperar el ticket: {}", e);
-			throw new PortalException("Ocurrió un error al intentar recuperar el ticket: " + e.getMessage());
-		}
-		return false;
-	}
-	
 	@Override
 	public void moveProcessedSapFile(DocumentoCorporativo documento) {
 		logger.debug("en moveProcessedSapFile");

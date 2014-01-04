@@ -1,5 +1,8 @@
 $(document).ready(function() {
-	$('#clientes').dataTable({
+	
+	$("#documentoForm").validationEngine();
+	
+	$('#documentos').dataTable({
 		"sDom": "<'row'<'col-xs-5 col-sm-6'l><'col-xs-7 col-sm-6 text-right'f>r>t<'row'<'col-xs-3 col-sm-4 col-md-5'i><'col-xs-9 col-sm-8 col-md-7 text-right'p>>",
 		"sPaginationType" : "bootstrap",
 		"oLanguage" : {
@@ -28,17 +31,17 @@ $(document).ready(function() {
 		}
 	});
 	
-		$("#buscarCliente").click(function(){
-			var rfc = $("#rfc").val();
-			var nombre = $("#nombre").val();
-			$.ajax({
-				url: contextPath + "/listaClientes?ajax=true",
-				data: "rfc=" + rfc + "&nombre=" + nombre,
-				type: "GET",
-				success: function(response) {
-					$("#listClientesPage").html(response);
-				}
-			});
+		$("#buscarDocumento").click(function() {
+			if($("#documentoForm").validationEngine('validate')) {
+				var rfc = $("#rfc").val();
+				$.ajax({
+					url: contextPath + "/listaDocumentos?ajax=true",
+					data: "rfc=" + rfc,
+					type: "GET",
+					success: function(response) {
+						$("#listDocumentosPage").html(response);
+					}
+				});
+			}
 		});
-		
 });

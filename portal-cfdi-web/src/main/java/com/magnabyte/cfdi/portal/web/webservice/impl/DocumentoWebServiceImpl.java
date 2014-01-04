@@ -108,12 +108,13 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		WsResponseBO response = new WsResponseBO();
 		response = wsEmisionTimbrado.recuperarAcuse(user, password, documento.getTimbreFiscalDigital().getUUID());
 		
-		//FIXME
-		response.setAcuse(new byte[]{});
 		if (response.getAcuse() != null) {
 			logger.debug("llamada a samba");
 			sambaService.writeAcuseCfdiXmlFile(response.getAcuse(), documento);
 			documentoService.deleteFromAcusePendiente(documento);
+		} else {
+			logger.debug("El webservice no devolvio el acuse");
+			logger.debug(response.getMessage());
 		}
 	}
 	
@@ -131,7 +132,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			throw new PortalException("No hay servicios contratados: " + serviciosContratados.getMensaje());
 		}
 		//FIXME Comentar para produccion
-		idServicio = 5652422;
+		idServicio = 5652528;
 		//
 		return idServicio;
 	}

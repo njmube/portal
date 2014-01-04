@@ -1,5 +1,7 @@
 package com.magnabyte.test.commons;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -8,15 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.magnabyte.cfdi.portal.dao.cliente.sql.ClienteSql;
-import com.magnabyte.cfdi.portal.dao.cliente.sql.DomicilioSql;
-import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoDetalleSql;
+import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
+import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
-import com.magnabyte.cfdi.portal.dao.emisor.sql.EmisorSql;
-import com.magnabyte.cfdi.portal.dao.establecimiento.EstablecimientoDao;
-import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
-import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
-import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.cliente.Cliente;
+import com.magnabyte.cfdi.portal.model.documento.Documento;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/jdbcApplicationContext.xml" })
@@ -25,24 +23,26 @@ public class SqlGenericTest {
 	@Autowired
 	EmisorDao emisorDao;
 	
+	@Autowired
+	DocumentoDao documentoDao;
+	
 	public static final Logger logger = Logger.getLogger(SqlGenericTest.class);
 
 	@Test
 	public void qryTest() {
-		String qryString = DocumentoDetalleSql.INSERT_DETALLE_DOC;
+		String qryString = DocumentoSql.READ_DOCUMENTO_RUTA;
 		logger.info(qryString);
 		Assert.assertNotNull(qryString);
 	}
-
-//	@Test
-	public void test() {
-		EmpresaEmisor empresa = new EmpresaEmisor();
-		empresa.setId(4);
+	
+	@Test
+	public void daoTest() {
+		Cliente cliente = new Cliente();
+		cliente.setRfc("XEXX010101000");
 		
-		EmpresaEmisor empresaBD = emisorDao.read(empresa);		
-		logger.info("---------------- Empresa: " + empresa.toString());
+		List<Documento> docsDB = documentoDao.getDocumentoByCliente(cliente);
 		
-		Assert.assertEquals("MOD041014KI3", empresaBD.getEmisor().getRfc());
+		Assert.assertNotNull(docsDB);
 	}
 
 }

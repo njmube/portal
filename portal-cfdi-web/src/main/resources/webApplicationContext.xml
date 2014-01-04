@@ -44,10 +44,8 @@
 	<task:scheduler id="scheduler" pool-size="10"/>
 	
 	<task:scheduled-tasks>
-		<task:scheduled ref="documentoWebService" method="recuperarAcusesPendientes" cron="1/30 * * * * ?"/>
+		<task:scheduled ref="documentoWebService" method="recuperarAcusesPendientes" cron="3 * * * * ?"/>
 	</task:scheduled-tasks>	
-
-	<bean id="comprobanteFactory" class="mx.gob.sat.cfd._3.ObjectFactory" />
 
 	<bean id="wsServicios"
 		class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
