@@ -22,12 +22,12 @@
 			<div class="row">
 				<div class="col-md-5">
 					<div class="white-panel form-horizontal">
-						<h4 class="text-primary">Cuenta</h4>
+						<h4 class="text-primary">Sucursal</h4>
 						<fieldset>
 							<div class="form-group">
 								<label for="txtClave" class="col-lg-5 control-label">Clave:	</label>
 								<div class="col-lg-5"> 
-									<input class="form-control input-sm validate[required]" id="txtClave" value="${clave } readonly="readonly""/>
+									<form:input path="clave" cssClass="form-control input-sm validate[required]" id="txtClave" />
 								</div>
 							</div>
 							<div class="form-group">
@@ -39,13 +39,13 @@
 							<div class="form-group">
 								<label for="txtPassword" class="col-lg-5 control-label">Password:</label>
 								<div class="col-lg-5">
-									<input class="form-control input-sm validate[required]" id="txtPassword" type="password" />
+									<form:input path="password" cssClass="form-control input-sm validate[required]" id="txtPassword" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="txtPassword" class="col-lg-5 control-label">Confirmar password:</label>
 								<div class="col-lg-5">
-									<input class="form-control input-sm validate[required]" id="txtPassword" type="password" />
+									<form:input path="password" cssClass="form-control input-sm validate[required]" id="txtConfirmarPassword" />
 								</div>
 							</div>
 						</fieldset>
@@ -58,49 +58,52 @@
 							<div class="form-group">
 								<label for="txtColonia" class="col-lg-2 control-label">Colonia: </label>
 								<div class="col-lg-4"> 
-									<input  Class="form-control input-sm validate[required]" id="txtColonia" />
+									<form:input path="domicilio.colonia"  cssClass="form-control input-sm validate[required]" id="txtColonia" />
 								</div>
 								<label for="txtCalle" class="col-lg-1 control-label">Calle: </label>
 								<div class="col-lg-5"> 
-									<input  Class="form-control input-sm validate[required]" id="txtCalle" />
+									<form:input path="domicilio.calle"  cssClass="form-control input-sm validate[required]" id="txtCalle" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="txtNumeroInt" class="col-lg-2 control-label">Núm. Int. </label>
 								<div class="col-lg-2"> 
-									<input  Class="form-control input-sm validate[required]" id="txtNumeroInt" />
+									<form:input path="domicilio.noInterior"  cssClass="form-control input-sm validate[required]" id="txtNumeroInt" />
 								</div>
 								<label for="txtNumeroExt" class="col-lg-2 control-label">Núm Ext. </label>
 								<div class="col-lg-2"> 
-									<input  Class="form-control input-sm validate[required]" id="txtNumeroExt" />
+									<form:input path="domicilio.noExterior"  cssClass="form-control input-sm validate[required]" id="txtNumeroExt" />
 								</div>
 								<label for="txtcp" class="col-lg-1 control-label">C.P. </label>
 								<div class="col-lg-2"> 
-									<input  Class="form-control input-sm validate[required]" id="txtcp" />
+									<form:input path="domicilio.codigoPostal" cssClass="form-control input-sm validate[required]" id="txtcp" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="txtMunicipio" class="col-lg-2 control-label">Municipio: </label>
 								<div class="col-lg-4"> 
-									<input  Class="form-control input-sm validate[required]" id="txtMunicipio" />
+									<form:input path="domicilio.municipio"  cssClass="form-control input-sm validate[required]" id="txtMunicipio" />
 								</div>
 								<label for="txtLocalidad" class="col-lg-2 control-label">Localidad: </label>
 								<div class="col-lg-4"> 
-									<input  Class="form-control input-sm validate[required]" id="txtLocalidad" />
+									<form:input path="domicilio.localidad"  cssClass="form-control input-sm validate[required]" id="txtLocalidad" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="cmbPais" class="col-lg-2 control-label">País: </label>
 								<div class="col-lg-4">
-									<select class="validate[require	d] form-control-xsm" id="cmbPais">
-										<option>Seleccione una opción</option>
-									</select> 
+									<select class="validate[required] form-control-xsm" id="pais">
+									  		<option value="">- Seleccione una opción -</option>
+									  		<c:forEach items="${listaPaises}" var="pais">
+									    		<option value="${pais.id}">${pais.nombre}</option>
+									  		</c:forEach>
+  										</select>
 								</div>
 								<label for="txtEstado" class="col-lg-2 control-label">Estado: </label>
 								<div class="col-lg-4">
-									<select class="validate[require	d] form-control-xsm" id="cmbEstado">
-										<option>Seleccione una opción</option>
-									</select> 
+									<select class="validate[required] form-control-xsm" id="estado" >
+									  		<option value="">- Seleccione una opción -</option>									  		
+  										</select>
 								</div>
 							</div>
 						</fieldset>
@@ -110,27 +113,27 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="white-panel form-horizontal">
-						<h4 class="text-primary">Datos adicionales</h4>
+						<h4 class="text-primary">Ubicación de documentos</h4>
 						<fieldset>
 							<div class="form-group">
-								 <label for="cmbTipoEstablecimiento" class="col-lg-1 control-label">Tipo : </label>
-								 <div class="col-lg-2">
-								 	<select class="validate[require	d] form-control-xsm" id="cmbTipoEstablecimiento">
-								 		<option value="">Seleccione una opción</option>
-								 	</select>
-								 </div>
-								 <label for="cmbEmisor" class="col-lg-2 control-label">Emisor: </label>
-								 <div class="col-lg-2">
-								 	<select class="validate[require	d] form-control-xsm" id="cmbEmisor">
-								 		<option value="">Seleccione una opción</option>
-								 	</select>
-								 </div>
-								 <label for="cmbRutaEstablecimiento" class="col-lg-2 control-label">Ruta : </label>
-								 <div class="col-lg-2">
-								 	<select class="validate[require	d] form-control-xsm" id="cmbRutaEstablecimiento">
-								 		<option value="">Seleccione una opción</option>
-								 	</select>
-								 </div>
+								<label for="txtRutaRepo" class="col-lg-2 control-label">Ruta Repositorio: </label>
+								<div class="col-lg-4">
+									<form:input path="rutaRepositorio.rutaRepositorio" cssClass="form-control input-sm validate[required]" id="txtRutaRepo"/>
+								</div>
+								<label for="txtIn" class="col-lg-2 control-label">Ruta Entrada: </label>
+								<div class="col-lg-4">
+									<form:input path="rutaRepositorio.rutaRepoIn" cssClass="form-control input-sm validate[required]" id="txtIn"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="txtOut" class="col-lg-2 control-label">Ruta Salida: </label>
+								<div class="col-lg-4">
+									<form:input path="rutaRepositorio.rutaRepoOut" cssClass="form-control input-sm validate[required]" id="txtOut"/>
+								</div>
+								<label for="txtRutaProc" class="col-lg-2 control-label">Ruta Procesado: </label>
+								<div class="col-lg-4">
+									<form:input path="rutaRepositorio.rutaRepoInProc" cssClass="form-control input-sm validate[required]" id="txtRutaProc"/>
+								</div>
 							</div>
 						</fieldset>
 					</div>

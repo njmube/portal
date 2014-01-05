@@ -39,4 +39,11 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 	public List<Establecimiento> readAll() {
 		return establecimientoDao.readAll();
 	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public Establecimiento readAllById (Establecimiento establecimiento)  {
+		return establecimientoDao.readAllById(establecimiento);
+		
+	}
 }

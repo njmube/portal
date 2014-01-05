@@ -39,7 +39,7 @@
  							<display:column title="${clave}" property="clave" headerClass="text-primary"/>
  							<display:column title="${password}" property="password" headerClass="text-primary"/>
  							<display:column title="Seleccionar" headerClass="text-primary text-center" class="text-center">
- 								<a href="<c:url value="/actualizarEstablecimiento/${document.id}"/>" class="btn btn-xs btn-success">
+ 								<a href="<c:url value="/mostrarEstablecimiento/${document.id}"/>" class="btn btn-xs btn-success">
  								<span class="glyphicon glyphicon-print"></span></a>
  							</display:column>
  						</display:table>
