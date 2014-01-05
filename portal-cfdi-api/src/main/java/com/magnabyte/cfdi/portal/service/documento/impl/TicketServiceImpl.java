@@ -58,6 +58,12 @@ public class TicketServiceImpl implements TicketService {
 			throw new PortalException("El Ticket no puede ser nulo.");
 		}
 	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public Ticket read(Ticket ticket, Establecimiento establecimiento) {
+		return ticketDao.read(ticket, establecimiento);
+	}
 	
 	@Transactional
 	@Override
@@ -128,15 +134,22 @@ public class TicketServiceImpl implements TicketService {
 		}
 		return false;
 	}
-
-
+	
 	@Transactional(readOnly = true)
 	@Override
 	public boolean ticketProcesado(Ticket ticket, Establecimiento establecimiento) {
-		Ticket ticketDB = ticketDao.readFacturado(ticket, establecimiento);
-		return ticketDB != null ? true : false;
+		Ticket ticketDB = ticketDao.read(ticket, establecimiento);
+		if (ticketDB != null) {
+			switch (ticketDB.getTipoEstadoTicket()) {
+			case FACTURADO:
+				return true;
+			default:
+				return false;
+			}
+		}
+		return false;
 	}
-	
+
 	@Override
 	public String formatTicketClave(Ticket ticket) {
 		NumberFormat nf = new DecimalFormat("000");

@@ -12,20 +12,22 @@ public class TicketSql extends GenericSql {
 	public static final String NO_TICKET = "no_ticket";
 	public static final String NO_CAJA = "no_caja";
 
-	public static final String READ_FACTURADO;
+	public static final String READ;
 	public static final String UPDATE_FACTURADO;
+
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
 		
-		qryBuilder.append("select * from t_ticket where no_ticket = ? and id_establecimiento = ? and no_caja = ? and id_status_ticket = ?");
+		qryBuilder.append("select * from t_ticket where no_ticket = ? and id_establecimiento = ? and no_caja = ?");
 		
-		READ_FACTURADO = qryBuilder.toString();
+		READ = qryBuilder.toString();
 	
 		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append("update t_ticket set id_status_ticket = ? where id_ticket = ?");
 		
 		UPDATE_FACTURADO = qryBuilder.toString();
+		
 	}
 }

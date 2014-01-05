@@ -433,29 +433,46 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	public void guardarDocumento(Documento documento) {
 		if(documento != null) {
 			if(documento instanceof DocumentoSucursal) {
-				if (!ticketService.ticketProcesado(((DocumentoSucursal) documento).getTicket(), documento.getEstablecimiento())) {
-					ticketService.save((DocumentoSucursal) documento);
+				Ticket ticketDB = ticketService.read(((DocumentoSucursal) documento).getTicket(), documento.getEstablecimiento());
+				if (ticketDB != null) {
+					switch (ticketDB.getTipoEstadoTicket()) {
+					case GUARDADO:
+						logger.debug("El ticket ya fue guardado previamente.");
+						((DocumentoSucursal) documento).getTicket().setId(ticketDB.getId());
+						documento.setId(documentoDao.readIdByTicket((DocumentoSucursal) documento));
+						documentoDao.updateDocumentoTicket((DocumentoSucursal) documento);
+						Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolioDocumento(documento);
+						documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
+						documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO));
+						break;
+					case FACTURADO:
+						logger.debug("El ticket ya fue facturado.");
+						throw new PortalException("El ticket ya fue facturado con anterioridad.");
+					default:
+						break;
+					}
 				} else {
-					logger.debug("El ticket ya fue facturado.");
-					throw new PortalException("El ticket ya fue facturado con anterioridad.");
+					ticketService.save((DocumentoSucursal) documento);
+					documentoDao.save(documento);
+					documentoDetalleService.save(documento);
+					
+					synchronized (documentoSerieDao) {
+						Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolio(documento);
+						documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
+						documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO_CONSECUTIVO));
+						documentoSerieDao.updateFolioSerie(documento);
+						documentoDao.insertDocumentoFolio(documento);
+					}
 				}
+			} else if (documento instanceof DocumentoCorporativo) {
+				documentoDao.save(documento);
+				documentoDetalleService.save(documento);
 			}
-			documentoDao.save(documento);
-			documentoDetalleService.save(documento);
 		} else {
 			logger.debug("El Documento no puede ser nulo.");
 			throw new PortalException("El Documento no puede ser nulo.");
 		}		
 		
-		if(documento instanceof DocumentoSucursal) {
-			synchronized (documentoSerieDao) {
-				Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolio(documento);
-				documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
-				documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO_CONSECUTIVO));
-				documentoSerieDao.updateFolioSerie(documento);
-				documentoDao.insertDocumentoFolio(documento);
-			}
-		}
 	}
 	
 	@Transactional

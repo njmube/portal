@@ -50,24 +50,27 @@ public class TicketDaoImpl extends GenericJdbcDao
 	}
 	
 	@Override
-	public Ticket readFacturado(Ticket ticket, Establecimiento establecimiento) {
+	public Ticket read(Ticket ticket, Establecimiento establecimiento) {
 		try {
-			return getJdbcTemplate().queryForObject(TicketSql.READ_FACTURADO, new RowMapper<Ticket>() {
-					@Override
-					public Ticket mapRow(ResultSet rs, int rowNum) throws SQLException {
-						Ticket ticket = new Ticket();
-						ticket.setId(rs.getInt("id_ticket"));
-						return ticket;
-					}
-				}, ticket.getTransaccion().getTransaccionHeader().getIdTicket(),
-				establecimiento.getId(),
-				ticket.getTransaccion().getTransaccionHeader().getIdCaja(),
-				TipoEstadoTicket.FACTURADO.getId());
+			return getJdbcTemplate().queryForObject(TicketSql.READ, MAPPER_TICKET, 
+					ticket.getTransaccion().getTransaccionHeader().getIdTicket(), establecimiento.getId(),
+					ticket.getTransaccion().getTransaccionHeader().getIdCaja());
 		} catch (EmptyResultDataAccessException ex) {
-			logger.debug("El ticket no existe");
+			logger.debug("El ticket no se ha guardado");
 			return null;
 		}
 	}
+	
+	private static final RowMapper<Ticket> MAPPER_TICKET = new RowMapper<Ticket>() {
+		
+		@Override
+		public Ticket mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Ticket ticket = new Ticket();
+			ticket.setId(rs.getInt(TicketSql.ID_TICKET));
+			ticket.setTipoEstadoTicket(TipoEstadoTicket.getById(rs.getInt(TicketSql.ID_STATUS)));
+			return ticket;
+		}
+	};
 	
 	private MapSqlParameterSource getParameters(DocumentoSucursal documento) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
