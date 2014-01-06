@@ -48,7 +48,7 @@ public class ClienteSql extends GenericSql {
 		qryBuilder.append("select * from t_cliente where nombre = ?");
 		
 		READ_BY_NAME = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append(SELECT).append(EOL).append(TAB);
 		qryBuilder.append(ID_CLIENTE).append(EOL_);
