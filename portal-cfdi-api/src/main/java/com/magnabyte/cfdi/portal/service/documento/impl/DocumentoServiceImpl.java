@@ -563,18 +563,29 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 
 	@Override
 	public List<Documento> getDocumentos(Cliente cliente) {
-		List<Documento> rutasEstab = documentoDao.getDocumentoByCliente(cliente);
+		List<Documento> listaDocumentos = documentoDao.getDocumentoByCliente(cliente);
 		List<Integer> idDocumentos = new ArrayList<Integer>();
-		List<Documento> documentos = null;
+		List<Documento> documentosPorId = null;
 		
-		if(rutasEstab != null && !rutasEstab.isEmpty()) {			
-			for(Documento ruta : rutasEstab) {
+		if(listaDocumentos != null && !listaDocumentos.isEmpty()) {			
+			for(Documento ruta : listaDocumentos) {
 				idDocumentos.add(ruta.getId());
 			}
 		
-			documentos = documentoDao.getNombreDocumento(idDocumentos);		
+			documentosPorId = documentoDao.getNombreDocumentoFacturado(idDocumentos);
+			
+			for (Documento documento2 : documentosPorId) {
+				for (Documento documento : listaDocumentos) {
+					if (documento2.getId().equals(documento.getId())) {
+						documento2.setEstablecimiento(documento.getEstablecimiento());
+						break;
+					}
+				}
+			}
 		}
-		return documentos;
+
+		
+		return documentosPorId;
 	}
 
 }

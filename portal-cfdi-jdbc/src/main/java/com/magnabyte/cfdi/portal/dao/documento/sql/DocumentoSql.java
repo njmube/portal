@@ -70,11 +70,10 @@ public class DocumentoSql extends GenericSql {
 		READ_ACUSE_PEND = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		
-		qryBuilder.append(SELECT).append(EOL).append(TAB).append("doc.id_documento, ruta.ruta_repo, ruta.ruta_out").append(EOL);
-		qryBuilder.append(FROM).append(EOL).append("t_documento as doc").append(EOL).append(TAB);
+		qryBuilder.append(SELECT).append(EOL).append(TAB).append("doc.id_documento, doc.id_establecimiento").append(EOL);
+		qryBuilder.append(FROM).append(EOL).append("t_documento as doc").append(EOL).append(TAB);		
 		qryBuilder.append(INNER).append("t_cliente as cte on doc.id_cliente = cte.id_cliente").append(EOL).append(TAB);
 		qryBuilder.append(INNER).append("t_establecimiento as estab on doc.id_establecimiento = estab.id_establecimiento").append(EOL).append(TAB);
-		qryBuilder.append(INNER).append("t_ruta_establecimiento as ruta on estab.id_ruta_establecimiento = ruta.id_ruta_establecimiento").append(EOL);
 		qryBuilder.append(WHERE).append(EOL).append(TAB).append("cte.rfc like ?");
 		
 		

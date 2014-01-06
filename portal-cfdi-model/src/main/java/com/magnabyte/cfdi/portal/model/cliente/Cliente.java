@@ -28,7 +28,6 @@ public class Cliente {
 	@Valid
 	private List<DomicilioCliente> domicilios;
 	private TipoPersona tipoPersona;
-	private Integer ventasMostrador;
 	
 	/**
 	 * Constructos por default
@@ -75,14 +74,6 @@ public class Cliente {
 
 	public void setTipoPersona(TipoPersona tipoCliente) {
 		this.tipoPersona = tipoCliente;
-	}
-
-	public Integer getVentasMostrador() {
-		return ventasMostrador;
-	}
-
-	public void setVentasMostrador(Integer ventasMostrador) {
-		this.ventasMostrador = ventasMostrador;
 	}
 
 	@Override

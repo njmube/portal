@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	
 	$("#clienteForm").validationEngine();
-	$("#clienteCorregirForm").validationEngine();
+	$("#clienteCorregirForm").validationEngine();	
 	
 	if($("#pais option:selected").val() > 1){			
 		$("#rfc").attr('readonly', true);
@@ -157,25 +157,6 @@ $("#agregarCorregir").click(function() {
 			} else {
 				$("#clienteCorregirForm").validate().element("#rfc");
 			}
-		}
-	});
-	
-	$(document.body).on('change',"#pais",function(){
-		if($("option:selected", this).val() > 1){
-			$("#rfc").val("XAXX010101000");
-			$("#rfc").attr('readonly', true);
-		} else {
-			$("#rfc").attr('readonly', false);
-		}
-	});
-	
-	$("#ventasMostrador").change(function() {
-		if($(this).is(":checked")) {
-			$(this).val("1");
-			$("#rfc").val("XAXX010101000");
-		} else {
-			$(this).val("0");
-			$("#rfc").val("");
 		}
 	});
 	

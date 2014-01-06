@@ -23,6 +23,7 @@ public class Documento implements Serializable {
 	private Establecimiento establecimiento;
 	private TimbreFiscalDigital timbreFiscalDigital;
 	private TipoDocumento tipoDocumento;
+	private String nombreDocumento;
 	private byte[] xmlCfdi;
 
 	public Integer getId() {
@@ -95,6 +96,14 @@ public class Documento implements Serializable {
 	
 	public void setXmlCfdi(byte[] xmlCfdi) {
 		this.xmlCfdi = xmlCfdi;
+	}
+
+	public String getNombreDocumento() {
+		return nombreDocumento;
+	}
+
+	public void setNombreDocumento(String nombreDocumento) {
+		this.nombreDocumento = nombreDocumento;
 	}
 
 	@Override

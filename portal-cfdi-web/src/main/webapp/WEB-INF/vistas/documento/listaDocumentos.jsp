@@ -14,13 +14,14 @@
 					<display:column title="Serie" property="comprobante.serie" headerClass="text-primary"></display:column>
 					<display:column title="Folio" property="comprobante.folio" headerClass="text-primary" />
 					<display:column title="PDF" headerClass="text-primary text-center" class="text-center">
-						<a href="<c:url value="/documentoPdf"/>" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-download-alt"></span></a>
+						<a href="<c:url value="/documentoDownload/pdf"/>" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-download-alt"></span></a>
 					</display:column>
 					<display:column title="XML" headerClass="text-primary text-center" class="text-center">
-						<a href="<c:url value="/documentoXml"/>" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-download-alt"></span></a>
+						<a href="<c:url value="/documentoDownload/1/file/xml"/>" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-download-alt"></span></a>
 					</display:column>
 				</display:table>
 			</div>
+			<!-- form -->
 		</c:when>
 		<c:otherwise>
 			<div class="form-group">
