@@ -37,6 +37,13 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			LoggerFactory.getLogger(DocumentoDaoImpl.class);
 	
 	@Override
+	public Integer readIdByTicket(DocumentoSucursal documento) {
+		return getJdbcTemplate().queryForObject(DocumentoSql.READ_ID_BY_TICKET, 
+				Integer.class, 
+				documento.getTicket().getId());
+	}
+	
+	@Override
 	public void save(Documento documento) {
 		try {
 			SimpleJdbcInsert simpleInsert = new SimpleJdbcInsert(getJdbcTemplate());
@@ -47,6 +54,11 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			logger.debug("No se pudo registrar el Documento en la base de datos.", ex);
 			throw new PortalException("No se pudo registrar el Documento en la base de datos.", ex);
 		}
+	}
+	
+	@Override
+	public void updateDocumentoTicket(DocumentoSucursal documento) {
+		getJdbcTemplate().update(DocumentoSql.UPDATE_DOC_CTE, documento.getCliente().getId(), documento.getId());
 	}
 
 	private MapSqlParameterSource getParameters(Documento documento) {

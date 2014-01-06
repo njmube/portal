@@ -10,7 +10,11 @@ public interface TicketService {
 	
 	boolean ticketExists(Ticket ticket, Establecimiento establecimiento);
 
-	boolean ticketProcesado(Ticket ticket, Establecimiento establecimiento);
-
 	String formatTicketClave(Ticket ticket);
+
+	void updateEstadoFacturado(DocumentoSucursal documento);
+
+	Ticket read(Ticket ticket, Establecimiento establecimiento);
+
+	boolean ticketProcesado(Ticket ticket, Establecimiento establecimiento);
 }

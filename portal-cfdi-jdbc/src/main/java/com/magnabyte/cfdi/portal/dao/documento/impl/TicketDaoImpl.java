@@ -21,6 +21,7 @@ import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
+import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
 
 @Repository("ticketDao")
 public class TicketDaoImpl extends GenericJdbcDao 
@@ -43,28 +44,38 @@ public class TicketDaoImpl extends GenericJdbcDao
 	}
 	
 	@Override
+	public void updateEstadoFacturado(DocumentoSucursal documento) {
+		getJdbcTemplate().update(TicketSql.UPDATE_FACTURADO, 
+				documento.getTicket().getTipoEstadoTicket().getId(), documento.getTicket().getId());
+	}
+	
+	@Override
 	public Ticket read(Ticket ticket, Establecimiento establecimiento) {
 		try {
-			return getJdbcTemplate().queryForObject("select * from t_ticket where no_ticket = ? and id_establecimiento = ? and no_caja = ?", new RowMapper<Ticket>() {
-					@Override
-					public Ticket mapRow(ResultSet rs, int rowNum) throws SQLException {
-						Ticket ticket = new Ticket();
-						ticket.setId(rs.getInt("id_ticket"));
-						return ticket;
-					}
-				}, ticket.getTransaccion().getTransaccionHeader().getIdTicket(),
-				establecimiento.getId(),
-				ticket.getTransaccion().getTransaccionHeader().getIdCaja());
+			return getJdbcTemplate().queryForObject(TicketSql.READ, MAPPER_TICKET, 
+					ticket.getTransaccion().getTransaccionHeader().getIdTicket(), establecimiento.getId(),
+					ticket.getTransaccion().getTransaccionHeader().getIdCaja());
 		} catch (EmptyResultDataAccessException ex) {
-			logger.debug("El ticket no existe");
+			logger.debug("El ticket no se ha guardado");
 			return null;
 		}
 	}
 	
+	private static final RowMapper<Ticket> MAPPER_TICKET = new RowMapper<Ticket>() {
+		
+		@Override
+		public Ticket mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Ticket ticket = new Ticket();
+			ticket.setId(rs.getInt(TicketSql.ID_TICKET));
+			ticket.setTipoEstadoTicket(TipoEstadoTicket.getById(rs.getInt(TicketSql.ID_STATUS)));
+			return ticket;
+		}
+	};
+	
 	private MapSqlParameterSource getParameters(DocumentoSucursal documento) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue(EstablecimientoSql.ID_ESTABLECIMIENTO, documento.getEstablecimiento().getId());
-		params.addValue(TicketSql.ID_STATUS, documento.getTicket().getStatus().getId());
+		params.addValue(TicketSql.ID_STATUS, documento.getTicket().getTipoEstadoTicket().getId());
 		params.addValue(TicketSql.FECHA, new Date());
 		params.addValue(TicketSql.NO_CAJA, documento.getTicket().getTransaccion().getTransaccionHeader().getIdCaja());
 		params.addValue(TicketSql.NO_TICKET, documento.getTicket().getTransaccion().getTransaccionHeader().getIdTicket());

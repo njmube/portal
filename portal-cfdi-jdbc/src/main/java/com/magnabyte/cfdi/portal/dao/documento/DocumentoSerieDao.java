@@ -6,8 +6,10 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 
 public interface DocumentoSerieDao {
 
-	public Map<String, Object> readSerieAndFolio(Documento documento);
+	Map<String, Object> readSerieAndFolio(Documento documento);
 
-	public void updateFolioSerie(Documento documento);
+	void updateFolioSerie(Documento documento);
+
+	Map<String, Object> readSerieAndFolioDocumento(Documento documento);
 
 }

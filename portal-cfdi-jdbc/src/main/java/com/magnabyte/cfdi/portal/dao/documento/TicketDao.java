@@ -8,5 +8,7 @@ public interface TicketDao {
 
 	void save(DocumentoSucursal documento);
 
+	void updateEstadoFacturado(DocumentoSucursal documento);
+
 	Ticket read(Ticket ticket, Establecimiento establecimiento);
 }

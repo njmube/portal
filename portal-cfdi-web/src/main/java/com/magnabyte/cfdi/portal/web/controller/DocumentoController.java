@@ -30,6 +30,7 @@ import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
+import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
@@ -56,6 +57,9 @@ public class DocumentoController {
 	@Autowired
 	private CertificadoDao certificadoDao;
 	
+	@Autowired
+	private TicketService ticketService;
+	
 	@RequestMapping(value = {"/generarDocumento", "/portal/cfdi/generarDocumento"}, method = RequestMethod.POST)
 	public String generarDocumento(@ModelAttribute Documento documento,
 			ModelMap model, HttpServletRequest request) {
@@ -66,6 +70,9 @@ public class DocumentoController {
 			if (documentoWebService.timbrarDocumento(documento, request)) {
 				documentoService.insertDocumentoCfdi(documento);
 				documentoService.insertAcusePendiente(documento);
+				if(documento instanceof DocumentoSucursal) {
+					ticketService.updateEstadoFacturado((DocumentoSucursal) documento);
+				}
 				model.put("documento", documento);
 			}
 		}
@@ -155,5 +162,37 @@ public class DocumentoController {
 		model.put("documentos", documentos);
 		
 		return "documento/listaDocumentos";
+	}
+	
+	public static void main(String[] args) {
+		List<String> lista = new ArrayList<String>();
+		
+		lista.add("uno");
+		lista.add("dos");
+		lista.add("dos");
+		lista.add("tres");
+		lista.add("cuatro");
+		lista.add("cinco");
+		lista.add("seis");
+		lista.add("siete");
+		lista.add("ocho");
+		lista.add("nueve");
+		lista.add("diez");
+		
+		System.out.println("lista original: " + lista.toString());
+		
+		List<String> listaAQuitar = new ArrayList<String>();
+		
+		listaAQuitar.add("dos");
+		listaAQuitar.add("cuatro");
+		listaAQuitar.add("seis");
+		listaAQuitar.add("ocho");
+		listaAQuitar.add("diez");
+		
+		System.out.println("lista a quitar: " + listaAQuitar.toString());
+		
+		System.out.println("se borro?: " + lista.removeAll(listaAQuitar));
+		
+		System.out.println("lista filtrada: " + lista.toString());
 	}
 }

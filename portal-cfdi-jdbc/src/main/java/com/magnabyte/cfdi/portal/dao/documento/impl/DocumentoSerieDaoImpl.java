@@ -19,9 +19,14 @@ public class DocumentoSerieDaoImpl extends GenericJdbcDao implements
 	
 	@Override
 	public Map<String, Object> readSerieAndFolio(Documento documento) {
-		return getJdbcTemplate().queryForMap(DocumentoSql.READ_SERIE_FOLIO, 
+		return getJdbcTemplate().queryForMap(DocumentoSql.READ_NEXT_SERIE_FOLIO, 
 				documento.getEstablecimiento().getId(),
 				documento.getTipoDocumento().getId());
+	}
+	
+	@Override
+	public Map<String, Object> readSerieAndFolioDocumento(Documento documento) {
+		return getJdbcTemplate().queryForMap(DocumentoSql.READ_SERIE_FOLIO_DOC, documento.getId());
 	}
 	
 	@Override

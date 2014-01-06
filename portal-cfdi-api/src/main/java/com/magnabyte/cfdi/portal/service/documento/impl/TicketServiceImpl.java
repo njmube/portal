@@ -28,6 +28,7 @@ import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
+import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 
@@ -50,7 +51,26 @@ public class TicketServiceImpl implements TicketService {
 	@Override
 	public void save(DocumentoSucursal documento) {
 		if(documento.getTicket() != null) {
+			documento.getTicket().setTipoEstadoTicket(TipoEstadoTicket.GUARDADO);
 			ticketDao.save(documento);
+		} else {
+			logger.debug("El Ticket no puede ser nulo.");
+			throw new PortalException("El Ticket no puede ser nulo.");
+		}
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public Ticket read(Ticket ticket, Establecimiento establecimiento) {
+		return ticketDao.read(ticket, establecimiento);
+	}
+	
+	@Transactional
+	@Override
+	public void updateEstadoFacturado(DocumentoSucursal documento) {
+		if(documento.getTicket() != null) {
+			documento.getTicket().setTipoEstadoTicket(TipoEstadoTicket.FACTURADO);
+			ticketDao.updateEstadoFacturado(documento);
 		} else {
 			logger.debug("El Ticket no puede ser nulo.");
 			throw new PortalException("El Ticket no puede ser nulo.");
@@ -114,15 +134,22 @@ public class TicketServiceImpl implements TicketService {
 		}
 		return false;
 	}
-
-
+	
 	@Transactional(readOnly = true)
 	@Override
 	public boolean ticketProcesado(Ticket ticket, Establecimiento establecimiento) {
 		Ticket ticketDB = ticketDao.read(ticket, establecimiento);
-		return ticketDB != null ? true : false;
+		if (ticketDB != null) {
+			switch (ticketDB.getTipoEstadoTicket()) {
+			case FACTURADO:
+				return true;
+			default:
+				return false;
+			}
+		}
+		return false;
 	}
-	
+
 	@Override
 	public String formatTicketClave(Ticket ticket) {
 		NumberFormat nf = new DecimalFormat("000");
