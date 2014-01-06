@@ -9,7 +9,23 @@
 <script src="<c:url value="/resources/js/commons/direccionFunctions.js"/>"></script>
 <script src="<c:url value="/resources/js/sucursal/clienteForm.js"/>"></script>
 <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/clienteForm.css"/>">
-
+<script type="text/javascript">
+$(document).ready(function() {
+	var rfcExtranjeros = "${rfcExtranjeros}";
+	
+	$(document.body).on('change',"#pais",function(){
+		if($("option:selected", this).val() > 1){
+			$("#rfc").val(rfcExtranjeros);
+			$("#rfc").attr('readonly', true);
+		} else {
+			if($("#rfc").val() === rfcExtranjeros) {
+				$("#rfc").val("");
+			}
+			$("#rfc").attr('readonly', false);
+		}
+	});
+});
+</script>
 </head>
 <body>
 	<div class="container main-content">
@@ -19,6 +35,17 @@
 				<p class="text-info">Ingresa la Información de Facturación.</p>
 			</blockquote>
 			<hr>
+			<c:if test="${errorSave}">
+				<div class="col-md-offset-2 col-md-8">
+					<p>
+						<div class="alert alert-danger alert-dismissable">
+							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+							Error al guardar
+							<br><br> <strong>${errorMessage}</strong> 
+						</div>
+					</p>
+				</div>
+			</c:if>
 			<div class="well">
 				<sec:authorize access="hasAnyRole('ROLE_SUC')">
 					<c:url var="altaUrl" value="/confirmarDatos/clienteForm"/>
@@ -28,16 +55,9 @@
 				</sec:authorize>
 				<form:form id="clienteForm" action="${altaUrl}" method="POST" modelAttribute="cliente" cssClass="form-horizontal" role="form">
 					<div class="row">
-						<div class="col-md-offset-1 col-md-3">
-							<div class="checkbox">
-							    <label>
-							     <strong>Ventas Mostrador</strong> <input type="checkbox" id="ventasMostrador" name="ventasMostrador" value="0"/> 
-							    </label>
-						    </div>
-					  	</div>
-    					<div class="col-md-4">
+    					<div class="text-center">
     						<div class="form-group">
-								<input type="hidden" id="tipoPersona" name="tipoPersona.id" value="${clienteCorregir.tipoPersona.id}"/>
+								<input type="hidden" id="tipoPersona" name="tipoPersona.id" value="1"/>
    								<label class="checkbox-inline">
    									<strong>Persona Fisica:</strong> <input type="radio" id="personaFisica" name="personaFisica" checked="checked">
 								</label>

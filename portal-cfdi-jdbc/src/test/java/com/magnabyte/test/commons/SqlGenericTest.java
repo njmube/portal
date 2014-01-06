@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.magnabyte.cfdi.portal.dao.cliente.sql.ClienteSql;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
+import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/jdbcApplicationContext.xml" })
@@ -22,7 +23,7 @@ public class SqlGenericTest {
 
 	@Test
 	public void qryTest() {
-		String qryString = ClienteSql.GET_ALL;
+		String qryString = DocumentoSql.READ_DOCUMENTO;
 		logger.info(qryString);
 		Assert.assertNotNull(qryString);
 	}

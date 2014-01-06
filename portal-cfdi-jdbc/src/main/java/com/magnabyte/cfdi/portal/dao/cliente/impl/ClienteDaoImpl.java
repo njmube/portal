@@ -84,7 +84,6 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 			cliente.getNombre(),
 			cliente.getRfc(),
 			cliente.getTipoPersona().getId(),
-			cliente.getVentasMostrador(),
 			cliente.getId()
 		});
 	}
@@ -94,7 +93,6 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 		params.addValue(ClienteSql.NOMBRE, cliente.getNombre());
 		params.addValue(ClienteSql.RFC, cliente.getRfc());
 		params.addValue(ClienteSql.TIPO, cliente.getTipoPersona().getId());
-		params.addValue(ClienteSql.VENTAS_MOSTRADOR, cliente.getVentasMostrador());
 
 		return params;
 	}
@@ -113,11 +111,21 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 				tipoPersona.setId(TipoPersona.PERSONA_FISICA);				
 				cliente.setTipoPersona(tipoPersona);
 			} else if(rs.getInt(ClienteSql.TIPO) == 2) {
-				tipoPersona.setId(TipoPersona.PERSONA_FISICA);				
+				tipoPersona.setId(TipoPersona.PERSONA_MORAL);				
 				cliente.setTipoPersona(tipoPersona);
 			}
-//			cliente.setVentasMostrador(rs.getInt(ClienteSql.VENTAS_MOSTRADOR));
 			return cliente;
 		}
 	};
+
+	@Override
+	public Cliente getClienteByNombre(Cliente cliente) {
+		String qry = ClienteSql.READ_BY_NAME;
+		try {
+			return getJdbcTemplate().queryForObject(qry, CLIENTE_MAPPER, cliente.getNombre());
+		} catch (EmptyResultDataAccessException ex) {
+			logger.info("El cliente no existe.");
+			return null;
+		}
+	}
 }

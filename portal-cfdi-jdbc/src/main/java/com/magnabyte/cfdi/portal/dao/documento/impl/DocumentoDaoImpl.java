@@ -170,7 +170,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	}
 
 	@Override
-	public List<Documento> getNombreDocumento(List<Integer> idDocumentos) {
+	public List<Documento> getNombreDocumentoFacturado(List<Integer> idDocumentos) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("idDocumentos", idDocumentos);
 		return getNamedParameterJdbcTemplate().query(DocumentoSql.READ_DOCUMENTO, map, DOCUMENTO_MAPPER);
@@ -196,13 +196,8 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		public Documento mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Documento documento = new Documento();
 			Establecimiento establecimiento = new Establecimiento();
-			RutaRepositorio ruta = new RutaRepositorio();
 			
-			
-			ruta.setRutaRepositorio(rs.getString("ruta_repo"));
-			ruta.setRutaRepoOut(rs.getString("ruta_out"));
-			
-			establecimiento.setRutaRepositorio(ruta);			
+			establecimiento.setId(rs.getInt("id_establecimiento"));
 			documento.setEstablecimiento(establecimiento);
 			documento.setId(rs.getInt("id_documento"));
 			return documento;

@@ -24,6 +24,20 @@
 		$(document.body).on("click","#cancelar",function() {
 			location.href = contextPath + "/confirmarDatos/${cliente.id}";
 		});
+		
+		var rfcExtranjeros = "${rfcExtranjeros}";
+		
+		$(document.body).on('change',"#pais",function(){
+			if($("option:selected", this).val() > 1){
+				$("#rfc").val(rfcExtranjeros);
+				$("#rfc").attr('readonly', true);
+			} else {
+				if($("#rfc").val() === rfcExtranjeros) {
+					$("#rfc").val("");
+				}
+				$("#rfc").attr('readonly', false);
+			}
+		});
 	});
 </script>
 
@@ -40,25 +54,7 @@
 				<c:url var="altaUrl" value="/confirmarDatos/clienteCorregir"/>
 				<form:form id="clienteCorregirForm" action="${altaUrl}" method="POST" modelAttribute="clienteCorregir" cssClass="form-horizontal" role="form">				
 					<div class="row">
-						<div class="col-md-offset-1 col-md-3">
-							    <c:choose>
-							    	<c:when test="${clienteCorregir.ventasMostrador eq 0}">
-										<div class="checkbox">
-										    <label>
-									     		<strong>Ventas Mostrador</strong> <input type="checkbox" id="ventasMostrador" name="ventasMostrador" value="${clienteCorregir.ventasMostrador}"/> 
-										    </label>
-									    </div>
-							    	</c:when>
-							    	<c:when test="${clienteCorregir.ventasMostrador eq 1}">
-							    		<div class="checkbox">
-								    		<label>
-								    			<strong>Ventas Mostrador</strong> <input type="checkbox" id="ventasMostrador" name="ventasMostrador" value="${clienteCorregir.ventasMostrador}" checked="checked"/>
-											</label>
-										</div>
-							    	</c:when>
-							    </c:choose>
-					  	</div>
-    					<div class="col-md-4">
+    					<div class="text-center">
     						<div class="form-group">
     							<c:choose >
     								<c:when test="${clienteCorregir.tipoPersona.id eq 1}">
@@ -70,7 +66,7 @@
 										  	<strong>Persona Moral:</strong> <input type="radio" id="personaMoral" name="personaMoral">
 										</label>
     								</c:when>
-	    							<c:otherwise>
+	    							<c:when test="${clienteCorregir.tipoPersona.id eq 2}">
 	    								<input type="hidden" id="tipoPersona" name="tipoPersona.id" value="${clienteCorregir.tipoPersona.id}"/>
 	    								<label class="checkbox-inline">
 	    									Persona Fisica: <input type="radio" id="personaFisica" name="personaFisica">
@@ -78,7 +74,7 @@
 										<label class="checkbox-inline">
 										  	Persona Moral: <input type="radio" id="personaMoral" name="personaMoral" checked="checked">
 										</label>
-	    							</c:otherwise>
+	    							</c:when>
     							</c:choose>
     						</div>
     					</div>
@@ -87,7 +83,14 @@
 						<form:hidden path="id" id="idCliente"/>
 						<label class="control-label col-lg-1">RFC: </label>
 						<div class="col-lg-2">
-							<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfc]]"/>
+							<c:choose>
+								<c:when test="${clienteCorregir.tipoPersona.id eq 1}">
+									<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfcFisica]]"/>
+								</c:when>
+								<c:when test="${clienteCorregir.tipoPersona.id eq 2}">
+									<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfcMoral]]"/>
+								</c:when>
+							</c:choose>
 						</div>
 						<label class="control-label col-lg-2">Nombre: </label>
 						<div class="col-lg-6">

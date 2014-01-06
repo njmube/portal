@@ -90,13 +90,17 @@ public class ClienteServiceImpl implements ClienteService {
 	@Override
 	public void save(Cliente cliente) {
 		if(cliente != null) {
-			if(!exist(cliente)) {				
-				clienteDao.save(cliente);
-				if(cliente.getDomicilios() != null && !cliente.getDomicilios().isEmpty()) {
-					domicilioClienteService.save(cliente);
+			if(isExtranjero(cliente)) {
+				guardarExtranjeroVentasMostrador(cliente);				
+			} else {
+				if(!existRfc(cliente)) {
+					clienteDao.save(cliente);
+					guardaDomicilioCliente(cliente);
 				} else {
-					logger.error("La lista de direcciones no puede estar vacia.");
-					throw new PortalException("La lista de direcciones no puede estar vacia.");
+					logger.error("El rfc del cliente ya existe, no es "
+							+ "posible guardarlo nuevamente.");
+					throw new PortalException("El rfc del cliente ya existe, no es "
+							+ "posible guardarlo nuevamente.");
 				}
 			}
 		} else {
@@ -104,7 +108,33 @@ public class ClienteServiceImpl implements ClienteService {
 			throw new PortalException("El cliente no puede ser nulo.");
 		}
 	}
+
+	private void guardaDomicilioCliente(Cliente cliente) {
+		if(cliente.getDomicilios() != null && !cliente.getDomicilios().isEmpty()) {
+			domicilioClienteService.save(cliente);
+		} else {
+			logger.error("La lista de direcciones no puede estar vacia.");
+			throw new PortalException("La lista de direcciones no puede estar vacia.");
+		}
+	}
+
+	private void guardarExtranjeroVentasMostrador(Cliente cliente) {
+		if(!existNombre(cliente)) {
+			clienteDao.save(cliente);
+			guardaDomicilioCliente(cliente);
+		} else {
+			logger.error("El nombre del cliente ya existe, no es "
+					+ "posible guardarlo nuevamente.");
+			throw new PortalException("El nombre del cliente ya existe, no es "
+					+ "posible guardarlo nuevamente.");
+		}
+	}
 	
+	private boolean isExtranjero(Cliente cliente) {
+		return (cliente.getDomicilios().get(0).getEstado()
+				.getPais().getId() != 1);
+	}
+
 	@Transactional
 	@Override
 	public void saveClienteCorporativo(Cliente cliente) {
@@ -129,7 +159,6 @@ public class ClienteServiceImpl implements ClienteService {
 			throw new PortalException("El cliente no puede ser nulo.");
 		}
 	}
-	
 	@Override
 	public Cliente readClientesByNameRfc(Cliente cliente) {
 		Cliente cteBD = null;
@@ -153,7 +182,6 @@ public class ClienteServiceImpl implements ClienteService {
 	@Override
 	public boolean exist(Cliente cliente) {
 		Cliente clienteBD = readClientesByNameRfc(cliente);
-		
 		if(clienteBD != null) {
 			if(clienteBD.equals(cliente)) {
 				return true;
@@ -162,9 +190,15 @@ public class ClienteServiceImpl implements ClienteService {
 		return false;
 	}
 	
-//	private boolean existRfc(Cliente cliente) {
-//		
-//	}
+	private boolean existRfc(Cliente cliente) {
+		Cliente clienteBD = findClienteByRfc(cliente);
+		return comparadorRfc.compare(cliente, clienteBD) == 0;
+	}
+	
+	private boolean existNombre(Cliente cliente) {
+		Cliente clienteBD = findClienteByName(cliente);
+		return comparadorNombre.compare(cliente, clienteBD) == 0;
+	}
 
 	@Override
 	public boolean comparaDirecciones(DomicilioCliente domicilio,
@@ -177,5 +211,10 @@ public class ClienteServiceImpl implements ClienteService {
 	@Override
 	public List<Cliente> getAll() {		
 		return clienteDao.getAll();
+	}
+
+	@Override
+	public Cliente findClienteByName(Cliente cliente) {		
+		return clienteDao.getClienteByNombre(cliente);
 	}
 }

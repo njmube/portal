@@ -18,7 +18,7 @@ public interface DocumentoDao {
 
 	List<Documento> obtenerAcusesPendientes();
 	
-	List<Documento> getNombreDocumento(List<Integer> idDocumentos);
+	List<Documento> getNombreDocumentoFacturado(List<Integer> idDocumentos);
 	
 	List<Documento> getDocumentoByCliente(Cliente cliente);
 

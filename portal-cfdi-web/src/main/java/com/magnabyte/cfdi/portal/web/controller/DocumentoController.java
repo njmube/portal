@@ -131,6 +131,21 @@ public class DocumentoController {
 		}
 	}
 	
+//	@RequestMapping(value = {"/documentoXml/${idEstablecimiento}/${fileName}/${extension}", "/portal/cfdi/documentoXmlFile"})
+//	public void documentoXmlFile(@ModelAttribute Documento documento,
+//			HttpServletResponse response) {
+//		try {			
+//			String filename = documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".xml";
+//			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
+//			OutputStream out = response.getOutputStream();
+////			out.write();
+//			out.flush();
+//			out.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+	
 	@RequestMapping("/buscarDocs")	
 	public String buscaDocumentos(ModelMap model) {
 		model.put("cliente", new Cliente());

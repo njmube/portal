@@ -20,5 +20,7 @@ public interface ClienteDao {
 
 	Cliente findClienteByRfc(Cliente cliente);
 
+	Cliente getClienteByNombre(Cliente cliente);
+
 
 }
