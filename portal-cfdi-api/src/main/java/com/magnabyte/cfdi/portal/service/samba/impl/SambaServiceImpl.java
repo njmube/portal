@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.magnabyte.cfdi.portal.dao.certificado.CertificadoDao;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
@@ -50,9 +49,6 @@ public class SambaServiceImpl implements SambaService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SambaServiceImpl.class);
 
-	@Autowired
-	private CertificadoDao certificadoDao;
-	
 	@Autowired
 	private DocumentoXmlService documentoXmlService;
 	
@@ -92,6 +88,7 @@ public class SambaServiceImpl implements SambaService {
 		
 	}
 
+	//FIXME folio sap
 	@Override
 	public List<DocumentoCorporativo> getFilesFromDirectory(String url) {
 		List<DocumentoCorporativo> documentos = new ArrayList<DocumentoCorporativo>();
@@ -178,6 +175,7 @@ public class SambaServiceImpl implements SambaService {
 		
 	}
 	
+	//FIXME
 	public void writeFile(byte[] file, String destino, String nombreFile) {
 		try {
 			SmbFile xmlDirectory = new SmbFile(destino);
@@ -205,6 +203,7 @@ public class SambaServiceImpl implements SambaService {
 		}
 	}
 	
+	//FIXME
 	@Override
 	public void writePdfFile(Documento documento, HttpServletRequest request) {
 		logger.debug("Creando reporte");

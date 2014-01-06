@@ -216,6 +216,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		this.resourceLoader = resourceLoader;
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public Comprobante obtenerComprobantePor(Cliente cliente, Ticket ticket,
 		Integer idDomicilioFiscal, Establecimiento establecimiento) {
@@ -586,6 +587,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		return false;
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<Documento> getDocumentos(Cliente cliente) {
 		List<Documento> listaDocumentos = documentoDao.getDocumentoByCliente(cliente);

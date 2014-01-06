@@ -11,19 +11,19 @@ public interface DomicilioClienteDao {
 
 	List<DomicilioCliente> readByCliente(Cliente cliente);
 	
-	public void save(DomicilioCliente domicilio);
+	void save(DomicilioCliente domicilio);
 
-	public void update(DomicilioCliente domicilio);
+	void update(DomicilioCliente domicilio);
 	
-	public void delete(DomicilioCliente domicilio);
+	void delete(DomicilioCliente domicilio);
 
 	void saveEstado(Estado estado);
 	
 	void savePaisSinEstado(DomicilioCliente domicilio, Pais pais);
 	
-	public Estado readEstado(Estado estado);
+	Estado readEstado(Estado estado);
 
-	public Pais readPais(Pais pais);
+	Pais readPais(Pais pais);
 
 
 }

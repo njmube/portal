@@ -78,7 +78,7 @@ public class DomicilioSql extends GenericSql {
 		qryBuilder.append(EOL).append(ORDER).append(ID_DOMICILIO);
 		
 		FIND_DOM_BY_CLIENTE = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append(UPDATE).append(EOL).append(TAB).append(TABLE_NAME);
 		qryBuilder.append(EOL).append(SET).append(EOL);
@@ -98,7 +98,7 @@ public class DomicilioSql extends GenericSql {
 		qryBuilder.append(ID_DOMICILIO).append(SET_PARAM);
 		
 		UPDATE_DOMICILIO_CTE = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 		
 		
 		qryBuilder.append(DELETE).append(" " + FROM).append(EOL);
@@ -106,7 +106,7 @@ public class DomicilioSql extends GenericSql {
 		qryBuilder.append(EOL).append(TAB).append(ID_DOMICILIO).append(SET_PARAM);
 		
 		DELETE_DOMICILIO_CTE = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 	}
 	
 }

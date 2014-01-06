@@ -193,6 +193,7 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 		}
 	}
 	
+	//FIXME
 	@Override
 	public String obtenerNumCertificado(byte[] xmlCfdi) {
 		SAXBuilder builder = new SAXBuilder();

@@ -102,6 +102,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	@Override
 	public void recuperarAcuse(Documento documento) {
 		logger.debug("recuperando acuse");
+		//FIXME
 		String user = "AAA010101AAA.Test.User";
 		String password = "Prueba$1";
 		

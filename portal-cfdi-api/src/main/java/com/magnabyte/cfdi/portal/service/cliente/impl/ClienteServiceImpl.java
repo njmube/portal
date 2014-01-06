@@ -20,6 +20,7 @@ import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 @Service("clienteService")
 public class ClienteServiceImpl implements ClienteService {
 	
+	//FIXME
 	private static final Logger logger = LoggerFactory.getLogger(ClienteServiceImpl.class);
 
 	@Autowired

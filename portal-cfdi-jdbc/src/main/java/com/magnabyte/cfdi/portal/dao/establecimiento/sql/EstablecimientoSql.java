@@ -59,7 +59,7 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(CLAVE).append(SET_PARAM);
 		
 		FIND_BY_CLAVE = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append(SELECT).append(EOL).append(TAB);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TIPO_ESTAB);
@@ -74,7 +74,7 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(ALIAS_TABLE).append(DOT).append(ID_ESTABLECIMIENTO).append(SET_PARAM);
 		
 		GET_ROLES = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append(SELECT).append(EOL).append(TAB);
 		qryBuilder.append(ALIAS_TABLE).append(DOT).append(ID_ESTABLECIMIENTO).append(EOL_).append(TAB);
@@ -119,7 +119,7 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(ALIAS_TABLE).append(DOT).append(CLAVE).append(SET_PARAM);
 		
 		READ_BY_CLAVE = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append(SELECT).append(EOL).append(TAB);
 
@@ -165,7 +165,7 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(WHERE).append(EOL).append(ALIAS_TABLE).append(DOT).append(ID_ESTABLECIMIENTO).append(SET_PARAM);
 		
 		READ_LUGAR_EXP = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append(SELECT).append(EOL).append(TAB);
 		qryBuilder.append(ALL).append(FROM).append(EOL);

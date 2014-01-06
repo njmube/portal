@@ -50,6 +50,7 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 	
 	@Override
 	public Establecimiento readById(Establecimiento establecimiento) {
+		//FIXME
 		String qry = "select * from t_establecimiento as te inner join t_ruta_establecimiento as tre on te.id_ruta_establecimiento = "
 				+ "tre.id_ruta_establecimiento where te.id_establecimiento = ?";
 		return getJdbcTemplate().queryForObject(qry, new RowMapper<Establecimiento>() {
@@ -88,7 +89,6 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 		public Establecimiento mapRow(ResultSet rs, int rowNum)
 				throws SQLException {
 			Establecimiento establecimiento = new Establecimiento();
-			//
 			establecimiento.setId(rs.getInt(EstablecimientoSql.ID_ESTABLECIMIENTO));
 			establecimiento.setClave(rs.getString(EstablecimientoSql.CLAVE));
 			establecimiento.setNombre(rs.getString(EstablecimientoSql.NOMBRE));

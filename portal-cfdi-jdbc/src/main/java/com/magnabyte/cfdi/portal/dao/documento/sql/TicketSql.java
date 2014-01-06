@@ -23,7 +23,7 @@ public class TicketSql extends GenericSql {
 		
 		READ = qryBuilder.toString();
 	
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append("update t_ticket set id_status_ticket = ? where id_ticket = ?");
 		
