@@ -14,14 +14,23 @@
 					<display:column title="Serie" property="comprobante.serie" headerClass="text-primary"></display:column>
 					<display:column title="Folio" property="comprobante.folio" headerClass="text-primary" />
 					<display:column title="PDF" headerClass="text-primary text-center" class="text-center">
-						<a href="<c:url value="/documentoDownload/pdf"/>" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-download-alt"></span></a>
+						<button type="button" id="descargaDoc" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-download-alt"></span></button>
 					</display:column>
 					<display:column title="XML" headerClass="text-primary text-center" class="text-center">
-						<a href="<c:url value="/documentoDownload/1/file/xml"/>" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-download-alt"></span></a>
+						<button type="button" id="descargaDoc" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-download-alt"></span></button>
 					</display:column>
 				</display:table>
 			</div>
-			<!-- form -->
+			<c:url value="/documentoDownload/${documento.establecimiento.id}/${documento.nombre}/xml" var="urlDocumento"/>
+			<form action="${urlDocumento}" id="formDocument" method="post"></form>
+			<script type="text/javascript">
+				$(document).ready(function() {
+					$(document).on("click", "#descargaDoc", function() {
+						alert("Funciona!");
+// 						$("#formDocument").submit();
+					});
+				});
+			</script>
 		</c:when>
 		<c:otherwise>
 			<div class="form-group">
