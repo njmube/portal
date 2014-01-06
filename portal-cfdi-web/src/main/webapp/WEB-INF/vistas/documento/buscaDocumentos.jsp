@@ -26,7 +26,7 @@
 					<hr>
 					<div class="form-group">
 						<div class="centered">
-							<button id="buscarDocumento" type="button" class="btn btn-primary">Buscar <span class="glyphicon glyphicon-search"></span></button>
+							<button id="buscarDocumento" type="button" class="btn btn-warning">Buscar <span class="glyphicon glyphicon-search"></span></button>
 							<a id="cancelar" href="<c:url value="/menu"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
 						</div>
 					</div>

@@ -1,5 +1,6 @@
 package com.magnabyte.cfdi.portal.service.documento.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -67,6 +68,7 @@ import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.establecimiento.factory.EstablecimientoFactory;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago;
@@ -78,6 +80,8 @@ import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoDetalleService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
+import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
+import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 
 @Service("documentoService")
@@ -111,6 +115,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Autowired
 	private OpcionDeCatalogoService opcionDeCatalogoService;
+	
+	@Autowired
+	private EstablecimientoService establecimientoService;
+	
+	@Autowired
+	private SambaService sambaService;
 	
 	private ResourceLoader resourceLoader;
 	
@@ -605,14 +615,45 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 				for (Documento documento : listaDocumentos) {
 					if (documento2.getId().equals(documento.getId())) {
 						documento2.setEstablecimiento(documento.getEstablecimiento());
+						documento2.setNombre(documento2.getTipoDocumento()
+								+ "_" + documento2.getComprobante().getSerie() 
+								+ "_" + documento2.getComprobante().getFolio());
 						break;
 					}
 				}
 			}
 		}
-
 		
 		return documentosPorId;
+	}
+	
+	public byte[] recuperarDocumentoArchivo(String fileName, int idEstablecimiento, String extension) {
+		
+		try {
+			
+			Establecimiento estab = establecimientoService.readById(
+					EstablecimientoFactory.newInstance(idEstablecimiento));
+			//FIXME Cambiar la ruta out
+			InputStream file = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
+					+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + "." + extension);
+		
+			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+			int nRead;
+			byte[] data = new byte[16384];
+	
+			while ((nRead = file.read(data, 0, data.length)) != -1) {
+			  buffer.write(data, 0, nRead);
+			}
+	
+			buffer.flush();
+	
+			return buffer.toByteArray();
+		
+		} catch (Exception e) {
+			logger.error("Error al convertir el documento a bytes");
+			throw new PortalException("Error al convertir el documento a bytes");
+		}
 	}
 
 }

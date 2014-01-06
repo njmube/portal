@@ -4,7 +4,7 @@ $(document).ready(function() {
 	$("#clienteCorregirForm").validationEngine();	
 	
 	if($("#pais option:selected").val() > 1){			
-		$("#rfc").attr('readonly', true);
+		$("#rfc").attr('readonly', true);		
 	}
 	
 	$("#continuar").click(function() {
@@ -121,7 +121,7 @@ $("#agregarCorregir").click(function() {
 			+ "<td width=\'200px\'><input id=\'colonia"+ aux +"\' name=\'domicilios["+ aux +"].colonia\' class=\'form-control input-xsm validate[required]\' type=\'text\'></td>"
 			+ "<td width=\'70px\'><input id=\'codigoPostal"+ aux +"\' name=\'domicilios["+ aux +"].codigoPostal\' class=\'form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]]\' type=\'text\'></td>"
 	//		+ "<td><input id=\'referencia\' name=\'domicilios["+ aux +"].referencia\' class=\'form-control input-xsm\' type=\'text\'></td>"
-	//		+ "<td><input id=\'localidad\' name=\'domicilios["+ aux +"].localidad\' class=\'form-control input-xsm\' type=\'text\'></td>"				
+	//		+ "<td><i/resources/js/sucursal/clienteForm.jsnput id=\'localidad\' name=\'domicilios["+ aux +"].localidad\' class=\'form-control input-xsm\' type=\'text\'></td>"				
 			+ "<td><button id=\'delete\' type=\'button\' class=\'btn btn-danger btn-xs\'><span class=\'glyphicon glyphicon-trash\'></span></button></td>"
 			+ "</tr>";
 			
