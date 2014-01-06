@@ -77,6 +77,7 @@ public class DocumentoController {
 			}
 		}
 
+		//FIXME
 		return "redirect:/portal/cfdi/imprimirFactura";
 	}
 
@@ -149,35 +150,4 @@ public class DocumentoController {
 		return "documento/listaDocumentos";
 	}
 	
-	public static void main(String[] args) {
-		List<String> lista = new ArrayList<String>();
-		
-		lista.add("uno");
-		lista.add("dos");
-		lista.add("dos");
-		lista.add("tres");
-		lista.add("cuatro");
-		lista.add("cinco");
-		lista.add("seis");
-		lista.add("siete");
-		lista.add("ocho");
-		lista.add("nueve");
-		lista.add("diez");
-		
-		System.out.println("lista original: " + lista.toString());
-		
-		List<String> listaAQuitar = new ArrayList<String>();
-		
-		listaAQuitar.add("dos");
-		listaAQuitar.add("cuatro");
-		listaAQuitar.add("seis");
-		listaAQuitar.add("ocho");
-		listaAQuitar.add("diez");
-		
-		System.out.println("lista a quitar: " + listaAQuitar.toString());
-		
-		System.out.println("se borro?: " + lista.removeAll(listaAQuitar));
-		
-		System.out.println("lista filtrada: " + lista.toString());
-	}
 }

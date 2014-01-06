@@ -32,19 +32,14 @@ public class CodigoQRServiceImpl implements CodigoQRService {
 	private static final Logger logger = LoggerFactory
 			.getLogger(CodigoQRServiceImpl.class);
 
-	public InputStream generaCodigoQR(Documento documento)
-
-	{
+	public InputStream generaCodigoQR(Documento documento) {
 		logger.debug("Generando Codigo QR");
 		InputStream stream = null;
 		try {
 
 			Charset charset = Charset.forName("UTF-8");
-
 			CharsetEncoder encoder = charset.newEncoder();
-
 			byte[] b = null;
-
 			StringBuilder message = new StringBuilder();
 			
 			message.append("?re=").append(documento.getComprobante().getEmisor().getRfc())
@@ -56,17 +51,12 @@ public class CodigoQRServiceImpl implements CodigoQRService {
 			logger.debug("Mensajee" + message);
 
 			b = bbuf.array();
-
-			String data;
-
-			data = new String(b, "UTF-8");
+			String data = new String(b, "UTF-8");
 
 			BitMatrix matrix = null;
 
 			int h = 600;
-
 			int w = 600;
-
 			Writer writer = new QRCodeWriter();
 
 			matrix = writer.encode(data, BarcodeFormat.QR_CODE, w, h);
@@ -77,8 +67,7 @@ public class CodigoQRServiceImpl implements CodigoQRService {
 			bos.flush();
 			bos.close();
 
-			BufferedImage bi = ImageIO.read(new ByteArrayInputStream(baos
-					.toByteArray()));
+			BufferedImage bi = ImageIO.read(new ByteArrayInputStream(baos.toByteArray()));
 			BufferedImage subBi = bi.getSubimage(50, 50, w - 100, h - 100);
 
 			baos = new ByteArrayOutputStream();

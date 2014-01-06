@@ -26,8 +26,7 @@ public class OpcionDeCatalogoDaoImpl extends GenericJdbcDao
 	@Override
 	public Collection<OpcionDeCatalogo> getCatalogo(String catalogo,
 			String orderBy) {
-		String qry = assignValues("SELECT * FROM {0} ORDER BY {1}",
-				new Object[]{catalogo, orderBy});
+		String qry = assignValues("SELECT * FROM {0} ORDER BY {1}", catalogo, orderBy);
 		logger.debug(qry);
 		return getJdbcTemplate().query(qry, OPCION_DE_CATALOGO_MAPPER);
 	}
@@ -69,7 +68,6 @@ public class OpcionDeCatalogoDaoImpl extends GenericJdbcDao
 	private MapSqlParameterSource getParameters(OpcionDeCatalogo opcionDeCatalogo) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("nombre", opcionDeCatalogo.getNombre());
-
 		return params;
 	}
 }

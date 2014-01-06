@@ -47,8 +47,7 @@ public class MenuController {
 	
 	@RequestMapping("/menuCatalogo")
 	public String catalogo(){
-		
 		return "admin/catalogo";
 	}
-	
+
 }

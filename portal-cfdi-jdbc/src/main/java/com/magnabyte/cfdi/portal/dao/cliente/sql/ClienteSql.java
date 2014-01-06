@@ -29,22 +29,22 @@ public class ClienteSql extends GenericSql {
 		qryBuilder.append(WHERE).append(EOL).append(TAB).append(RFC).append(DIF).append(GENERIC_RFC);
 		
 		GET_ALL = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append("select * from t_cliente where (rfc like ? OR nombre like ?) and rfc != "+ GENERIC_RFC);
 		
 		FIND_BY_NAME_RFC = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append("select * from t_cliente where rfc = ? AND nombre = ?");
 		
 		READ_BY_NAME_RFC = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append("select * from t_cliente where rfc = ?");
 		
 		READ_BY_RFC = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append(SELECT).append(EOL).append(TAB);
 		qryBuilder.append(ID_CLIENTE).append(EOL_);
@@ -60,7 +60,7 @@ public class ClienteSql extends GenericSql {
 		qryBuilder.append(ID_CLIENTE).append(SET_PARAM);
 		
 		FIND_BY_ID = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 		
 		
 		qryBuilder.append(UPDATE).append(EOL).append(TAB).append(TABLE_NAME);
@@ -75,6 +75,6 @@ public class ClienteSql extends GenericSql {
 		qryBuilder.append(ID_CLIENTE).append(SET_PARAM);
 		
 		UPDATE_CLIENTE = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 	}
 }

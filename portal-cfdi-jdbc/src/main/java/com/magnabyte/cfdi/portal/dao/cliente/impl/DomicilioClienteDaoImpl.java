@@ -87,6 +87,7 @@ public class DomicilioClienteDaoImpl extends GenericJdbcDao implements
 	
 	@Override
 	public Pais readPais(Pais pais) {
+		//FIXME
 		String qry = "select id_pais, dbo.TRIM(nombre) as nom_pais from c_pais where nombre = ?";
 		try {
 			return getJdbcTemplate().queryForObject(qry, PAIS_MAPPER, pais.getNombre());			

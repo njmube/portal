@@ -71,6 +71,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		} else if(documento instanceof DocumentoCorporativo){
 			params.addValue(DocumentoSql.FOLIO_SAP, ((DocumentoCorporativo) documento).getFolioSap());
 		}
+		//FIXME
 		params.addValue(DocumentoSql.FECHA_DOCUMENTO, new Date());
 		params.addValue(DocumentoSql.TOTAL_DESCUENTO, documento.getComprobante().getDescuento());
 		params.addValue(DocumentoSql.SUBTOTAL, documento.getComprobante().getSubTotal());
@@ -151,8 +152,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 					Comprobante comprobante = new Comprobante();
 					
 					documento.setId(rs.getInt(1));
-					TipoDocumento tipoDocumento = rs.getInt("id_tipo_documento") == 1 ? TipoDocumento.FACTURA : TipoDocumento.NOTA_CREDITO;
-					documento.setTipoDocumento(tipoDocumento);
+					documento.setTipoDocumento(TipoDocumento.getById(rs.getInt("id_tipo_documento")));
 					comprobante.setSerie(rs.getString("serie"));
 					comprobante.setFolio(rs.getString("folio"));
 					establecimiento.setId(rs.getInt("id_establecimiento"));

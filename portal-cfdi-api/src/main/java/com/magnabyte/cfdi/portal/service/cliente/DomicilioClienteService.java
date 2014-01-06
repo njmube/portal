@@ -11,18 +11,16 @@ public interface DomicilioClienteService {
 
 	List<DomicilioCliente>  getByCliente(Cliente cliente);
 	
-	public void save(Cliente cliente);
+	void save(Cliente cliente);
 	
-	public void update(Cliente cliente);
+	void update(Cliente cliente);
 	
 	void saveEstado(Estado estado);
 	
 	void savePaisSinEstado(DomicilioCliente domicilio, Pais pais);
 	
-	public Estado readEstado(Estado estado);
+	Estado readEstado(Estado estado);
 
-	public Pais readPais(Pais pais);
-
-
+	Pais readPais(Pais pais);
 	
 }

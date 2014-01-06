@@ -87,6 +87,7 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 		}
 	}
 	
+	@Transactional
 	@Override
 	public void saveEstado(Estado estado) {
 		if(estado != null) {
@@ -97,6 +98,7 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 		}
 	}
 	
+	@Transactional
 	@Override
 	public void savePaisSinEstado(DomicilioCliente domicilio, Pais pais) {
 		if(pais != null) {
@@ -107,11 +109,13 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 		}
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public Estado readEstado(Estado estado) {
 		return domicilioClienteDao.readEstado(estado);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public Pais readPais(Pais pais) {
 		return domicilioClienteDao.readPais(pais);

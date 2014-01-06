@@ -26,7 +26,6 @@ public class DomicilioClienteDummy {
 		domicilio.setLocalidad("Localidad");
 		domicilio.setReferencia("Referencia");
 		
-		
 		return domicilio; 
 	}
 }

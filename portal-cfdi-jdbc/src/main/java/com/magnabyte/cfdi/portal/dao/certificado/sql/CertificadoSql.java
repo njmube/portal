@@ -18,8 +18,7 @@ public class CertificadoSql extends GenericSql {
 		qryBuilder.append(TABLE_NAME).append(EOL);
 		
 		READ_CERTIFICADO = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
-		
+		clearAndReuseStringBuilder(qryBuilder);
 		
 	}
 
