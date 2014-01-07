@@ -33,15 +33,18 @@
 						Factura <span class="glyphicon glyphicon-arrow-right"></span>
 					</a>
 				</p>
-				<sec:authorize access="hasRole('ROLE_SUC')">
-					<hr>
-					<p>
-						<a href="<c:url value="/buscarDocs"/>" class="btn btn-primary btn-lg" role="button">Consultar Facturas
-							<span class="glyphicon glyphicon-arrow-right"></span>
-						</a>
-					</p>
-				</sec:authorize>
 				<hr>
+				<p>
+					<a href="<c:url value="/buscarDocs"/>" class="btn btn-primary btn-lg" role="button">Consultar Facturas
+						<span class="glyphicon glyphicon-arrow-right"></span>
+					</a>
+				</p>
+				<hr>
+				<sec:authorize access="hasRole('ROLE_SUC')">
+					<a href="<c:url value="/cierre"/>" class="btn btn-primary btn-lg" role="button">Cierre
+						<span class="glyphicon glyphicon-arrow-right"></span>
+					</a>
+				</sec:authorize>
 			</div>
 		</div>
 	</div>

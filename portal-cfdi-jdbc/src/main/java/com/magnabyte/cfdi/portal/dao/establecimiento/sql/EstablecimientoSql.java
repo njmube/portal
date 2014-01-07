@@ -40,6 +40,8 @@ public class EstablecimientoSql extends GenericSql {
 	public static final String READ_BY_CLAVE;
 	public static final String READ_LUGAR_EXP;
 	public static final String READ_ALL;
+	public static final String READ_ALL_WITH_IDS;
+	public static final String UPDATE_ESTABLECIMIENTO;
 	public static final String READ_BY_ID;
 	
 	static {
@@ -171,7 +173,57 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(SELECT).append(EOL).append(TAB);
 		qryBuilder.append(ALL).append(FROM).append(EOL);
 		qryBuilder.append(TAB).append(TABLE_NAME);
+		
+		
 		READ_ALL = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		// ----- Consulta del establecimiento coo ids ----- //
+		qryBuilder.append(SELECT).append(EOL).append(TAB);
+		qryBuilder.append(ID_ESTABLECIMIENTO).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(CLAVE)
+		.append(PARENTESIS_FIN).append(AS).append(CLAVE).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(NOMBRE)
+		.append(PARENTESIS_FIN).append(AS).append(NOMBRE).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(PASSWORD)
+		.append(PARENTESIS_FIN).append(AS).append(PASSWORD).append(EOL_);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ID_DOM_ESTAB)
+		.append(PARENTESIS_FIN).append(AS).append(ID_DOM_ESTAB).append(EOL_);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ID_RUTA_ESTAB)
+		.append(PARENTESIS_FIN).append(AS).append(ID_RUTA_ESTAB).append(EOL);
+		
+		qryBuilder.append(FROM).append(EOL).append(TAB);
+		qryBuilder.append(TABLE_NAME).append(EOL);
+		
+		qryBuilder.append(WHERE).append(EOL).append(TAB);
+		qryBuilder.append(ID_ESTABLECIMIENTO).append(SET_PARAM);
+		
+		READ_ALL_WITH_IDS = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		//---- Actualizar-----//
+		/*
+		UPDATE
+		t_establecimiento
+		SET
+		clave = ?,
+		nombre = ?,
+		password = ?
+		WHERE
+		id_establecimiento = ?
+		*/
+		qryBuilder.append(UPDATE).append(EOL).append(TAB).append(TABLE_NAME);
+		qryBuilder.append(EOL).append(SET).append(EOL);
+		
+		qryBuilder.append(TAB).append(CLAVE).append(SET_PARAM).append(EOL_);
+		qryBuilder.append(TAB).append(NOMBRE).append(SET_PARAM).append(EOL_);
+		qryBuilder.append(TAB).append(PASSWORD).append(SET_PARAM).append(EOL);
+		
+		qryBuilder.append(WHERE).append(EOL).append(TAB);
+		qryBuilder.append(ID_ESTABLECIMIENTO).append(SET_PARAM);
+		
+		UPDATE_ESTABLECIMIENTO = qryBuilder.toString();		
+				
 		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append("select * from t_establecimiento as te inner join t_ruta_establecimiento as tre on te.id_ruta_establecimiento = ");

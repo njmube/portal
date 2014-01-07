@@ -2,6 +2,8 @@ package com.magnabyte.cfdi.portal.service.documento;
 
 import java.util.List;
 
+import org.springframework.core.task.TaskExecutor;
+
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
@@ -21,4 +23,6 @@ public interface TicketService {
 	boolean ticketProcesado(Ticket ticket, Establecimiento establecimiento);
 
 	List<String> readArticulosSinPrecio();
+
+	void closeOfDay(Establecimiento establecimiento, TaskExecutor executor);
 }

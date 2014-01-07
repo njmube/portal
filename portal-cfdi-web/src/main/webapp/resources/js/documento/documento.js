@@ -35,7 +35,7 @@ $(document).ready(function() {
 			if($("#documentoForm").validationEngine('validate')) {
 				var rfc = $("#rfc").val();
 				$.ajax({
-					url: contextPath + "/listaDocumentos?ajax=true",
+					url: contextPath + "/portal/cfdi/listaDocumentos?ajax=true",
 					data: "rfc=" + rfc,
 					type: "GET",
 					success: function(response) {

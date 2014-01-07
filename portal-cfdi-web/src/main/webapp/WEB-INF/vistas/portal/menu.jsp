@@ -27,7 +27,7 @@
 				</p>
 				<hr>
 				<p>
-					<a href="#" class="btn btn-primary btn-lg" role="button">Consultar Facturas
+					<a href="<c:url value="/portal/cfdi/buscarDocs"/>" class="btn btn-primary btn-lg" role="button">Consultar Facturas
 						<span class="glyphicon glyphicon-arrow-right"></span>
 					</a>
 				</p>

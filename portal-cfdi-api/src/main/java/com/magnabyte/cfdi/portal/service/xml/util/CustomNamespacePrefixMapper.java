@@ -1,31 +1,68 @@
 package com.magnabyte.cfdi.portal.service.xml.util;
 
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
-@Service("customNamespacePrefixMapper")
+@Component("customNamespacePrefixMapper")
 public class CustomNamespacePrefixMapper extends NamespacePrefixMapper {
 
-	public static final String CFDI_URI = "http://www.sat.gob.mx/cfd/3";
-	public static final String CFDI_PREFIX = "cfdi";
-	public static final String TFD_URI = "http://www.sat.gob.mx/TimbreFiscalDigital";
-	public static final String TFD_PREFIX = "tfd";
+	@Value("${cfdi.uri}")
+	private String cfdiUri;
+	@Value("${cfdi.prefix}")
+	private String cfdiPrefix;
+	@Value("${cfdi.tfd.uri}")
+	private String tfdUri;
+	@Value("${cfdi.tfd.prefix}")
+	private String tfdPrefix;
 
 	@Override
 	public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
-		if (CFDI_URI.equals(namespaceUri)) {
-			return CFDI_PREFIX;
+		if (cfdiUri.equals(namespaceUri)) {
+			return cfdiPrefix;
 		}
-		if (TFD_URI.equals(namespaceUri)) {
-			return TFD_PREFIX;
+		if (tfdUri.equals(namespaceUri)) {
+			return tfdPrefix;
 		}
 		return suggestion;
 	}
 
 	@Override
     public String[] getPreDeclaredNamespaceUris() {
-        return new String[] {CFDI_URI,TFD_URI};
+        return new String[] {cfdiUri,tfdUri};
     }
-	
+
+	public String getCfdiUri() {
+		return cfdiUri;
+	}
+
+	public void setCfdiUri(String cfdiUri) {
+		this.cfdiUri = cfdiUri;
+	}
+
+	public String getCfdiPrefix() {
+		return cfdiPrefix;
+	}
+
+	public void setCfdiPrefix(String cfdiPrefix) {
+		this.cfdiPrefix = cfdiPrefix;
+	}
+
+	public String getTfdUri() {
+		return tfdUri;
+	}
+
+	public void setTfdUri(String tfdUri) {
+		this.tfdUri = tfdUri;
+	}
+
+	public String getTfdPrefix() {
+		return tfdPrefix;
+	}
+
+	public void setTfdPrefix(String tfdPrefix) {
+		this.tfdPrefix = tfdPrefix;
+	}
+
 }

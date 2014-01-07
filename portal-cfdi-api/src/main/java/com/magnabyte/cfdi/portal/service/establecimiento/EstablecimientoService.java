@@ -14,5 +14,11 @@ public interface EstablecimientoService {
 	Establecimiento readById(Establecimiento establecimiento);
 
 	List<Establecimiento> readAll();
+
+	Establecimiento readAllById(Establecimiento establecimiento);
+
+	void update(Establecimiento establecimiento);
+
+	void save(Establecimiento establecimiento);
 	
 }
