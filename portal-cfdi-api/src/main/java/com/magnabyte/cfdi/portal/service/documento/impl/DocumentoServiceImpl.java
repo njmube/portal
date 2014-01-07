@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -633,7 +634,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	}
 
 	@Override
-	public void reenvioDocumentosFacturacion(String para, String fileName,
+	public void envioDocumentosFacturacion(String para, String fileName,
 			Integer idEstablecimiento) {
 		try {
 		
@@ -646,12 +647,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			InputStream xml = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
 					+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + ".xml");
 			
-			InputStreamResource [] attach = {
-				new InputStreamResource(pdf), new InputStreamResource(xml)	
-			};
+			Map<String, InputStreamResource> attach = new HashMap<String, InputStreamResource>();
+			attach.put(fileName + ".pdf", new InputStreamResource(pdf));
+			attach.put(fileName + ".xml", new InputStreamResource(xml));
 			
 			emailService.sendMailWithAttach("Correo de prueba", "<h2>Hola</h2>",
-					"Eamil de prueba", attach, para);
+					"Email de prueba", attach, para);
 		
 		} catch (MessagingException ex) {
 			logger.error("Error al enviar el email", ex.getMessage());

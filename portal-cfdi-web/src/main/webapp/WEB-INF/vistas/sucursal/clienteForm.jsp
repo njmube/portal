@@ -118,7 +118,7 @@ $(document).ready(function() {
 									<td width="68px"><form:input path="domicilios[0].noExterior" id="noExterior" cssClass="form-control input-xsm validate[required, integer, minSize[1]]"/></td>
 									<td width="68px"><form:input path="domicilios[0].noInterior" id="noInteriorr" cssClass="form-control input-xsm validate[integer]" /></td>
 									<td width="100px">
-									  	<select class="validate[required] form-control-xsm" id="pais" name="domicilios[0].estado.pais.id">
+									  	<select class="validate[required] form-control-xsm pais" id="pais" name="domicilios[0].estado.pais.id">
 									  		<option value="">- Seleccione una opción -</option>
 									  		<c:forEach items="${listaPaises}" var="pais">
 									    		<option value="${pais.id}">${pais.nombre}</option>

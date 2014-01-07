@@ -116,6 +116,10 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 		params.addValue(EstablecimientoSql.CLAVE, establecimiento.getClave());
 		params.addValue(EstablecimientoSql.NOMBRE, establecimiento.getNombre());
 		params.addValue(EstablecimientoSql.PASSWORD, establecimiento.getPassword());
+		params.addValue(EstablecimientoSql.ID_DOM_ESTAB, establecimiento.getDomicilio().getId());
+		params.addValue(EstablecimientoSql.ID_EMISOR, establecimiento.getEmisor().getId());
+		params.addValue(EstablecimientoSql.ID_RUTA_ESTAB, establecimiento.getRutaRepositorio().getId());
+		params.addValue(EstablecimientoSql.ID_TIPO_ESTAB, establecimiento.getTipoEstablecimiento().getId());
 
 		return params;
 	}

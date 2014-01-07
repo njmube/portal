@@ -36,20 +36,51 @@
 							</a>
 						</sec:authorize>
 					</display:column>
-					<display:column title="Reenviar" headerClass="text-primary text-center" class="text-center">
-						<button type="button" id="reenviarDocumento" class="btn btn-xs btn-success" data-toggle="modal" data-target="#myModal">Reenviar <i class="fa fa-envelope-o"></i></button>
+					<display:column title="Enviar Docs." headerClass="text-primary text-center" class="text-center">
+						<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_CORP')">
+							<input type="hidden" id="idEstab" value="${documento.establecimiento.id}">
+							<input type="hidden" id="fileName" value="${documento.nombre}">
+							<button type="button" id="enviarDocumento" class="btn btn-xs btn-success" data-toggle="modal" data-target="#enviaDocsModal">Enviar <span class="glyphicon glyphicon-envelope"></span></button>
+						</sec:authorize>
+						<sec:authorize access="isAnonymous()">
+							<input type="hidden" id="idEstab" value="${documento.establecimiento.id}">
+							<input type="hidden" id="fileName" value="${documento.nombre}">
+							<button type="button" id="enviarDocumento" class="btn btn-xs btn-success" data-toggle="modal" data-target="#enviaDocsModal">Enviar <span class="glyphicon glyphicon-envelope"></span></button>
+						</sec:authorize>
 					</display:column>
 				</display:table>
 			</div>
 			<script type="text/javascript">
 				$(document).ready(function() {
-					$("#reenvioDocForm").validationEngine();
+					$("#envioDocForm").validationEngine();
+					
+					$("#enviarDocumento").click(function() {
+						var tr = $(this).parent().parent();
+						$("#idEstabModal").val(tr.find("#idEstab").val());
+						$("#fileNameModal").val(tr.find("#fileName").val());
+					});
 					
 					$("#enviaMail").click(function() {
-						if($("#reenvioDocForm").validationEngine("validate")){
-							alert("valido..");
+						var params = "idEstab=" + $("#idEstabModal").val() 
+							+ "&fileName=" + $("#fileNameModal").val() + "&email=" + $("#email").val();  
+						
+						console.log(params);
+						
+						$("#enviaDocsModal").attr('aria-hidden', true);
+						
+						if($("#envioDocForm").validationEngine("validate")) {
+							$.ajax({
+								url: contextPath + "/documentoEnvio?ajax=true",
+								data: params,
+								type: "GET",								
+								succes : function() {
+									alert("Enviado!!");
+								}
+							});
 						}
+						
 					});
+					
 				});
 			</script>
 		</c:when>
@@ -64,18 +95,20 @@
 </c:if>
 <script src="<c:url value="/resources/js/documento/documento.js" />"></script>
 
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="enviaDocsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title text-primary">Reenviar Documentos</h4>
+        <h4 class="modal-title text-primary">Enviar Documentos</h4>
       </div>
       <div class="modal-body">
-        <form action="/reenvioDocuemnto" id="reenvioDocForm" method="post" class="form-horizontal">
+        <form action="#" id="envioDocForm" method="post" class="form-horizontal">
         	<blockquote>
-        		<p>Proporcione un correo electronico para reenviar los documentos.</p>
+        		<p>Proporcione un correo electronico para enviar los documentos.</p>
         	</blockquote>
+        	<input type="hidden" id="idEstabModal" value="${documento.establecimiento.id}">
+			<input type="hidden" id="fileNameModal" value="${documento.nombre}">
         	<div class="form-group">
 				<label for="email" class="col-lg-4 control-label">Email: </label>
 				<div class="col-lg-5">
