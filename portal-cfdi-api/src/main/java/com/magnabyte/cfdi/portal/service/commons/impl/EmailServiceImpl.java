@@ -1,5 +1,7 @@
 package com.magnabyte.cfdi.portal.service.commons.impl;
 
+import java.util.Map;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -41,7 +43,7 @@ public class EmailServiceImpl implements EmailService {
 
 	@Override
 	public void sendMailWithAttach(String message, String messageHtml,
-			String subject, InputStreamResource[] attach, String... recipients)
+			String subject, Map<String, InputStreamResource> attach, String... recipients)
 			throws MessagingException {
 		MimeMessage msg = javaMailSender.createMimeMessage();
 		
@@ -52,8 +54,9 @@ public class EmailServiceImpl implements EmailService {
 		helper.setText(message, messageHtml);
 		helper.setSubject(subject);
 		helper.setFrom(email);
-		for (InputStreamResource att : attach) {
-			helper.addAttachment(att.getFilename(), att);
+		for(Map.Entry<String, InputStreamResource> entry : attach.entrySet()) {
+			logger.debug(entry.getKey() + "/" +entry.getValue());
+			helper.addAttachment(entry.getKey(), entry.getValue());
 		}
 		javaMailSender.send(msg);
 	}

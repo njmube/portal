@@ -33,7 +33,7 @@ public interface DocumentoService {
 	byte[] recuperarDocumentoArchivo(String fileName, Integer idEstablecimiento,
 			String extension);
 	
-	void reenvioDocumentosFacturacion(String para, String fileName,
+	void envioDocumentosFacturacion(String para, String fileName,
 			Integer idEstablecimiento);
 
 }

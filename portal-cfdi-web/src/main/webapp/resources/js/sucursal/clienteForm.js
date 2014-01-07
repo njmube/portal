@@ -42,6 +42,12 @@ $(document).ready(function() {
 	
 	$(document.body).on('click',"#delete",function(){		
 		$(this).parent().parent().remove();
+		
+		var trSize = $("#tblDireccion tbody > tr").size();
+		
+		if(trSize == 1) {
+			$("#pais").removeAttr("disabled");
+		}
 		aux --;		
 	});
 	
@@ -51,6 +57,12 @@ $(document).ready(function() {
 		var opEstado = $("#estado").html();	
 		
 		if($("#clienteForm").validationEngine('validate')) {
+			
+			var trSize = $("#tblDireccion tbody > tr").size();						
+			
+			if(trSize >= 1) {
+				$("#pais").attr("disabled", true);
+			}
 			
 			var tr = "<tr>"
 			+ "<td width=\'100px\'><input id=\'calle"+ aux +"\' name=\'domicilios["+ aux +"].calle\' class=\'form-control input-xsm validate[required]\' type=\'text\'></td>"
@@ -90,11 +102,12 @@ $("#agregarCorregir").click(function() {
 		
 		if($("#clienteCorregirForm").validationEngine('validate')){
 			
-			var trSize = $("#tblDireccion tbody > tr").size();
+			var trSize = $("#tblDireccion tbody > tr").size();						
 			
 			if(trSize >= 1) {
+				$("#pais").attr("disabled", true);
 				aux = trSize;
-			} else {
+			} else {				
 				aux = 0;
 			}
 			

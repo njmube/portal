@@ -1,5 +1,7 @@
 package com.magnabyte.cfdi.portal.service.commons;
 
+import java.util.Map;
+
 import javax.mail.MessagingException;
 
 import org.springframework.core.io.InputStreamResource;
@@ -12,7 +14,7 @@ public interface EmailService {
 			String... recipients) throws MessagingException;
 
 	void sendMailWithAttach(String message, String messageHtml, String subject,
-			InputStreamResource[] attach, String... recipients)
+			Map<String, InputStreamResource> attach, String... recipients)
 			throws MessagingException;
 
 //	void sendMailWithEngine(String message, String subject, String template,

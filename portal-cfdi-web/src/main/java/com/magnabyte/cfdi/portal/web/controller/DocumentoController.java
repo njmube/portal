@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.magnabyte.cfdi.portal.dao.certificado.CertificadoDao;
@@ -153,6 +154,14 @@ public class DocumentoController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@RequestMapping(value = {"/documentoEnvio", "/portal/cfdi/documentoEnvio"})
+	public void documentoEnvio(@RequestParam Integer idEstab, 
+			@RequestParam String fileName, @RequestParam String email) {
+	
+		logger.debug("----------------------- File Name {}", fileName);
+		documentoService.envioDocumentosFacturacion(email, fileName, idEstab);
 	}
 	
 	@RequestMapping(value = {"/buscarDocs", "/portal/cfdi/buscarDocs"})	
