@@ -51,7 +51,7 @@ public class ClienteController {
 		}
 	}
 	
-	@RequestMapping("/listaClientes")
+	@RequestMapping(value = "/listaClientes", method = RequestMethod.POST)
 	public String listaClientes(ModelMap model, @ModelAttribute Cliente cliente) {		
 		List<Cliente> clientes = clienteService.findClientesByNameRfc(cliente);
 		if(!clientes.isEmpty()) {

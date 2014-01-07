@@ -17,7 +17,7 @@
 			</blockquote>
 			<hr>
 			<div class="well col-md-offset-2 col-md-8">
-				<form:form id="receptorForm" action="#" method="GET" modelAttribute="cliente" cssClass="form-horizontal" role="form">
+				<form:form id="receptorForm" action="#" method="post" modelAttribute="cliente" cssClass="form-horizontal" role="form">
 					<div class="form-group">
 						<label for="rfc" class="col-lg-4 control-label">RFC: </label>
 						<div class="col-lg-5">

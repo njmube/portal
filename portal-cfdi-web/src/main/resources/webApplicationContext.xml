@@ -20,7 +20,7 @@
 		</mvc:interceptor>
 	</mvc:interceptors>
 
-	<mvc:resources location="/resources/" mapping="/resources/**" />
+	<mvc:resources location="/resources/" mapping="/resources/**" cache-period="0"/>
 
 	<context:property-placeholder location="classpath:/modatelas-web.properties"
 		ignore-unresolvable="true" />
