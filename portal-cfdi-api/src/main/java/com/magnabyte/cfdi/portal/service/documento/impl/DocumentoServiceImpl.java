@@ -24,6 +24,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.MessagingException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
@@ -51,6 +52,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,6 +78,7 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDescuento;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
+import com.magnabyte.cfdi.portal.service.commons.EmailService;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoDetalleService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
@@ -121,6 +124,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Autowired
 	private SambaService sambaService;
+	
+	@Autowired
+	private EmailService emailService;
 	
 	private ResourceLoader resourceLoader;
 	
@@ -593,18 +599,17 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		return documentosPorId;
 	}
 	
-	public byte[] recuperarDocumentoArchivo(String fileName, int idEstablecimiento, String extension) {
-		
+	public byte[] recuperarDocumentoArchivo(String fileName, 
+			Integer idEstablecimiento, String extension) {
 		try {
+			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 			
 			Establecimiento estab = establecimientoService.readById(
 					EstablecimientoFactory.newInstance(idEstablecimiento));
 			//FIXME Cambiar la ruta out
 			InputStream file = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
 					+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + "." + extension);
-		
-			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
+			
 			int nRead;
 			byte[] data = new byte[16384];
 	
@@ -619,6 +624,33 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		} catch (Exception e) {
 			logger.error("Error al convertir el documento a bytes");
 			throw new PortalException("Error al convertir el documento a bytes");
+		}
+	}
+
+	@Override
+	public void reenvioDocumentosFacturacion(String para, String fileName,
+			Integer idEstablecimiento) {
+		try {
+		
+			Establecimiento estab = establecimientoService.readById(
+					EstablecimientoFactory.newInstance(idEstablecimiento));
+			
+			InputStream pdf = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
+					+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + ".pdf");
+			
+			InputStream xml = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
+					+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + ".xml");
+			
+			InputStreamResource [] attach = {
+				new InputStreamResource(pdf), new InputStreamResource(xml)	
+			};
+			
+			emailService.sendMailWithAttach("Correo de prueba", "<h2>Hola</h2>",
+					"Eamil de prueba", attach, para);
+		
+		} catch (MessagingException ex) {
+			logger.error("Error al enviar el email", ex.getMessage());
+			throw new PortalException("Error al enviar el email", ex);
 		}
 	}
 
