@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -52,8 +53,8 @@ public class DocumentoController {
 	@Autowired
 	private DocumentoXmlService documentoXmlService;
 
-	@Autowired
-	private DocumentoWebService documentoWebService;
+//	@Autowired
+//	private DocumentoWebService documentoWebService;
 
 	@Autowired
 	private CertificadoDao certificadoDao;
@@ -68,14 +69,14 @@ public class DocumentoController {
 		
 		documentoService.guardarDocumento(documento);
 		if (documentoService.sellarComprobante(documento.getComprobante())) {
-			if (documentoWebService.timbrarDocumento(documento, request)) {
-				documentoService.insertDocumentoCfdi(documento);
-				documentoService.insertAcusePendiente(documento);
-				if(documento instanceof DocumentoSucursal) {
-					ticketService.updateEstadoFacturado((DocumentoSucursal) documento);
-				}
-				model.put("documento", documento);
-			}
+//			if (documentoWebService.timbrarDocumento(documento, request)) {
+//				documentoService.insertDocumentoCfdi(documento);
+//				documentoService.insertAcusePendiente(documento);
+//				if(documento instanceof DocumentoSucursal) {
+//					ticketService.updateEstadoFacturado((DocumentoSucursal) documento);
+//				}
+//				model.put("documento", documento);
+//			}
 		}
 
 		if (documento instanceof DocumentoPortal) {
@@ -135,20 +136,24 @@ public class DocumentoController {
 		}
 	}
 	
-//	@RequestMapping(value = {"/documentoXml/${idEstablecimiento}/${fileName}/${extension}", "/portal/cfdi/documentoXmlFile"})
-//	public void documentoXmlFile(@ModelAttribute Documento documento,
-//			HttpServletResponse response) {
-//		try {			
-//			String filename = documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".xml";
-//			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
-//			OutputStream out = response.getOutputStream();
-////			out.write();
-//			out.flush();
-//			out.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
+	@RequestMapping(value = {"/documentoDownload/{idEstab}/{fileName}/{extension}", "/portal/cfdi/documentoDownload"}, method = RequestMethod.POST)
+	public void documentoDownload(@PathVariable Integer idEstab, 
+			@PathVariable String fileName, @PathVariable String extension,
+			HttpServletResponse response) {
+		try {						
+			logger.debug("----------------------- File name {}", fileName);
+			
+			byte [] doc = documentoService.recuperarDocumentoArchivo(fileName, idEstab, extension);
+			
+			response.setHeader("Content-Disposition", "attachment; filename=" + fileName + "." + extension);
+			OutputStream out = response.getOutputStream();
+			out.write(doc);
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	@RequestMapping("/buscarDocs")	
 	public String buscaDocumentos(ModelMap model) {

@@ -30,4 +30,7 @@ public interface DocumentoService {
 	
 	List<Documento> getDocumentos(Cliente cliente);
 
+	byte[] recuperarDocumentoArchivo(String fileName, int idEstablecimiento,
+			String extension);
+
 }

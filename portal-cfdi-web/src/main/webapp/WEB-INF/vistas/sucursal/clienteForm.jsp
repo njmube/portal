@@ -13,13 +13,27 @@
 $(document).ready(function() {
 	var rfcExtranjeros = "${rfcExtranjeros}";
 	
-	$(document.body).on('change',"#pais",function(){
+	$(document.body).on('change',"#pais",function() {
 		if($("option:selected", this).val() > 1){
+			if($("#personaFisica").is(":checked", true)) {
+				$("#rfc").removeClass("validate[required, custom[rfcFisica]]");
+				$("#rfc").addClass("validate[required, custom[rfc]]");
+			} else if ($("#personaMoral").is(":checked", true)) {
+				$("#rfc").removeClass("validate[required, custom[rfcMoral]]");
+				$("#rfc").addClass("validate[required, custom[rfc]]");
+			}			
 			$("#rfc").val(rfcExtranjeros);
 			$("#rfc").attr('readonly', true);
 		} else {
 			if($("#rfc").val() === rfcExtranjeros) {
 				$("#rfc").val("");
+				if($("#personaFisica").is(":checked", true)) {
+					$("#rfc").removeClass("validate[required, custom[rfc]]");
+					$("#rfc").addClass("validate[required, custom[rfcFisica]]");
+				} else if ($("#personaMoral").is(":checked", true)) {
+					$("#rfc").removeClass("validate[required, custom[rfc]]");
+					$("#rfc").addClass("validate[required, custom[rfcMoral]]");
+				}
 			}
 			$("#rfc").attr('readonly', false);
 		}
