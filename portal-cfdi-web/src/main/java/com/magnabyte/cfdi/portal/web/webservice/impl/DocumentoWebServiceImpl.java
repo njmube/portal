@@ -30,11 +30,11 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 
 	private static final Logger logger = LoggerFactory.getLogger(DocumentoWebServiceImpl.class);
 	
-//	@Autowired
-//	private WsServicios wsServicios;
-//	
-//	@Autowired
-//	private WsEmisionTimbrado wsEmisionTimbrado;
+	@Autowired
+	private WsServicios wsServicios;
+	
+	@Autowired
+	private WsEmisionTimbrado wsEmisionTimbrado;
 	
 	@Autowired
 	private DocumentoXmlService documentoXmlService;
@@ -105,7 +105,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		String password = "Prueba$1";
 		
 		WsResponseBO response = new WsResponseBO();
-//		response = wsEmisionTimbrado.recuperarAcuse(user, password, documento.getTimbreFiscalDigital().getUUID());
+		response = wsEmisionTimbrado.recuperarAcuse(user, password, documento.getTimbreFiscalDigital().getUUID());
 		
 		if (response.getAcuse() != null) {
 			logger.debug("llamada a samba");
@@ -119,17 +119,17 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	
 	private int obtenerIdServicio(String user, String password) {
 		int idServicio = 0;
-//		WsServicioBO serviciosContratados = wsServicios.obtenerServicios(user, password);
-//		if (serviciosContratados.getArray().size() > 0) {
-//			for (WsServicioBO servicio : serviciosContratados.getArray()) {
-//				logger.debug("Id proceso {}", servicio.getIdProcess());
-//				logger.debug("Nombre servicio {}", servicio.getNombreServicio());
-//				idServicio = servicio.getIdProcess();
-//			}
-//		} else {
-//			logger.debug("No hay servicios contratados: {}", serviciosContratados.getMensaje());
-//			throw new PortalException("No hay servicios contratados: " + serviciosContratados.getMensaje());
-//		}
+		WsServicioBO serviciosContratados = wsServicios.obtenerServicios(user, password);
+		if (serviciosContratados.getArray().size() > 0) {
+			for (WsServicioBO servicio : serviciosContratados.getArray()) {
+				logger.debug("Id proceso {}", servicio.getIdProcess());
+				logger.debug("Nombre servicio {}", servicio.getNombreServicio());
+				idServicio = servicio.getIdProcess();
+			}
+		} else {
+			logger.debug("No hay servicios contratados: {}", serviciosContratados.getMensaje());
+			throw new PortalException("No hay servicios contratados: " + serviciosContratados.getMensaje());
+		}
 		//FIXME Comentar para produccion
 		idServicio = 5652528;
 		//
