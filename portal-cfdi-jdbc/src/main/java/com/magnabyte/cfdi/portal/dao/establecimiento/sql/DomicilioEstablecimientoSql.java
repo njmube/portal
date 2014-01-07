@@ -75,7 +75,7 @@ public class DomicilioEstablecimientoSql extends GenericSql   {
 		qryBuilder.append(EOL).append(ORDER).append(ID_DOMICILIO);
 		
 		FIND_DOM_BY_ID = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append(UPDATE).append(EOL).append(TAB).append(TABLE_NAME);
 		qryBuilder.append(EOL).append(SET).append(EOL);

@@ -28,7 +28,7 @@ public class RutaRepositorioSql extends GenericSql {
 		qryBuilder.append(ID_RUTA_ESTAB).append(SET_PARAM);
 
 		FIND_BY_ID = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 
 		qryBuilder.append(UPDATE).append(EOL).append(TAB);
 		qryBuilder.append(TABLE_NAME).append(EOL).append(SET).append(EOL);
@@ -43,7 +43,7 @@ public class RutaRepositorioSql extends GenericSql {
 		qryBuilder.append(ID_RUTA_ESTAB).append(SET_PARAM);
 		
 		UPDATE_RUTA = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 
 	}
 

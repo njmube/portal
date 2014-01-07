@@ -199,7 +199,7 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(ID_ESTABLECIMIENTO).append(SET_PARAM);
 		
 		READ_ALL_WITH_IDS = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 		
 		//---- Actualizar-----//
 		/*
