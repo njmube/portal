@@ -21,4 +21,6 @@ public interface TicketService {
 	boolean ticketProcesado(Ticket ticket, Establecimiento establecimiento);
 
 	List<String> readArticulosSinPrecio();
+
+	void closeOfDay(Establecimiento establecimiento);
 }

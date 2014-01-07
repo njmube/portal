@@ -104,4 +104,10 @@ public class SucursalController {
 		model.put("ticket", ticket);
 		return "sucursal/facturaValidate";
 	}
+	
+	@RequestMapping("/cierre")
+	public String cierre(@ModelAttribute Establecimiento establecimiento, ModelMap model) {
+		ticketService.closeOfDay(establecimiento);
+		return "menu/menu";
+	}
 }
