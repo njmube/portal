@@ -20,8 +20,10 @@ $(function() {
 
 $(document).ready(function() {
 	$(document.body).on('focusout',"input[type=text]",function(){
-		$(this).val(function () {
-			return this.value.toUpperCase();
-		})
+		if(!$(this).hasClass("noUpper")) {
+			$(this).val(function () {
+				return this.value.toUpperCase();
+			});
+		} 
 	});
 });
