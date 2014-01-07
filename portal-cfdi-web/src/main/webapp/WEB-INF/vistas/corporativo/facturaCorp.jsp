@@ -18,12 +18,12 @@
 					<div class="panel-heading">
 						<strong>Documentos Pendientes por Facturar</strong>
 						<a href="<c:url value="/facturaCorp"/>" class="pull-right btn btn-primary btn-xs">
-							Recargar <span class="glyphicon glyphicon-refresh"></span>
+							Recargar <i class="fa fa-refresh"></i>
 						</a>
 					</div>
 					<div class="table-responsive">
-						<c:set var="titlename" value="Nombre <span class='glyphicon glyphicon-sort text-warning'></span>"/>
-						<c:set var="foliosap" value="Folio SAP <span class='glyphicon glyphicon-sort text-warning'></span>"/>
+						<c:set var="titlename" value="Nombre <i class='fa fa-sort'></i>"/>
+						<c:set var="foliosap" value="Folio SAP <i class='fa fa-sort'></i>"/>
 						<display:table htmlId="documents" id="document" name="${documentos}" 
  							class="table table-hover table-striped table-condensed"
  							requestURI="/facturaCorp"> 
@@ -31,7 +31,7 @@
  							<display:column title="${foliosap}" property="folioSap" headerClass="text-primary"></display:column>
  							<display:column title="${titlename}" property="nombreXmlPrevio" headerClass="text-primary"/>
  							<display:column title="Seleccionar" headerClass="text-primary text-center" class="text-center">
- 								<a href="<c:url value="/facturaCorp/validate/${document.nombreXmlPrevio}"/>" class="btn btn-xs btn-success"><span class="glyphicon glyphicon-print"></span></a>
+ 								<a href="<c:url value="/facturaCorp/validate/${document.nombreXmlPrevio}"/>" class="btn btn-xs btn-success"><i class="fa fa-print"></i></a>
  							</display:column>
  						</display:table>
 					</div>

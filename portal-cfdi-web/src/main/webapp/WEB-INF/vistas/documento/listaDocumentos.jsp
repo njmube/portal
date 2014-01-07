@@ -15,24 +15,24 @@
 					<display:column title="PDF" headerClass="text-primary text-center" class="text-center">
 						<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_CORP')">
 							<a href="<c:url value="/documentoDownload/${documento.establecimiento.id}/${documento.nombre}/pdf" />" class="btn btn-xs btn-danger">
-								Descargar <span class="glyphicon glyphicon-download-alt"></span>
+								Descargar <i class="fa fa-download"></i>
 							</a>
 						</sec:authorize>
 						<sec:authorize access="isAnonymous()">
 							<a href="<c:url value="/portal/cfdi/documentoDownload/${documento.establecimiento.id}/${documento.nombre}/pdf" />" class="btn btn-xs btn-danger">
-								Descargar <span class="glyphicon glyphicon-download-alt"></span>
+								Descargar <i class="fa fa-download"></i>
 							</a>
 						</sec:authorize>
 					</display:column>
 					<display:column title="XML" headerClass="text-primary text-center" class="text-center">
 						<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_CORP')">
 							<a href="<c:url value="/documentoDownload/${documento.establecimiento.id}/${documento.nombre}/xml"/>" class="btn btn-xs btn-primary">
-								Descargar <span class="glyphicon glyphicon-download-alt"></span>
+								Descargar <i class="fa fa-download"></i>
 							</a>						
 						</sec:authorize>
 						<sec:authorize access="isAnonymous()">
 							<a href="<c:url value="/portal/cfdi/documentoDownload/${documento.establecimiento.id}/${documento.nombre}/xml"/>" class="btn btn-xs btn-primary">
-								Descargar <span class="glyphicon glyphicon-download-alt"></span>
+								Descargar <i class="fa fa-download"></i>
 							</a>
 						</sec:authorize>
 					</display:column>

@@ -221,8 +221,8 @@
 				</div>
 			</div>
 			<p class="text-center">
-				<button id="generaFactura" type="button" class="btn btn-primary btn-lg"><small>Generar ${tipoComprobante}</small> <span class="glyphicon glyphicon-list-alt"></span></button>
-				<a id="cancel" href="<c:url value="/portal/cfdi/buscaTicket" />" class="btn btn-danger btn-lg"><small>Cancelar</small> <span class="glyphicon glyphicon-remove"></span></a>
+				<button id="generaFactura" type="button" class="btn btn-primary btn-lg"><small>Generar ${tipoComprobante}</small> <i class="fa fa-list-alt"></i></button>
+				<a id="cancel" href="<c:url value="/portal/cfdi/buscaTicket" />" class="btn btn-danger btn-lg"><small>Cancelar</small> <i class="fa fa-times"></i></a>
 			</p>
 		</div>
 	</div>

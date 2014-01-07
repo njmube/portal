@@ -22,7 +22,7 @@
 				<hr>
 				<p class="text-center">
 					<a href="${urlMenu}" class="btn btn-warning btn-lg" role="button">Regresar
-						<span class="glyphicon glyphicon-arrow-left"></span>
+						<i class="fa fa-arrow-left"></i>
 					</a>
 				</p>
 			</div>

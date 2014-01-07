@@ -111,8 +111,8 @@ public class SucursalController {
 	
 	@RequestMapping("/cierre")
 	public String cierre(@ModelAttribute Establecimiento establecimiento, ModelMap model) {
-		ticketService.closeOfDay(establecimiento, executor);
-		
+//		ticketService.closeOfDay(establecimiento, executor);
+		logger.debug("aqui ando");
 		return "menu/menu";
 	}
 }

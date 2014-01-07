@@ -27,12 +27,12 @@
 					<hr>
 					<div class="form-group">
 						<div class="centered">
-							<button id="buscarDocumento" type="button" class="btn btn-warning">Buscar <span class="glyphicon glyphicon-search"></span></button>
+							<button id="buscarDocumento" type="button" class="btn btn-warning">Buscar <i class="fa fa-search"></i></button>
 							<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_CORP')">
-								<a id="cancelar" href="<c:url value="/menu"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
+								<a id="cancelar" href="<c:url value="/menu"/>" class="btn btn-danger">Cancelar <i class="fa fa-times"></i></a>
 							</sec:authorize>
 							<sec:authorize access="isAnonymous()">
-								<a id="cancelar" href="<c:url value="/portal/cfdi/menu"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
+								<a id="cancelar" href="<c:url value="/portal/cfdi/menu"/>" class="btn btn-danger">Cancelar <i class="fa fa-times"></i></a>
 							</sec:authorize>
 						</div>
 					</div>

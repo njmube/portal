@@ -39,7 +39,7 @@ public class LoginController {
 		return "login/sessionTimeout";
 	}
 	
-	@RequestMapping("logout")
+	@RequestMapping("/logout")
 	public String logout(ModelMap model) {
 		model.put("isLoginPage", true);
 		return "login/logoutSuccess";

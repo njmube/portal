@@ -33,9 +33,9 @@
 					<hr>
 					<div class="form-group">
 						<div class="centered">
-							<a id="crearCliente" href="<c:url value="/clienteForm"/>" class="btn btn-warning">Nuevo Cliente <span class="glyphicon glyphicon-plus"></span></a>
-							<button id="buscarCliente" type="button" class="btn btn-primary">Buscar <span class="glyphicon glyphicon-search"></span></button>
-							<a id="cancelar" href="<c:url value="/buscaTicket"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
+							<a id="crearCliente" href="<c:url value="/clienteForm"/>" class="btn btn-warning">Nuevo Cliente <i class="fa fa-plus"></i></a>
+							<button id="buscarCliente" type="button" class="btn btn-primary">Buscar <i class="fa fa-search"></i></button>
+							<a id="cancelar" href="<c:url value="/buscaTicket"/>" class="btn btn-danger">Cancelar <i class="fa fa-times"></i></a>
 						</div>
 					</div>
 				</form:form>
