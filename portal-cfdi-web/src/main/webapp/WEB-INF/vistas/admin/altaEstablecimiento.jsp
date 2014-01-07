@@ -154,6 +154,8 @@
 					<p class="form-grup text-center">
 					<button id="guardar" type="submit" class="btn btn-primary">Guardar 
 					<span class="glyphicon glyphicon-floppy-disk"></span></button>
+					
+					<input type="submit" value="botoonn">
 					</p>
 			</div>
 			</form:form>

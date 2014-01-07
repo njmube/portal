@@ -1,8 +1,8 @@
 
 $(document).ready(function(){
-//	$("#pais").change(function() {
-//		$(this).loadEstados(this, $("#estado"));
-//	});
+	$("#pais").change(function() {
+		$(this).loadEstados(this, $("#estado"));
+	});
 	 $("#establecimientoForm").validate({
 		 rules: {
 			 txtPassword : {
