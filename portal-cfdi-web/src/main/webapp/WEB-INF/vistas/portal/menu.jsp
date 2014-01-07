@@ -22,13 +22,13 @@
 				<hr>
 				<p>
 					<a href="<c:url value="/portal/cfdi/buscaTicket"/>" class="btn btn-success btn-lg" role="button">Generar
-						Factura <span class="glyphicon glyphicon-arrow-right"></span>
+						Factura <i class="fa fa-arrow-right"></i>
 					</a>
 				</p>
 				<hr>
 				<p>
 					<a href="<c:url value="/portal/cfdi/buscarDocs"/>" class="btn btn-primary btn-lg" role="button">Consultar Facturas
-						<span class="glyphicon glyphicon-arrow-right"></span>
+						<i class="fa fa-arrow-right"></i>
 					</a>
 				</p>
 				<hr>

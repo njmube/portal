@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:oxm="http://www.springframework.org/schema/oxm"
 	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.2.xsd
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
@@ -15,9 +13,17 @@
 
 	<mvc:annotation-driven />
 
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/cierre"/>
+			<bean class="com.magnabyte.cfdi.portal.web.interceptor.CloseOfDayInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+
 	<mvc:resources location="/resources/" mapping="/resources/**" />
 
-	<context:property-placeholder location="classpath:/modatelas-web.properties" ignore-unresolvable="true"/>
+	<context:property-placeholder location="classpath:/modatelas-web.properties"
+		ignore-unresolvable="true" />
 
 	<bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
@@ -40,15 +46,6 @@
 		<property name="order" value="0" />
 	</bean>
 
-	<task:executor id="executor" pool-size="5" />
-	<task:scheduler id="scheduler" pool-size="10"/>
-	
-	<task:scheduled-tasks>
-		<task:scheduled ref="documentoWebService" method="recuperarAcusesPendientes" cron="0 0/3 * 1/1 * ?"/>
-	</task:scheduled-tasks>	
-
-	<task:annotation-driven executor="executor" scheduler="scheduler"/>
-	
 	<bean id="wsServicios"
 		class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
 		<property name="serviceInterface" value="com.certus.facturehoy.ws2.cfdi.WsServicios" />
@@ -67,5 +64,15 @@
 		<property name="serviceName" value="WsEmisionTimbradoService" />
 		<property name="portName" value="WsEmisionTimbradoPort" />
 	</bean>
+
+	<task:executor id="executor" pool-size="5" />
+	<task:scheduler id="scheduler" pool-size="10" />
+
+	<task:scheduled-tasks>
+		<task:scheduled ref="documentoWebService" method="recuperarAcusesPendientes"
+			cron="0 0/3 * 1/1 * ?" />
+	</task:scheduled-tasks>
+
+	<!-- <task:annotation-driven executor="executor" scheduler="scheduler"/> -->
 
 </beans>

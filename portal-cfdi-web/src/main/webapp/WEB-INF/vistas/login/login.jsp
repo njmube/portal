@@ -10,7 +10,7 @@
 	<div class="container main-content">
 		<div class="white-panel row">
 			<h2 class="text-primary">
-				Iniciar Sesión <span class="glyphicon glyphicon-user"></span>
+				Iniciar Sesión <i class="fa fa-user"></i>
 			</h2>
 			<hr>
 			<c:if test="${error}">
@@ -46,7 +46,7 @@
 					<div class="form-group">
 						<div class="centered">
 							<button id="buttonLogin" type="submit" class="btn btn-primary">Iniciar
-								Sesión <span class="glyphicon glyphicon-log-in"></span></button>
+								Sesión <i class="fa fa-sign-in"></i></button>
 						</div>
 					</div>
 				</form>

@@ -70,7 +70,7 @@
 						<div class="col-lg-3">
 							<div class="input-group date" id="divFecha" data-date="" data-date-format="dd-mm-yyyy">
 								<form:input path="transaccion.transaccionHeader.fecha" id="fecha" cssClass="form-control input-sm validate[required] datepicker" readonly="true"/>
-							    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+							    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 						    </div>
 						</div>
 				    	<small class="errorForm"><strong><form:errors path="transaccion.transaccionHeader.fecha" cssClass="text-danger"/></strong></small>
@@ -85,7 +85,7 @@
 					<hr>
 					<div class="form-group">
 						<div class="centered">
-							<button id="buscarCliente" type="submit" class="btn btn-primary">Buscar <span class="glyphicon glyphicon-search"></span></button>
+							<button id="buscarCliente" type="submit" class="btn btn-primary">Buscar <i class="fa fa-search"></i></button>
 						</div>
 					</div>
 				</form:form>
