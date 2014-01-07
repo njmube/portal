@@ -16,10 +16,6 @@ public interface DocumentoService {
 	Comprobante obtenerComprobantePor(Cliente cliente, Ticket ticket, 
 			Integer domicilioFiscal, Establecimiento establecimiento);
 	
-	void save(Documento documento);
-
-	void insertDocumentoFolio(Documento documento);
-
 	void insertDocumentoCfdi(Documento documento);
 
 	Cliente obtenerClienteDeComprobante(Comprobante comprobante);
@@ -33,5 +29,8 @@ public interface DocumentoService {
 	void deleteFromAcusePendiente(Documento documento);
 	
 	List<Documento> getDocumentos(Cliente cliente);
+
+	byte[] recuperarDocumentoArchivo(String fileName, int idEstablecimiento,
+			String extension);
 
 }

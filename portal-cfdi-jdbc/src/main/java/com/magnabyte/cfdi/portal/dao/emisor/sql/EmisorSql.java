@@ -69,7 +69,7 @@ public class EmisorSql extends GenericSql {
 		qryBuilder.append(ALIAS_TABLE).append(DOT).append(ID_EMISOR).append(SET_PARAM);
 		
 		READ = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 		
 	}
 	

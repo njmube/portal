@@ -27,7 +27,6 @@ import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.documento.EstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
-import com.magnabyte.cfdi.portal.model.establecimiento.RutaRepositorio;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
 @Repository("documentoDao")
@@ -35,6 +34,13 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 
 	private static final Logger logger = 
 			LoggerFactory.getLogger(DocumentoDaoImpl.class);
+	
+	@Override
+	public Integer readIdByTicket(DocumentoSucursal documento) {
+		return getJdbcTemplate().queryForObject(DocumentoSql.READ_ID_BY_TICKET, 
+				Integer.class, 
+				documento.getTicket().getId());
+	}
 	
 	@Override
 	public void save(Documento documento) {
@@ -48,6 +54,11 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			throw new PortalException("No se pudo registrar el Documento en la base de datos.", ex);
 		}
 	}
+	
+	@Override
+	public void updateDocumentoTicket(DocumentoSucursal documento) {
+		getJdbcTemplate().update(DocumentoSql.UPDATE_DOC_CTE, documento.getCliente().getId(), documento.getId());
+	}
 
 	private MapSqlParameterSource getParameters(Documento documento) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
@@ -59,6 +70,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		} else if(documento instanceof DocumentoCorporativo){
 			params.addValue(DocumentoSql.FOLIO_SAP, ((DocumentoCorporativo) documento).getFolioSap());
 		}
+		//FIXME
 		params.addValue(DocumentoSql.FECHA_DOCUMENTO, new Date());
 		params.addValue(DocumentoSql.TOTAL_DESCUENTO, documento.getComprobante().getDescuento());
 		params.addValue(DocumentoSql.SUBTOTAL, documento.getComprobante().getSubTotal());
@@ -139,8 +151,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 					Comprobante comprobante = new Comprobante();
 					
 					documento.setId(rs.getInt(1));
-					TipoDocumento tipoDocumento = rs.getInt("id_tipo_documento") == 1 ? TipoDocumento.FACTURA : TipoDocumento.NOTA_CREDITO;
-					documento.setTipoDocumento(tipoDocumento);
+					documento.setTipoDocumento(TipoDocumento.getById(rs.getInt("id_tipo_documento")));
 					comprobante.setSerie(rs.getString("serie"));
 					comprobante.setFolio(rs.getString("folio"));
 					establecimiento.setId(rs.getInt("id_establecimiento"));
@@ -158,7 +169,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	}
 
 	@Override
-	public List<Documento> getNombreDocumento(List<Integer> idDocumentos) {
+	public List<Documento> getNombreDocumentoFacturado(List<Integer> idDocumentos) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("idDocumentos", idDocumentos);
 		return getNamedParameterJdbcTemplate().query(DocumentoSql.READ_DOCUMENTO, map, DOCUMENTO_MAPPER);
@@ -184,13 +195,8 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		public Documento mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Documento documento = new Documento();
 			Establecimiento establecimiento = new Establecimiento();
-			RutaRepositorio ruta = new RutaRepositorio();
 			
-			
-			ruta.setRutaRepositorio(rs.getString("ruta_repo"));
-			ruta.setRutaRepoOut(rs.getString("ruta_out"));
-			
-			establecimiento.setRutaRepositorio(ruta);			
+			establecimiento.setId(rs.getInt("id_establecimiento"));
 			documento.setEstablecimiento(establecimiento);
 			documento.setId(rs.getInt("id_documento"));
 			return documento;

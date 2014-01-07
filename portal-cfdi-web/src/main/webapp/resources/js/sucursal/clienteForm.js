@@ -1,10 +1,10 @@
 $(document).ready(function() {
 	
 	$("#clienteForm").validationEngine();
-	$("#clienteCorregirForm").validationEngine();
+	$("#clienteCorregirForm").validationEngine();	
 	
 	if($("#pais option:selected").val() > 1){			
-		$("#rfc").attr('readonly', true);
+		$("#rfc").attr('readonly', true);		
 	}
 	
 	$("#continuar").click(function() {
@@ -46,7 +46,8 @@ $(document).ready(function() {
 	});
 	
 	$("#agregar").click(function() {
-		var opPais = $("#pais").html();
+		var opPais = "<option value=" +$("#pais option:selected").val()+ ">" 
+			+ $("#pais option:selected").text() + "</option>" ;
 		var opEstado = $("#estado").html();	
 		
 		if($("#clienteForm").validationEngine('validate')) {
@@ -120,7 +121,7 @@ $("#agregarCorregir").click(function() {
 			+ "<td width=\'200px\'><input id=\'colonia"+ aux +"\' name=\'domicilios["+ aux +"].colonia\' class=\'form-control input-xsm validate[required]\' type=\'text\'></td>"
 			+ "<td width=\'70px\'><input id=\'codigoPostal"+ aux +"\' name=\'domicilios["+ aux +"].codigoPostal\' class=\'form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]]\' type=\'text\'></td>"
 	//		+ "<td><input id=\'referencia\' name=\'domicilios["+ aux +"].referencia\' class=\'form-control input-xsm\' type=\'text\'></td>"
-	//		+ "<td><input id=\'localidad\' name=\'domicilios["+ aux +"].localidad\' class=\'form-control input-xsm\' type=\'text\'></td>"				
+	//		+ "<td><i/resources/js/sucursal/clienteForm.jsnput id=\'localidad\' name=\'domicilios["+ aux +"].localidad\' class=\'form-control input-xsm\' type=\'text\'></td>"				
 			+ "<td><button id=\'delete\' type=\'button\' class=\'btn btn-danger btn-xs\'><span class=\'glyphicon glyphicon-trash\'></span></button></td>"
 			+ "</tr>";
 			
@@ -136,6 +137,7 @@ $("#agregarCorregir").click(function() {
 	});
 	
 	$("#personaFisica").click(function() {
+		$("input:hidden[id=tipoPersona]").val("1");
 		if($("#personaMoral").is(":checked")) {
 			$("#rfc").removeClass("validate[required, custom[rfcMoral]]");
 			$("#personaMoral").prop('checked', false);
@@ -144,20 +146,17 @@ $("#agregarCorregir").click(function() {
 	});
 	
 	$("#personaMoral").click(function() {
-		if($("#personaFisica").is(":checked")) {
+		$("input:hidden[id=tipoPersona]").val("2");
+		if($("#personaFisica").is(":checked")) {			
 			$("#rfc").removeClass("validate[required, custom[rfcFisica]]");
 			$("#personaFisica").prop('checked', false);
 			$("#rfc").addClass("validate[required, custom[rfcMoral]]");
-			$("#clienteForm").validate().element("#rfc");
-		}
-	});
-	
-	$(document.body).on('change',"#pais",function(){
-		if($("option:selected", this).val() > 1){
-			$("#rfc").val("XAXX010101000");
-			$("#rfc").attr('readonly', true);
-		} else {
-			$("#rfc").attr('readonly', false);
+			var formName = $(this).closest("form").attr('id');
+			if(formName === 'clienteForm') {
+				$("#clienteForm").validate().element("#rfc");				
+			} else {
+				$("#clienteCorregirForm").validate().element("#rfc");
+			}
 		}
 	});
 	

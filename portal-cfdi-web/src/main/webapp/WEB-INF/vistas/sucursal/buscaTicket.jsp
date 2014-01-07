@@ -69,7 +69,7 @@
 						<label for="fecha" class="col-lg-5 control-label">Fecha: </label>
 						<div class="col-lg-3">
 							<div class="input-group date" id="divFecha" data-date="" data-date-format="dd-mm-yyyy">
-								<form:input path="transaccion.transaccionHeader.fecha" id="fecha" cssClass="form-control input-sm validate[required]" readonly="true"/>
+								<form:input path="transaccion.transaccionHeader.fecha" id="fecha" cssClass="form-control input-sm validate[required] datepicker" readonly="true"/>
 							    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 						    </div>
 						</div>

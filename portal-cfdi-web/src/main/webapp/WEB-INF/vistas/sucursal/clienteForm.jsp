@@ -9,7 +9,37 @@
 <script src="<c:url value="/resources/js/commons/direccionFunctions.js"/>"></script>
 <script src="<c:url value="/resources/js/sucursal/clienteForm.js"/>"></script>
 <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/clienteForm.css"/>">
-
+<script type="text/javascript">
+$(document).ready(function() {
+	var rfcExtranjeros = "${rfcExtranjeros}";
+	
+	$(document.body).on('change',"#pais",function() {
+		if($("option:selected", this).val() > 1){
+			if($("#personaFisica").is(":checked", true)) {
+				$("#rfc").removeClass("validate[required, custom[rfcFisica]]");
+				$("#rfc").addClass("validate[required, custom[rfc]]");
+			} else if ($("#personaMoral").is(":checked", true)) {
+				$("#rfc").removeClass("validate[required, custom[rfcMoral]]");
+				$("#rfc").addClass("validate[required, custom[rfc]]");
+			}			
+			$("#rfc").val(rfcExtranjeros);
+			$("#rfc").attr('readonly', true);
+		} else {
+			if($("#rfc").val() === rfcExtranjeros) {
+				$("#rfc").val("");
+				if($("#personaFisica").is(":checked", true)) {
+					$("#rfc").removeClass("validate[required, custom[rfc]]");
+					$("#rfc").addClass("validate[required, custom[rfcFisica]]");
+				} else if ($("#personaMoral").is(":checked", true)) {
+					$("#rfc").removeClass("validate[required, custom[rfc]]");
+					$("#rfc").addClass("validate[required, custom[rfcMoral]]");
+				}
+			}
+			$("#rfc").attr('readonly', false);
+		}
+	});
+});
+</script>
 </head>
 <body>
 	<div class="container main-content">
@@ -19,6 +49,17 @@
 				<p class="text-info">Ingresa la Información de Facturación.</p>
 			</blockquote>
 			<hr>
+			<c:if test="${errorSave}">
+				<div class="col-md-offset-2 col-md-8">
+					<p>
+						<div class="alert alert-danger alert-dismissable">
+							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+							Error al guardar
+							<br><br> <strong>${errorMessage}</strong> 
+						</div>
+					</p>
+				</div>
+			</c:if>
 			<div class="well">
 				<sec:authorize access="hasAnyRole('ROLE_SUC')">
 					<c:url var="altaUrl" value="/confirmarDatos/clienteForm"/>
@@ -28,16 +69,15 @@
 				</sec:authorize>
 				<form:form id="clienteForm" action="${altaUrl}" method="POST" modelAttribute="cliente" cssClass="form-horizontal" role="form">
 					<div class="row">
-    					<div class="col-md-4 col-md-offset-4">
+    					<div class="text-center">
     						<div class="form-group">
-								<label class="control-label col-lg-4">P.Fisica: </label>
-								<div class="col-lg-2">
-									<input type="radio" id="personaFisica" name="personaFisica" checked="checked">
-								</div>
-								<label class="control-label col-lg-4">P.Moral: </label>
-								<div class="col-lg-2">
-									<input type="radio" id="personaMoral" name="personaMoral">
-								</div>
+								<input type="hidden" id="tipoPersona" name="tipoPersona.id" value="1"/>
+   								<label class="checkbox-inline">
+   									<strong>Persona Fisica:</strong> <input type="radio" id="personaFisica" name="personaFisica" checked="checked">
+								</label>
+								<label class="checkbox-inline">
+								  	<strong>Persona Moral:</strong> <input type="radio" id="personaMoral" name="personaMoral">
+								</label>
     						</div>
     					</div>
 					</div>
@@ -46,12 +86,11 @@
 						<div class="col-lg-2">
 							<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfcFisica]]"/>
 						</div>
-						
 						<label class="control-label col-lg-2">* Nombre: </label>
 						<div class="col-lg-6">
 							<form:input path="nombre" id="nombre" cssClass="form-control input-sm validate[required]"/>
 						</div>
-					</div>
+					</div>					
 					<p class="text-center">
 						<button id="agregar" type="button" class="btn btn-xs btn-warning">Agregar Dirección <span class="glyphicon glyphicon-plus"></span> </button>
 					</p>
@@ -113,7 +152,7 @@
 					</p>
 					<p class="text-center" id="botones2" style="display:none">
 						<button id="guardar" type="submit" class="btn btn-primary">Guardar <span class="glyphicon glyphicon-floppy-disk"></span></button>
-						<button id="corregir" type="button" class="btn btn-warning">Corregir <span class="glyphicon glyphicon-arrow-left"></span></button>
+						<button id="corregir" type="button" class="btn btn-warning">Modificar <span class="glyphicon glyphicon-arrow-left"></span></button>
 						<sec:authorize access="hasAnyRole('ROLE_SUC')">
 							<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
 						</sec:authorize>

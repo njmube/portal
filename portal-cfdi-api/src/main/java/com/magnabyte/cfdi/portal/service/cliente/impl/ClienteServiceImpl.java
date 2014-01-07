@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.magnabyte.cfdi.portal.dao.cliente.ClienteDao;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
+import com.magnabyte.cfdi.portal.model.cliente.comparator.ComparadorNombre;
+import com.magnabyte.cfdi.portal.model.cliente.comparator.ComparadorRfc;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
@@ -25,6 +27,12 @@ public class ClienteServiceImpl implements ClienteService {
 	
 	@Autowired
 	private DomicilioClienteService domicilioClienteService;
+	
+	@Autowired
+	private ComparadorRfc comparadorRfc;
+	
+	@Autowired
+	private ComparadorNombre comparadorNombre;
 	
 	@Transactional(readOnly = true)
 	@Override
@@ -81,19 +89,51 @@ public class ClienteServiceImpl implements ClienteService {
 	@Override
 	public void save(Cliente cliente) {
 		if(cliente != null) {
-			clienteDao.save(cliente);
-			if(cliente.getDomicilios() != null && !cliente.getDomicilios().isEmpty()) {
-				domicilioClienteService.save(cliente);
+			if(isExtranjero(cliente)) {
+				guardarExtranjeroVentasMostrador(cliente);				
 			} else {
-				logger.error("La lista de direcciones no puede estar vacia.");
-				throw new PortalException("La lista de direcciones no puede estar vacia.");
+				if(!existRfc(cliente)) {
+					clienteDao.save(cliente);
+					guardaDomicilioCliente(cliente);
+				} else {
+					logger.error("El rfc del cliente ya existe, no es "
+							+ "posible guardarlo nuevamente.");
+					throw new PortalException("El rfc del cliente ya existe, no es "
+							+ "posible guardarlo nuevamente.");
+				}
 			}
 		} else {
 			logger.error("El cliente no puede ser nulo.");
 			throw new PortalException("El cliente no puede ser nulo.");
 		}
 	}
+
+	private void guardaDomicilioCliente(Cliente cliente) {
+		if(cliente.getDomicilios() != null && !cliente.getDomicilios().isEmpty()) {
+			domicilioClienteService.save(cliente);
+		} else {
+			logger.error("La lista de direcciones no puede estar vacia.");
+			throw new PortalException("La lista de direcciones no puede estar vacia.");
+		}
+	}
+
+	private void guardarExtranjeroVentasMostrador(Cliente cliente) {
+		if(!existNombre(cliente)) {
+			clienteDao.save(cliente);
+			guardaDomicilioCliente(cliente);
+		} else {
+			logger.error("El nombre del cliente ya existe, no es "
+					+ "posible guardarlo nuevamente.");
+			throw new PortalException("El nombre del cliente ya existe, no es "
+					+ "posible guardarlo nuevamente.");
+		}
+	}
 	
+	private boolean isExtranjero(Cliente cliente) {
+		return (cliente.getDomicilios().get(0).getEstado()
+				.getPais().getId() != 1);
+	}
+
 	@Transactional
 	@Override
 	public void saveClienteCorporativo(Cliente cliente) {
@@ -119,6 +159,7 @@ public class ClienteServiceImpl implements ClienteService {
 		}
 	}
 	
+	@Transactional(readOnly = true)
 	@Override
 	public Cliente readClientesByNameRfc(Cliente cliente) {
 		Cliente cteBD = null;
@@ -141,20 +182,32 @@ public class ClienteServiceImpl implements ClienteService {
 
 	@Override
 	public boolean exist(Cliente cliente) {
-		Cliente clienteBD = readClientesByNameRfc(cliente); 
+		Cliente clienteBD = readClientesByNameRfc(cliente);
 		if(clienteBD != null) {
 			if(clienteBD.equals(cliente)) {
-//				DomicilioCliente domicilio = cliente.getDomicilios().get(0);
-//				if(domicilio != null) {
-//					for(DomicilioCliente domicilioBD : clienteBD.getDomicilios()) {
-//						return comparaDirecciones(domicilio, domicilioBD);
-//					}
-//				}
-//				return false;
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	private boolean existRfc(Cliente cliente) {
+		Cliente clienteBD = findClienteByRfc(cliente);
+		if (clienteBD != null) {
+			return comparadorRfc.compare(cliente, clienteBD) == 0;
+		} else {
+			return false;
+		}
+		
+	}
+	
+	private boolean existNombre(Cliente cliente) {
+		Cliente clienteBD = findClienteByName(cliente);
+		if (clienteBD != null) {
+			return comparadorNombre.compare(cliente, clienteBD) == 0;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -165,9 +218,15 @@ public class ClienteServiceImpl implements ClienteService {
 		return domicilioBD.compara(domicilio);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<Cliente> getAll() {		
 		return clienteDao.getAll();
 	}
 
+	@Transactional(readOnly = true)
+	@Override
+	public Cliente findClienteByName(Cliente cliente) {		
+		return clienteDao.getClienteByNombre(cliente);
+	}
 }

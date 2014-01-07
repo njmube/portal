@@ -32,6 +32,8 @@ public class DomicilioSql extends GenericSql {
 	public static final String FIND_DOM_BY_CLIENTE;
 	public static final String UPDATE_DOMICILIO_CTE;
 	public static final String DELETE_DOMICILIO_CTE;
+	public static final String READ_EDO_PAIS;
+	public static final String READ_PAIS;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -78,7 +80,7 @@ public class DomicilioSql extends GenericSql {
 		qryBuilder.append(EOL).append(ORDER).append(ID_DOMICILIO);
 		
 		FIND_DOM_BY_CLIENTE = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append(UPDATE).append(EOL).append(TAB).append(TABLE_NAME);
 		qryBuilder.append(EOL).append(SET).append(EOL);
@@ -98,7 +100,7 @@ public class DomicilioSql extends GenericSql {
 		qryBuilder.append(ID_DOMICILIO).append(SET_PARAM);
 		
 		UPDATE_DOMICILIO_CTE = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
 		
 		
 		qryBuilder.append(DELETE).append(" " + FROM).append(EOL);
@@ -106,7 +108,17 @@ public class DomicilioSql extends GenericSql {
 		qryBuilder.append(EOL).append(TAB).append(ID_DOMICILIO).append(SET_PARAM);
 		
 		DELETE_DOMICILIO_CTE = qryBuilder.toString();
-		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("select ce.id_estado, ce.id_pais, dbo.TRIM(ce.nombre) as nom_estado, dbo.TRIM(cp.nombre)");
+		qryBuilder.append(" as nom_pais from c_estado as ce inner join c_pais as cp on ce.id_pais = cp.id_pais where ce.nombre = ?");
+		
+		READ_EDO_PAIS = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("select id_pais, dbo.TRIM(nombre) as nom_pais from c_pais where nombre = ?");
+		
+		READ_PAIS = qryBuilder.toString();
 	}
 	
 }

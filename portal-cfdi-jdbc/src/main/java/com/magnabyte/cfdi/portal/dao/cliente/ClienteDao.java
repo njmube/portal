@@ -12,13 +12,15 @@ public interface ClienteDao {
 	
 	Cliente readClientesByNameRfc(Cliente cliente);
 	
-	public Cliente read(Cliente cliente);		
+	Cliente read(Cliente cliente);		
 	
-	public void save(Cliente cliente);
+	void save(Cliente cliente);
 
-	public void update(Cliente cliente);
+	void update(Cliente cliente);
 
 	Cliente findClienteByRfc(Cliente cliente);
+
+	Cliente getClienteByNombre(Cliente cliente);
 
 
 }

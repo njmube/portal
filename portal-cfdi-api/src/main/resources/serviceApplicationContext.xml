@@ -3,9 +3,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.2.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-3.2.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+	<context:property-placeholder location="classpath:/modatelas-service.properties" ignore-unresolvable="true"/>
 
 	<context:component-scan base-package="com.magnabyte.cfdi.portal.service" />
 	
@@ -14,4 +19,21 @@
 		<oxm:class-to-be-bound name="com.magnabyte.cfdi.portal.model.ticket.Ticket"/>
 	</oxm:jaxb2-marshaller>
 	
+	
+	<bean id="comparatorRfc" class="com.magnabyte.cfdi.portal.model.cliente.comparator.ComparadorRfc">
+	</bean>
+	
+	<bean id="comparatorNombre" class="com.magnabyte.cfdi.portal.model.cliente.comparator.ComparadorNombre">
+	</bean>
+	
+	<bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
+		<property name="caches">
+			<set>
+				<bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="articulosSinPrecio">
+				</bean>
+			</set>
+		</property>
+	</bean>
+	
+	<cache:annotation-driven/>
 </beans>

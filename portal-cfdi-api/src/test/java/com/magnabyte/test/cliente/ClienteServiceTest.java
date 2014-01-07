@@ -18,6 +18,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.magnabyte.cfdi.portal.dao.cliente.ClienteDao;
 import com.magnabyte.cfdi.portal.dao.cliente.dummys.ClienteDummy;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
+import com.magnabyte.cfdi.portal.model.cliente.comparator.ComparadorNombre;
+import com.magnabyte.cfdi.portal.model.cliente.comparator.ComparadorRfc;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.impl.ClienteServiceImpl;
@@ -38,6 +40,13 @@ public class ClienteServiceTest {
 	@InjectMocks
 	ClienteService clienteService = new ClienteServiceImpl();
 	
+	
+	@Autowired
+	ComparadorRfc comparadorRfc;
+	
+	@Autowired
+	ComparadorNombre comparadorNombre;
+	
 	public static Cliente CLIENTE = null;
 	public static Cliente CLIENTE_DIF = null;
 	public static Cliente CLIENTE_NO_EXISTE = null;
@@ -53,7 +62,7 @@ public class ClienteServiceTest {
 		MockitoAnnotations.initMocks(this);
 	}
 	
-	@Test
+//	@Test
 	public void save() {
 		logger.info("Actualizando un cliente completo.");
 		Cliente cliente = CLIENTE;
@@ -76,7 +85,7 @@ public class ClienteServiceTest {
 		Mockito.verify(domicilioServiceMock, Mockito.atLeastOnce()).update(cliente);
 	}
 	
-	@Test
+//	@Test
 	public void readCliente() {
 		logger.info("Recuperando el cliente de la base de datos.");
 		Cliente cliente = CLIENTE;
@@ -94,5 +103,49 @@ public class ClienteServiceTest {
 		logger.info("Recuperando la lista de clientes de la base de datos.");
 		List<Cliente> clientes = clienteService.findClientesByNameRfc(CLIENTE);
 		Assert.assertNotNull(clientes);		
+	}
+	
+	@Test
+	public void comparadorNombre() {
+		Cliente cliente1 = CLIENTE;
+		Cliente cliente2 = CLIENTE;
+		
+		logger.debug(comparadorNombre.compare(cliente1, cliente2));
+		
+		Assert.assertEquals(0, 
+				comparadorNombre.compare(cliente1, cliente2));
+	}
+	
+	@Test
+	public void comparadorRfc() {
+		Cliente cliente1 = CLIENTE;
+		Cliente cliente2 = CLIENTE;
+		
+		logger.debug(comparadorRfc.compare(cliente1, cliente2));
+		
+		Assert.assertEquals(0, 
+				comparadorRfc.compare(cliente1, cliente2));
+	}
+	
+	@Test
+	public void comparadorNombreDif() {
+		Cliente cliente1 = CLIENTE;
+		Cliente cliente2 = CLIENTE_DIF;
+		
+		logger.debug(comparadorNombre.compare(cliente1, cliente2));
+		
+		Assert.assertNotEquals(0, 
+				comparadorNombre.compare(cliente1, cliente2));
+	}
+	
+	@Test
+	public void comparadorRfcDif() {
+		Cliente cliente1 = CLIENTE;
+		Cliente cliente2 = CLIENTE_DIF;
+		
+		logger.debug(comparadorRfc.compare(cliente1, cliente2));
+		
+		Assert.assertNotEquals(0, 
+				comparadorRfc.compare(cliente1, cliente2));
 	}
 }

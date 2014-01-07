@@ -36,9 +36,12 @@ public class DocumentoSql extends GenericSql {
 	
 	public static final String READ_DOCUMENTO;
 	public static final String READ_DOCUMENTO_RUTA;
-	public static final String READ_SERIE_FOLIO;
+	public static final String READ_NEXT_SERIE_FOLIO;
 	public static final String UPDATE_FOLIO_SERIE;
 	public static final String READ_ACUSE_PEND;
+	public static final String UPDATE_DOC_CTE;
+	public static final String READ_ID_BY_TICKET;
+	public static final String READ_SERIE_FOLIO_DOC;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -49,7 +52,15 @@ public class DocumentoSql extends GenericSql {
 		qryBuilder.append("and id_tipo_documento = ?").append(EOL);
 		qryBuilder.append("and status = 'A'");
 		
-		READ_SERIE_FOLIO = qryBuilder.toString();
+		READ_NEXT_SERIE_FOLIO = qryBuilder.toString();
+		
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("select dbo.trim(serie) as serie, dbo.trim(folio) as folio").append(EOL);  
+		qryBuilder.append("from t_documento_folio").append(EOL); 
+		qryBuilder.append("where id_documento = ?");
+		
+		READ_SERIE_FOLIO_DOC = qryBuilder.toString();
 		
 		clearAndReuseStringBuilder(qryBuilder);
 		
@@ -70,11 +81,10 @@ public class DocumentoSql extends GenericSql {
 		READ_ACUSE_PEND = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		
-		qryBuilder.append(SELECT).append(EOL).append(TAB).append("doc.id_documento, ruta.ruta_repo, ruta.ruta_out").append(EOL);
-		qryBuilder.append(FROM).append(EOL).append("t_documento as doc").append(EOL).append(TAB);
+		qryBuilder.append(SELECT).append(EOL).append(TAB).append("doc.id_documento, doc.id_establecimiento").append(EOL);
+		qryBuilder.append(FROM).append(EOL).append("t_documento as doc").append(EOL).append(TAB);		
 		qryBuilder.append(INNER).append("t_cliente as cte on doc.id_cliente = cte.id_cliente").append(EOL).append(TAB);
 		qryBuilder.append(INNER).append("t_establecimiento as estab on doc.id_establecimiento = estab.id_establecimiento").append(EOL).append(TAB);
-		qryBuilder.append(INNER).append("t_ruta_establecimiento as ruta on estab.id_ruta_establecimiento = ruta.id_ruta_establecimiento").append(EOL);
 		qryBuilder.append(WHERE).append(EOL).append(TAB).append("cte.rfc like ?");
 		
 		
@@ -89,6 +99,15 @@ public class DocumentoSql extends GenericSql {
 		
 		READ_DOCUMENTO = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("update t_documento set id_cliente = ? where id_documento = ?");
+		
+		UPDATE_DOC_CTE = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("select id_documento from t_documento where id_ticket = ?");
+		
+		READ_ID_BY_TICKET = qryBuilder.toString();
 	}
 	
 }

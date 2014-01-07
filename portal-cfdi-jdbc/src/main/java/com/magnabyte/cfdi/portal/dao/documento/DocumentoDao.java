@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
+import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 
 public interface DocumentoDao {
 	
@@ -17,9 +18,13 @@ public interface DocumentoDao {
 
 	List<Documento> obtenerAcusesPendientes();
 	
-	List<Documento> getNombreDocumento(List<Integer> idDocumentos);
+	List<Documento> getNombreDocumentoFacturado(List<Integer> idDocumentos);
 	
 	List<Documento> getDocumentoByCliente(Cliente cliente);
 
 	void deleteFromAcusePendiente(Documento documento);
+
+	void updateDocumentoTicket(DocumentoSucursal documento);
+
+	Integer readIdByTicket(DocumentoSucursal documento);
 }

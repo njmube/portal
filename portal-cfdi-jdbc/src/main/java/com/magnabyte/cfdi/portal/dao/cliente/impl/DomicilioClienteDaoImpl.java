@@ -75,10 +75,8 @@ public class DomicilioClienteDaoImpl extends GenericJdbcDao implements
 
 	@Override
 	public Estado readEstado(Estado estado) {
-		String qry = "select ce.id_estado, ce.id_pais, dbo.TRIM(ce.nombre) as nom_estado, dbo.TRIM(cp.nombre)"
-				+ " as nom_pais from c_estado as ce inner join c_pais as cp on ce.id_pais = cp.id_pais where ce.nombre = ?";
 		try {
-			return getJdbcTemplate().queryForObject(qry, ESTADO_MAPPER, estado.getNombre());
+			return getJdbcTemplate().queryForObject(DomicilioSql.READ_EDO_PAIS, ESTADO_MAPPER, estado.getNombre());
 		} catch (EmptyResultDataAccessException ex) {
 			logger.debug("El estado no existe, se insertará.");
 			return null;
@@ -87,9 +85,8 @@ public class DomicilioClienteDaoImpl extends GenericJdbcDao implements
 	
 	@Override
 	public Pais readPais(Pais pais) {
-		String qry = "select id_pais, dbo.TRIM(nombre) as nom_pais from c_pais where nombre = ?";
 		try {
-			return getJdbcTemplate().queryForObject(qry, PAIS_MAPPER, pais.getNombre());			
+			return getJdbcTemplate().queryForObject(DomicilioSql.READ_PAIS, PAIS_MAPPER, pais.getNombre());			
 		} catch (EmptyResultDataAccessException ex) {
 			logger.debug("El país no existe, se insertará.");
 			return null;

@@ -2,7 +2,6 @@ package com.magnabyte.cfdi.portal.dao;
 
 public class GenericSql {
 	
-//	SQL Srver dbo.TRIM
 	public static final String SELECT = "SELECT";
 	public static final String INSERT = "INSERT INTO";
 	public static final String UPDATE = "UPDATE";
@@ -22,6 +21,7 @@ public class GenericSql {
 	public static final String AS = " AS ";
 	public static final String ON = " ON ";
 	public static final String EQ = " = ";
+	public static final String DIF = " != ";
 	public static final String TAB = "	";
 	public static final String EOL = "\n";
 	public static final String EOL_ = ",\n";
@@ -29,8 +29,7 @@ public class GenericSql {
 	public static final String SET = "SET";
 	
 	
-	public static StringBuilder clearAndReuseStringBuilder(final StringBuilder qry) {
+	public static void clearAndReuseStringBuilder(final StringBuilder qry) {
 		qry.delete(0, qry.length());
-		return qry;
 	}
 }

@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.factory.ClienteFactory;
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 
@@ -33,6 +35,9 @@ public class ClienteController {
 	@Autowired
 	private OpcionDeCatalogoService opcionDeCatalogoService;
 	
+	@Value("${generic.rfc.extranjeros}")
+	private String genericRfcExtranjeros;
+	
 	@RequestMapping("/portal/cfdi/buscaPorRfc")
 	public String buscaPorRfc(@ModelAttribute Cliente cliente, ModelMap model) {
 		Cliente clienteBD = clienteService.findClienteByRfc(cliente);
@@ -41,6 +46,7 @@ public class ClienteController {
 			return "portal/confirmarDatos";
 		} else {
 			model.put("cliente", cliente);
+			model.put("errorMsg", true);
 			return "portal/buscaRfc";
 		}
 	}
@@ -59,6 +65,7 @@ public class ClienteController {
 	public String clienteForm(ModelMap model) {
 		logger.debug("regresando forma cliente");
 		model.put("cliente", new Cliente());
+		model.put("rfcExtranjeros", genericRfcExtranjeros);
 		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
 		model.put("emptyList", true);
 		return "sucursal/clienteForm";
@@ -71,13 +78,21 @@ public class ClienteController {
 		if (result.hasErrors()) {
 			model.put("error", result.getAllErrors());
 			logger.debug(result.getAllErrors().toString());
-			return "sucursal/" + viewError;
 		}
 		
 		if(cliente.getId() != null) {		
 			clienteService.update(cliente);
 		} else {
-			clienteService.save(cliente);
+			try {
+				clienteService.save(cliente);
+			} catch (PortalException ex) {
+				model.put("errorSave", true);
+				model.put("errorMessage", ex.getMessage());
+				model.put("listaPaises", opcionDeCatalogoService
+						.getCatalogo("c_pais", "id_pais"));
+				model.put("rfcExtranjeros", genericRfcExtranjeros);
+				return "sucursal/" + viewError;
+			}
 		}
 		model.put("cliente", cliente);
 		logger.debug("Cliente: {}", cliente.getId());		
@@ -110,8 +125,9 @@ public class ClienteController {
 	@RequestMapping("/clienteCorregir/{id}")
 	public String corregirDatos(@PathVariable Integer id, ModelMap model) {
 		logger.debug("confirmarDatos page");
-		model.put("clienteCorregir", clienteService.read(ClienteFactory.newInstance(id)));
-		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
+		Cliente cliente = clienteService.read(ClienteFactory.newInstance(id));
+		model.put("clienteCorregir", cliente);
+		model.put("rfcExtranjeros", genericRfcExtranjeros);
 		model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
 		return "sucursal/clienteCorregir";
 	}

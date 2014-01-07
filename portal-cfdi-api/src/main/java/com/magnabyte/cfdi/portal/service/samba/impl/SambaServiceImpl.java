@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.magnabyte.cfdi.portal.dao.certificado.CertificadoDao;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
@@ -50,9 +49,6 @@ public class SambaServiceImpl implements SambaService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SambaServiceImpl.class);
 
-	@Autowired
-	private CertificadoDao certificadoDao;
-	
 	@Autowired
 	private DocumentoXmlService documentoXmlService;
 	
@@ -95,7 +91,7 @@ public class SambaServiceImpl implements SambaService {
 	@Override
 	public List<DocumentoCorporativo> getFilesFromDirectory(String url) {
 		List<DocumentoCorporativo> documentos = new ArrayList<DocumentoCorporativo>();
-		String regex = "(^[F-N]\\d{10}.+(\\.(?i)(xml))$)";
+		String regex = "^[F|N]\\d{10}[A-Z].+(\\.(?i)(xml))$";
 		Pattern pattern = Pattern.compile(regex);
 		Config.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
 		logger.debug("sambaService getFilesFromDirectory...");
@@ -104,7 +100,7 @@ public class SambaServiceImpl implements SambaService {
 			SmbFile dir = new SmbFile(url);
 			if (dir.exists()) {
 				SmbFile[] files = dir.listFiles();
-				logger.debug("si hay {}", files.length);
+				logger.debug("archivos en carpeta: {}", files.length);
 				for (SmbFile file : files) {
 					if (file.isFile()) {
 						Matcher matcher = pattern.matcher(file.getName());
@@ -195,13 +191,17 @@ public class SambaServiceImpl implements SambaService {
 			smbFileOutputStream.close();
 			logger.debug("Se ha escrito el xml correctamente.");
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error, la URL del archivo es inválida: {}", e);
+			throw new PortalException("Ocurrió un error, la URL del archivo es inválida: " + e.getMessage());
 		} catch (SmbException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al escribir el archivo: {}", e);
+			throw new PortalException("Ocurrió un error al escribir el archivo: " + e.getMessage());
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al escribir el archivo: {}", e);
+			throw new PortalException("Ocurrió un error al escribir el archivo: " + e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al escribir el archivo: {}", e);
+			throw new PortalException("Ocurrió un error al escribir el archivo: " + e.getMessage());
 		}
 	}
 	
@@ -249,11 +249,14 @@ public class SambaServiceImpl implements SambaService {
 			bos.flush();
 			bos.close();
 		} catch (JRException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al crear el PDF: {}", e);
+			throw new PortalException("Ocurrió un error al crear el PDF: " + e.getMessage());
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al crear el PDF: {}", e);
+			throw new PortalException("Ocurrió un error al crear el PDF: " + e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al crear el PDF: {}", e);
+			throw new PortalException("Ocurrió un error al crear el PDF: " + e.getMessage());
 		}
 		
 	}

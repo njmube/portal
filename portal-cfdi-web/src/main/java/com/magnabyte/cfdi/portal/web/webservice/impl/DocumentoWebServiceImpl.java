@@ -10,6 +10,7 @@ import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.certus.facturehoy.ws2.cfdi.WsEmisionTimbrado;
@@ -48,17 +49,19 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	@Autowired
 	private EstablecimientoService establecimientoService;
 	
+	@Value("${ws.user}")
+	private String userWs;
+	
+	@Value("${ws.password}")
+	private String passwordWs;
+	
 	@Override
 	public boolean timbrarDocumento(Documento documento, HttpServletRequest request) {
 		TimbreFiscalDigital timbre = null;
 		logger.debug("en timbrar Documento");
-		String user = "AAA010101AAA.Test.User";
-		String password = "Prueba$1";
 		WsResponseBO response = new WsResponseBO();
-		//FIXME Quitar para produccion
-		documento.getComprobante().getEmisor().setRfc("AAA010101AAA");
-		//
-		response = wsEmisionTimbrado.emitirTimbrar(user, password, obtenerIdServicio(user, password), 
+		
+		response = wsEmisionTimbrado.emitirTimbrar(userWs, passwordWs, obtenerIdServicio(userWs, passwordWs), 
 			documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
 		
 		if (!response.isIsError()) {
@@ -102,6 +105,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	@Override
 	public void recuperarAcuse(Documento documento) {
 		logger.debug("recuperando acuse");
+		//FIXME
 		String user = "AAA010101AAA.Test.User";
 		String password = "Prueba$1";
 		

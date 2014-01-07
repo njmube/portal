@@ -25,7 +25,7 @@ public class ClienteDummy {
 		Cliente cliente = new Cliente();
 		
 		cliente.setId(4);
-		cliente.setNombre("Edgar Pérez Castellón");
+		cliente.setNombre("Edgar Ramirez Ñongora");
 		cliente.setRfc("PECE890903HD3R");
 		cliente.setDomicilios(getDomiciliosDif());
 		

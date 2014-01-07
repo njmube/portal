@@ -119,13 +119,13 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="localidad" class="col-lg-2 control-label"><small>Ciudad: </small></label>
-								<div class="col-lg-4">
-									<input id="localidad" class="form-control input-sm" value="${comprobante.receptor.domicilio.localidad}" readonly="readonly"/>
-								</div>
 								<label for="estado" class="col-lg-2 control-label"><small>Estado: </small></label>
 								<div class="col-lg-4">
 									<input id="estado" class="form-control input-sm" value="${comprobante.receptor.domicilio.estado}" readonly="readonly"/>
+								</div>
+								<label for="pais" class="col-lg-2 control-label"><small>País: </small></label>
+								<div class="col-lg-4">
+									<input id="pais" class="form-control input-sm" value="${comprobante.receptor.domicilio.pais}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
@@ -227,7 +227,8 @@
 	<div class="page_loader_content text-center">
 		<div class="row">
 			<div class="panel col-md-4 col-md-offset-4">
-				<h3>Generando Factura...</h3>
+				<h3>Generando Factura</h3>
+				<p>Espere por favor...<span class="glyphicon glyphicon-time"></span></p>
 				<div class="progress progress-striped active">
 				  	<div class="progress-bar"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
 				</div>

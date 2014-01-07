@@ -44,7 +44,7 @@
 						<display:column title="Estado"  property="estado.nombre" headerClass="text-primary" />
 						<display:column title="Municipio"  property="municipio" headerClass="text-primary" />
 						<display:column title="Colonia" property="colonia" headerClass="text-primary" />
-						<display:column title="Codigo Postal"  property="codigoPostal" headerClass="text-primary" />
+						<display:column title="Código Postal"  property="codigoPostal" headerClass="text-primary" />
 <%-- 						<display:column title="Localidad"  property="localidad" headerClass="text-primary" /> --%>
 <%-- 						<display:column title="Referencia"  property="referencia" headerClass="text-primary" /> --%>
 						<display:column title="Fiscal" headerClass="text-primary text-center" class="text-center">
@@ -62,7 +62,7 @@
 			</div>
 				<p class="text-center"> 
 					<a id="continue" href="#" class="btn btn-success"><span>Continuar</span></a>
-					<a href="<c:url value="/clienteCorregir/${cliente.id}"/>" class="btn btn-warning"><span>Corregir</span></a>
+					<a href="<c:url value="/clienteCorregir/${cliente.id}"/>" class="btn btn-warning"><span>Modificar</span></a>
 					<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger"><span>Cancelar</span></a>
 				</p>
 		</div>				

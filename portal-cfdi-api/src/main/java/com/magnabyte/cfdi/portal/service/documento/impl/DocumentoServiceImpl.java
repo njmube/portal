@@ -1,5 +1,6 @@
 package com.magnabyte.cfdi.portal.service.documento.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -67,6 +68,7 @@ import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.establecimiento.factory.EstablecimientoFactory;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago;
@@ -78,7 +80,10 @@ import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoDetalleService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
+import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
+import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
+import com.magnabyte.cfdi.portal.service.xml.util.CfdiConfiguration;
 
 @Service("documentoService")
 public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAware {
@@ -112,22 +117,28 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Autowired
 	private OpcionDeCatalogoService opcionDeCatalogoService;
 	
+	@Autowired
+	private EstablecimientoService establecimientoService;
+	
+	@Autowired
+	private SambaService sambaService;
+	
+	@Autowired
+	private CfdiConfiguration cfdiConfiguration;
+	
 	private ResourceLoader resourceLoader;
 	
 	@Override
 	public boolean sellarComprobante(Comprobante comprobante) {
 		logger.debug("en sellar Documento");
-		//QUITAR
-		comprobante.getEmisor().setRfc("AAA010101AAA");
-		//
 		String cadena = obtenerCadena(comprobante);
 		String sello = obtenerSelloDigital(cadena);
-		logger.debug("SELLO: {} y CADENA: {}", sello, cadena);
+		logger.debug("SELLO: {}", sello);
+		logger.debug("CADENA: {}", cadena);
 		if(validSelloDigital(sello, cadena, comprobante)) {
 			comprobante.setSello(sello);
 			return true;
 		}
-		//xml pendiente
 		return false;
 	}
 
@@ -148,17 +159,21 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			
 			return signature.verify(Base64.decode(sello));
 		} catch (CertificateException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al obtener la fecha del ticket: ", e);
+			throw new PortalException("Ocurrió un error al obtener la fecha del ticket: ", e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al validar el Sello Digital, no se pudo cargar el certificado.", e);
+			throw new PortalException("Ocurrió un error al validar el Sello Digital, no se pudo cargar el certificado.", e);
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al validar el Sello Digital.", e);
+			throw new PortalException("Ocurrió un error al validar el Sello Digital.", e);
 		} catch (InvalidKeyException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al validar el Sello Digital, el certificado es invalido", e);
+			throw new PortalException("Ocurrió un error al validar el Sello Digital, el certificado es invalido", e);
 		} catch (SignatureException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al validar el Sello Digital, el certificado es invalido", e);
+			throw new PortalException("Ocurrió un error al validar el Sello Digital, el certificado es invalido", e);
 		}
-		return false;
 	}
 
 	private String obtenerSelloDigital(String cadena) {
@@ -175,11 +190,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			logger.debug("regresando sello");
 			return new String(Base64.encode(firma));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al obtener el Sello Digital, no se pudo cargar la llave del certificado.", e);
+			throw new PortalException("Ocurrió un error al obtener el Sello Digital, no se pudo cargar la llave del certificado.", e);
 		} catch (GeneralSecurityException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al obtener el Sello Digital.", e);
+			throw new PortalException("Ocurrió un error al obtener el Sello Digital.", e);
 		}
-		return null;
 	}
 
 	private String obtenerCadena(Comprobante comprobante) {
@@ -195,13 +211,17 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			logger.debug("regresando Cadena");
 			return writer.toString();
 		} catch (TransformerConfigurationException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al obtener la Cadena Original.", e);
+			throw new PortalException("Ocurrió un error al obtener la Cadena Original.", e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al obtener la Cadena Original, "
+					+ "no se pudo recuperar el xslt para generar la cadena original", e);
+			throw new PortalException("Ocurrió un error al obtener la Cadena Original, "
+					+ "no se pudo recuperar el xslt para generar la cadena original", e);
 		} catch (TransformerException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al obtener la Cadena Original.", e);
+			throw new PortalException("Ocurrió un error al obtener la Cadena Original.", e);
 		}
-		return null;
 	}
 	
 	@Override
@@ -209,6 +229,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		this.resourceLoader = resourceLoader;
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public Comprobante obtenerComprobantePor(Cliente cliente, Ticket ticket,
 		Integer idDomicilioFiscal, Establecimiento establecimiento) {
@@ -257,10 +278,10 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	}
 
 	private void inicializaComprobante(Comprobante comprobante, Ticket ticket) {
-		comprobante.setVersion("3.2");
-		comprobante.setSello("");
-		comprobante.setNoCertificado("xxxxxxxxxxxxxxxxxxxx");
-		comprobante.setCertificado("");
+		comprobante.setVersion(cfdiConfiguration.getVersionCfdi());
+		comprobante.setSello(cfdiConfiguration.getSelloPrevio());
+		comprobante.setNoCertificado(cfdiConfiguration.getNumeroCertificadoPrevio());
+		comprobante.setCertificado(cfdiConfiguration.getCertificadoPrevio());
 		for(InformacionPago infoPago : ticket.getTransaccion().getInformacionPago()) {
 			comprobante.setNumCtaPago(infoPago.getNumeroCuenta());
 			comprobante.setMetodoDePago(infoPago.getPago().getMetodoPago().toUpperCase());
@@ -276,6 +297,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		if (expedidoEn.getNoInterior() != null && expedidoEn.getNoInterior().trim().isEmpty()) {
 			expedidoEn.setNoInterior(null);
 		}
+		
+		if (empresaEmisor.getEmisor().getDomicilioFiscal().getNoInterior() != null
+				&& empresaEmisor.getEmisor().getDomicilioFiscal().getNoInterior().trim().isEmpty()) {
+			empresaEmisor.getEmisor().getDomicilioFiscal().setNoInterior(null);
+		}
+		
 		empresaEmisor.getEmisor().setExpedidoEn(expedidoEn);
 		return empresaEmisor.getEmisor();
 	}
@@ -353,11 +380,10 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		comprobante.setTotal(comprobante.getSubTotal().subtract(comprobante.getDescuento()).add(comprobante.getImpuestos().getTotalImpuestosTrasladados()).setScale(2, BigDecimal.ROUND_UP));
 	}
 	
-	private boolean isArticuloSinPrecio(String idArticulo) {
-		String [] articuloSinPrecio = {"4032700", "4032800", "4032900"};
-		for (String articulo : articuloSinPrecio) {
-			if (idArticulo.equals(articulo))
-				return true;
+	private boolean isArticuloSinPrecio(String claveArticulo) {
+		List<String> articulosSinPrecio = ticketService.readArticulosSinPrecio();
+		if (articulosSinPrecio != null) {
+			return articulosSinPrecio.contains(claveArticulo);
 		}
 		return false;
 	}
@@ -372,47 +398,11 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 					DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED); 
 			comprobante.setFecha(fechaComprobante);
 		} catch (DatatypeConfigurationException e) {
-			e.printStackTrace();
+			logger.error("Ocurrió un error al asignar la fecha del Documento.", e);
+			throw new PortalException("Ocurrió un error al asignar la fecha del Documento.", e);
 		}
 	}
 
-	//FIXME
-	@Override
-	public void save(Documento documento) {
-		if(documento != null) {
-			if(documento instanceof DocumentoCorporativo) {
-				if(documento.getCliente() != null) {
-					if(!clienteService.exist(documento.getCliente())) {
-						logger.debug("Saveando.......");
-						clienteService.save(documento.getCliente());
-					} else {
-						documento.setCliente(clienteService.readClientesByNameRfc(documento.getCliente()));
-					}
-				}
-			}
-			if(documento instanceof DocumentoSucursal) {
-				ticketService.save((DocumentoSucursal) documento);
-			}
-			documentoDao.save(documento);
-			documentoDetalleService.save(documento);
-		} else {
-			logger.debug("El Documento no puede ser nulo.");
-			throw new PortalException("El Documento no puede ser nulo.");
-		}
-	}
-	
-	//FIXME
-	@Override
-	public void insertDocumentoFolio(Documento documento) {
-		synchronized (documentoSerieDao) {
-			Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolio(documento);
-			documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
-			documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO_CONSECUTIVO));
-			documentoSerieDao.updateFolioSerie(documento);
-			documentoDao.insertDocumentoFolio(documento);
-		}
-	}
-	
 	@Transactional
 	@Override
 	public void insertDocumentoCfdi(Documento documento) {
@@ -424,29 +414,46 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	public void guardarDocumento(Documento documento) {
 		if(documento != null) {
 			if(documento instanceof DocumentoSucursal) {
-				if (!ticketService.ticketProcesado(((DocumentoSucursal) documento).getTicket(), documento.getEstablecimiento())) {
-					ticketService.save((DocumentoSucursal) documento);
+				Ticket ticketDB = ticketService.read(((DocumentoSucursal) documento).getTicket(), documento.getEstablecimiento());
+				if (ticketDB != null) {
+					switch (ticketDB.getTipoEstadoTicket()) {
+					case GUARDADO:
+						logger.debug("El ticket ya fue guardado previamente.");
+						((DocumentoSucursal) documento).getTicket().setId(ticketDB.getId());
+						documento.setId(documentoDao.readIdByTicket((DocumentoSucursal) documento));
+						documentoDao.updateDocumentoTicket((DocumentoSucursal) documento);
+						Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolioDocumento(documento);
+						documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
+						documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO));
+						break;
+					case FACTURADO:
+						logger.debug("El ticket ya fue facturado.");
+						throw new PortalException("El ticket ya fue facturado con anterioridad.");
+					default:
+						break;
+					}
 				} else {
-					logger.debug("El ticket ya fue facturado.");
-					throw new PortalException("El ticket ya fue facturado con anterioridad.");
+					ticketService.save((DocumentoSucursal) documento);
+					documentoDao.save(documento);
+					documentoDetalleService.save(documento);
+					
+					synchronized (documentoSerieDao) {
+						Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolio(documento);
+						documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
+						documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO_CONSECUTIVO));
+						documentoSerieDao.updateFolioSerie(documento);
+						documentoDao.insertDocumentoFolio(documento);
+					}
 				}
+			} else if (documento instanceof DocumentoCorporativo) {
+				documentoDao.save(documento);
+				documentoDetalleService.save(documento);
 			}
-			documentoDao.save(documento);
-			documentoDetalleService.save(documento);
 		} else {
 			logger.debug("El Documento no puede ser nulo.");
 			throw new PortalException("El Documento no puede ser nulo.");
 		}		
 		
-		if(documento instanceof DocumentoSucursal) {
-			synchronized (documentoSerieDao) {
-				Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolio(documento);
-				documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
-				documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO_CONSECUTIVO));
-				documentoSerieDao.updateFolioSerie(documento);
-				documentoDao.insertDocumentoFolio(documento);
-			}
-		}
 	}
 	
 	@Transactional
@@ -560,20 +567,63 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		return false;
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<Documento> getDocumentos(Cliente cliente) {
-		List<Documento> rutasEstab = documentoDao.getDocumentoByCliente(cliente);
+		List<Documento> listaDocumentos = documentoDao.getDocumentoByCliente(cliente);
 		List<Integer> idDocumentos = new ArrayList<Integer>();
-		List<Documento> documentos = null;
+		List<Documento> documentosPorId = null;
 		
-		if(rutasEstab != null && !rutasEstab.isEmpty()) {			
-			for(Documento ruta : rutasEstab) {
+		if(listaDocumentos != null && !listaDocumentos.isEmpty()) {			
+			for(Documento ruta : listaDocumentos) {
 				idDocumentos.add(ruta.getId());
 			}
 		
-			documentos = documentoDao.getNombreDocumento(idDocumentos);		
+			documentosPorId = documentoDao.getNombreDocumentoFacturado(idDocumentos);
+			
+			for (Documento documento2 : documentosPorId) {
+				for (Documento documento : listaDocumentos) {
+					if (documento2.getId().equals(documento.getId())) {
+						documento2.setEstablecimiento(documento.getEstablecimiento());
+						documento2.setNombre(documento2.getTipoDocumento()
+								+ "_" + documento2.getComprobante().getSerie() 
+								+ "_" + documento2.getComprobante().getFolio());
+						break;
+					}
+				}
+			}
 		}
-		return documentos;
+		
+		return documentosPorId;
+	}
+	
+	public byte[] recuperarDocumentoArchivo(String fileName, int idEstablecimiento, String extension) {
+		
+		try {
+			
+			Establecimiento estab = establecimientoService.readById(
+					EstablecimientoFactory.newInstance(idEstablecimiento));
+			//FIXME Cambiar la ruta out
+			InputStream file = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
+					+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + "." + extension);
+		
+			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+			int nRead;
+			byte[] data = new byte[16384];
+	
+			while ((nRead = file.read(data, 0, data.length)) != -1) {
+			  buffer.write(data, 0, nRead);
+			}
+	
+			buffer.flush();
+	
+			return buffer.toByteArray();
+		
+		} catch (Exception e) {
+			logger.error("Error al convertir el documento a bytes");
+			throw new PortalException("Error al convertir el documento a bytes");
+		}
 	}
 
 }
