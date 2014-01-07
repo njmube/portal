@@ -24,13 +24,13 @@ public class ClienteSql extends GenericSql {
 		StringBuilder qryBuilder = new StringBuilder();
 		
 		qryBuilder.append(SELECT).append(EOL).append(TAB).append(ALL).append(EOL);
-		qryBuilder.append(FROM).append(EOL).append(TAB).append(TABLE_NAME).append(EOL);
-		qryBuilder.append(WHERE).append(EOL).append(TAB).append(RFC).append(DIF).append(GENERIC_RFC);
+		qryBuilder.append(FROM).append(EOL).append(TAB).append(TABLE_NAME);
+		
 		
 		GET_ALL = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		
-		qryBuilder.append("select * from t_cliente where (rfc like ? OR nombre like ?) and rfc != "+ GENERIC_RFC);
+		qryBuilder.append("select * from t_cliente where rfc like ? OR nombre like ?");
 		
 		FIND_BY_NAME_RFC = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
