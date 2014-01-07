@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import mx.gob.sat.cfd._3.Comprobante;
 import net.sf.jasperreports.engine.JRParameter;
 
-import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,7 +164,7 @@ public class DocumentoController {
 	
 	@RequestMapping("/portal/cfdi/listaDocumentos")
 	public String listaDocumentos(ModelMap model, @ModelAttribute Cliente cliente) {
-		Log.debug("Opteniendo la lista de documentos");
+		logger.debug("Opteniendo la lista de documentos");
 		List<Documento> documentos = documentoService.getDocumentos(cliente);
 		if(documentos != null && !documentos.isEmpty()) {
 			model.put("emptyList", false);

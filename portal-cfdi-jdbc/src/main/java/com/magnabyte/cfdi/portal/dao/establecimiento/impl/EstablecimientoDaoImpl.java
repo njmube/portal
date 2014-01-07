@@ -14,10 +14,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
-import com.magnabyte.cfdi.portal.dao.cliente.sql.ClienteSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.EstablecimientoDao;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
-import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.DomicilioEstablecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;

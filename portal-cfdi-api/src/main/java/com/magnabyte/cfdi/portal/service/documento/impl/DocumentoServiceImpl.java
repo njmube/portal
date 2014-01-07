@@ -448,6 +448,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			} else if (documento instanceof DocumentoCorporativo) {
 				documentoDao.save(documento);
 				documentoDetalleService.save(documento);
+				documentoDao.insertDocumentoFolio(documento);
 			}
 		} else {
 			logger.debug("El Documento no puede ser nulo.");

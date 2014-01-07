@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -68,6 +69,7 @@ public class EstablecimientoController {
 		model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
 		return "admin/establecimientoForm";
 	}
+	
 	@RequestMapping(value = "/guardarEstablecimiento", method = RequestMethod.POST)
 	public String guardarEstablecimiento(@ModelAttribute Establecimiento establecimiento){
 		
