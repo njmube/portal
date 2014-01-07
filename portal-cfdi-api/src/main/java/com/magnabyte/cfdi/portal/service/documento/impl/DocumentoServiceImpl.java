@@ -83,6 +83,7 @@ import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
+import com.magnabyte.cfdi.portal.service.xml.util.CfdiConfiguration;
 
 @Service("documentoService")
 public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAware {
@@ -121,6 +122,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Autowired
 	private SambaService sambaService;
+	
+	@Autowired
+	private CfdiConfiguration cfdiConfiguration;
 	
 	private ResourceLoader resourceLoader;
 	
@@ -274,10 +278,10 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	}
 
 	private void inicializaComprobante(Comprobante comprobante, Ticket ticket) {
-		comprobante.setVersion("3.2");
-		comprobante.setSello("");
-		comprobante.setNoCertificado("xxxxxxxxxxxxxxxxxxxx");
-		comprobante.setCertificado("");
+		comprobante.setVersion(cfdiConfiguration.getVersionCfdi());
+		comprobante.setSello(cfdiConfiguration.getSelloPrevio());
+		comprobante.setNoCertificado(cfdiConfiguration.getNumeroCertificadoPrevio());
+		comprobante.setCertificado(cfdiConfiguration.getCertificadoPrevio());
 		for(InformacionPago infoPago : ticket.getTransaccion().getInformacionPago()) {
 			comprobante.setNumCtaPago(infoPago.getNumeroCuenta());
 			comprobante.setMetodoDePago(infoPago.getPago().getMetodoPago().toUpperCase());

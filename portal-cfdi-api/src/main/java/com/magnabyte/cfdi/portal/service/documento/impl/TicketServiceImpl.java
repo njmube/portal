@@ -160,7 +160,7 @@ public class TicketServiceImpl implements TicketService {
 	@Cacheable("articulosSinPrecio")
 	@Override
 	public List<String> readArticulosSinPrecio() {
-		logger.debug("metodo con cache");
+		logger.debug("metodo con cache - articulos sin precio");
 		return ticketDao.readArticulosSinPrecio();
 	}
 

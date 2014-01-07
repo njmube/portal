@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="display" uri="http://displaytag.sf.net"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <c:if test="${!emptyList}">
 	<c:choose>
 		<c:when test="${not empty documentos}">
@@ -9,41 +10,40 @@
 				<display:table htmlId="documentos" id="documento" name="${documentos}"
 					class="table table-hover table-striped table-condensed"
 					requestURI="">
-					<display:column title="#" property="id" headerClass="text-primary"></display:column>
+					<display:column title="#" headerClass="text-primary">${documento_rowNum}</display:column>
 					<display:column title="Nombre Documento" property="nombre" headerClass="text-primary text-center" class="text-center" />
-<%-- 					<display:column title="Serie" property="comprobante.serie" headerClass="text-primary"></display:column> --%>
-<%-- 					<display:column title="Folio" property="comprobante.folio" headerClass="text-primary" /> --%>
 					<display:column title="PDF" headerClass="text-primary text-center" class="text-center">
-						<button type="button" id="descargaDocPdf" class="btn btn-xs btn-danger">Descargar <span class="glyphicon glyphicon-download-alt"></span></button>
+						<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_CORP')">
+							<a href="<c:url value="/documentoDownload/${documento.establecimiento.id}/${documento.nombre}/pdf" />" class="btn btn-xs btn-danger">
+								Descargar <span class="glyphicon glyphicon-download-alt"></span>
+							</a>
+						</sec:authorize>
+						<sec:authorize access="isAnonymous()">
+							<a href="<c:url value="/portal/cfdi/documentoDownload/${documento.establecimiento.id}/${documento.nombre}/pdf" />" class="btn btn-xs btn-danger">
+								Descargar <span class="glyphicon glyphicon-download-alt"></span>
+							</a>
+						</sec:authorize>
 					</display:column>
 					<display:column title="XML" headerClass="text-primary text-center" class="text-center">
-						<button type="button" id="descargaDocXml" class="btn btn-xs btn-primary">Descargar <span class="glyphicon glyphicon-download-alt"></span></button>
+						<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_CORP')">
+							<a href="<c:url value="/documentoDownload/${documento.establecimiento.id}/${documento.nombre}/xml"/>" class="btn btn-xs btn-primary">
+								Descargar <span class="glyphicon glyphicon-download-alt"></span>
+							</a>						
+						</sec:authorize>
+						<sec:authorize access="isAnonymous()">
+							<a href="<c:url value="/portal/cfdi/documentoDownload/${documento.establecimiento.id}/${documento.nombre}/xml"/>" class="btn btn-xs btn-primary">
+								Descargar <span class="glyphicon glyphicon-download-alt"></span>
+							</a>
+						</sec:authorize>
 					</display:column>
 					<display:column title="Reenviar" headerClass="text-primary text-center" class="text-center">
-						<button type="button" id="reenviarDocumento" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#myModal">Reenviar <span class="glyphicon glyphicon-envelope"></span></button>
+						<button type="button" id="reenviarDocumento" class="btn btn-xs btn-success" data-toggle="modal" data-target="#myModal">Reenviar <span class="glyphicon glyphicon-envelope"></span></button>
 					</display:column>
 				</display:table>
 			</div>
-			<c:url value="/documentoDownload/${documento.establecimiento.id}/${documento.nombre}/pdf" var="urlDocumentoPdf"/>
-			<c:url value="/documentoDownload/${documento.establecimiento.id}/${documento.nombre}/xml" var="urlDocumentoXml"/>
-			<form id="formDocument" method="post"></form>
 			<script type="text/javascript">
 				$(document).ready(function() {
 					$("#reenvioDocForm").validationEngine();
-					
-					var urlPdf = "${urlDocumentoPdf}";
-					var urlXml = "${urlDocumentoXml}";
-						
-					$("#descargaDocPdf").click(function() {
-						$("#formDocument").attr("action", urlPdf);
-						$("#formDocument").submit();
-					});
-					
-					$("#descargaDocXml").click(function() {
-						alert("Funciona XML!");
-						$("#formDocument").attr("action", urlXml);
-						$("#formDocument").submit();
-					});
 					
 					$("#enviaMail").click(function() {
 						if($("#reenvioDocForm").validationEngine("validate")){

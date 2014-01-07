@@ -53,8 +53,8 @@ public class DocumentoController {
 	@Autowired
 	private DocumentoXmlService documentoXmlService;
 
-//	@Autowired
-//	private DocumentoWebService documentoWebService;
+	@Autowired
+	private DocumentoWebService documentoWebService;
 
 	@Autowired
 	private CertificadoDao certificadoDao;
@@ -69,14 +69,14 @@ public class DocumentoController {
 		
 		documentoService.guardarDocumento(documento);
 		if (documentoService.sellarComprobante(documento.getComprobante())) {
-//			if (documentoWebService.timbrarDocumento(documento, request)) {
-//				documentoService.insertDocumentoCfdi(documento);
-//				documentoService.insertAcusePendiente(documento);
-//				if(documento instanceof DocumentoSucursal) {
-//					ticketService.updateEstadoFacturado((DocumentoSucursal) documento);
-//				}
-//				model.put("documento", documento);
-//			}
+			if (documentoWebService.timbrarDocumento(documento, request)) {
+				documentoService.insertDocumentoCfdi(documento);
+				documentoService.insertAcusePendiente(documento);
+				if(documento instanceof DocumentoSucursal) {
+					ticketService.updateEstadoFacturado((DocumentoSucursal) documento);
+				}
+				model.put("documento", documento);
+			}
 		}
 
 		if (documento instanceof DocumentoPortal) {
@@ -136,7 +136,8 @@ public class DocumentoController {
 		}
 	}
 	
-	@RequestMapping(value = {"/documentoDownload/{idEstab}/{fileName}/{extension}", "/portal/cfdi/documentoDownload"}, method = RequestMethod.POST)
+	@RequestMapping(value = {"/documentoDownload/{idEstab}/{fileName}/{extension}"
+			, "/portal/cfdi/documentoDownload/{idEstab}/{fileName}/{extension}"})
 	public void documentoDownload(@PathVariable Integer idEstab, 
 			@PathVariable String fileName, @PathVariable String extension,
 			HttpServletResponse response) {
@@ -155,14 +156,14 @@ public class DocumentoController {
 		}
 	}
 	
-	@RequestMapping("/buscarDocs")	
+	@RequestMapping(value = {"/buscarDocs", "/portal/cfdi/buscarDocs"})	
 	public String buscaDocumentos(ModelMap model) {
 		model.put("cliente", new Cliente());
 		model.put("emptyList", true);
 		return "documento/buscaDocumentos";
 	}
 	
-	@RequestMapping("listaDocumentos")
+	@RequestMapping("/portal/cfdi/listaDocumentos")
 	public String listaDocumentos(ModelMap model, @ModelAttribute Cliente cliente) {
 		Log.debug("Opteniendo la lista de documentos");
 		List<Documento> documentos = documentoService.getDocumentos(cliente);

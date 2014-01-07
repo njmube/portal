@@ -40,6 +40,7 @@ import org.springframework.stereotype.Service;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
+import com.magnabyte.cfdi.portal.service.xml.util.CfdiConfiguration;
 import com.magnabyte.cfdi.portal.service.xml.util.CustomNamespacePrefixMapper;
 
 @Service("documentoXmlService")
@@ -58,6 +59,9 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 
 	@Autowired
 	private CustomNamespacePrefixMapper customNamespacePrefixMapper;
+	
+	@Autowired
+	private CfdiConfiguration cfdiConfiguration;
 	
 	private ResourceLoader resourceLoader;
 	
@@ -80,12 +84,12 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 			
 			revisaNodos(documento);
 			if (documento != null) {
-				cambiaNameSpace(documento, Namespace.getNamespace(CustomNamespacePrefixMapper.CFDI_PREFIX, CustomNamespacePrefixMapper.CFDI_URI));
-				documento.setAttribute("version", "3.2");
+				cambiaNameSpace(documento, Namespace.getNamespace(customNamespacePrefixMapper.getCfdiPrefix(), customNamespacePrefixMapper.getCfdiUri()));
+				documento.setAttribute("version", cfdiConfiguration.getVersionCfdi());
 				documento.setAttribute("tipoDeComprobante", documento.getAttributeValue("tipoDeComprobante").toLowerCase());
-				documento.setAttribute("sello", "");
-				documento.setAttribute("noCertificado", "xxxxxxxxxxxxxxxxxxxx");
-				documento.setAttribute("certificado", "");
+				documento.setAttribute("sello", cfdiConfiguration.getSelloPrevio());
+				documento.setAttribute("noCertificado", cfdiConfiguration.getNumeroCertificadoPrevio());
+				documento.setAttribute("certificado", cfdiConfiguration.getCertificadoPrevio());
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				OutputStreamWriter oos = new OutputStreamWriter(baos, "UTF-8");
 				XMLOutputter outputter = new XMLOutputter();
@@ -161,7 +165,7 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	public byte[] convierteComprobanteAByteArray(Comprobante comprobante) {
 		Map<String, Object> marshallerProperties = new HashMap<String, Object>();
 		marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_SCHEMA_LOCATION, "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv32.xsd");
+		marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_SCHEMA_LOCATION, cfdiConfiguration.getSchemaLocation());
 		marshallerProperties.put("com.sun.xml.bind.namespacePrefixMapper", customNamespacePrefixMapper);
 		((Jaxb2Marshaller) marshaller).setMarshallerProperties(marshallerProperties);
 
@@ -199,8 +203,8 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 		String noCertificadoSat = null;
 		try {
 			Document documentoCFDI = (Document) builder.build(new ByteArrayInputStream(xmlCfdi));
-			Namespace nsCfdi = Namespace.getNamespace(CustomNamespacePrefixMapper.CFDI_PREFIX, CustomNamespacePrefixMapper.CFDI_URI);
-			Namespace nsTfd = Namespace.getNamespace(CustomNamespacePrefixMapper.TFD_PREFIX, CustomNamespacePrefixMapper.TFD_URI);
+			Namespace nsCfdi = Namespace.getNamespace(customNamespacePrefixMapper.getCfdiPrefix(), customNamespacePrefixMapper.getCfdiUri());
+			Namespace nsTfd = Namespace.getNamespace(customNamespacePrefixMapper.getTfdPrefix(), customNamespacePrefixMapper.getTfdUri());
 			noCertificadoSat = documentoCFDI.getRootElement().getChild("Complemento", nsCfdi).getChild("TimbreFiscalDigital", nsTfd).getAttributeValue("noCertificadoSAT");
 		} catch (JDOMException e) {
 			logger.error("Error al obtener el numero de certificado del SAT: ", e);

@@ -11,6 +11,7 @@
 <body>
 	<div class="container main-content">
 		<div class="white-panel row">
+			<h2><span class="text-info">Facturación Electrónica</span> <span class="label label-primary">@</span></h2>
 			<blockquote>
 				<p class="text-info">Ingresa el RFC del Cliente.</p>
 			</blockquote>
@@ -27,7 +28,12 @@
 					<div class="form-group">
 						<div class="centered">
 							<button id="buscarDocumento" type="button" class="btn btn-warning">Buscar <span class="glyphicon glyphicon-search"></span></button>
-							<a id="cancelar" href="<c:url value="/menu"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
+							<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_CORP')">
+								<a id="cancelar" href="<c:url value="/menu"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
+							</sec:authorize>
+							<sec:authorize access="isAnonymous()">
+								<a id="cancelar" href="<c:url value="/portal/cfdi/menu"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
+							</sec:authorize>
 						</div>
 					</div>
 				</form:form>
