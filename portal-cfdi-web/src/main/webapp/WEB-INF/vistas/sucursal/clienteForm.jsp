@@ -138,7 +138,7 @@ $(document).ready(function() {
 					</p>
 					<p class="text-center" id="botones2" style="display:none">
 						<button id="guardar" type="submit" class="btn btn-primary">Guardar <span class="glyphicon glyphicon-floppy-disk"></span></button>
-						<button id="corregir" type="button" class="btn btn-warning">Corregir <span class="glyphicon glyphicon-arrow-left"></span></button>
+						<button id="corregir" type="button" class="btn btn-warning">Modificar <span class="glyphicon glyphicon-arrow-left"></span></button>
 						<sec:authorize access="hasAnyRole('ROLE_SUC')">
 							<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
 						</sec:authorize>

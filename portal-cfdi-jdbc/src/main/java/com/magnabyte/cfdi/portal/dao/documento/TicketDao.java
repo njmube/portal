@@ -1,5 +1,7 @@
 package com.magnabyte.cfdi.portal.dao.documento;
 
+import java.util.List;
+
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
@@ -11,4 +13,6 @@ public interface TicketDao {
 	void updateEstadoFacturado(DocumentoSucursal documento);
 
 	Ticket read(Ticket ticket, Establecimiento establecimiento);
+
+	List<String> readArticulosSinPrecio();
 }

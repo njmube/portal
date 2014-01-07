@@ -32,6 +32,8 @@ public class DomicilioSql extends GenericSql {
 	public static final String FIND_DOM_BY_CLIENTE;
 	public static final String UPDATE_DOMICILIO_CTE;
 	public static final String DELETE_DOMICILIO_CTE;
+	public static final String READ_EDO_PAIS;
+	public static final String READ_PAIS;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -107,6 +109,16 @@ public class DomicilioSql extends GenericSql {
 		
 		DELETE_DOMICILIO_CTE = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("select ce.id_estado, ce.id_pais, dbo.TRIM(ce.nombre) as nom_estado, dbo.TRIM(cp.nombre)");
+		qryBuilder.append(" as nom_pais from c_estado as ce inner join c_pais as cp on ce.id_pais = cp.id_pais where ce.nombre = ?");
+		
+		READ_EDO_PAIS = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("select id_pais, dbo.TRIM(nombre) as nom_pais from c_pais where nombre = ?");
+		
+		READ_PAIS = qryBuilder.toString();
 	}
 	
 }

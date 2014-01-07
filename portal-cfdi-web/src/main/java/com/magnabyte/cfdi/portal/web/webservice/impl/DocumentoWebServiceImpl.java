@@ -55,9 +55,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		String user = "AAA010101AAA.Test.User";
 		String password = "Prueba$1";
 		WsResponseBO response = new WsResponseBO();
-		//FIXME Quitar para produccion
-		documento.getComprobante().getEmisor().setRfc("AAA010101AAA");
-		//
+		
 		response = wsEmisionTimbrado.emitirTimbrar(user, password, obtenerIdServicio(user, password), 
 			documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
 		

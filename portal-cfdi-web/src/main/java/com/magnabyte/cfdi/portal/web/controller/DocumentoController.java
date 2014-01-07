@@ -27,6 +27,7 @@ import com.magnabyte.cfdi.portal.dao.certificado.CertificadoDao;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
+import com.magnabyte.cfdi.portal.model.documento.DocumentoPortal;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
@@ -77,8 +78,11 @@ public class DocumentoController {
 			}
 		}
 
-		//FIXME
-		return "redirect:/portal/cfdi/imprimirFactura";
+		if (documento instanceof DocumentoPortal) {
+			return "redirect:/portal/cfdi/imprimirFactura";
+		} else {
+			return "redirect:/imprimirFactura";
+		}
 	}
 
 	@RequestMapping(value = {"/imprimirFactura", "/portal/cfdi/imprimirFactura"})

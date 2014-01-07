@@ -3,6 +3,7 @@ package com.magnabyte.cfdi.portal.dao.documento.impl;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,11 @@ public class TicketDaoImpl extends GenericJdbcDao
 	public void updateEstadoFacturado(DocumentoSucursal documento) {
 		getJdbcTemplate().update(TicketSql.UPDATE_FACTURADO, 
 				documento.getTicket().getTipoEstadoTicket().getId(), documento.getTicket().getId());
+	}
+	
+	@Override
+	public List<String> readArticulosSinPrecio() {
+		return getJdbcTemplate().queryForList(TicketSql.READ_ART_SIN_PRECIO, String.class);
 	}
 	
 	@Override

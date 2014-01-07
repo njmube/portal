@@ -14,6 +14,7 @@ public class TicketSql extends GenericSql {
 
 	public static final String READ;
 	public static final String UPDATE_FACTURADO;
+	public static final String READ_ART_SIN_PRECIO;
 
 	
 	static {
@@ -29,5 +30,10 @@ public class TicketSql extends GenericSql {
 		
 		UPDATE_FACTURADO = qryBuilder.toString();
 		
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("select dbo.TRIM(clave) as clave from t_articulos_sin_precio");
+		
+		READ_ART_SIN_PRECIO = qryBuilder.toString();
 	}
 }

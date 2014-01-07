@@ -20,7 +20,6 @@ import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 @Service("clienteService")
 public class ClienteServiceImpl implements ClienteService {
 	
-	//FIXME
 	private static final Logger logger = LoggerFactory.getLogger(ClienteServiceImpl.class);
 
 	@Autowired
@@ -159,6 +158,8 @@ public class ClienteServiceImpl implements ClienteService {
 			throw new PortalException("El cliente no puede ser nulo.");
 		}
 	}
+	
+	@Transactional(readOnly = true)
 	@Override
 	public Cliente readClientesByNameRfc(Cliente cliente) {
 		Cliente cteBD = null;
@@ -192,12 +193,21 @@ public class ClienteServiceImpl implements ClienteService {
 	
 	private boolean existRfc(Cliente cliente) {
 		Cliente clienteBD = findClienteByRfc(cliente);
-		return comparadorRfc.compare(cliente, clienteBD) == 0;
+		if (clienteBD != null) {
+			return comparadorRfc.compare(cliente, clienteBD) == 0;
+		} else {
+			return false;
+		}
+		
 	}
 	
 	private boolean existNombre(Cliente cliente) {
 		Cliente clienteBD = findClienteByName(cliente);
-		return comparadorNombre.compare(cliente, clienteBD) == 0;
+		if (clienteBD != null) {
+			return comparadorNombre.compare(cliente, clienteBD) == 0;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -208,11 +218,13 @@ public class ClienteServiceImpl implements ClienteService {
 		return domicilioBD.compara(domicilio);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<Cliente> getAll() {		
 		return clienteDao.getAll();
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public Cliente findClienteByName(Cliente cliente) {		
 		return clienteDao.getClienteByNombre(cliente);

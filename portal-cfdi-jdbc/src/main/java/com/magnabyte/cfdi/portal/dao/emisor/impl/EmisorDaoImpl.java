@@ -28,9 +28,8 @@ public class EmisorDaoImpl extends GenericJdbcDao implements EmisorDao{
 
 	@Override
 	public EmpresaEmisor read(EmpresaEmisor empresa) {
-		String qry = EmisorSql.READ;
-		logger.debug(qry);
-		return getJdbcTemplate().queryForObject(qry, new Object[]{empresa.getId()}, MAPPER_EMISOR);
+		logger.debug(EmisorSql.READ);
+		return getJdbcTemplate().queryForObject(EmisorSql.READ, new Object[]{empresa.getId()}, MAPPER_EMISOR);
 	}
 	
 	@Override
@@ -77,9 +76,7 @@ public class EmisorDaoImpl extends GenericJdbcDao implements EmisorDao{
 			
 			ubicacionFiscal.setCalle(rs.getString(EmisorSql.CALLE));
 			ubicacionFiscal.setNoExterior(rs.getString(EmisorSql.NO_EXTERIOR));
-			//FIXME
-			ubicacionFiscal.setNoInterior(rs.getString(EmisorSql.NO_INTERIOR)
-					.length() < 1 ? null : rs.getString(EmisorSql.NO_INTERIOR));
+			ubicacionFiscal.setNoInterior(rs.getString(EmisorSql.NO_INTERIOR));
 			ubicacionFiscal.setPais(rs.getString(EmisorSql.PAIS));
 			ubicacionFiscal.setEstado(rs.getString(EmisorSql.ESTADO));
 			ubicacionFiscal.setMunicipio(rs.getString(EmisorSql.MUNICIPIO));

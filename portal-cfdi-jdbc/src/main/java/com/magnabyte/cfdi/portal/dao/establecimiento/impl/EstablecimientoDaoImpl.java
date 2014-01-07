@@ -28,10 +28,9 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 
 	@Override
 	public Establecimiento findByClave(Establecimiento establecimiento) {
-		String qry = EstablecimientoSql.FIND_BY_CLAVE;
-		logger.debug(qry);
+		logger.debug(EstablecimientoSql.FIND_BY_CLAVE);
 		try {
-			return getJdbcTemplate().queryForObject(qry, MAPPER_ESTABLECIMIENTO,
+			return getJdbcTemplate().queryForObject(EstablecimientoSql.FIND_BY_CLAVE, MAPPER_ESTABLECIMIENTO,
 					establecimiento.getClave());
 		} catch (EmptyResultDataAccessException ex) {
 			logger.debug("No existe el establecimiento");
@@ -41,19 +40,15 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 	
 	@Override
 	public Establecimiento readByClave(Establecimiento establecimiento) {
-		String qry = EstablecimientoSql.READ_BY_CLAVE;
-		logger.debug(qry);
+		logger.debug(EstablecimientoSql.READ_BY_CLAVE);
 
-		return getJdbcTemplate().queryForObject(qry, MAPPER_ESTAB_COMPLETO,
+		return getJdbcTemplate().queryForObject(EstablecimientoSql.READ_BY_CLAVE, MAPPER_ESTAB_COMPLETO,
 				establecimiento.getClave());
 	}
 	
 	@Override
 	public Establecimiento readById(Establecimiento establecimiento) {
-		//FIXME
-		String qry = "select * from t_establecimiento as te inner join t_ruta_establecimiento as tre on te.id_ruta_establecimiento = "
-				+ "tre.id_ruta_establecimiento where te.id_establecimiento = ?";
-		return getJdbcTemplate().queryForObject(qry, new RowMapper<Establecimiento>() {
+		return getJdbcTemplate().queryForObject(EstablecimientoSql.READ_BY_ID, new RowMapper<Establecimiento>() {
 			@Override
 			public Establecimiento mapRow(ResultSet rs, int rowNum)
 					throws SQLException {
@@ -71,16 +66,14 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 
 	@Override
 	public String getRoles(Establecimiento establecimiento) {
-		return getJdbcTemplate().queryForObject(EstablecimientoSql.GET_ROLES,
-				new Object[] { establecimiento.getId() }, String.class);
+		return getJdbcTemplate().queryForObject(EstablecimientoSql.GET_ROLES, String.class, establecimiento.getId());
 	}
 	
 	@Override
 	public List<Establecimiento> readAll() {
-		String qry = EstablecimientoSql.READ_ALL;
-		logger.debug("--readAll Establecimientos.  -"+qry);
+		logger.debug(EstablecimientoSql.READ_ALL);
 
-		return getJdbcTemplate().query(qry, MAPPER_ESTABLECIMIENTO);
+		return getJdbcTemplate().query(EstablecimientoSql.READ_ALL, MAPPER_ESTABLECIMIENTO);
 	}
 
 	private static final RowMapper<Establecimiento> MAPPER_ESTABLECIMIENTO = new RowMapper<Establecimiento>() {

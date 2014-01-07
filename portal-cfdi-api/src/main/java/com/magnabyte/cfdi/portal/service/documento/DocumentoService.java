@@ -16,10 +16,6 @@ public interface DocumentoService {
 	Comprobante obtenerComprobantePor(Cliente cliente, Ticket ticket, 
 			Integer domicilioFiscal, Establecimiento establecimiento);
 	
-	void save(Documento documento);
-
-	void insertDocumentoFolio(Documento documento);
-
 	void insertDocumentoCfdi(Documento documento);
 
 	Cliente obtenerClienteDeComprobante(Comprobante comprobante);

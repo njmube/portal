@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +19,8 @@ import jcifs.smb.SmbFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.XmlMappingException;
 import org.springframework.stereotype.Service;
@@ -46,6 +49,9 @@ public class TicketServiceImpl implements TicketService {
 	
 	@Autowired
 	private SambaService sambaService;
+	
+	@Value("${ticket.clave.venta}")
+	private String claveVentaTicket;
 	
 	@Transactional
 	@Override
@@ -87,7 +93,7 @@ public class TicketServiceImpl implements TicketService {
 		String fechaXml = ticket.getTransaccion().getTransaccionHeader().getFecha();
 		BigDecimal importe = ticket.getTransaccion().getTransaccionTotal().getTotalVenta();
 		String fecha = fechaXml.substring(6, 10) + fechaXml.substring(3, 5) + fechaXml.substring(0, 2);
-		String regex = noSucursal + "_" + noCaja + "_" + noTicket + "_" + fecha + "\\d\\d\\d\\d\\d\\d\\.xml";
+		String regex = noSucursal + "_" + noCaja + "_" + noTicket + "_" + fecha + "\\d{6}.xml";
 		String urlTicketFiles = establecimiento.getRutaRepositorio().getRutaRepositorio() 
 				+ establecimiento.getRutaRepositorio().getRutaRepoIn() + fecha + File.separator ; 
 		logger.debug("Ruta ticket {}", urlTicketFiles);
@@ -103,7 +109,7 @@ public class TicketServiceImpl implements TicketService {
 						
 						Ticket ticketXml = (Ticket) unmarshaller.unmarshal(new StreamSource(sambaService.getFileStream(urlTicketFiles, file.getName())));
 						
-						if (!ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase("SA") //FIXME
+						if (!ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveVentaTicket)
 								|| ticketXml.getTransaccion().getTransaccionTotal().getTotalVenta().compareTo(importe) != 0) {
 							return false;
 						}
@@ -120,16 +126,16 @@ public class TicketServiceImpl implements TicketService {
 				}
 			}
 		} catch (MalformedURLException e) {
-			logger.error("La URL del archivo no es valida: {}", e);
+			logger.error("La URL del archivo no es valida: ", e);
 			throw new PortalException("La URL del archivo no es válida: "+ e.getMessage());
 		} catch (SmbException e) {
-			logger.error("Ocurrió un error al intentar recuperar el ticket: {}", e);
+			logger.error("Ocurrió un error al intentar recuperar el ticket: ", e);
 			throw new PortalException("Ocurrió un error al intentar recuperar el ticket: " + e.getMessage());
 		} catch (XmlMappingException e) {
-			logger.error("Ocurrió un error al leer ticket: {}", e);
+			logger.error("Ocurrió un error al leer ticket: ", e);
 			throw new PortalException("Ocurrió un error al leer el ticket: " + e.getMessage());
 		} catch (IOException e) {
-			logger.error("Ocurrió un error al intentar recuperar el ticket: {}", e);
+			logger.error("Ocurrió un error al intentar recuperar el ticket: ", e);
 			throw new PortalException("Ocurrió un error al intentar recuperar el ticket: " + e.getMessage());
 		}
 		return false;
@@ -149,6 +155,14 @@ public class TicketServiceImpl implements TicketService {
 		}
 		return false;
 	}
+	
+	@Transactional(readOnly = true)
+	@Cacheable("articulosSinPrecio")
+	@Override
+	public List<String> readArticulosSinPrecio() {
+		logger.debug("metodo con cache");
+		return ticketDao.readArticulosSinPrecio();
+	}
 
 	@Override
 	public String formatTicketClave(Ticket ticket) {
@@ -161,4 +175,5 @@ public class TicketServiceImpl implements TicketService {
 		}
 		return nf.format(numeroSucursal);
 	}
+	
 }

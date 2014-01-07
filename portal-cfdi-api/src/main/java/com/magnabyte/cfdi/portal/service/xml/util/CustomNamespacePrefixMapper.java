@@ -7,7 +7,6 @@ import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 @Service("customNamespacePrefixMapper")
 public class CustomNamespacePrefixMapper extends NamespacePrefixMapper {
 
-	//TODO
 	public static final String CFDI_URI = "http://www.sat.gob.mx/cfd/3";
 	public static final String CFDI_PREFIX = "cfdi";
 	public static final String TFD_URI = "http://www.sat.gob.mx/TimbreFiscalDigital";

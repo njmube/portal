@@ -40,6 +40,7 @@ public class EstablecimientoSql extends GenericSql {
 	public static final String READ_BY_CLAVE;
 	public static final String READ_LUGAR_EXP;
 	public static final String READ_ALL;
+	public static final String READ_BY_ID;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -171,6 +172,11 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(ALL).append(FROM).append(EOL);
 		qryBuilder.append(TAB).append(TABLE_NAME);
 		READ_ALL = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
 		
+		qryBuilder.append("select * from t_establecimiento as te inner join t_ruta_establecimiento as tre on te.id_ruta_establecimiento = ");
+		qryBuilder.append("tre.id_ruta_establecimiento where te.id_establecimiento = ?");
+		
+		READ_BY_ID = qryBuilder.toString();
 	}	
 }

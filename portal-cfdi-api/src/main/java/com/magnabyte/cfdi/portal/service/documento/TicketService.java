@@ -1,5 +1,7 @@
 package com.magnabyte.cfdi.portal.service.documento;
 
+import java.util.List;
+
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
@@ -17,4 +19,6 @@ public interface TicketService {
 	Ticket read(Ticket ticket, Establecimiento establecimiento);
 
 	boolean ticketProcesado(Ticket ticket, Establecimiento establecimiento);
+
+	List<String> readArticulosSinPrecio();
 }

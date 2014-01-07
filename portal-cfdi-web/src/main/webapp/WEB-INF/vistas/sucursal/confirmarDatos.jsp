@@ -62,7 +62,7 @@
 			</div>
 				<p class="text-center"> 
 					<a id="continue" href="#" class="btn btn-success"><span>Continuar</span></a>
-					<a href="<c:url value="/clienteCorregir/${cliente.id}"/>" class="btn btn-warning"><span>Corregir</span></a>
+					<a href="<c:url value="/clienteCorregir/${cliente.id}"/>" class="btn btn-warning"><span>Modificar</span></a>
 					<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger"><span>Cancelar</span></a>
 				</p>
 		</div>				
