@@ -17,7 +17,7 @@
 
 	<mvc:resources location="/resources/" mapping="/resources/**" />
 
-	<context:property-placeholder location="classpath*:/modatelas.properties"/>
+	<context:property-placeholder location="classpath:/modatelas-web.properties" ignore-unresolvable="true"/>
 
 	<bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">

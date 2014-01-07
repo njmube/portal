@@ -127,11 +127,10 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public boolean sellarComprobante(Comprobante comprobante) {
 		logger.debug("en sellar Documento");
-		//FIXME QUITAR
-		comprobante.getEmisor().setRfc("AAA010101AAA");
 		String cadena = obtenerCadena(comprobante);
 		String sello = obtenerSelloDigital(cadena);
-		logger.debug("SELLO: {} y CADENA: {}", sello, cadena);
+		logger.debug("SELLO: {}", sello);
+		logger.debug("CADENA: {}", cadena);
 		if(validSelloDigital(sello, cadena, comprobante)) {
 			comprobante.setSello(sello);
 			return true;
@@ -294,6 +293,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		if (expedidoEn.getNoInterior() != null && expedidoEn.getNoInterior().trim().isEmpty()) {
 			expedidoEn.setNoInterior(null);
 		}
+		
+		if (empresaEmisor.getEmisor().getDomicilioFiscal().getNoInterior() != null
+				&& empresaEmisor.getEmisor().getDomicilioFiscal().getNoInterior().trim().isEmpty()) {
+			empresaEmisor.getEmisor().getDomicilioFiscal().setNoInterior(null);
+		}
+		
 		empresaEmisor.getEmisor().setExpedidoEn(expedidoEn);
 		return empresaEmisor.getEmisor();
 	}
@@ -371,12 +376,10 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		comprobante.setTotal(comprobante.getSubTotal().subtract(comprobante.getDescuento()).add(comprobante.getImpuestos().getTotalImpuestosTrasladados()).setScale(2, BigDecimal.ROUND_UP));
 	}
 	
-	private boolean isArticuloSinPrecio(String idArticulo) {
-		//FIXME
-		String [] articuloSinPrecio = {"4032700", "4032800", "4032900"};
-		for (String articulo : articuloSinPrecio) {
-			if (idArticulo.equals(articulo))
-				return true;
+	private boolean isArticuloSinPrecio(String claveArticulo) {
+		List<String> articulosSinPrecio = ticketService.readArticulosSinPrecio();
+		if (articulosSinPrecio != null) {
+			return articulosSinPrecio.contains(claveArticulo);
 		}
 		return false;
 	}
@@ -396,43 +399,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 	}
 
-	//FIXME
-	@Override
-	public void save(Documento documento) {
-		if(documento != null) {
-			if(documento instanceof DocumentoCorporativo) {
-				if(documento.getCliente() != null) {
-					if(!clienteService.exist(documento.getCliente())) {
-						logger.debug("Saveando.......");
-						clienteService.save(documento.getCliente());
-					} else {
-						documento.setCliente(clienteService.readClientesByNameRfc(documento.getCliente()));
-					}
-				}
-			}
-			if(documento instanceof DocumentoSucursal) {
-				ticketService.save((DocumentoSucursal) documento);
-			}
-			documentoDao.save(documento);
-			documentoDetalleService.save(documento);
-		} else {
-			logger.debug("El Documento no puede ser nulo.");
-			throw new PortalException("El Documento no puede ser nulo.");
-		}
-	}
-	
-	//FIXME
-	@Override
-	public void insertDocumentoFolio(Documento documento) {
-		synchronized (documentoSerieDao) {
-			Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolio(documento);
-			documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
-			documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO_CONSECUTIVO));
-			documentoSerieDao.updateFolioSerie(documento);
-			documentoDao.insertDocumentoFolio(documento);
-		}
-	}
-	
 	@Transactional
 	@Override
 	public void insertDocumentoCfdi(Documento documento) {

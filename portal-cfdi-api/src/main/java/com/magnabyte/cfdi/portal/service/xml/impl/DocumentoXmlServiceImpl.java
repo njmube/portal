@@ -193,7 +193,6 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 		}
 	}
 	
-	//FIXME
 	@Override
 	public String obtenerNumCertificado(byte[] xmlCfdi) {
 		SAXBuilder builder = new SAXBuilder();
@@ -204,9 +203,11 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 			Namespace nsTfd = Namespace.getNamespace(CustomNamespacePrefixMapper.TFD_PREFIX, CustomNamespacePrefixMapper.TFD_URI);
 			noCertificadoSat = documentoCFDI.getRootElement().getChild("Complemento", nsCfdi).getChild("TimbreFiscalDigital", nsTfd).getAttributeValue("noCertificadoSAT");
 		} catch (JDOMException e) {
-			e.printStackTrace();
+			logger.error("Error al obtener el numero de certificado del SAT: ", e);
+			throw new PortalException("Error al obtener el numero de certificado del SAT: " + e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error al obtener el numero de certificado del SAT: ", e);
+			throw new PortalException("Error al obtener el numero de certificado del SAT: " + e.getMessage());
 		}
 		
 		return noCertificadoSat;

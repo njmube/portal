@@ -206,7 +206,7 @@
 					</p>
 					<p class="text-center" id="botones2" style="display:none">
 						<button id="actualizar" type="submit" class="btn btn-primary">Actualizar <span class="glyphicon glyphicon-refresh"></span></button>
-						<button id="corregir" type="button" class="btn btn-warning">Corregir <span class="glyphicon glyphicon-arrow-left"></span></button>
+						<button id="corregir" type="button" class="btn btn-warning">Modificar <span class="glyphicon glyphicon-arrow-left"></span></button>
 						<button id="cancelar" type="button" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></button>
 					</p>
 				</form:form>

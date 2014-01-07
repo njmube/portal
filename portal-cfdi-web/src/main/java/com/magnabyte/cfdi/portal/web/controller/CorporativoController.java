@@ -53,7 +53,6 @@ public class CorporativoController {
 		Comprobante comprobante = documentoXmlService.convertXmlSapToCfdi(sambaService.getFileStream(urlSapFiles, fileName));
 		DocumentoCorporativo documento = new DocumentoCorporativo();
 		documento.setCliente(documentoService.obtenerClienteDeComprobante(comprobante));
-		//FIXME
 		TipoDocumento tipoDocumento = comprobante.getTipoDeComprobante().equalsIgnoreCase("ingreso") 
 				? TipoDocumento.FACTURA : TipoDocumento.NOTA_CREDITO;
 		documento.setTipoDocumento(tipoDocumento);
