@@ -5,9 +5,9 @@
 <c:if test="${!emptyList}">
 <%-- 	<c:choose> --%>
 <%-- 		<c:when test="${not empty clientes}"> --%>
-			<div class="centered">
-				<a id="crearCliente" href="<c:url value="/clienteForm"/>" class="btn btn-warning">Nuevo Cliente <span class="glyphicon glyphicon-plus"></span></a>
-			</div>
+<!-- 			<div class="centered"> -->
+<%-- 				<a id="crearCliente" href="<c:url value="/clienteForm"/>" class="btn btn-warning">Nuevo Cliente <span class="glyphicon glyphicon-plus"></span></a> --%>
+<!-- 			</div> -->
 			<br>
 			<div class="table-responsive">
 				<display:table htmlId="clientes" id="cliente" name="${clientes}"
