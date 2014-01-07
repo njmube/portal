@@ -59,6 +59,7 @@ public class DomicilioEstablecimientoSql extends GenericSql   {
 		
 		qryBuilder.append(FROM).append(EOL).append(TAB);		
 		qryBuilder.append(TABLE_NAME).append(AS).append(TABLE_ALIAS);
+		
 		qryBuilder.append(INNER).append(TABLE_ESTADO).append(AS);
 		qryBuilder.append(ALIAS_ESTADO).append(ON).append(ALIAS_ESTADO);
 		qryBuilder.append(DOT).append(ID_ESTADO).append(EQ).append(TABLE_ALIAS);
@@ -79,14 +80,12 @@ public class DomicilioEstablecimientoSql extends GenericSql   {
 		qryBuilder.append(UPDATE).append(EOL).append(TAB).append(TABLE_NAME);
 		qryBuilder.append(EOL).append(SET).append(EOL);
 		
-		qryBuilder.append(TAB).append(ID_DOMICILIO).append(SET_PARAM).append(EOL_);
-		qryBuilder.append(TAB).append(ID_ESTADO).append(SET_PARAM).append(EOL_);
 		qryBuilder.append(TAB).append(CALLE).append(SET_PARAM).append(EOL_);
 		qryBuilder.append(TAB).append(NO_EXTERIOR).append(SET_PARAM).append(EOL_);
 		qryBuilder.append(TAB).append(NO_INTERIOR).append(SET_PARAM).append(EOL_);
 		qryBuilder.append(TAB).append(MUNICIPIO).append(SET_PARAM).append(EOL_);
 		qryBuilder.append(TAB).append(COLONIA).append(SET_PARAM).append(EOL_);
-		qryBuilder.append(TAB).append(CODIGO_POSTAL).append(SET_PARAM).append(EOL);
+		qryBuilder.append(TAB).append(CODIGO_POSTAL).append(SET_PARAM).append(EOL_);
 		qryBuilder.append(TAB).append(LOCALIDAD).append(SET_PARAM).append(EOL);
 		
 		qryBuilder.append(WHERE).append(EOL).append(TAB);

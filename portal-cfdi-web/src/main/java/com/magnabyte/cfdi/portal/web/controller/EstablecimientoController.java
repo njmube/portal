@@ -7,8 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.magnabyte.cfdi.portal.model.establecimiento.DomicilioEstablecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
@@ -43,7 +45,7 @@ public class EstablecimientoController {
 		logger.debug("-- catalogoEstablecimiento");
 		List<Establecimiento> establecimientos= establecimientoService.readAll();
 		model.put("establecimientos", establecimientos);
-		return "admin/establecimiento";
+		return "admin/listaEstablecimientos";
 	}
 	
 	@RequestMapping("/mostrarEstablecimiento/{id}")
@@ -64,6 +66,30 @@ public class EstablecimientoController {
 		
 		model.put("establecimiento", estable);
 		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
+		model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
 		return "admin/establecimientoForm";
+	}
+	@RequestMapping(value = "/guardarEstablecimiento", method = RequestMethod.POST)
+	public String guardarEstablecimiento(@ModelAttribute Establecimiento establecimiento){
+		
+		if (establecimiento.getId() != null){
+			domicilioEstablecimientoService.update(establecimiento.getDomicilio());
+			rutaEstablecimientoService.update(establecimiento.getRutaRepositorio());
+			establecimientoService.update(establecimiento); 
+		}else {
+			domicilioEstablecimientoService.save(establecimiento.getDomicilio());
+			rutaEstablecimientoService.save(establecimiento.getRutaRepositorio());
+			establecimientoService.save(establecimiento);
+		}
+		
+		return "redirect:/catalogoEstablecimiento";
+	}
+	
+	@RequestMapping(value = "/altaEstablecimiento")
+	public String altaEstablecimiento (@ModelAttribute Establecimiento establecimiento, ModelMap model){
+		model.put("establecimiento", new  Establecimiento());
+		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
+		model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
+		return "admin/altaEstablecimiento";
 	}
 }

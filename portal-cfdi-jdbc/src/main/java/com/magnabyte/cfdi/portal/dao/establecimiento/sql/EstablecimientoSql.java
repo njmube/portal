@@ -41,6 +41,7 @@ public class EstablecimientoSql extends GenericSql {
 	public static final String READ_LUGAR_EXP;
 	public static final String READ_ALL;
 	public static final String READ_ALL_WITH_IDS;
+	public static final String UPDATE_ESTABLECIMIENTO;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -176,7 +177,7 @@ public class EstablecimientoSql extends GenericSql {
 		READ_ALL = qryBuilder.toString();
 		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
 		
-		
+		// ----- Consulta del establecimiento coo ids ----- //
 		qryBuilder.append(SELECT).append(EOL).append(TAB);
 		qryBuilder.append(ID_ESTABLECIMIENTO).append(EOL_).append(TAB);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(CLAVE)
@@ -197,6 +198,30 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(ID_ESTABLECIMIENTO).append(SET_PARAM);
 		
 		READ_ALL_WITH_IDS = qryBuilder.toString();
+		qryBuilder = clearAndReuseStringBuilder(qryBuilder);
 		
+		//---- Actualizar-----//
+		/*
+		UPDATE
+		t_establecimiento
+		SET
+		clave = ?,
+		nombre = ?,
+		password = ?
+		WHERE
+		id_establecimiento = ?
+		*/
+		qryBuilder.append(UPDATE).append(EOL).append(TAB).append(TABLE_NAME);
+		qryBuilder.append(EOL).append(SET).append(EOL);
+		
+		qryBuilder.append(TAB).append(CLAVE).append(SET_PARAM).append(EOL_);
+		qryBuilder.append(TAB).append(NOMBRE).append(SET_PARAM).append(EOL_);
+		qryBuilder.append(TAB).append(PASSWORD).append(SET_PARAM).append(EOL);
+		
+		qryBuilder.append(WHERE).append(EOL).append(TAB);
+		qryBuilder.append(ID_ESTABLECIMIENTO).append(SET_PARAM);
+		
+		UPDATE_ESTABLECIMIENTO = qryBuilder.toString();		
+				
 	}	
 }

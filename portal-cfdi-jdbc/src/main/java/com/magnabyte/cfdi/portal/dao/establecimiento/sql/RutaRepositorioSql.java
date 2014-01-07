@@ -33,11 +33,11 @@ public class RutaRepositorioSql extends GenericSql {
 		qryBuilder.append(UPDATE).append(EOL).append(TAB);
 		qryBuilder.append(TABLE_NAME).append(EOL).append(SET).append(EOL);
 		
-		qryBuilder.append(TAB).append(ID_RUTA_ESTAB).append(SET_PARAM).append(EOL_);
+//		qryBuilder.append(TAB).append(ID_RUTA_ESTAB).append(SET_PARAM).append(EOL_);
 		qryBuilder.append(TAB).append(RUTA_REPOSITORIO).append(SET_PARAM).append(EOL_);
 		qryBuilder.append(TAB).append(RUTA_IN).append(SET_PARAM).append(EOL_);
 		qryBuilder.append(TAB).append(RUTA_OUT).append(SET_PARAM).append(EOL_);
-		qryBuilder.append(TAB).append(RUTA_INPROC).append(SET_PARAM).append(EOL_);
+		qryBuilder.append(TAB).append(RUTA_INPROC).append(SET_PARAM).append(EOL);
 		
 		qryBuilder.append(WHERE).append(EOL).append(TAB);
 		qryBuilder.append(ID_RUTA_ESTAB).append(SET_PARAM);

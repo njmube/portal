@@ -18,7 +18,12 @@
 			<h2>
 				Facturación Electrónica - <span class="text-info">ADMINISTRADOR</span> <span class="label label-primary">@</span>
 			</h2>
-				<hr>
+			<hr>
+			<div class="text-center">
+				<p>
+				<a href="<c:url value="/altaEstablecimiento"/>" class="btn btn-warning" > Nuevo Establecimiento </a>
+				</p>
+			</div>
 			<div class="col-md-offset-1 col-md-10">
 				<div class="panel panel-danger">
 					<div class="panel-heading">
@@ -27,6 +32,7 @@
 							Recargar <span class="glyphicon glyphicon-refresh"></span>
 						</a>
 					</div>
+					
 					<div class="table-responsive">
 						<c:set var="nombre" value="Establecimiento <span class='glyphicon glyphicon-sort text-warning'></span>"/>
 						<c:set var="clave" value="Clave <span class='glyphicon glyphicon-sort text-warning'></span>"/>
@@ -37,10 +43,10 @@
  							<display:column title="#" headerClass="text-primary">${document_rowNum}</display:column>
  							<display:column title="${nombre}" property="nombre" headerClass="text-primary"></display:column>
  							<display:column title="${clave}" property="clave" headerClass="text-primary"/>
- 							<display:column title="${password}" property="password" headerClass="text-primary"/>
- 							<display:column title="Seleccionar" headerClass="text-primary text-center" class="text-center">
+<%--  							<display:column title="${password}" property="password" headerClass="text-primary"/> --%>
+ 							<display:column title="Modificar" headerClass="text-primary text-center" class="text-center">
  								<a href="<c:url value="/mostrarEstablecimiento/${document.id}"/>" class="btn btn-xs btn-success">
- 								<span class="glyphicon glyphicon-print"></span></a>
+ 								<span class="glyphicon glyphicon-cog"></span></a>
  							</display:column>
  						</display:table>
 					</div>

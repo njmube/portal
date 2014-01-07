@@ -46,4 +46,16 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 		return establecimientoDao.readAllById(establecimiento);
 		
 	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public void update (Establecimiento establecimiento) {
+		establecimientoDao.update(establecimiento);
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public void save (Establecimiento establecimiento) {
+		establecimientoDao.save(establecimiento);
+	}
 }

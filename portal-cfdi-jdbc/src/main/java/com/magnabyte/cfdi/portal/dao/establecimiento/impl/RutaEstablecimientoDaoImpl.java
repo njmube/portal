@@ -13,9 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
 import com.magnabyte.cfdi.portal.dao.establecimiento.RutaEstablecimientoDao;
-import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.RutaRepositorioSql;
-import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.RutaRepositorio;
 
 @Repository
@@ -45,11 +43,11 @@ public class RutaEstablecimientoDaoImpl extends GenericJdbcDao implements
 	public void update(RutaRepositorio rutaRepositorio) {
 		getJdbcTemplate().update(RutaRepositorioSql.UPDATE_RUTA, new Object[] {
 				
-				rutaRepositorio.getId(),
 				rutaRepositorio.getRutaRepositorio(),
 				rutaRepositorio.getRutaRepoIn(),
 				rutaRepositorio.getRutaRepoOut(),
-				rutaRepositorio.getRutaRepoInProc()
+				rutaRepositorio.getRutaRepoInProc(),
+				rutaRepositorio.getId()
 			});
 	}
 	
