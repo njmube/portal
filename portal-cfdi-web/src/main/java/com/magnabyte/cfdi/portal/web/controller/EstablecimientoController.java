@@ -7,13 +7,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.DomicilioEstablecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.RutaRepositorio;
+import com.magnabyte.cfdi.portal.model.establecimiento.TipoEstablecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.factory.EstablecimientoFactory;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 import com.magnabyte.cfdi.portal.service.establecimiento.DomicilioEstablecimientoService;
@@ -76,6 +79,12 @@ public class EstablecimientoController {
 			rutaEstablecimientoService.update(establecimiento.getRutaRepositorio());
 			establecimientoService.update(establecimiento); 
 		}else {
+			TipoEstablecimiento  tipoEstablecimiento = new TipoEstablecimiento();
+			EmpresaEmisor empresaEmisor = new EmpresaEmisor();
+			empresaEmisor.setId(4);
+			tipoEstablecimiento.setId(2);
+			establecimiento.setTipoEstablecimiento(tipoEstablecimiento);
+			establecimiento.setEmisor(empresaEmisor);
 			domicilioEstablecimientoService.save(establecimiento.getDomicilio());
 			rutaEstablecimientoService.save(establecimiento.getRutaRepositorio());
 			establecimientoService.save(establecimiento);

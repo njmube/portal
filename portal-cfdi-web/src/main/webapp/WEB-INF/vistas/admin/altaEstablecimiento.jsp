@@ -9,8 +9,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Catalogo Establecimiento</title>
-
-<%-- <script src="<c:url value="/resources/js/sucursal/clienteForm.js"/>"></script> --%>
 <script src="<c:url value="/resources/js/commons/direccionFunctions.js"/>"></script>
 <script src="<c:url value="/resources/js/admin/establecimientoForm.js"/>"></script>
 </head>
@@ -22,8 +20,8 @@
 				<p class="text-info">Ingresa los datos del Establecimiento.</p>
 			</blockquote>
 			<hr>
-			<c:url var="update" value="/guardarEstablecimiento" />
-			<form:form id="establecimientoForm" action="${update }" method="post" modelAttribute="establecimiento" cssClass="form-horizontal"	role="form">
+			<c:url var="guardar" value="/guardarEstablecimiento" />
+			<form:form id="establecimientoForm" action="${guardar }" method="post" modelAttribute="establecimiento" cssClass="form-horizontal"	role="form">
 			<div class="row">
 				<div class="col-md-5">
 					<div class="white-panel form-horizontal">
@@ -45,13 +43,13 @@
 							<div class="form-group">
 								<label for="txtPassword" class="col-lg-5 control-label">Password:</label>
 								<div class="col-lg-5">
-									<form:input path="password" cssClass="form-control input-sm validate[required]" id="txtPassword" />
+									<form:password path="password" cssClass="form-control input-sm validate[required]" id="txtPassword" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="txtConfirmarPassword" class="col-lg-5 control-label">Confirmar password:</label>
 								<div class="col-lg-5">
-									<form:input path="" cssClass="form-control input-sm" id="txtConfirmarPassword" />
+									<form:password path="" cssClass="form-control input-sm validate[required]" id="txtConfirmarPassword" />
 								</div>
 							</div>
 						</fieldset>
@@ -108,12 +106,11 @@
 								</div>
 								<label for="txtEstado" class="col-lg-2 control-label">Estado: </label>
 								<div class="col-lg-4">
-									<select class="form-control-xsm validate[required] " id="estado" >
-										<option value="" >- Seleccione una opción -</option>
-										<c:forEach items="${listaEstados}" var="estado">
-										  		<option value="" ${establecimiento.domicilio.estado.id eq estado.id ? 'selected' : ''} >${estado.nombre}</option>
-										 </c:forEach>									  		
-  									</select>
+								
+								<form:select path="domicilio.estado.id" id="estado">
+									<form:option value="">- Seleccione una opción -</form:option>
+<%-- 									<form:options items="${listaEstados }"></form:options> --%>
+								</form:select>
 								</div>
 							</div>
 						</fieldset>
@@ -143,7 +140,7 @@
 								</div>
 								<label for="txtRutaProc" class="col-lg-2 control-label">Ruta Procesado: </label>
 								<div class="col-lg-4">
-									<form:input path="rutaRepositorio.rutaRepoInProc" cssClass="form-control input-sm validate[required]" id="txtRutaProc"/>
+									<form:input path="rutaRepositorio.rutaRepoInProc" cssClass="form-control input-sm " id="txtRutaProc"/>
 								</div>
 							</div>
 						</fieldset>
@@ -154,8 +151,6 @@
 					<p class="form-grup text-center">
 					<button id="guardar" type="submit" class="btn btn-primary">Guardar 
 					<span class="glyphicon glyphicon-floppy-disk"></span></button>
-					
-					<input type="submit" value="botoonn">
 					</p>
 			</div>
 			</form:form>

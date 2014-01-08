@@ -14,10 +14,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
-import com.magnabyte.cfdi.portal.dao.cliente.sql.ClienteSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.EstablecimientoDao;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
-import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.DomicilioEstablecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
@@ -118,6 +116,10 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 		params.addValue(EstablecimientoSql.CLAVE, establecimiento.getClave());
 		params.addValue(EstablecimientoSql.NOMBRE, establecimiento.getNombre());
 		params.addValue(EstablecimientoSql.PASSWORD, establecimiento.getPassword());
+		params.addValue(EstablecimientoSql.ID_DOM_ESTAB, establecimiento.getDomicilio().getId());
+		params.addValue(EstablecimientoSql.ID_EMISOR, establecimiento.getEmisor().getId());
+		params.addValue(EstablecimientoSql.ID_RUTA_ESTAB, establecimiento.getRutaRepositorio().getId());
+		params.addValue(EstablecimientoSql.ID_TIPO_ESTAB, establecimiento.getTipoEstablecimiento().getId());
 
 		return params;
 	}

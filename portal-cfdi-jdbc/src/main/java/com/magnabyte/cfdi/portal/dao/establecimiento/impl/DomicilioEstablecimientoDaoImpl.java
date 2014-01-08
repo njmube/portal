@@ -46,8 +46,7 @@ public class DomicilioEstablecimientoDaoImpl extends GenericJdbcDao implements
 	private MapSqlParameterSource getParameters(
 			DomicilioEstablecimiento domicilioEstablecimiento) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue(DomicilioSql.ID_DOMICILIO,
-				domicilioEstablecimiento.getId());
+		params.addValue(DomicilioSql.ID_DOMICILIO, domicilioEstablecimiento.getId());
 		params.addValue(DomicilioSql.CALLE, domicilioEstablecimiento.getCalle());
 		params.addValue(DomicilioSql.NO_EXTERIOR,
 				domicilioEstablecimiento.getNoExterior());

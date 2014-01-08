@@ -108,12 +108,10 @@
 								</div>
 								<label for="txtEstado" class="col-lg-2 control-label">Estado: </label>
 								<div class="col-lg-4">
-									<select class="form-control-xsm validate[required] " id="estado" >
-										<option value="" >- Seleccione una opción -</option>
-										<c:forEach items="${listaEstados}" var="estado">
-										  		<option value="" ${establecimiento.domicilio.estado.id eq estado.id ? 'selected' : ''} >${estado.nombre}</option>
-										 </c:forEach>									  		
-  									</select>
+									<form:select path="domicilio.estado.id" id="estado">
+									<form:option value="">- Seleccione una opción -</form:option>
+<%-- 									<form:options items="${listaEstados }"></form:options> --%>
+									</form:select>
 								</div>
 							</div>
 						</fieldset>
