@@ -7,7 +7,7 @@
 		En esta sección se define la inclusión de las plantillas de utilerías para colapsar espacios
 	-->
 	<!--xsl:include href="http://www.sat.gob.mx/sitio_internet/cfd/2/cadenaoriginal_2_0/utilerias.xslt"/-->
-	<xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/utilerias.xslt"/>
+	<xsl:include href="WEB-INF/xslt/utilerias.xslt"/>
 <!-- 	 	<xsl:include href="src/main/resources/utilerias.xslt"/>  -->
 	<!-- 
 		En esta sección se define la inclusión de las demás plantillas de transformación para 
@@ -30,21 +30,21 @@
 	<xsl:include href="http://www.sat.gob.mx/sitio_internet/cfd/spei/spei.xslt"/>
 	<xsl:include href="http://www.sat.gob.mx/sitio_internet/cfd/nomina/nomina.xslt"/>
 	-->
-    <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/ecc.xslt"/>
-    <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/psgecfd.xslt"/>
-    <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/donat11.xslt"/>
-    <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/divisas.xslt"/>
-    <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/ecb.xslt"/>
-    <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/detallista.xslt"/>
-    <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/implocal.xslt"/>
-    <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/terceros11.xslt"/>
-    <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/iedu.xslt"/>
-    <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/ventavehiculos.xslt"/>
-    <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/pfic.xslt"/>
-    <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/TuristaPasajeroExtranjero.xslt"/>
-    <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/leyendasFisc.xslt"/>
-    <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/spei.xslt"/>
-    <xsl:include href="/opt/apache-tomcat-7.0.42/webapps/portal-cfdi/WEB-INF/classes/nomina.xslt"/>
+    <xsl:include href="WEB-INF/xslt/ecc.xslt"/>
+    <xsl:include href="WEB-INF/xslt/psgecfd.xslt"/>
+    <xsl:include href="WEB-INF/xslt/donat11.xslt"/>
+    <xsl:include href="WEB-INF/xslt/divisas.xslt"/>
+    <xsl:include href="WEB-INF/xslt/ecb.xslt"/>
+    <xsl:include href="WEB-INF/xslt/detallista.xslt"/>
+    <xsl:include href="WEB-INF/xslt/implocal.xslt"/>
+    <xsl:include href="WEB-INF/xslt/terceros11.xslt"/>
+    <xsl:include href="WEB-INF/xslt/iedu.xslt"/>
+    <xsl:include href="WEB-INF/xslt/ventavehiculos.xslt"/>
+    <xsl:include href="WEB-INF/xslt/pfic.xslt"/>
+    <xsl:include href="WEB-INF/xslt/TuristaPasajeroExtranjero.xslt"/>
+    <xsl:include href="WEB-INF/xslt/leyendasFisc.xslt"/>
+    <xsl:include href="WEB-INF/xslt/spei.xslt"/>
+    <xsl:include href="WEB-INF/xslt/nomina.xslt"/>
     <!--
     <xsl:include href="src/main/resources/ecc.xslt"/>
     <xsl:include href="src/main/resources/psgecfd.xslt"/>
