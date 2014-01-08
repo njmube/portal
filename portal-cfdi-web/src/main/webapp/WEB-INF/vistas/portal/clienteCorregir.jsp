@@ -51,7 +51,7 @@
 						</div>
 					</div>
 					<p class="text-center">
-						<button id="agregarCorregir" type="button" class="btn btn-xs btn-warning">Agregar Dirección <span class="glyphicon glyphicon-plus"></span> </button>
+						<button id="agregarCorregir" type="button" class="btn btn-xs btn-warning">Agregar Dirección <i class="fa fa-plus"></i> </button>
 					</p>
 					<div class="white-panel row">
 						<table class="table table-hover" id="tblDireccion">
@@ -105,7 +105,7 @@
 <%-- 												<td><form:input path="domicilios[${theCount.index}].referencia" id="referencia" cssClass="form-control input-xsm "/></td> --%>
 <%-- 												<td><form:input path="domicilios[${theCount.index}].localidad" id="localidad" cssClass="form-control input-xsm"/></td> --%>
 												<c:if test="${theCount.index > 0}">
-													<td><button id='delete' type='button' class='btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span></button></td>
+													<td><button id='delete' type='button' class='btn btn-danger btn-xs'><i class="fa fa-trash-o"></i></button></td>
 												</c:if>
 											</tr>
 											</c:forEach>
@@ -143,13 +143,13 @@
 					</div>
 					<hr>
 					<p class="text-center" id="botones1">
-						<button id="continuar" type="button" class="btn btn-success">Continuar <span class="glyphicon glyphicon-arrow-right"></span></button>
-						<button id="cancelar" type="button" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></button>						
+						<button id="continuar" type="button" class="btn btn-success">Continuar <i class="fa fa-arrow-right"></i></button>
+						<button id="cancelar" type="button" class="btn btn-danger">Cancelar <i class="fa fa-times"></i></button>						
 					</p>
 					<p class="text-center" id="botones2" style="display:none">
-						<button id="actualizar" type="submit" class="btn btn-primary">Actualizar <span class="glyphicon glyphicon-refresh"></span></button>
-						<button id="corregir" type="button" class="btn btn-warning">Modificar <span class="glyphicon glyphicon-arrow-left"></span></button>
-						<button id="cancelar" type="button" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></button>
+						<button id="actualizar" type="submit" class="btn btn-primary">Actualizar <i class="fa fa-refresh"></i></button>
+						<button id="corregir" type="button" class="btn btn-warning">Modificar <i class="fa fa-arrow-left"></i></button>
+						<button id="cancelar" type="button" class="btn btn-danger">Cancelar <i class="fa fa-times"></i></button>
 					</p>
 				</form:form>
 			</div>

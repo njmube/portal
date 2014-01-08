@@ -92,7 +92,7 @@ $(document).ready(function() {
 						</div>
 					</div>					
 					<p class="text-center">
-						<button id="agregar" type="button" class="btn btn-xs btn-warning">Agregar Dirección <span class="glyphicon glyphicon-plus"></span> </button>
+						<button id="agregar" type="button" class="btn btn-xs btn-warning">Agregar Dirección <i class="fa fa-plus"></i> </button>
 					</p>
 					<div class="white-panel row">
 						<table class="table table-hover" id="tblDireccion">
@@ -142,22 +142,22 @@ $(document).ready(function() {
 					</div>
 					<hr>
 					<p class="text-center" id="botones1">
-						<button id="continuar" type="button" class="btn btn-success">Continuar <span class="glyphicon glyphicon-arrow-right"></span></button>
+						<button id="continuar" type="button" class="btn btn-success">Continuar <i class="fa fa-arrow-right"></i></button>
 						<sec:authorize access="hasAnyRole('ROLE_SUC')">
-							<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
+							<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger">Cancelar <i class="fa fa-times"></i></a>
 						</sec:authorize>
 						<sec:authorize access="isAnonymous()">
-							<a href="<c:url value="/portal/cfdi/buscaRfc"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
+							<a href="<c:url value="/portal/cfdi/buscaRfc"/>" class="btn btn-danger">Cancelar <i class="fa fa-times"></i></a>
 						</sec:authorize>
 					</p>
 					<p class="text-center" id="botones2" style="display:none">
-						<button id="guardar" type="submit" class="btn btn-primary">Guardar <span class="glyphicon glyphicon-floppy-disk"></span></button>
-						<button id="corregir" type="button" class="btn btn-warning">Modificar <span class="glyphicon glyphicon-arrow-left"></span></button>
+						<button id="guardar" type="submit" class="btn btn-primary">Guardar <i class="fa fa-floppy-o"></i></button>
+						<button id="corregir" type="button" class="btn btn-warning">Modificar <i class="fa fa-arrow-left"></i></button>
 						<sec:authorize access="hasAnyRole('ROLE_SUC')">
-							<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
+							<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger">Cancelar <i class="fa fa-times"></i></a>
 						</sec:authorize>
 						<sec:authorize access="isAnonymous()">
-							<a href="<c:url value="/portal/cfdi/buscaRfc"/>" class="btn btn-danger">Cancelar <span class="glyphicon glyphicon-remove"></span></a>
+							<a href="<c:url value="/portal/cfdi/buscaRfc"/>" class="btn btn-danger">Cancelar <i class="fa fa-times"></i></a>
 						</sec:authorize>
 					</p>
 				</form:form>

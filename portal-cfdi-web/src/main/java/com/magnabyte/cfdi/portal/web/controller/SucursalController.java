@@ -7,6 +7,7 @@ import mx.gob.sat.cfd._3.Comprobante;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -42,6 +43,9 @@ public class SucursalController {
 	
 	@Autowired
 	private DocumentoService documentoService;
+	
+	@Autowired
+	private TaskExecutor executor;
 	
 	private static final Logger logger = LoggerFactory.getLogger(SucursalController.class);
 	
@@ -103,5 +107,12 @@ public class SucursalController {
 		model.put("comprobante", comprobante);
 		model.put("ticket", ticket);
 		return "sucursal/facturaValidate";
+	}
+	
+	@RequestMapping("/cierre")
+	public String cierre(@ModelAttribute Establecimiento establecimiento, ModelMap model) {
+//		ticketService.closeOfDay(establecimiento, executor);
+		logger.debug("aqui ando");
+		return "menu/menu";
 	}
 }

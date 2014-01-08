@@ -71,6 +71,7 @@ public class EstablecimientoController {
 		model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
 		return "admin/establecimientoForm";
 	}
+	
 	@RequestMapping(value = "/guardarEstablecimiento", method = RequestMethod.POST)
 	public String guardarEstablecimiento(@ModelAttribute Establecimiento establecimiento){
 		

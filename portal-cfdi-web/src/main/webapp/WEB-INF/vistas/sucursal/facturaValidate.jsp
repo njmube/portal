@@ -215,9 +215,9 @@
 				</div>
 			</div>
 			<p class="text-center">
-				<button id="generaFactura" type="button" class="btn btn-primary btn-lg"><small>Generar ${tipoComprobante}</small> <span class="glyphicon glyphicon-list-alt"></span></button>
-				<a href="<c:url value="/buscaRfc"/>" class="btn btn-warning btn-lg"><small>Regresar</small> <span class="glyphicon glyphicon-arrow-left"></span></a>
-				<a id="cancel" href="<c:url value="/buscaTicket" />" class="btn btn-danger btn-lg"><small>Cancelar</small> <span class="glyphicon glyphicon-remove"></span></a>
+				<button id="generaFactura" type="button" class="btn btn-primary btn-lg"><small>Generar ${tipoComprobante}</small> <i class="fa fa-list-alt"></i></button>
+				<a href="<c:url value="/buscaRfc"/>" class="btn btn-warning btn-lg"><small>Regresar</small> <i class="fa fa-arrow-left"></i></span></a>
+				<a id="cancel" href="<c:url value="/buscaTicket" />" class="btn btn-danger btn-lg"><small>Cancelar</small> <i class="fa fa-times"></i></a>
 			</p>
 		</div>
 	</div>
@@ -227,7 +227,7 @@
 		<div class="row">
 			<div class="panel col-md-4 col-md-offset-4">
 				<h3>Generando Factura</h3>
-				<p>Espere por favor...<span class="glyphicon glyphicon-time"></span></p>
+				<p>Espere por favor...<i class="fa fa-clock-o"></i></p>
 				<div class="progress progress-striped active">
 				  	<div class="progress-bar"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
 				</div>

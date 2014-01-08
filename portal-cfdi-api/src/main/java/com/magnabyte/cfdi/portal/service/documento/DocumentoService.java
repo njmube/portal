@@ -30,7 +30,10 @@ public interface DocumentoService {
 	
 	List<Documento> getDocumentos(Cliente cliente);
 
-	byte[] recuperarDocumentoArchivo(String fileName, int idEstablecimiento,
+	byte[] recuperarDocumentoArchivo(String fileName, Integer idEstablecimiento,
 			String extension);
+	
+	void reenvioDocumentosFacturacion(String para, String fileName,
+			Integer idEstablecimiento);
 
 }

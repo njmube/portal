@@ -15,6 +15,8 @@
 <title>. : Modatelas - <decorator:title default="Main" /> : .
 </title>
 <link rel="stylesheet" type="text/css"
+	href="<c:url value="/resources/css/font-awesome/css/font-awesome.min.css" />" />
+<link rel="stylesheet" type="text/css"
 	href="<c:url value="/resources/css/bootstrap.min.css" />" />
 <link rel="stylesheet" type="text/css"
 	href="<c:url value="/resources/css/bootstrap-theme.min.css" />" />
@@ -74,7 +76,7 @@
 							class="icon-bar"></span>
 					</button>
 					<a class="navbar-brand" href="<c:url value="/menuPage" />">
-						Facturación en Línea <span class="glyphicon glyphicon-globe"></span>
+						Facturación en Línea <i class="fa fa-globe"></i>
 					</a>
 				</div>
 
@@ -96,12 +98,12 @@
 									<li><a href="#"><span class="glyphicon "></span>Formas de pago</a></li>
 									<li><a href="#"><span class="glyphicon "></span>Condiciones de pago</a></li>
 									<li><a href="#"><span class="glyphicon "></span>Iva</a></li>
-									<li><a href="${catalogoEstablecimiento}"><span class="glyphicon "></span>Establecimiento</a></li>
+									<li><a href="${catalogoEstablecimiento}"><span class="glyphicon "></span> Establecimiento</a></li>
 								</ul>
 							</sec:authorize></li>
 						<c:if test="${!isLoginPage}">	
 							<li><a href="<c:url value="${urlMenu}" />">Menú Principal
-									<span class="glyphicon glyphicon-home"></span>
+									<i class="fa fa-home"></i>
 							</a></li>
 						</c:if>
 					</ul>
@@ -112,14 +114,14 @@
 								<button type="button"
 									class="btn btn-warning btn-sm dropdown-toggle"
 									data-toggle="dropdown">
-									<span class="glyphicon glyphicon-user"></span>
+									<i class="fa fa-user"></i> - 
 									${fn:toUpperCase(sessionScope.establecimiento.nombre)} <span
 										class="caret"></span>
 								</button>
 								<ul class="dropdown-menu" role="menu">
 									<c:url var="logoutUrl" value="/perform_logout" />
-									<li><a href="${logoutUrl}"><span
-											class="glyphicon glyphicon-log-out"></span> Cerrar sesión</a></li>
+									<li><a href="${logoutUrl}">
+									<i class="fa fa-sign-out"></i> Cerrar sesión</a></li>
 								</ul>
 							</div>
 						</div>
@@ -150,14 +152,14 @@
 	<div id="footer" class="footer">
 		<div class="row">
 			<p class="credit">
-				<span class="glyphicon glyphicon-registration-mark"></span> <strong>2013
+				&reg; <strong>2013
 					Modatelas S.A.P.I de C.V.</strong>
 			</p>
 			<p class="credit">
 				<!-- 				<a href="#"><strong>Acerca de </strong><span -->
 				<!-- 					class="glyphicon glyphicon-question-sign"></span></a> &middot;  -->
-				<a href="#"><strong> Ir arriba </strong><span
-					class="glyphicon glyphicon-circle-arrow-up"></span></a>
+				<a href="#"><strong> Ir arriba </strong>
+					<i class="fa fa-arrow-circle-o-up"></i></a>
 			</p>
 		</div>
 	</div>

@@ -17,7 +17,7 @@
 					<display:column title="RFC" property="rfc" headerClass="text-primary"></display:column>
 					<display:column title="Nombre" property="nombre" headerClass="text-primary" />
 					<display:column title="Seleccionar" headerClass="text-primary text-center" class="text-center">
-						<a href="<c:url value="/confirmarDatos/${cliente.id}"/>" class="btn btn-xs btn-success"><span class="glyphicon glyphicon-share-alt"></span></a>
+						<a href="<c:url value="/confirmarDatos/${cliente.id}"/>" class="btn btn-xs btn-success"><i class="fa fa-share"></i></a>
 					</display:column>
 				</display:table>
 			</div>

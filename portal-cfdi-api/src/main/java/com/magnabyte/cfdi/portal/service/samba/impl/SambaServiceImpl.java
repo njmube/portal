@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -57,7 +59,7 @@ public class SambaServiceImpl implements SambaService {
 	
 	@Override
 	public InputStream getFileStream(String url, String fileName) {
-		logger.debug("sambaService getFileStream...");
+//		logger.debug("sambaService getFileStream...");
 		SmbFileInputStream smbIs = null;
 		BufferedInputStream bis = null;
 		Config.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
