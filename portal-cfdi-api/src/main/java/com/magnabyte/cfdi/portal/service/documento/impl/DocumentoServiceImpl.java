@@ -1,6 +1,5 @@
 package com.magnabyte.cfdi.portal.service.documento.impl;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -47,13 +46,14 @@ import mx.gob.sat.cfd._3.Comprobante.Impuestos;
 import mx.gob.sat.cfd._3.Comprobante.Receptor;
 import mx.gob.sat.cfd._3.TUbicacion;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.ssl.PKCS8Key;
 import org.bouncycastle.util.encoders.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -608,24 +608,13 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	public byte[] recuperarDocumentoArchivo(String fileName, 
 			Integer idEstablecimiento, String extension) {
 		try {
-			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-			
 			Establecimiento estab = establecimientoService.readById(
 					EstablecimientoFactory.newInstance(idEstablecimiento));
 			//FIXME Cambiar la ruta out
 			InputStream file = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
 					+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + "." + extension);
 			
-			int nRead;
-			byte[] data = new byte[16384];
-	
-			while ((nRead = file.read(data, 0, data.length)) != -1) {
-			  buffer.write(data, 0, nRead);
-			}
-	
-			buffer.flush();
-	
-			return buffer.toByteArray();
+			return IOUtils.toByteArray(file);
 		
 		} catch (Exception e) {
 			logger.error("Error al convertir el documento a bytes");
@@ -634,30 +623,41 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	}
 
 	@Override
-	public void envioDocumentosFacturacion(String para, String fileName,
-			Integer idEstablecimiento) {
-		try {
+	public void envioDocumentosFacturacion(final String para, final String fileName,
+		final Integer idEstablecimiento) {
+	
+		logger.debug("hilo principal {}", Thread.currentThread().getName());
 		
-			Establecimiento estab = establecimientoService.readById(
-					EstablecimientoFactory.newInstance(idEstablecimiento));
+		new Thread(new Runnable() {
 			
-			InputStream pdf = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
-					+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + ".pdf");
-			
-			InputStream xml = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
-					+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + ".xml");
-			
-			Map<String, InputStreamResource> attach = new HashMap<String, InputStreamResource>();
-			attach.put(fileName + ".pdf", new InputStreamResource(pdf));
-			attach.put(fileName + ".xml", new InputStreamResource(xml));
-			
-			emailService.sendMailWithAttach("Correo de prueba", "<h2>Hola</h2>",
-					"Email de prueba", attach, para);
-		
-		} catch (MessagingException ex) {
-			logger.error("Error al enviar el email", ex.getMessage());
-			throw new PortalException("Error al enviar el email", ex);
-		}
+			@Override
+			public void run() {
+				try {
+					Establecimiento estab = establecimientoService.readById(
+							EstablecimientoFactory.newInstance(idEstablecimiento));
+					
+					InputStream pdf = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
+							+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + ".pdf");
+					
+					InputStream xml = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
+							+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + ".xml");
+					
+					final Map<String, ByteArrayResource> attach = new HashMap<String, ByteArrayResource>();
+					attach.put(fileName + ".pdf", new ByteArrayResource(IOUtils.toByteArray(pdf)));
+					attach.put(fileName + ".xml", new ByteArrayResource(IOUtils.toByteArray(xml)));
+					
+					emailService.sendMailWithAttach("Correo de prueba", "<h2>Hola</h2>",
+							"Email de prueba", attach, para);
+				} catch (MessagingException ex) {
+					logger.error("Error al enviar el email.", ex);
+					throw new PortalException("Error al enviar el email", ex);
+				} catch (IOException ex) {
+					logger.error("Error al leer los archivos adjuntos.", ex);
+					emailService.sendMail("<h2>Ocurrio un error</h2>",
+							"Email de prueba", para);
+				}
+			}
+		}).start();
 	}
 
 }

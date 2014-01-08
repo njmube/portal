@@ -9,11 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.commons.EmailService;
 
 @Service("emailService")
@@ -43,10 +44,10 @@ public class EmailServiceImpl implements EmailService {
 
 	@Override
 	public void sendMailWithAttach(String message, String messageHtml,
-			String subject, Map<String, InputStreamResource> attach, String... recipients)
+			String subject, Map<String, ByteArrayResource> attach, String... recipients)
 			throws MessagingException {
 		MimeMessage msg = javaMailSender.createMimeMessage();
-		
+		logger.debug("hilo mail {}", Thread.currentThread().getName());
 		logger.debug("Iniciando el envio de email");
 		
 		MimeMessageHelper helper = new MimeMessageHelper(msg, true, "UTF-8");
@@ -54,8 +55,7 @@ public class EmailServiceImpl implements EmailService {
 		helper.setText(message, messageHtml);
 		helper.setSubject(subject);
 		helper.setFrom(email);
-		for(Map.Entry<String, InputStreamResource> entry : attach.entrySet()) {
-			logger.debug(entry.getKey() + "/" +entry.getValue());
+		for(Map.Entry<String, ByteArrayResource> entry : attach.entrySet()) {			
 			helper.addAttachment(entry.getKey(), entry.getValue());
 		}
 		javaMailSender.send(msg);

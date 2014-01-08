@@ -4,7 +4,7 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.ByteArrayResource;
 
 public interface EmailService {
 
@@ -14,7 +14,7 @@ public interface EmailService {
 			String... recipients) throws MessagingException;
 
 	void sendMailWithAttach(String message, String messageHtml, String subject,
-			Map<String, InputStreamResource> attach, String... recipients)
+			Map<String, ByteArrayResource> attach, String... recipients)
 			throws MessagingException;
 
 //	void sendMailWithEngine(String message, String subject, String template,

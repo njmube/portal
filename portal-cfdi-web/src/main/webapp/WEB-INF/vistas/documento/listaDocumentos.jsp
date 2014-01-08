@@ -73,8 +73,30 @@
 								url: contextPath + "/documentoEnvio?ajax=true",
 								data: params,
 								type: "GET",								
-								succes : function() {
-									alert("Enviado!!");
+								success : function(response) {
+									$("#close").click();
+									
+									message = "";
+									messageClass = "";
+									
+									if(response) {
+										message = "El correo fue enviado correctamente.";
+										messageClass = "success";
+									} else {
+										message = "Error al enviar el correo electronico.";
+										messageClass = "danger"
+									}
+									var messageContainer = "<div class=\'col-md-offset-2 col-md-8\'> " +
+										"<div class=\'alert alert-" + messageClass + " alert-dismissable\'>" +
+										"<button type=\'button\' class=\'close\' data-dismiss=\'alert\' aria-hidden=\'true\'>&times;</button>" +
+										"Mensaje: " +
+										"<br><br> <strong>" + message + "</strong>" +
+										"</div>" +
+										"</div>";
+										
+									$("#message_response").html(messageContainer);
+									autoClosingAlert("div.alert", 2500);
+									
 								}
 							});
 						}
@@ -99,7 +121,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" id="close" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title text-primary">Enviar Documentos</h4>
       </div>
       <div class="modal-body">
@@ -118,7 +140,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" id="close" class="btn btn-default" data-dismiss="modal">Cerrar</button>
         <button type="button" id="enviaMail" class="btn btn-primary">Enviar</button>
       </div>
     </div><!-- /.modal-content -->

@@ -38,12 +38,14 @@
 	<bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="host" value="${email.host}" />
 		<property name="port" value="${email.port}" />
+		<property name="protocol" value="${mail.transport.protocol}" />
 		<property name="username" value="${email.username}" />
 		<property name="password" value="${email.password}" />
 		<property name="javaMailProperties">
 			<props>
-				<prop key="mail.smtp.auth">true</prop>
-				<prop key="mail.debug">true</prop>
+				<prop key="mail.smtps.auth">${mail.smtp.auth}</prop>
+				<prop key="mail.debug">${mail.debug}</prop>
+				<prop key="mail.smtps.starttls.enable">${mail.smtps.starttls.enable}</prop>				
 			</props>
 		</property>
 	</bean>

@@ -16,6 +16,8 @@
 				<p class="text-info">Ingresa el RFC del Cliente.</p>
 			</blockquote>
 			<hr>
+			<div id="message_response">
+			</div>
 			<div class="well col-md-offset-2 col-md-8">
 				<form:form id="documentoForm" action="#" method="GET" modelAttribute="cliente" cssClass="form-horizontal" role="form">
 					<div class="form-group">
