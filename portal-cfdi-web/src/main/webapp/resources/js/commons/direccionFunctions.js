@@ -16,7 +16,7 @@
     				var opcion = "<option value =" + item.id + ">" + item.nombre + "</option>";
     				target.append(opcion);
     			});
-    		},
+    		}
     	  });
       } else {
     	  target.append(opDefault);
