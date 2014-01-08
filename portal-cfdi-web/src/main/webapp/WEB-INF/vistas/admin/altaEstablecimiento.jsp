@@ -97,7 +97,7 @@
 							<div class="form-group">
 								<label for="cmbPais" class="col-lg-2 control-label">País: </label>
 								<div class="col-lg-4">
-									<select class="form-control-xsm validate[required]" id="pais">
+									<select class="form-control validate[required]" id="pais">
 									  		<option value="">- Seleccione una opción -</option>
 									  		<c:forEach items="${listaPaises}" var="pais">
 									    		<option value="${pais.id}" ${establecimiento.domicilio.estado.pais.id eq pais.id ? 'selected' : ''}>${pais.nombre}</option>
@@ -107,7 +107,7 @@
 								<label for="txtEstado" class="col-lg-2 control-label">Estado: </label>
 								<div class="col-lg-4">
 								
-								<form:select path="domicilio.estado.id" id="estado">
+								<form:select path="domicilio.estado.id" id="estado" cssClass="form-control">
 									<form:option value="">- Seleccione una opción -</form:option>
 <%-- 									<form:options items="${listaEstados }"></form:options> --%>
 								</form:select>
