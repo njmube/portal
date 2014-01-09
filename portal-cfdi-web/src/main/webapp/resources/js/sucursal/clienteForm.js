@@ -126,7 +126,7 @@ $("#agregarCorregir").click(function() {
 			+ "</td>"
 			+ "<td width=\'100px\'>"
 			+ "<input type=\'hidden\' name=\'domicilios["+ aux +"].estado.id\' id=\'estadoOculto\' value=\'"+ idEstado +"\'/>"
-		  	+ "<select class=\'form-control-xsm validate[required]\' id=\'estado"+ aux +"\' name=\'domicilios["+ aux +"].estado.id\'>"
+		  	+ "<select class=\'form-control-xsm validate[required] estado\' id=\'estado"+ aux +"\' name=\'domicilios["+ aux +"].estado.id\'>"
 	  		+ opEstado
 			+ "</select>"
 			+ "</td>"

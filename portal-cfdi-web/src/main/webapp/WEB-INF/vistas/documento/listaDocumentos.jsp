@@ -84,7 +84,7 @@
 										messageClass = "success";
 									} else {
 										message = "Error al enviar el correo electronico.";
-										messageClass = "danger"
+										messageClass = "danger";
 									}
 									var messageContainer = "<div class=\'col-md-offset-2 col-md-8\'> " +
 										"<div class=\'alert alert-" + messageClass + " alert-dismissable\'>" +
@@ -95,6 +95,7 @@
 										"</div>";
 										
 									$("#message_response").html(messageContainer);
+									$("#email").val("");
 									autoClosingAlert("div.alert", 2500);
 									
 								}
