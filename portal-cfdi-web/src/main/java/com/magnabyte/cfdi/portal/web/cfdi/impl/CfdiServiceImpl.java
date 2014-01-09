@@ -56,7 +56,6 @@ public class CfdiServiceImpl implements CfdiService {
 				if(documento instanceof DocumentoSucursal) {
 					ticketService.updateEstadoFacturado((DocumentoSucursal) documento);
 				}
-		
 			}
 		}	
 	}

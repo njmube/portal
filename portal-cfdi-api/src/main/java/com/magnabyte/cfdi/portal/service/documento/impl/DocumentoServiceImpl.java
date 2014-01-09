@@ -439,7 +439,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		try {
 			XMLGregorianCalendar fechaComprobante = DatatypeFactory.newInstance().newXMLGregorianCalendar(dateNow.get(Calendar.YEAR), 
 					dateNow.get(Calendar.MONTH) + 1, dateNow.get(Calendar.DAY_OF_MONTH), 
-					dateNow.get(Calendar.HOUR), dateNow.get(Calendar.MINUTE), dateNow.get(Calendar.SECOND), 
+					dateNow.get(Calendar.HOUR_OF_DAY), dateNow.get(Calendar.MINUTE), dateNow.get(Calendar.SECOND), 
 					DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED); 
 			comprobante.setFecha(fechaComprobante);
 		} catch (DatatypeConfigurationException e) {

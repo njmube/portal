@@ -698,6 +698,8 @@ public class Ticket {
 					builder.append(transaccionHeader);
 					builder.append(", partidas=");
 					builder.append(partidas);
+					builder.append(", partidasDevolucion=");
+					builder.append(partidasDevolucion);
 					builder.append(", partidasDescuentos=");
 					builder.append(partidasDescuentos);
 					builder.append(", transaccionTotal=");
