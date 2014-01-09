@@ -24,6 +24,34 @@
 		$(document.body).on("click","#cancelar",function() {
 			location.href = contextPath + "/confirmarDatos/${cliente.id}";
 		});
+		
+		var rfcExtranjeros = "${rfcExtranjeros}";
+		
+		$(document.body).on('change',"#pais",function() {
+			if($("option:selected", this).val() > 1){
+				if($("#personaFisica").is(":checked", true)) {
+					$("#rfc").removeClass("validate[required, custom[rfcFisica]]");
+					$("#rfc").addClass("validate[required, custom[rfc]]");
+				} else if ($("#personaMoral").is(":checked", true)) {
+					$("#rfc").removeClass("validate[required, custom[rfcMoral]]");
+					$("#rfc").addClass("validate[required, custom[rfc]]");
+				}			
+				$("#rfc").val(rfcExtranjeros);
+				$("#rfc").attr('readonly', true);
+			} else {
+				if($("#rfc").val() === rfcExtranjeros) {
+					$("#rfc").val("");
+					if($("#personaFisica").is(":checked", true)) {
+						$("#rfc").removeClass("validate[required, custom[rfc]]");
+						$("#rfc").addClass("validate[required, custom[rfcFisica]]");
+					} else if ($("#personaMoral").is(":checked", true)) {
+						$("#rfc").removeClass("validate[required, custom[rfc]]");
+						$("#rfc").addClass("validate[required, custom[rfcMoral]]");
+					}
+				}
+				$("#rfc").attr('readonly', false);
+			}
+		});
 	});
 </script>
 
@@ -39,11 +67,44 @@
 			<div class="well">
 				<c:url var="altaUrl" value="/portal/cfdi/confirmarDatos/clienteCorregir"/>
 				<form:form id="clienteCorregirForm" action="${altaUrl}" method="POST" modelAttribute="clienteCorregir" cssClass="form-horizontal" role="form">
+					<div class="row">
+    					<div class="text-center">
+    						<div class="form-group">
+    							<c:choose >
+    								<c:when test="${clienteCorregir.tipoPersona.id eq 1}">
+										<input type="hidden" id="tipoPersona" name="tipoPersona.id" value="${clienteCorregir.tipoPersona.id}"/>
+	    								<label class="checkbox-inline">
+	    									<strong>Persona Fisica:</strong> <input type="radio" id="personaFisica" name="personaFisica" checked="checked">
+										</label>
+										<label class="checkbox-inline">
+										  	<strong>Persona Moral:</strong> <input type="radio" id="personaMoral" name="personaMoral">
+										</label>
+    								</c:when>
+	    							<c:when test="${clienteCorregir.tipoPersona.id eq 2}">
+	    								<input type="hidden" id="tipoPersona" name="tipoPersona.id" value="${clienteCorregir.tipoPersona.id}"/>
+	    								<label class="checkbox-inline">
+	    									Persona Fisica: <input type="radio" id="personaFisica" name="personaFisica">
+										</label>
+										<label class="checkbox-inline">
+										  	Persona Moral: <input type="radio" id="personaMoral" name="personaMoral" checked="checked">
+										</label>
+	    							</c:when>
+    							</c:choose>
+    						</div>
+    					</div>
+					</div>
 					<div class="form-group">
 						<form:hidden path="id" id="idCliente"/>
 						<label class="control-label col-lg-1">RFC: </label>
 						<div class="col-lg-2">
-							<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfc]]"/>
+							<c:choose>
+								<c:when test="${clienteCorregir.tipoPersona.id eq 1}">
+									<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfcFisica]]"/>
+								</c:when>
+								<c:when test="${clienteCorregir.tipoPersona.id eq 2}">
+									<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfcMoral]]"/>
+								</c:when>
+							</c:choose>
 						</div>
 						<label class="control-label col-lg-2">Nombre: </label>
 						<div class="col-lg-6">
@@ -82,10 +143,8 @@
 													<form:hidden path="domicilios[${theCount.index}].estado.pais.id" id="paisOculto"/>
 												  	<select class="form-control-xsm validate[required]" id="pais">
 												  		<option value="">- Seleccione una opción -</option>
-												  		<c:forEach items="${listaPaises}" var="pais">
-												    		<option value="${pais.id}" ${domicilio.estado.pais.id eq pais.id ? 'selected' : ''}>
-												    			${pais.nombre}</option>
-												  		</c:forEach>
+												    	<option value="${domicilio.estado.pais.id}" selected>
+												    		${domicilio.estado.pais.nombre}</option>
 			  										</select>
 												</td>
 												<td width="100px">
@@ -118,10 +177,9 @@
 												<td width="100px">
 												  	<select class="form-control-xsm validate[required]" id="pais" name="">
 												  		<option value="">- Seleccione una opción -</option>
-												  		<c:forEach items="${listaPaises}" var="pais">
-												    		<option value="${pais.id}">${pais.nombre}</option>
-												  		</c:forEach>
-															</select>
+												    	<option value="${domicilio.estado.pais.id}" selected>
+												    		${domicilio.estado.pais.nombre}</option>
+												    </select>
 												</td>
 												<td width="100px">
 													<input type="hidden" name="domicilios[0].estado.id" id="estadoOculto"/>

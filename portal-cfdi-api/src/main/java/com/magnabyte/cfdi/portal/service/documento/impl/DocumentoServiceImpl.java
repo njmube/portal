@@ -35,6 +35,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -223,10 +224,24 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		try {
 			logger.debug("en obtener Cadena");
 			Source xmlSource = new StreamSource(documentoXmlService.convierteComprobanteAStream(comprobante));
-			Source xsltSource = new StreamSource(resourceLoader.getResource("classpath:/cadenaoriginal_3_2.xslt").getInputStream());
+			Source xsltSource = new StreamSource(resourceLoader.getResource("WEB-INF/xslt/cadenaoriginal_3_2.xslt").getInputStream());
 			StringWriter writer = new StringWriter();
 			Result outputTarget = new StreamResult(writer);
 			TransformerFactory tFactory = TransformerFactory.newInstance();
+			tFactory.setURIResolver(new URIResolver() {
+				
+				@Override
+				public Source resolve(String href, String base) throws TransformerException {
+					try {
+						return new StreamSource(resourceLoader.getResource(href).getInputStream());
+					} catch (IOException e) {
+						logger.error("Ocurrió un error al obtener la Cadena Original, "
+								+ "no se pudo leer el xslt para generar la cadena original", e);
+						throw new PortalException("Ocurrió un error al obtener la Cadena Original, "
+								+ "no se pudo leer el xslt para generar la cadena original", e);
+					}
+				}
+			});
 			Transformer transformer = tFactory.newTransformer(xsltSource);
 			transformer.transform(xmlSource, outputTarget);
 			logger.debug("regresando Cadena");
@@ -236,9 +251,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			throw new PortalException("Ocurrió un error al obtener la Cadena Original.", e);
 		} catch (IOException e) {
 			logger.error("Ocurrió un error al obtener la Cadena Original, "
-					+ "no se pudo recuperar el xslt para generar la cadena original", e);
+					+ "no se pudo leer el xslt para generar la cadena original", e);
 			throw new PortalException("Ocurrió un error al obtener la Cadena Original, "
-					+ "no se pudo recuperar el xslt para generar la cadena original", e);
+					+ "no se pudo leer el xslt para generar la cadena original", e);
 		} catch (TransformerException e) {
 			logger.error("Ocurrió un error al obtener la Cadena Original.", e);
 			throw new PortalException("Ocurrió un error al obtener la Cadena Original.", e);
