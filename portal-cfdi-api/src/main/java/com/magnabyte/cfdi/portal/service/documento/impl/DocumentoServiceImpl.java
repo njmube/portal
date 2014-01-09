@@ -1,6 +1,6 @@
 package com.magnabyte.cfdi.portal.service.documento.impl;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -46,13 +48,16 @@ import mx.gob.sat.cfd._3.Comprobante.Impuestos;
 import mx.gob.sat.cfd._3.Comprobante.Receptor;
 import mx.gob.sat.cfd._3.TUbicacion;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.ssl.PKCS8Key;
 import org.bouncycastle.util.encoders.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ResourceLoaderAware;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,6 +66,7 @@ import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoSerieDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
+import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.commons.Estado;
@@ -76,6 +82,7 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDescuento;
+import com.magnabyte.cfdi.portal.service.certificado.CertificadoService;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 import com.magnabyte.cfdi.portal.service.commons.EmailService;
@@ -134,26 +141,41 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	private ResourceLoader resourceLoader;
 	
+	@Value("${email.plantilla.plaintext}")
+	private String namePlainText;
+	
+	@Value("${email.plantilla.htmltext}")
+	private String nameHtmlText;
+	
+	@Value("${email.plantilla.htmltexterror}")
+	private String nameHtmlTextError;
+	
+	@Value("${email.plantilla.plaintexterror}")
+	private String namePlainTextError;
+	
 	@Override
-	public boolean sellarComprobante(Comprobante comprobante) {
+	public boolean sellarComprobante(Comprobante comprobante, CertificadoDigital certificado) {
 		logger.debug("en sellar Documento");
 		String cadena = obtenerCadena(comprobante);
-		String sello = obtenerSelloDigital(cadena);
+		String sello = obtenerSelloDigital(cadena, certificado);
 		logger.debug("SELLO: {}", sello);
 		logger.debug("CADENA: {}", cadena);
-		if(validSelloDigital(sello, cadena, comprobante)) {
+		if(validSelloDigital(sello, cadena, comprobante, certificado)) {
 			comprobante.setSello(sello);
 			return true;
+		} else {
+			logger.error("El Sello Digital no es valido");
+			throw new PortalException("El Sello Digital no es valido");
 		}
-		return false;
 	}
 
-	private boolean validSelloDigital(String sello, String cadena, Comprobante comprobante) {
+	private boolean validSelloDigital(String sello, String cadena, Comprobante comprobante, CertificadoDigital certificado) {
 		CertificateFactory certFactory;
 		try {
 			logger.debug("validando sello...");
+			String certificateFileLocation = certificado.getRutaCertificado() + File.separator + certificado.getNombreCertificado();
 			certFactory = CertificateFactory.getInstance("X.509");
-			X509Certificate certificate = (X509Certificate) certFactory.generateCertificate(resourceLoader.getResource("classpath:/aaa010101aaa__csd_01.cer").getInputStream());
+			X509Certificate certificate = (X509Certificate) certFactory.generateCertificate(resourceLoader.getResource(certificateFileLocation).getInputStream());
 			certificate.checkValidity();
 			PublicKey publicKey = certificate.getPublicKey();
 			comprobante.setNoCertificado(new String(certificate.getSerialNumber().toByteArray()));
@@ -182,11 +204,14 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 	}
 
-	private String obtenerSelloDigital(String cadena) {
+	private String obtenerSelloDigital(String cadena, CertificadoDigital certificado) {
 		try {
 			logger.debug("en obtener sello digital");
-			InputStream keyStream = resourceLoader.getResource("classpath:/aaa010101aaa__csd_01.key").getInputStream();
-			PKCS8Key key = new PKCS8Key(keyStream, "12345678a".toCharArray());
+			String keyFileLocation = certificado.getRutaKey() + File.separator + certificado.getNombreKey();
+			InputStream keyStream = resourceLoader.getResource(keyFileLocation).getInputStream();
+			String password = new String(Base64.decode(certificado.getPassword())).trim();
+			logger.debug("password {}", password);
+			PKCS8Key key = new PKCS8Key(keyStream, password.toCharArray());
 			PrivateKey privateKey = key.getPrivateKey();
 			
 			Signature signature = Signature.getInstance("SHA1withRSA");
@@ -208,10 +233,24 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		try {
 			logger.debug("en obtener Cadena");
 			Source xmlSource = new StreamSource(documentoXmlService.convierteComprobanteAStream(comprobante));
-			Source xsltSource = new StreamSource(resourceLoader.getResource("classpath:/cadenaoriginal_3_2.xslt").getInputStream());
+			Source xsltSource = new StreamSource(resourceLoader.getResource("WEB-INF/xslt/cadenaoriginal_3_2.xslt").getInputStream());
 			StringWriter writer = new StringWriter();
 			Result outputTarget = new StreamResult(writer);
 			TransformerFactory tFactory = TransformerFactory.newInstance();
+			tFactory.setURIResolver(new URIResolver() {
+				
+				@Override
+				public Source resolve(String href, String base) throws TransformerException {
+					try {
+						return new StreamSource(resourceLoader.getResource(href).getInputStream());
+					} catch (IOException e) {
+						logger.error("Ocurrió un error al obtener la Cadena Original, "
+								+ "no se pudo leer el xslt para generar la cadena original", e);
+						throw new PortalException("Ocurrió un error al obtener la Cadena Original, "
+								+ "no se pudo leer el xslt para generar la cadena original", e);
+					}
+				}
+			});
 			Transformer transformer = tFactory.newTransformer(xsltSource);
 			transformer.transform(xmlSource, outputTarget);
 			logger.debug("regresando Cadena");
@@ -221,9 +260,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			throw new PortalException("Ocurrió un error al obtener la Cadena Original.", e);
 		} catch (IOException e) {
 			logger.error("Ocurrió un error al obtener la Cadena Original, "
-					+ "no se pudo recuperar el xslt para generar la cadena original", e);
+					+ "no se pudo leer el xslt para generar la cadena original", e);
 			throw new PortalException("Ocurrió un error al obtener la Cadena Original, "
-					+ "no se pudo recuperar el xslt para generar la cadena original", e);
+					+ "no se pudo leer el xslt para generar la cadena original", e);
 		} catch (TransformerException e) {
 			logger.error("Ocurrió un error al obtener la Cadena Original.", e);
 			throw new PortalException("Ocurrió un error al obtener la Cadena Original.", e);
@@ -607,24 +646,13 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	public byte[] recuperarDocumentoArchivo(String fileName, 
 			Integer idEstablecimiento, String extension) {
 		try {
-			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-			
 			Establecimiento estab = establecimientoService.readById(
 					EstablecimientoFactory.newInstance(idEstablecimiento));
 			//FIXME Cambiar la ruta out
 			InputStream file = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
 					+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + "." + extension);
 			
-			int nRead;
-			byte[] data = new byte[16384];
-	
-			while ((nRead = file.read(data, 0, data.length)) != -1) {
-			  buffer.write(data, 0, nRead);
-			}
-	
-			buffer.flush();
-	
-			return buffer.toByteArray();
+			return IOUtils.toByteArray(file);
 		
 		} catch (Exception e) {
 			logger.error("Error al convertir el documento a bytes");
@@ -633,30 +661,56 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	}
 
 	@Override
-	public void reenvioDocumentosFacturacion(String para, String fileName,
-			Integer idEstablecimiento) {
-		try {
+	public void envioDocumentosFacturacion(final String para, final String fileName,
+		final Integer idEstablecimiento) {
+	
+		logger.debug("hilo principal {}", Thread.currentThread().getName());
 		
-			Establecimiento estab = establecimientoService.readById(
-					EstablecimientoFactory.newInstance(idEstablecimiento));
+		new Thread(new Runnable() {
 			
-			InputStream pdf = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
-					+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + ".pdf");
-			
-			InputStream xml = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
-					+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + ".xml");
-			
-			InputStreamResource [] attach = {
-				new InputStreamResource(pdf), new InputStreamResource(xml)	
-			};
-			
-			emailService.sendMailWithAttach("Correo de prueba", "<h2>Hola</h2>",
-					"Eamil de prueba", attach, para);
-		
-		} catch (MessagingException ex) {
-			logger.error("Error al enviar el email", ex.getMessage());
-			throw new PortalException("Error al enviar el email", ex);
-		}
+			@Override
+			public void run() {
+				String asunto = "Modatelas S.A.P.I de C.V. -CFDI Factura " + fileName;
+				String htmlPlantilla = null;
+				String textoPlanoPlantilla = null;
+				String htmlPlantillaError = null;
+				String textoPlanoPlantillaError = null;
+				
+				Resource htmlResource = resourceLoader.getResource("classpath:/" + nameHtmlText);
+				Resource plainTextResource = resourceLoader.getResource("classpath:/" + namePlainText);
+				Resource htmlResourceError = resourceLoader.getResource("classpath:/" + nameHtmlTextError);
+				Resource plainTextResourceError = resourceLoader.getResource("classpath:/" + namePlainTextError);
+				
+				try {
+					htmlPlantillaError = IOUtils.toString(htmlResourceError.getInputStream(),"UTF-8");
+					textoPlanoPlantillaError = IOUtils.toString(plainTextResourceError.getInputStream(),"UTF-8");
+					
+					Establecimiento estab = establecimientoService.readById(
+							EstablecimientoFactory.newInstance(idEstablecimiento));
+					
+					InputStream pdf = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
+							+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + ".pdf");
+					
+					InputStream xml = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
+							+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + ".xml");
+					
+					final Map<String, ByteArrayResource> attach = new HashMap<String, ByteArrayResource>();
+					attach.put(fileName + ".pdf", new ByteArrayResource(IOUtils.toByteArray(pdf)));
+					attach.put(fileName + ".xml", new ByteArrayResource(IOUtils.toByteArray(xml)));
+					
+					htmlPlantilla = IOUtils.toString(htmlResource.getInputStream(), "UTF-8");
+					textoPlanoPlantilla = IOUtils.toString(plainTextResource.getInputStream(), "UTF-8");
+					
+					emailService.sendMailWithAttach(textoPlanoPlantilla,htmlPlantilla, asunto, attach, para);
+					
+				} catch (PortalException ex) {
+					logger.error("Error al leer los archivos adjuntos.", ex);
+					emailService.sendMimeMail(textoPlanoPlantillaError, htmlPlantillaError ,asunto, para);
+				} catch (IOException ex) {
+					logger.error("Error al leer los archivos adjuntos.", ex);
+					emailService.sendMimeMail(textoPlanoPlantillaError, htmlPlantillaError ,asunto, para);
+				}
+			}
+		}).start();
 	}
-
 }

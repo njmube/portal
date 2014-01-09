@@ -51,7 +51,7 @@ public class ClienteController {
 		}
 	}
 	
-	@RequestMapping("/listaClientes")
+	@RequestMapping(value = "/listaClientes", method = RequestMethod.POST)
 	public String listaClientes(ModelMap model, @ModelAttribute Cliente cliente) {		
 		List<Cliente> clientes = clienteService.findClientesByNameRfc(cliente);
 		if(!clientes.isEmpty()) {
@@ -76,8 +76,14 @@ public class ClienteController {
 			@PathVariable String viewError) {
 		logger.debug("Confimar datos");	
 		if (result.hasErrors()) {
-			model.put("error", result.getAllErrors());
+			model.put("errorSave", true);
+			model.put("errorMessage", result.getAllErrors());
+			model.put("listaPaises", opcionDeCatalogoService
+					.getCatalogo("c_pais", "id_pais"));
+			model.put("rfcExtranjeros", genericRfcExtranjeros);
 			logger.debug(result.getAllErrors().toString());
+			
+			return "sucursal/" + viewError;
 		}
 		
 		if(cliente.getId() != null) {		

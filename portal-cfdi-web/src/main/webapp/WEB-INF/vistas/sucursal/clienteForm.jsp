@@ -49,17 +49,6 @@ $(document).ready(function() {
 				<p class="text-info">Ingresa la Información de Facturación.</p>
 			</blockquote>
 			<hr>
-			<c:if test="${errorSave}">
-				<div class="col-md-offset-2 col-md-8">
-					<p>
-						<div class="alert alert-danger alert-dismissable">
-							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-							Error al guardar
-							<br><br> <strong>${errorMessage}</strong> 
-						</div>
-					</p>
-				</div>
-			</c:if>
 			<div class="well">
 				<sec:authorize access="hasAnyRole('ROLE_SUC')">
 					<c:url var="altaUrl" value="/confirmarDatos/clienteForm"/>
@@ -68,6 +57,19 @@ $(document).ready(function() {
 					<c:url var="altaUrl" value="/portal/cfdi/confirmarDatos/clienteForm"/>
 				</sec:authorize>
 				<form:form id="clienteForm" action="${altaUrl}" method="POST" modelAttribute="cliente" cssClass="form-horizontal" role="form">
+					<div class="row">
+						<c:if test="${errorSave}">
+							<div class="col-md-offset-2 col-md-8">
+								<p>
+									<div class="alert alert-danger alert-dismissable">
+										<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+										Error al guardar
+										<br><br> <strong>${errorMessage}</strong> 
+									</div>
+								</p>
+							</div>
+						</c:if>
+					</div>
 					<div class="row">
     					<div class="text-center">
     						<div class="form-group">
@@ -118,7 +120,7 @@ $(document).ready(function() {
 									<td width="68px"><form:input path="domicilios[0].noExterior" id="noExterior" cssClass="form-control input-xsm validate[required, integer, minSize[1]]"/></td>
 									<td width="68px"><form:input path="domicilios[0].noInterior" id="noInteriorr" cssClass="form-control input-xsm validate[integer]" /></td>
 									<td width="100px">
-									  	<select class="validate[required] form-control-xsm" id="pais" name="domicilios[0].estado.pais.id">
+									  	<select class="validate[required] form-control-xsm pais" id="pais" name="domicilios[0].estado.pais.id">
 									  		<option value="">- Seleccione una opción -</option>
 									  		<c:forEach items="${listaPaises}" var="pais">
 									    		<option value="${pais.id}">${pais.nombre}</option>

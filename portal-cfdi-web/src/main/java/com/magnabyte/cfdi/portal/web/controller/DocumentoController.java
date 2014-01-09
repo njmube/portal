@@ -21,19 +21,21 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.magnabyte.cfdi.portal.dao.certificado.CertificadoDao;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoPortal;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
-import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
+import com.magnabyte.cfdi.portal.web.cfdi.CfdiService;
 import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
 
 @Controller
@@ -54,30 +56,18 @@ public class DocumentoController {
 
 	@Autowired
 	private DocumentoWebService documentoWebService;
-
-	@Autowired
-	private CertificadoDao certificadoDao;
 	
 	@Autowired
-	private TicketService ticketService;
+	private CfdiService cfdiService;
 	
 	@RequestMapping(value = {"/generarDocumento", "/portal/cfdi/generarDocumento"}, method = RequestMethod.POST)
 	public String generarDocumento(@ModelAttribute Documento documento,
 			ModelMap model, HttpServletRequest request) {
 		logger.debug("generando documento");
-		
-		documentoService.guardarDocumento(documento);
-		if (documentoService.sellarComprobante(documento.getComprobante())) {
-			if (documentoWebService.timbrarDocumento(documento, request)) {
-				documentoService.insertDocumentoCfdi(documento);
-				documentoService.insertAcusePendiente(documento);
-				if(documento instanceof DocumentoSucursal) {
-					ticketService.updateEstadoFacturado((DocumentoSucursal) documento);
-				}
-				model.put("documento", documento);
-			}
-		}
 
+		cfdiService.generarDocumento(documento, request);
+		model.put("documento", documento);
+		
 		if (documento instanceof DocumentoPortal) {
 			return "redirect:/portal/cfdi/imprimirFactura";
 		} else {
@@ -153,6 +143,18 @@ public class DocumentoController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@RequestMapping(value = {"/documentoEnvio", "/portal/cfdi/documentoEnvio"}) 
+	public @ResponseBody Boolean documentoEnvio(@RequestParam Integer idEstab, 
+			@RequestParam String fileName, @RequestParam String email) {
+		try {
+			logger.debug("----------------------- File Name {}", fileName);
+			documentoService.envioDocumentosFacturacion(email, fileName, idEstab);
+		} catch (PortalException ex) {
+			return false;
+		}
+		return true;
 	}
 	
 	@RequestMapping(value = {"/buscarDocs", "/portal/cfdi/buscarDocs"})	
