@@ -1,7 +1,9 @@
 package com.magnabyte.cfdi.portal.dao.certificado;
 
+import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
+
 public interface CertificadoDao {
 	
-	String obtenerCertificado();
+	CertificadoDigital readVigente(String fechaComprobante);
 
 }

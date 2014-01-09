@@ -49,17 +49,6 @@ $(document).ready(function() {
 				<p class="text-info">Ingresa la Información de Facturación.</p>
 			</blockquote>
 			<hr>
-			<c:if test="${errorSave}">
-				<div class="col-md-offset-2 col-md-8">
-					<p>
-						<div class="alert alert-danger alert-dismissable">
-							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-							Error al guardar
-							<br><br> <strong>${errorMessage}</strong> 
-						</div>
-					</p>
-				</div>
-			</c:if>
 			<div class="well">
 				<sec:authorize access="hasAnyRole('ROLE_SUC')">
 					<c:url var="altaUrl" value="/confirmarDatos/clienteForm"/>
@@ -68,6 +57,19 @@ $(document).ready(function() {
 					<c:url var="altaUrl" value="/portal/cfdi/confirmarDatos/clienteForm"/>
 				</sec:authorize>
 				<form:form id="clienteForm" action="${altaUrl}" method="POST" modelAttribute="cliente" cssClass="form-horizontal" role="form">
+					<div class="row">
+						<c:if test="${errorSave}">
+							<div class="col-md-offset-2 col-md-8">
+								<p>
+									<div class="alert alert-danger alert-dismissable">
+										<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+										Error al guardar
+										<br><br> <strong>${errorMessage}</strong> 
+									</div>
+								</p>
+							</div>
+						</c:if>
+					</div>
 					<div class="row">
     					<div class="text-center">
     						<div class="form-group">

@@ -1,5 +1,6 @@
 package com.magnabyte.cfdi.portal.service.documento.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -63,6 +64,7 @@ import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoSerieDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
+import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.commons.Estado;
@@ -78,6 +80,7 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDescuento;
+import com.magnabyte.cfdi.portal.service.certificado.CertificadoService;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 import com.magnabyte.cfdi.portal.service.commons.EmailService;
@@ -134,28 +137,35 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Autowired
 	private CfdiConfiguration cfdiConfiguration;
 	
+	@Autowired
+	private CertificadoService certificadoService;
+	
 	private ResourceLoader resourceLoader;
 	
 	@Override
-	public boolean sellarComprobante(Comprobante comprobante) {
+	public boolean sellarComprobante(Comprobante comprobante, CertificadoDigital certificado) {
 		logger.debug("en sellar Documento");
+//		CertificadoDigital certificado = certificadoService.readVigente(comprobante);
 		String cadena = obtenerCadena(comprobante);
-		String sello = obtenerSelloDigital(cadena);
+		String sello = obtenerSelloDigital(cadena, certificado);
 		logger.debug("SELLO: {}", sello);
 		logger.debug("CADENA: {}", cadena);
-		if(validSelloDigital(sello, cadena, comprobante)) {
+		if(validSelloDigital(sello, cadena, comprobante, certificado)) {
 			comprobante.setSello(sello);
 			return true;
+		} else {
+			logger.error("El Sello Digital no es valido");
+			throw new PortalException("El Sello Digital no es valido");
 		}
-		return false;
 	}
 
-	private boolean validSelloDigital(String sello, String cadena, Comprobante comprobante) {
+	private boolean validSelloDigital(String sello, String cadena, Comprobante comprobante, CertificadoDigital certificado) {
 		CertificateFactory certFactory;
 		try {
 			logger.debug("validando sello...");
+			String certificateFileLocation = certificado.getRutaCertificado() + File.separator + certificado.getNombreCertificado();
 			certFactory = CertificateFactory.getInstance("X.509");
-			X509Certificate certificate = (X509Certificate) certFactory.generateCertificate(resourceLoader.getResource("classpath:/aaa010101aaa__csd_01.cer").getInputStream());
+			X509Certificate certificate = (X509Certificate) certFactory.generateCertificate(resourceLoader.getResource(certificateFileLocation).getInputStream());
 			certificate.checkValidity();
 			PublicKey publicKey = certificate.getPublicKey();
 			comprobante.setNoCertificado(new String(certificate.getSerialNumber().toByteArray()));
@@ -184,11 +194,14 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 	}
 
-	private String obtenerSelloDigital(String cadena) {
+	private String obtenerSelloDigital(String cadena, CertificadoDigital certificado) {
 		try {
 			logger.debug("en obtener sello digital");
-			InputStream keyStream = resourceLoader.getResource("classpath:/aaa010101aaa__csd_01.key").getInputStream();
-			PKCS8Key key = new PKCS8Key(keyStream, "12345678a".toCharArray());
+			String keyFileLocation = certificado.getRutaKey() + File.separator + certificado.getNombreKey();
+			InputStream keyStream = resourceLoader.getResource(keyFileLocation).getInputStream();
+			String password = new String(Base64.decode(certificado.getPassword())).trim();
+			logger.debug("password {}", password);
+			PKCS8Key key = new PKCS8Key(keyStream, password.toCharArray());
 			PrivateKey privateKey = key.getPrivateKey();
 			
 			Signature signature = Signature.getInstance("SHA1withRSA");

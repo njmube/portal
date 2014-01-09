@@ -3,21 +3,18 @@ package com.magnabyte.cfdi.portal.dao.certificado.sql;
 import com.magnabyte.cfdi.portal.dao.GenericSql;
 
 public class CertificadoSql extends GenericSql {
-	public static final String TABLE_NAME = "c_cfdi_cer_pac";
-
-	public static final String CERTIFICADO_PAC = "certificado_pac";
 	
-	public static final String READ_CERTIFICADO;
+	public static final String READ_VIGENTE;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
 		
-		qryBuilder.append(SELECT).append(EOL).append(TAB);
-		qryBuilder.append(CERTIFICADO_PAC).append(EOL);
-		qryBuilder.append(FROM).append(EOL);
-		qryBuilder.append(TABLE_NAME).append(EOL);
+		qryBuilder.append("select top 1 id_cfdi_cer, fecha_inicio, fecha_fin, dbo.TRIM(certificado) as certificado, "); 
+		qryBuilder.append("dbo.TRIM(ruta_cer) as ruta_cer, dbo.TRIM(nombre_cer) as nombre_cer, dbo.TRIM(ruta_key) as ruta_key, ");
+		qryBuilder.append("dbo.TRIM(nombre_key) as nombre_key, dbo.TRIM(passwd) as passwd ");
+		qryBuilder.append("from c_cfdi_cer where ? between fecha_inicio and fecha_fin order by fecha_inicio asc");
 		
-		READ_CERTIFICADO = qryBuilder.toString();
+		READ_VIGENTE = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		
 	}
