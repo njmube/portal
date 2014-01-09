@@ -54,8 +54,10 @@ import org.bouncycastle.util.encoders.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -138,6 +140,18 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	private CfdiConfiguration cfdiConfiguration;
 	
 	private ResourceLoader resourceLoader;
+	
+	@Value("${email.plantilla.plaintext}")
+	private String namePlainText;
+	
+	@Value("${email.plantilla.htmltext}")
+	private String nameHtmlText;
+	
+	@Value("${email.plantilla.htmltexterror}")
+	private String nameHtmlTextError;
+	
+	@Value("${email.plantilla.plaintexterror}")
+	private String namePlainTextError;
 	
 	@Override
 	public boolean sellarComprobante(Comprobante comprobante, CertificadoDigital certificado) {
@@ -656,7 +670,21 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			
 			@Override
 			public void run() {
+				String asunto = "Modatelas S.A.P.I de C.V. -CFDI Factura " + fileName;
+				String htmlPlantilla = null;
+				String textoPlanoPlantilla = null;
+				String htmlPlantillaError = null;
+				String textoPlanoPlantillaError = null;
+				
+				Resource htmlResource = resourceLoader.getResource("classpath:/" + nameHtmlText);
+				Resource plainTextResource = resourceLoader.getResource("classpath:/" + namePlainText);
+				Resource htmlResourceError = resourceLoader.getResource("classpath:/" + nameHtmlTextError);
+				Resource plainTextResourceError = resourceLoader.getResource("classpath:/" + namePlainTextError);
+				
 				try {
+					htmlPlantillaError = IOUtils.toString(htmlResourceError.getInputStream(),"UTF-8");
+					textoPlanoPlantillaError = IOUtils.toString(plainTextResourceError.getInputStream(),"UTF-8");
+					
 					Establecimiento estab = establecimientoService.readById(
 							EstablecimientoFactory.newInstance(idEstablecimiento));
 					
@@ -670,18 +698,19 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 					attach.put(fileName + ".pdf", new ByteArrayResource(IOUtils.toByteArray(pdf)));
 					attach.put(fileName + ".xml", new ByteArrayResource(IOUtils.toByteArray(xml)));
 					
-					emailService.sendMailWithAttach("Correo de prueba", "<h2>Hola</h2>",
-							"Email de prueba", attach, para);
-				} catch (MessagingException ex) {
-					logger.error("Error al enviar el email.", ex);
-					throw new PortalException("Error al enviar el email", ex);
+					htmlPlantilla = IOUtils.toString(htmlResource.getInputStream(), "UTF-8");
+					textoPlanoPlantilla = IOUtils.toString(plainTextResource.getInputStream(), "UTF-8");
+					
+					emailService.sendMailWithAttach(textoPlanoPlantilla,htmlPlantilla, asunto, attach, para);
+					
+				} catch (PortalException ex) {
+					logger.error("Error al leer los archivos adjuntos.", ex);
+					emailService.sendMimeMail(textoPlanoPlantillaError, htmlPlantillaError ,asunto, para);
 				} catch (IOException ex) {
 					logger.error("Error al leer los archivos adjuntos.", ex);
-					emailService.sendMail("<h2>Ocurrio un error</h2>",
-							"Email de prueba", para);
+					emailService.sendMimeMail(textoPlanoPlantillaError, htmlPlantillaError ,asunto, para);
 				}
 			}
 		}).start();
 	}
-
 }
