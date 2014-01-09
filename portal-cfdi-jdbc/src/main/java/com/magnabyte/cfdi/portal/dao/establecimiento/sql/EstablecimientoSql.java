@@ -178,7 +178,7 @@ public class EstablecimientoSql extends GenericSql {
 		READ_ALL = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		
-		// ----- Consulta del establecimiento coo ids ----- //
+		// ----- Consulta del establecimiento con ids ----- //
 		qryBuilder.append(SELECT).append(EOL).append(TAB);
 		qryBuilder.append(ID_ESTABLECIMIENTO).append(EOL_).append(TAB);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(CLAVE)
@@ -189,6 +189,8 @@ public class EstablecimientoSql extends GenericSql {
 		.append(PARENTESIS_FIN).append(AS).append(PASSWORD).append(EOL_);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ID_DOM_ESTAB)
 		.append(PARENTESIS_FIN).append(AS).append(ID_DOM_ESTAB).append(EOL_);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ID_DOM_ESTAB)
+		.append(PARENTESIS_FIN).append(AS).append(ID_TIPO_ESTAB).append(EOL_);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ID_RUTA_ESTAB)
 		.append(PARENTESIS_FIN).append(AS).append(ID_RUTA_ESTAB).append(EOL);
 		

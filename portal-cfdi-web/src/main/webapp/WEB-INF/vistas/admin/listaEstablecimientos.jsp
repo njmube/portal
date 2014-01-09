@@ -34,19 +34,17 @@
 					</div>
 					
 					<div class="table-responsive">
-						<c:set var="nombre" value="Establecimiento <span class='glyphicon glyphicon-sort text-warning'></span>"/>
-						<c:set var="clave" value="Clave <span class='glyphicon glyphicon-sort text-warning'></span>"/>
-						<c:set var="password" value="Password <span class='glyphicon glyphicon-sort text-warning'></span>"/>
+						<c:set var="nombre" value="Establecimiento <i class='fa fa-sort'></i>"/>
+						<c:set var="clave" value="Clave <i class='fa fa-sort'></i>"/>
 						<display:table htmlId="documents" id="document" name="${establecimientos}" 
  							class="table table-hover table-striped table-condensed"
  							requestURI="/facturaCorp"> 
  							<display:column title="#" headerClass="text-primary">${document_rowNum}</display:column>
  							<display:column title="${nombre}" property="nombre" headerClass="text-primary"></display:column>
  							<display:column title="${clave}" property="clave" headerClass="text-primary"/>
-<%--  							<display:column title="${password}" property="password" headerClass="text-primary"/> --%>
  							<display:column title="Modificar" headerClass="text-primary text-center" class="text-center">
  								<a href="<c:url value="/mostrarEstablecimiento/${document.id}"/>" class="btn btn-xs btn-success">
- 								<span class="glyphicon glyphicon-cog"></span></a>
+ 								<i class="fa fa-list-alt"></i></a>
  							</display:column>
  						</display:table>
 					</div>
