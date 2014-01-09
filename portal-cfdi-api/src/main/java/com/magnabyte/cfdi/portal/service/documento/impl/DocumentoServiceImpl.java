@@ -661,11 +661,10 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			
 			@Override
 			public void run() {
-				
 				String asunto = "Modatelas S.A.P.I de C.V. -CFDI Factura " + fileName;
 				String htmlPlantilla = null;
 				String textoPlanoPlantilla = null;
-				String erroPlantilla = null;
+				String htmlPlantillaError = null;
 				String textoPlanoPlantillaError = null;
 				
 				Resource htmlResource = resourceLoader.getResource("classpath:/" + nameHtmlText);
@@ -674,6 +673,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 				Resource plainTextResourceError = resourceLoader.getResource("classpath:/" + namePlainTextError);
 				
 				try {
+					htmlPlantillaError = IOUtils.toString(htmlResourceError.getInputStream(),"UTF-8");
+					textoPlanoPlantillaError = IOUtils.toString(plainTextResourceError.getInputStream(),"UTF-8");
+					
 					Establecimiento estab = establecimientoService.readById(
 							EstablecimientoFactory.newInstance(idEstablecimiento));
 					
@@ -687,22 +689,17 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 					attach.put(fileName + ".pdf", new ByteArrayResource(IOUtils.toByteArray(pdf)));
 					attach.put(fileName + ".xml", new ByteArrayResource(IOUtils.toByteArray(xml)));
 					
-					erroPlantilla = IOUtils.toString(htmlResourceError.getInputStream(),"UTF-8");
-					textoPlanoPlantillaError = IOUtils.toString(plainTextResourceError.getInputStream(),"UTF-8");
 					htmlPlantilla = IOUtils.toString(htmlResource.getInputStream(), "UTF-8");
 					textoPlanoPlantilla = IOUtils.toString(plainTextResource.getInputStream(), "UTF-8");
 					
 					emailService.sendMailWithAttach(textoPlanoPlantilla,htmlPlantilla, asunto, attach, para);
 					
-				} catch (MessagingException ex) {
-					logger.error("Error al enviar el email.", ex);
-					throw new PortalException("Error al enviar el email", ex);
 				} catch (PortalException ex) {
 					logger.error("Error al leer los archivos adjuntos.", ex);
-					emailService.sendMail(textoPlanoPlantilla, erroPlantilla ,asunto, para);
+					emailService.sendMimeMail(textoPlanoPlantillaError, htmlPlantillaError ,asunto, para);
 				} catch (IOException ex) {
 					logger.error("Error al leer los archivos adjuntos.", ex);
-					emailService.sendMail(textoPlanoPlantilla, erroPlantilla ,asunto, para);
+					emailService.sendMimeMail(textoPlanoPlantillaError, htmlPlantillaError ,asunto, para);
 				}
 			}
 		}).start();

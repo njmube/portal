@@ -54,8 +54,9 @@
 				$(document).ready(function() {
 					$("#envioDocForm").validationEngine();
 					
-					$("#enviarDocumento").click(function() {
+					$(document.body).on("click", "#enviarDocumento", function() {
 						var tr = $(this).parent().parent();
+
 						$("#idEstabModal").val(tr.find("#idEstab").val());
 						$("#fileNameModal").val(tr.find("#fileName").val());
 					});
@@ -130,8 +131,8 @@
         	<blockquote>
         		<p>Proporcione un correo electronico para enviar los documentos.</p>
         	</blockquote>
-        	<input type="hidden" id="idEstabModal" value="${documento.establecimiento.id}">
-			<input type="hidden" id="fileNameModal" value="${documento.nombre}">
+        	<input type="hidden" id="idEstabModal">
+			<input type="hidden" id="fileNameModal">
         	<div class="form-group">
 				<label for="email" class="col-lg-4 control-label">Email: </label>
 				<div class="col-lg-5">
