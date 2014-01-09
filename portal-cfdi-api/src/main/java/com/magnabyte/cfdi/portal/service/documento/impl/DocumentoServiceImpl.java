@@ -137,15 +137,11 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Autowired
 	private CfdiConfiguration cfdiConfiguration;
 	
-	@Autowired
-	private CertificadoService certificadoService;
-	
 	private ResourceLoader resourceLoader;
 	
 	@Override
 	public boolean sellarComprobante(Comprobante comprobante, CertificadoDigital certificado) {
 		logger.debug("en sellar Documento");
-//		CertificadoDigital certificado = certificadoService.readVigente(comprobante);
 		String cadena = obtenerCadena(comprobante);
 		String sello = obtenerSelloDigital(cadena, certificado);
 		logger.debug("SELLO: {}", sello);
