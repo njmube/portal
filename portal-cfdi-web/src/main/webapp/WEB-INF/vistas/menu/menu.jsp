@@ -41,7 +41,7 @@
 				</p>
 				<hr>
 				<sec:authorize access="hasRole('ROLE_SUC')">
-					<a href="<c:url value="/cierre"/>" class="btn btn-primary btn-lg" role="button">Cierre
+					<a href="<c:url value="/cierre"/>" class="btn btn-warning btn-lg" role="button">Cierre
 						<i class="fa fa-arrow-right"></i>
 					</a>
 				</sec:authorize>

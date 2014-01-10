@@ -86,6 +86,7 @@
 					<div class="form-group">
 						<div class="centered">
 							<button id="buscarCliente" type="submit" class="btn btn-primary">Buscar <i class="fa fa-search"></i></button>
+							<a id="cancelar" href="<c:url value="/menu"/>" class="btn btn-danger">Cancelar <i class="fa fa-times"></i></a>
 						</div>
 					</div>
 				</form:form>

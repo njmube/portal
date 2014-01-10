@@ -44,7 +44,7 @@
 						<display:column title="Estado"  property="estado.nombre" headerClass="text-primary" />
 						<display:column title="Municipio"  property="municipio" headerClass="text-primary" />
 						<display:column title="Colonia" property="colonia" headerClass="text-primary" />
-						<display:column title="Codigo Postal"  property="codigoPostal" headerClass="text-primary" />
+						<display:column title="Código Postal"  property="codigoPostal" headerClass="text-primary" />
 <%-- 						<display:column title="Localidad"  property="localidad" headerClass="text-primary" /> --%>
 <%-- 						<display:column title="Referencia"  property="referencia" headerClass="text-primary" /> --%>
 						<display:column title="Fiscal" headerClass="text-primary text-center" class="text-center">

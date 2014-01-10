@@ -31,10 +31,10 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 
 	private static final Logger logger = LoggerFactory.getLogger(DocumentoWebServiceImpl.class);
 	
-//	@Autowired
+	@Autowired
 	private WsServicios wsServicios;
 	
-//	@Autowired
+	@Autowired
 	private WsEmisionTimbrado wsEmisionTimbrado;
 	
 	@Autowired

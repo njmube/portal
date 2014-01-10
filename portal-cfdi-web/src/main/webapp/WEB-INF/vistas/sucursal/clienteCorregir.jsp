@@ -110,7 +110,7 @@
 						<div class="col-lg-6">
 							<form:input path="nombre" id="nombre" cssClass="form-control input-sm validate[required]"/>
 						</div>
-					</div>					
+					</div>
 					<p class="text-center">
 						<button id="agregarCorregir" type="button" class="btn btn-xs btn-warning">Agregar Dirección <i class="fa fa-plus"></i> </button>
 					</p>
