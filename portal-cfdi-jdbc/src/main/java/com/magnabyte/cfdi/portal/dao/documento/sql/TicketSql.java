@@ -13,8 +13,10 @@ public class TicketSql extends GenericSql {
 	public static final String NO_CAJA = "no_caja";
 
 	public static final String READ;
+	public static final String READ_BY_STATUS;
 	public static final String UPDATE_FACTURADO;
 	public static final String READ_ART_SIN_PRECIO;
+	public static final String READ_ID_DOC_BY_TICKET;
 
 	
 	static {
@@ -26,6 +28,13 @@ public class TicketSql extends GenericSql {
 	
 		clearAndReuseStringBuilder(qryBuilder);
 		
+		qryBuilder.append(READ).append(EOL);
+		qryBuilder.append("and id_status_ticket = ?");
+		
+		READ_BY_STATUS = qryBuilder.toString();
+		
+		clearAndReuseStringBuilder(qryBuilder);
+		
 		qryBuilder.append("update t_ticket set id_status_ticket = ? where id_ticket = ?");
 		
 		UPDATE_FACTURADO = qryBuilder.toString();
@@ -35,5 +44,12 @@ public class TicketSql extends GenericSql {
 		qryBuilder.append("select dbo.TRIM(clave) as clave from t_articulos_sin_precio");
 		
 		READ_ART_SIN_PRECIO = qryBuilder.toString();
+		
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("select id_documento from t_ticket where no_ticket = ? and id_establecimiento = ? and no_caja = ?").append(EOL);
+		qryBuilder.append("and id_status_ticket = ?");
+		
+		READ_ID_DOC_BY_TICKET = qryBuilder.toString();
 	}
 }

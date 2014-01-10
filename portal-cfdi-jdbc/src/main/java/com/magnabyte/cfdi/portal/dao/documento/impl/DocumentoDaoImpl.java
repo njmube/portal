@@ -36,13 +36,6 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			LoggerFactory.getLogger(DocumentoDaoImpl.class);
 	
 	@Override
-	public Integer readIdByTicket(DocumentoSucursal documento) {
-		return getJdbcTemplate().queryForObject(DocumentoSql.READ_ID_BY_TICKET, 
-				Integer.class, 
-				documento.getTicket().getId());
-	}
-	
-	@Override
 	public void save(Documento documento) {
 		try {
 			SimpleJdbcInsert simpleInsert = new SimpleJdbcInsert(getJdbcTemplate());
@@ -56,7 +49,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	}
 	
 	@Override
-	public void updateDocumentoTicket(DocumentoSucursal documento) {
+	public void updateDocumentoCliente(DocumentoSucursal documento) {
 		getJdbcTemplate().update(DocumentoSql.UPDATE_DOC_CTE, documento.getCliente().getId(), documento.getId());
 	}
 
@@ -64,10 +57,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue(DocumentoSql.ID_ESTABLECIMIENTO, documento.getEstablecimiento().getId());
 		params.addValue(DocumentoSql.ID_CLIENTE, documento.getCliente().getId());
-		if(documento instanceof DocumentoSucursal) {
-			params.addValue(DocumentoSql.ID_TICKET, ((DocumentoSucursal) documento)
-					.getTicket().getId());
-		} else if(documento instanceof DocumentoCorporativo){
+		if(documento instanceof DocumentoCorporativo){
 			params.addValue(DocumentoSql.FOLIO_SAP, ((DocumentoCorporativo) documento).getFolioSap());
 		}
 		//FIXME

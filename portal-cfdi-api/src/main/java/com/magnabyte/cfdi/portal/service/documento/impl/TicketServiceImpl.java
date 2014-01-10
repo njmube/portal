@@ -88,7 +88,22 @@ public class TicketServiceImpl implements TicketService {
 	@Transactional(readOnly = true)
 	@Override
 	public Ticket read(Ticket ticket, Establecimiento establecimiento) {
-		return ticketDao.read(ticket, establecimiento);
+		Ticket ticketDB = null;
+		ticketDB = ticketDao.readByStatus(ticket, establecimiento, TipoEstadoTicket.FACTURADO);
+		if (ticketDB != null) {
+			return ticketDB;
+		}
+		ticketDB = ticketDao.readByStatus(ticket, establecimiento, TipoEstadoTicket.GUARDADO);
+		if (ticketDB != null) {
+			return ticketDB;
+		}
+		return ticketDB;
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public Integer readIdDocFromTicketGuardado(DocumentoSucursal documento) {
+		return ticketDao.readIdDocFromTicketGuardado(documento);
 	}
 	
 	@Transactional
@@ -198,14 +213,9 @@ public class TicketServiceImpl implements TicketService {
 	@Transactional(readOnly = true)
 	@Override
 	public boolean ticketProcesado(Ticket ticket, Establecimiento establecimiento) {
-		Ticket ticketDB = ticketDao.read(ticket, establecimiento);
+		Ticket ticketDB = ticketDao.readByStatus(ticket, establecimiento, TipoEstadoTicket.FACTURADO);
 		if (ticketDB != null) {
-			switch (ticketDB.getTipoEstadoTicket()) {
-			case FACTURADO:
-				return true;
-			default:
-				return false;
-			}
+			return true;
 		}
 		return false;
 	}

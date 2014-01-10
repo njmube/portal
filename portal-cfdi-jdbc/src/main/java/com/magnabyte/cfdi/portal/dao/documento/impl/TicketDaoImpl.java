@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
 import com.magnabyte.cfdi.portal.dao.documento.TicketDao;
+import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 import com.magnabyte.cfdi.portal.dao.documento.sql.TicketSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
@@ -67,6 +68,28 @@ public class TicketDaoImpl extends GenericJdbcDao
 		}
 	}
 	
+	@Override
+	public Integer readIdDocFromTicketGuardado(DocumentoSucursal documento) {
+		return getJdbcTemplate().queryForObject(TicketSql.READ_ID_DOC_BY_TICKET, Integer.class,
+				documento.getTicket().getTransaccion().getTransaccionHeader().getIdTicket(), 
+				documento.getEstablecimiento().getId(),
+				documento.getTicket().getTransaccion().getTransaccionHeader().getIdCaja(),
+				TipoEstadoTicket.GUARDADO.getId());
+	}
+	
+	@Override
+	public Ticket readByStatus(Ticket ticket, Establecimiento establecimiento, TipoEstadoTicket estadoTicket) {
+		try {
+			return getJdbcTemplate().queryForObject(TicketSql.READ_BY_STATUS, MAPPER_TICKET, 
+					ticket.getTransaccion().getTransaccionHeader().getIdTicket(), establecimiento.getId(),
+					ticket.getTransaccion().getTransaccionHeader().getIdCaja(),
+					estadoTicket.getId());
+		} catch (EmptyResultDataAccessException ex) {
+			logger.debug("El ticket no se ha encontrado");
+			return null;
+		}
+	}
+	
 	private static final RowMapper<Ticket> MAPPER_TICKET = new RowMapper<Ticket>() {
 		
 		@Override
@@ -80,6 +103,7 @@ public class TicketDaoImpl extends GenericJdbcDao
 	
 	private MapSqlParameterSource getParameters(DocumentoSucursal documento) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue(DocumentoSql.ID_DOCUMENTO, documento.getId());
 		params.addValue(EstablecimientoSql.ID_ESTABLECIMIENTO, documento.getEstablecimiento().getId());
 		params.addValue(TicketSql.ID_STATUS, documento.getTicket().getTipoEstadoTicket().getId());
 		params.addValue(TicketSql.FECHA, new Date());

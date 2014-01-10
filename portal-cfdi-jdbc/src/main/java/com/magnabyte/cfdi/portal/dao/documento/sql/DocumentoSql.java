@@ -40,7 +40,6 @@ public class DocumentoSql extends GenericSql {
 	public static final String UPDATE_FOLIO_SERIE;
 	public static final String READ_ACUSE_PEND;
 	public static final String UPDATE_DOC_CTE;
-	public static final String READ_ID_BY_TICKET;
 	public static final String READ_SERIE_FOLIO_DOC;
 	
 	static {
@@ -104,10 +103,6 @@ public class DocumentoSql extends GenericSql {
 		
 		UPDATE_DOC_CTE = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
-		
-		qryBuilder.append("select id_documento from t_documento where id_ticket = ?");
-		
-		READ_ID_BY_TICKET = qryBuilder.toString();
 	}
 	
 }

@@ -62,14 +62,14 @@ public class CfdiServiceImpl implements CfdiService {
 	public void generarDocumento(Documento documento, HttpServletRequest request) {
 		logger.debug("cfdiService...");
 		CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
-//		documentoService.guardarDocumento(documento);
+		documentoService.guardarDocumento(documento);
 		if (documentoService.sellarComprobante(documento.getComprobante(), certificado)) {
 			if (documentoWebService.timbrarDocumento(documento, request)) {
-//				documentoService.insertDocumentoCfdi(documento);
-//				documentoService.insertAcusePendiente(documento);
-//				if(documento instanceof DocumentoSucursal) {
-//					ticketService.updateEstadoFacturado((DocumentoSucursal) documento);
-//				}
+				documentoService.insertDocumentoCfdi(documento);
+				documentoService.insertAcusePendiente(documento);
+				if(documento instanceof DocumentoSucursal) {
+					ticketService.updateEstadoFacturado((DocumentoSucursal) documento);
+				}
 			}
 		}	
 	}

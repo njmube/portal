@@ -445,8 +445,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 					case GUARDADO:
 						logger.debug("El ticket ya fue guardado previamente.");
 						((DocumentoSucursal) documento).getTicket().setId(ticketDB.getId());
-						documento.setId(documentoDao.readIdByTicket((DocumentoSucursal) documento));
-						documentoDao.updateDocumentoTicket((DocumentoSucursal) documento);
+						documento.setId(ticketService.readIdDocFromTicketGuardado((DocumentoSucursal) documento));
+						//FIXME
+						documentoDao.updateDocumentoCliente((DocumentoSucursal) documento);
 						Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolioDocumento(documento);
 						documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
 						documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO));
@@ -458,9 +459,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 						break;
 					}
 				} else {
-					ticketService.save((DocumentoSucursal) documento);
 					documentoDao.save(documento);
 					documentoDetalleService.save(documento);
+					ticketService.save((DocumentoSucursal) documento);
 					
 					synchronized (documentoSerieDao) {
 						Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolio(documento);

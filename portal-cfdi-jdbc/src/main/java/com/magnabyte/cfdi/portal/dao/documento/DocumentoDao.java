@@ -24,7 +24,6 @@ public interface DocumentoDao {
 
 	void deleteFromAcusePendiente(Documento documento);
 
-	void updateDocumentoTicket(DocumentoSucursal documento);
+	void updateDocumentoCliente(DocumentoSucursal documento);
 
-	Integer readIdByTicket(DocumentoSucursal documento);
 }
