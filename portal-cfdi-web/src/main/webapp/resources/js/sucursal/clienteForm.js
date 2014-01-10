@@ -7,9 +7,14 @@ $(document).ready(function() {
 		$("#rfc").attr('readonly', true);		
 	}
 	
+	if($("#pais0 option:selected").val() > 1){			
+		$("#rfc").attr('readonly', true);		
+	}
+	
 	$("#continuar").click(function() {
 		$("#agregar").hide();
 		$("input[type=text]").attr("readonly", true);
+		$("input[type=radio]").attr("disabled", true);
 		$("select").attr("disabled", true);
 		$("#botones2").show();
 		$("#botones1").hide();
@@ -19,6 +24,7 @@ $(document).ready(function() {
 	$("#corregir").click(function() {
 		$("#agregar").show();
 		$("input[type=text]").attr("readonly", false);
+		$("input[type=radio]").attr("disabled", false);
 		if($("#pais option:selected").val() > 1){			
 			$("#rfc").attr('readonly', true);
 		}
@@ -40,8 +46,9 @@ $(document).ready(function() {
 	
 	aux = 1;
 	
-	/*Evento que elimina una dirección de la tabla tblDireccion*/
-	$(document.body).on('click',"#delete",function() {		
+	/*Evento que elimina una dirección de la tabla tblDireccion para
+	 * cliente corregir */
+	$(document.body).on('click',"#deleteCorregir",function() {		
 		$(this).parent().parent().remove();
 		
 		var trSize = $("#tblDireccion tbody > tr").size();
@@ -74,6 +81,17 @@ $(document).ready(function() {
 			$(this).find(".codigoPostal").attr("name", "domicilios["+ index +"].codigoPostal");
 			$(this).find(".codigoPostal").attr("id", "codigoPostal"+ index);
 		});
+		
+		if(trSize == 1) {
+			$(".pais").removeAttr("disabled");
+		}
+		aux --;		
+	});
+	
+	$(document.body).on('click',"#delete",function() {		
+		$(this).parent().parent().remove();
+		
+		var trSize = $("#tblDireccion tbody > tr").size();
 		
 		if(trSize == 1) {
 			$("#pais").removeAttr("disabled");
@@ -165,7 +183,7 @@ $("#agregarCorregir").click(function() {
 			+ "<td width=\'70px\'><input id=\'codigoPostal"+ aux +"\' name=\'domicilios["+ aux +"].codigoPostal\' class=\'form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]] codigoPostal\' type=\'text\'></td>"
 	//		+ "<td><input id=\'referencia\' name=\'domicilios["+ aux +"].referencia\' class=\'form-control input-xsm\' type=\'text\'></td>"
 	//		+ "<td><i/resources/js/sucursal/clienteForm.jsnput id=\'localidad\' name=\'domicilios["+ aux +"].localidad\' class=\'form-control input-xsm\' type=\'text\'></td>"				
-			+ "<td><button id=\'delete\' type=\'button\' class=\'btn btn-danger btn-xs\'><i class=\'fa fa-trash-o\'></i></button></td>"
+			+ "<td><button id=\'deleteCorregir\' type=\'button\' class=\'btn btn-danger btn-xs\'><i class=\'fa fa-trash-o\'></i></button></td>"
 			+ "</tr>";
 			
 			$("#tblDireccion tbody").append(tr);
