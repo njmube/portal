@@ -27,6 +27,7 @@ import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
+import com.magnabyte.cfdi.portal.web.cfdi.CfdiService;
 
 @Controller
 @SessionAttributes({"establecimiento", "ticket", "cliente", "documento"})
@@ -43,6 +44,9 @@ public class SucursalController {
 	
 	@Autowired
 	private DocumentoService documentoService;
+	
+	@Autowired
+	private CfdiService cfdiService;
 	
 	@Autowired
 	private TaskExecutor executor;
@@ -111,8 +115,8 @@ public class SucursalController {
 	
 	@RequestMapping("/cierre")
 	public String cierre(@ModelAttribute Establecimiento establecimiento, ModelMap model) {
-//		ticketService.closeOfDay(establecimiento, executor);
-		logger.debug("aqui ando");
+		logger.debug("cierre...");
+		cfdiService.closeOfDay(establecimiento);
 		return "menu/menu";
 	}
 }

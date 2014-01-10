@@ -1,15 +1,20 @@
 package com.magnabyte.cfdi.portal.web.cfdi.impl;
 
+import java.util.Calendar;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
+import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.certificado.CertificadoService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
@@ -33,6 +38,12 @@ public class CfdiServiceImpl implements CfdiService {
 	@Autowired
 	private CertificadoService certificadoService;
 	
+	@Value("${hora.inicio}")
+	private int horaInicio;
+	
+	@Value("${hora.cierre}")
+	private int horaCierre;
+	
 	@Override
 	public void generarDocumento(Documento documento, HttpServletRequest request) {
 		logger.debug("cfdiService...");
@@ -48,5 +59,20 @@ public class CfdiServiceImpl implements CfdiService {
 		
 			}
 		}	
+	}
+	
+	@Override
+	public void closeOfDay(Establecimiento establecimiento) {
+		
+		Calendar calendar = Calendar.getInstance();
+		int hora = calendar.get(Calendar.HOUR_OF_DAY);
+		
+		if (hora > horaCierre) {
+			String fechaCierre = "20131207";
+			ticketService.closeOfDay(establecimiento, fechaCierre);
+		} else {
+			logger.error("El cierre del dia actual es posible realizarlo hasta despues del cierre de la tienda");
+			throw new PortalException("El cierre del dia actual es posible realizarlo hasta despues del cierre de la tienda");
+		}
 	}
 }

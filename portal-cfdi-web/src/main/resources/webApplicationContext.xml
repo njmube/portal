@@ -13,12 +13,12 @@
 
 	<mvc:annotation-driven />
 
-	<mvc:interceptors>
-		<mvc:interceptor>
-			<mvc:mapping path="/cierre"/>
-			<bean class="com.magnabyte.cfdi.portal.web.interceptor.CloseOfDayInterceptor"></bean>
-		</mvc:interceptor>
-	</mvc:interceptors>
+<!-- 	<mvc:interceptors> -->
+<!-- 		<mvc:interceptor> -->
+<!-- 			<mvc:mapping path="/cierre"/> -->
+<!-- 			<bean class="com.magnabyte.cfdi.portal.web.interceptor.CloseOfDayInterceptor"></bean> -->
+<!-- 		</mvc:interceptor> -->
+<!-- 	</mvc:interceptors> -->
 
 	<mvc:resources location="/resources/" mapping="/resources/**" cache-period="0"/>
 
@@ -46,24 +46,24 @@
 		<property name="order" value="0" />
 	</bean>
 
-	<bean id="wsServicios"
-		class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
-		<property name="serviceInterface" value="com.certus.facturehoy.ws2.cfdi.WsServicios" />
-		<property name="wsdlDocumentUrl" value="${ws.servicios.url}" />
-		<property name="namespaceUri" value="http://cfdi.ws2.facturehoy.certus.com/" />
-		<property name="serviceName" value="WsServiciosService" />
-		<property name="portName" value="WsServiciosPort" />
-	</bean>
+<!-- 	<bean id="wsServicios" -->
+<!-- 		class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean"> -->
+<!-- 		<property name="serviceInterface" value="com.certus.facturehoy.ws2.cfdi.WsServicios" /> -->
+<!-- 		<property name="wsdlDocumentUrl" value="${ws.servicios.url}" /> -->
+<!-- 		<property name="namespaceUri" value="http://cfdi.ws2.facturehoy.certus.com/" /> -->
+<!-- 		<property name="serviceName" value="WsServiciosService" /> -->
+<!-- 		<property name="portName" value="WsServiciosPort" /> -->
+<!-- 	</bean> -->
 
-	<bean id="wsEmisionTimbrado"
-		class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
-		<property name="serviceInterface"
-			value="com.certus.facturehoy.ws2.cfdi.WsEmisionTimbrado" />
-		<property name="wsdlDocumentUrl" value="${ws.emisiontimbrado.url}" />
-		<property name="namespaceUri" value="http://cfdi.ws2.facturehoy.certus.com/" />
-		<property name="serviceName" value="WsEmisionTimbradoService" />
-		<property name="portName" value="WsEmisionTimbradoPort" />
-	</bean>
+<!-- 	<bean id="wsEmisionTimbrado" -->
+<!-- 		class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean"> -->
+<!-- 		<property name="serviceInterface" -->
+<!-- 			value="com.certus.facturehoy.ws2.cfdi.WsEmisionTimbrado" /> -->
+<!-- 		<property name="wsdlDocumentUrl" value="${ws.emisiontimbrado.url}" /> -->
+<!-- 		<property name="namespaceUri" value="http://cfdi.ws2.facturehoy.certus.com/" /> -->
+<!-- 		<property name="serviceName" value="WsEmisionTimbradoService" /> -->
+<!-- 		<property name="portName" value="WsEmisionTimbradoPort" /> -->
+<!-- 	</bean> -->
 
 	<task:executor id="executor" pool-size="5" />
 	<task:scheduler id="scheduler" pool-size="10" />

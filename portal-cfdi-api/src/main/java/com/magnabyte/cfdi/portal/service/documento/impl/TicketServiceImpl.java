@@ -6,6 +6,9 @@ import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.XmlMappingException;
 import org.springframework.stereotype.Service;
@@ -35,7 +37,6 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
-import com.magnabyte.cfdi.portal.service.util.LaRunnable;
 
 @Service("ticketService")
 public class TicketServiceImpl implements TicketService {
@@ -54,6 +55,9 @@ public class TicketServiceImpl implements TicketService {
 	
 	@Value("${ticket.clave.venta}")
 	private String claveVentaTicket;
+	
+	@Value("${ticket.clave.devolucion}")
+	private String claveDevolucionTicket;
 	
 	@Transactional
 	@Override
@@ -145,68 +149,42 @@ public class TicketServiceImpl implements TicketService {
 	
 	//FIXME
 	@Override
-	public void closeOfDay(Establecimiento establecimiento, TaskExecutor executor) {
-//		long inicio = new Date().getTime();
-//		logger.debug("inicio{}", inicio);
-//		String fecha = "20131207";
-//		String urlTicketFiles = establecimiento.getRutaRepositorio().getRutaRepositorio() 
-//				+ establecimiento.getRutaRepositorio().getRutaRepoIn() + fecha + File.separator; 
-//		logger.debug("Ruta ticket {}", urlTicketFiles);
-//		
-//		String regex = "^\\d+_\\d+_\\d+_\\d{14}\\.xml$";
-//		Pattern pattern = Pattern.compile(regex);
-//		Matcher matcher = null;
-//		SmbFile dir = null;
-//		List<Ticket> ventas = new ArrayList<Ticket>();
-//		List<Ticket> devoluciones = new ArrayList<Ticket>();
-//		try {
-//			dir = new SmbFile(urlTicketFiles);
-//			if(dir.exists()) {
-//				SmbFile[] files = dir.listFiles();
-//				logger.debug("archiva{}", files.length);
-//				for (SmbFile file : files) {
-//					matcher = pattern.matcher(file.getName());
-//					if (matcher.matches()) {
-////						logger.debug("archivos---{}", file.getName());
-//						Ticket ticketXml = (Ticket) unmarshaller.unmarshal(new StreamSource(sambaService.getFileStream(urlTicketFiles, file.getName())));
-//						if (ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveVentaTicket)) {
-//							ventas.add(ticketXml);
-//						} else if (ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase("RR")) {
-//							devoluciones.add(ticketXml);
-//						}
-//					}
-//				}
-//			}
-//			long fin = new Date().getTime();
-//			logger.debug("fin{}", fin);
-//			logger.debug("total{}", ((fin - inicio) / 1000));
-//			logger.debug("lista {} ", ventas.size());
-//		} catch(Exception ex) {
-//			
-//		}
-		executor.execute(new LaRunnable("uno"));
-		executor.execute(new LaRunnable("uno2"));
-		executor.execute(new LaRunnable("uno3"));
-		executor.execute(new LaRunnable("uno4"));
-		executor.execute(new LaRunnable("uno5"));
+	public void closeOfDay(Establecimiento establecimiento, String fechaCierre) {
+		long inicio = new Date().getTime();
+		String urlTicketFiles = establecimiento.getRutaRepositorio().getRutaRepositorio() 
+				+ establecimiento.getRutaRepositorio().getRutaRepoIn() + fechaCierre + File.separator; 
+		logger.debug("Ruta ticket {}", urlTicketFiles);
+		
+		String regex = "^\\d+_\\d+_\\d+_\\d{14}\\.xml$";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = null;
+		SmbFile dir = null;
+		List<Ticket> ventas = new ArrayList<Ticket>();
+		List<Ticket> devoluciones = new ArrayList<Ticket>();
+		try {
+			dir = new SmbFile(urlTicketFiles);
+			if(dir.exists()) {
+				SmbFile[] files = dir.listFiles();
+				logger.debug("archivos {}", files.length);
+				for (SmbFile file : files) {
+					matcher = pattern.matcher(file.getName());
+					if (matcher.matches()) {
+						Ticket ticketXml = (Ticket) unmarshaller.unmarshal(new StreamSource(sambaService.getFileStream(urlTicketFiles, file.getName())));
+						if (ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveVentaTicket)) {
+							ventas.add(ticketXml);
+						} else if (ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveDevolucionTicket)) {
+							devoluciones.add(ticketXml);
+						}
+					}
+				}
+			}
+			long fin = new Date().getTime();
+			logger.debug("total{}", ((fin - inicio) / 1000));
+			logger.debug("lista {} ", ventas.size());
+		} catch(IOException ex) {
+			
+		}
 	}
-	
-	
-	//FIXME
-//	public static void main(String[] args) {
-//		Calendar calene2 = Calendar.getInstance();
-//		Date hoy = calene2.getTime();
-//		Calendar calene1 = Calendar.getInstance();
-//		calene1.set(2014, 0, 1);
-//		Date ene1 = calene1.getTime();
-//		
-//		System.out.println(hoy);
-//		System.out.println(ene1);
-//		while (!calene2.equals(calene1)) {
-//			System.out.println("en el while");
-//			calene1.add(Calendar.DAY_OF_MONTH, 1);
-//		}
-//	}
 	
 	@Transactional(readOnly = true)
 	@Override

@@ -76,7 +76,6 @@ public class ClienteController {
 			@PathVariable String viewError) {
 		logger.debug("Confimar datos");	
 		if (result.hasErrors()) {
-			model.put("error", result.getAllErrors());
 			logger.debug(result.getAllErrors().toString());
 		}
 		
