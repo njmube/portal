@@ -1,61 +1,57 @@
+	
+	$(document).ready(function(){
+		$("#pais").change(function() {
+			$(this).loadEstados(this, $("#estado"));
+		});
+		
+		$("#establecimientoForm").validationEngine();
+		
+		var passwordParent = $("#txtPassword").parent().parent();
+		var passwordConfirmParent = $("#txtConfirmarPassword").parent().parent();
+		
+		$("#txtPassword").keyup(function (){
+			if (!$(this).val() && !$("#txtConfirmarPassword").val() ) {
+				removeClass(this, passwordConfirmParent);
+			} else 	if ($(this).val() === $("#txtConfirmarPassword").val()) {
+				removeErrorAndAddSucces(passwordParent, passwordConfirmParent);
+			} else {
+				removeSuccesAndAddError(passwordParent, passwordConfirmParent);
+			}
+		});
+		
+		$("#txtConfirmarPassword").keyup(function (){
+			if (!$(this).val() && !$("#txtPassword").val() ) {
+				removeClass(passwordConfirmParent, passwordParent);
+			} else	if ($(this).val() === $("#txtPassword").val()) {
+				removeErrorAndAddSucces(passwordParent, passwordConfirmParent);
+			} else {
+				removeSuccesAndAddError(passwordParent, passwordConfirmParent);
+			}
+		});
+	});
 
-$(document).ready(function(){
-	$("#pais").change(function() {
-		$(this).loadEstados(this, $("#estado"));
-	});
 	
+	function removeClass(field, field2) {
+			$(field).parent().parent().removeClass( "has-success has-error" );
+			field2.removeClass( "has-success has-error" );
+	}
 	
+	function removeErrorAndAddSucces (field, field2){
+		field.removeClass( "has-error " );
+		field.addClass( "has-success" );
+		field2.removeClass( "has-error" );
+		field2.addClass( "has-success" );
+	}
 	
-	$("#establecimientoForm").validationEngine();
-	
-	$("#txtConfirmarPassword").keyup(function (){
-		
-		if (!$(this).val() && !$("#txtPassword").val() ) {
-			$(this).parent().parent().removeClass( "has-success" );
-			$("#txtPassword").parent().parent().removeClass( "has-success" );
-			$(this).parent().parent().removeClass( "has-error" );
-			$("#txtPassword").parent().parent().removeClass( "has-error" );
-		} else	if ($(this).val() === $("#txtPassword").val()) {
-			$(this).parent().parent().removeClass( "has-error" );
-			$("#txtPassword").parent().parent().removeClass( "has-error" );
-			$(this).parent().parent().addClass( "has-success" );
-			$("#txtPassword").parent().parent().addClass( "has-success" );
-			
-			
-		} else {
-			$(this).parent().parent().removeClass( "has-success" );
-			$("#txtPassword").parent().parent().removeClass( "has-success" );
-			$(this).parent().parent().addClass( "has-error" );
-			$("#txtPassword").parent().parent().addClass( "has-error" );
-		}
-		
-	});
-	
-	$("#txtPassword").keyup(function (){
-		
-		if (!$(this).val() && !$("#txtConfirmarPassword").val() ) {
-			$(this).parent().parent().removeClass( "has-success" );
-			$("#txtConfirmarPassword").parent().parent().removeClass( "has-success" );
-			$(this).parent().parent().removeClass( "has-error" );
-			$("#txtConfirmarPassword").parent().parent().removeClass( "has-error" );
-		} else 	if ($(this).val() === $("#txtConfirmarPassword").val()) {
-			
-			
-			$(this).parent().parent().removeClass( "has-error" );
-			$("#txtConfirmarPassword").parent().parent().removeClass( "has-error" );
-			$(this).parent().parent().addClass( "has-success" );
-			$("#txtConfirmarPassword").parent().parent().addClass( "has-success" );
-		} else {
-			$(this).parent().parent().removeClass( "has-success" );
-			$("#txtConfirmarPassword").parent().parent().removeClass( "has-success" );
-			$(this).parent().parent().addClass( "has-error" );
-			$("#txtConfirmarPassword").parent().parent().addClass( "has-error" );
-		}
-		
-		
-	});
-	
-});
+	function removeSuccesAndAddError (field, field2){
+		field.removeClass( "has-success" );
+		field.addClass( "has-error" );
+		field2.removeClass( "has-success" );
+		field2.addClass( "has-error" );
+	}
+
+
+
 
 
 

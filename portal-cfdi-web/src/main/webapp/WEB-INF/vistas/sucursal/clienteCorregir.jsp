@@ -27,7 +27,7 @@
 		
 		var rfcExtranjeros = "${rfcExtranjeros}";
 		
-		$(document.body).on('change',"#pais",function() {
+		$(document.body).on('change',"#pais0",function() {
 			if($("option:selected", this).val() > 1){
 				if($("#personaFisica").is(":checked", true)) {
 					$("#rfc").removeClass("validate[required, custom[rfcFisica]]");
@@ -164,18 +164,18 @@
 <%-- 												<td><form:input path="domicilios[${theCount.index}].referencia" id="referencia" cssClass="form-control input-xsm "/></td> --%>
 <%-- 												<td><form:input path="domicilios[${theCount.index}].localidad" id="localidad" cssClass="form-control input-xsm"/></td> --%>
 												<c:if test="${theCount.index > 0}">
-													<td><button id='delete' type='button' class='btn btn-danger btn-xs'><i class="fa fa-trash-o"></i></button></td>
+													<td><button id='deleteCorregir' type='button' class='btn btn-danger btn-xs'><i class="fa fa-trash-o"></i></button></td>
 												</c:if>
 											</tr>
 											</c:forEach>
 										</c:when>
 										<c:otherwise>
 											<tr>
-												<td width="200px"><input type="text" name="domicilios[0].calle" id="calle" class="form-control input-xsm validate[required]"/></td>
-												<td width="65px"><input type="text" name="domicilios[0].noExterior" id="noExterior" class="form-control input-xsm validate[required, integer, minSize[1]]"/></td>
-												<td width="65px"><input type="text" name="domicilios[0].noInterior" id="noInteriorr" class="form-control input-xsm validate[integer]"/></td>
+												<td width="200px"><input type="text" name="domicilios[0].calle" id="calle0" class="form-control input-xsm validate[required] calle"/></td>
+												<td width="65px"><input type="text" name="domicilios[0].noExterior" id="noExterior0" class="form-control input-xsm validate[required, integer, minSize[1]] noExterior"/></td>
+												<td width="65px"><input type="text" name="domicilios[0].noInterior" id="noInteriorr0" class="form-control input-xsm validate[integer] noInterior"/></td>
 												<td width="100px">
-												  	<select class="form-control-xsm validate[required]" id="pais" name="">
+												  	<select class="form-control-xsm validate[required] pais" id="pais0" name="">
 												  		<option value="">- Seleccione una opción -</option>
 												    	<option value="${domicilio.estado.pais.id}" selected>
 												    		${domicilio.estado.pais.nombre}</option>
@@ -183,14 +183,14 @@
 												</td>
 												<td width="100px">
 													<input type="hidden" name="domicilios[0].estado.id" id="estadoOculto"/>
-													<select class="form-control-xsm validate[required]" id="estado" >
+													<select class="form-control-xsm validate[required] estado" id="estado0" >
 												  		<option value="">- Seleccione una opción -</option>									  		
 													</select>
 												</td>
-												<td><input type="text" name="domicilios[0].municipio" id="municipio" class="form-control input-xsm validate[required]"/></td>
-												<td width="200px"><input type="text" name="domicilios[0].colonia" id="colonia" class="form-control input-xsm validate[required]"/></td>
-												<td width="70px"><input type="text" name="domicilios[0].codigoPostal" id="codigoPostal" 
-													class="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]]"/></td>
+												<td><input type="text" name="domicilios[0].municipio" id="municipio0" class="form-control input-xsm validate[required] municipio"/></td>
+												<td width="200px"><input type="text" name="domicilios[0].colonia0" id="colonia" class="form-control input-xsm validate[required] colonia"/></td>
+												<td width="70px"><input type="text" name="domicilios[0].codigoPostal0" id="codigoPostal" 
+													class="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]] codigoPostal"/></td>
 <!-- 												<td><input type="text" name="domicilios[0].referencia" id="referencia" class="form-control input-xsm"/></td> -->
 <!-- 												<td><input type="text" name="domicilios[0].localidad" id="localidad" class="form-control input-xsm"/></td> -->
 											</tr>

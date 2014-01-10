@@ -185,6 +185,7 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 			Establecimiento establecimiento = EstablecimientoFactory.newInstance();
 			RutaRepositorio rutaRepositorio = new RutaRepositorio();
 			DomicilioEstablecimiento domicilioEstablecimiento = new DomicilioEstablecimiento();
+			TipoEstablecimiento tipoEstablecimiento = new TipoEstablecimiento();
 			
 			establecimiento.setId(rs.getInt(EstablecimientoSql.ID_ESTABLECIMIENTO));
 			establecimiento.setClave(rs.getString(EstablecimientoSql.CLAVE));
@@ -196,6 +197,9 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 			
 			domicilioEstablecimiento.setId(rs.getInt(EstablecimientoSql.ID_DOM_ESTAB));
 			establecimiento.setDomicilio(domicilioEstablecimiento);
+			
+			tipoEstablecimiento.setId(rs.getInt(EstablecimientoSql.ID_TIPO_ESTAB));
+			establecimiento.setTipoEstablecimiento(tipoEstablecimiento);
 
 			return establecimiento;
 		}
