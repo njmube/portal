@@ -1,5 +1,6 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import mx.gob.sat.cfd._3.Comprobante;
@@ -114,9 +115,9 @@ public class SucursalController {
 	}
 	
 	@RequestMapping("/cierre")
-	public String cierre(@ModelAttribute Establecimiento establecimiento, ModelMap model) {
+	public String cierre(@ModelAttribute Establecimiento establecimiento, ModelMap model, HttpServletRequest request) {
 		logger.debug("cierre...");
-		cfdiService.closeOfDay(establecimiento);
+		cfdiService.closeOfDay(establecimiento, request);
 		return "menu/menu";
 	}
 }

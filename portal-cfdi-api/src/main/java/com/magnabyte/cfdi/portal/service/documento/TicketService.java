@@ -22,5 +22,8 @@ public interface TicketService {
 
 	List<String> readArticulosSinPrecio();
 
-	void closeOfDay(Establecimiento establecimiento, String fechaCierre);
+	void closeOfDay(Establecimiento establecimiento, String fechaCierre, List<Ticket> ventas, List<Ticket> devoluciones);
+
+	Ticket crearTicketVentasMostrador(List<Ticket> ventas,
+			Establecimiento establecimiento);
 }

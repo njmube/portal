@@ -37,4 +37,6 @@ public interface DocumentoService {
 	void envioDocumentosFacturacion(String para, String fileName,
 			Integer idEstablecimiento);
 
+	boolean isArticuloSinPrecio(String claveArticulo);
+
 }

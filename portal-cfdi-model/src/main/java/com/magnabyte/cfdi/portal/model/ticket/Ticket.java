@@ -87,21 +87,21 @@ public class Ticket {
 
                 public List<Ticket.Transaccion.Partida> getPartidas() {
                         if (partidas == null) {
-                                return new ArrayList<Ticket.Transaccion.Partida>();
+                        	return partidas = new ArrayList<Ticket.Transaccion.Partida>();
                         }
                         return partidas;
                 }
                 
                 public List<Ticket.Transaccion.PartidaDevolucion> getPartidasDevolucion() {
                 	if (partidasDevolucion == null) {
-                		return new ArrayList<Ticket.Transaccion.PartidaDevolucion>();
+                		return partidasDevolucion = new ArrayList<Ticket.Transaccion.PartidaDevolucion>();
                 	}
 					return partidasDevolucion;
 				}
                 
                 public List<Ticket.Transaccion.PartidaDescuento> getPartidasDescuentos() {
                         if (partidasDescuentos == null) {
-                                return new ArrayList<Ticket.Transaccion.PartidaDescuento>();
+                        	return partidasDescuentos = new ArrayList<Ticket.Transaccion.PartidaDescuento>();
                         }
                         return partidasDescuentos;
                 }
@@ -112,7 +112,7 @@ public class Ticket {
                 
                 public List<Ticket.Transaccion.InformacionPago> getInformacionPago() {
                 	if (informacionPago == null) {
-                		return new ArrayList<Ticket.Transaccion.InformacionPago>();
+                		return informacionPago = new ArrayList<Ticket.Transaccion.InformacionPago>();
                 	}
 					return informacionPago;
 				}

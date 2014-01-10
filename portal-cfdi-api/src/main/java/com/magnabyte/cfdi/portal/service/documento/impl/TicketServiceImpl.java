@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -33,7 +33,15 @@ import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago.Pago;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida.Articulo;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDescuento;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.TransaccionHeader;
 import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
+import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 
@@ -47,6 +55,9 @@ public class TicketServiceImpl implements TicketService {
 	private TicketDao ticketDao;
 	
 	@Autowired
+	private DocumentoService documentoService;
+	
+	@Autowired
 	private Unmarshaller unmarshaller;
 	
 	@Autowired
@@ -57,6 +68,10 @@ public class TicketServiceImpl implements TicketService {
 	
 	@Value("${ticket.clave.devolucion}")
 	private String claveDevolucionTicket;
+	
+	private static final String ticketGenerico = "0";
+	
+	private static final String cajaGenerica = "0";
 	
 	@Transactional
 	@Override
@@ -148,18 +163,14 @@ public class TicketServiceImpl implements TicketService {
 	
 	//FIXME
 	@Override
-	public void closeOfDay(Establecimiento establecimiento, String fechaCierre) {
+	public void closeOfDay(Establecimiento establecimiento, String fechaCierre, List<Ticket> ventas, List<Ticket> devoluciones) {
 		long inicio = new Date().getTime();
 		String urlTicketFiles = establecimiento.getRutaRepositorio().getRutaRepositorio() 
 				+ establecimiento.getRutaRepositorio().getRutaRepoIn() + fechaCierre + File.separator; 
-		logger.debug("Ruta ticket {}", urlTicketFiles);
-		
 		String regex = "^\\d+_\\d+_\\d+_\\d{14}\\.xml$";
 		Pattern pattern = Pattern.compile(regex);
 		Matcher matcher = null;
 		SmbFile dir = null;
-		List<Ticket> ventas = new ArrayList<Ticket>();
-		List<Ticket> devoluciones = new ArrayList<Ticket>();
 		try {
 			dir = new SmbFile(urlTicketFiles);
 			if(dir.exists()) {
@@ -179,7 +190,6 @@ public class TicketServiceImpl implements TicketService {
 			}
 			long fin = new Date().getTime();
 			logger.debug("total{}", ((fin - inicio) / 1000));
-			logger.debug("lista {} ", ventas.size());
 		} catch(IOException ex) {
 			
 		}
@@ -220,4 +230,61 @@ public class TicketServiceImpl implements TicketService {
 		return nf.format(numeroSucursal);
 	}
 	
+	@Override
+	public Ticket crearTicketVentasMostrador(List<Ticket> ventas,
+			Establecimiento establecimiento) {
+		logger.debug("ventas {}", ventas.size());
+		Ticket ticketVentasMostrador = new Ticket();
+		Transaccion transaccion = new Transaccion();
+		TransaccionHeader header = new TransaccionHeader();
+		InformacionPago infoPago = new InformacionPago();
+		Partida concepto = new Partida();
+		Articulo articulo = new Articulo();
+		PartidaDescuento descuento = new PartidaDescuento();
+		Pago pago = new Pago();
+		BigDecimal precioTotal = new BigDecimal(0);
+		BigDecimal descuentoTotal = new BigDecimal(0);
+		//FIXME
+		pago.setMetodoPago("EFECTIVO");
+		pago.setMoneda("MXN");
+		
+		infoPago.setPago(pago);
+		transaccion.setTransaccionHeader(header);
+		transaccion.getInformacionPago().add(infoPago);
+		ticketVentasMostrador.setTransaccion(transaccion);
+		header.setIdTicket(ticketGenerico);
+		header.setIdCaja(cajaGenerica);
+		header.setIdSucursal(establecimiento.getClave());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		header.setFechaHora(sdf.format(new Date()));
+		
+		concepto.setCantidad(new BigDecimal(0));
+		//FIXME
+		articulo.setId(null);
+		articulo.setDescripcion("Ventas al 16%");
+		articulo.setUnidad("PZA");
+		articulo.setTipoCategoria("");
+		concepto.setArticulo(articulo);
+		
+		for (Ticket ticket : ventas) {
+			for (Partida partida : ticket.getTransaccion().getPartidas()) {
+				if (!documentoService.isArticuloSinPrecio(partida.getArticulo().getId())) {
+					if (partida.getArticulo().getTipoCategoria() != null && !partida.getArticulo().getTipoCategoria().equals("PROMOCIONES")) {
+						precioTotal = precioTotal.add(partida.getPrecioTotal());
+					}
+				}
+			}
+			
+			for (PartidaDescuento partidaDescuento : ticket.getTransaccion().getPartidasDescuentos()) {
+				descuentoTotal = descuentoTotal.add(partidaDescuento.getDescuentoTotal());
+			}
+		}
+		concepto.setPrecioUnitario(precioTotal);
+		concepto.setPrecioTotal(precioTotal);
+		descuento.setDescuentoTotal(descuentoTotal);
+		ticketVentasMostrador.getTransaccion().getPartidas().add(concepto);
+		ticketVentasMostrador.getTransaccion().getPartidasDescuentos().add(descuento);
+		
+		return ticketVentasMostrador;
+	}
 }
