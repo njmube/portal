@@ -40,10 +40,40 @@ $(document).ready(function() {
 	
 	aux = 1;
 	
-	$(document.body).on('click',"#delete",function(){		
+	/*Evento que elimina una dirección de la tabla tblDireccion*/
+	$(document.body).on('click',"#delete",function() {		
 		$(this).parent().parent().remove();
 		
 		var trSize = $("#tblDireccion tbody > tr").size();
+		
+		$("#tblDireccion tbody > tr").each(function (index, item) {
+			$(this).find("#id").attr("name", "domicilios["+ index +"].id");
+			$(this).find(".calle").attr("name", "domicilios["+ index +"].calle");
+			$(this).find(".calle").attr("id", "calle"+ index);
+			
+			$(this).find(".noExterior").attr("name", "domicilios["+ index +"].noExterior");
+			$(this).find(".noExterior").attr("id", "noExterior"+ index);
+			
+			$(this).find(".noInterior").attr("name", "domicilios["+ index +"].noInterior");
+			$(this).find(".noInterior").attr("id", "noInterior"+ index);
+			
+			$(this).find(".pais").attr("name", "domicilios["+ index +"].pais");
+			$(this).find(".pais").attr("id", "pais"+ index);
+			$(this).find("#paisOculto").attr("name", "domicilios["+ index +"].pais.id");
+			
+			$(this).find(".estado").attr("name", "domicilios["+ index +"].estado");
+			$(this).find(".estado").attr("id", "estado"+ index);
+			$(this).find("#estadoOculto").attr("name", "domicilios["+ index +"].estado.id");
+			
+			$(this).find(".municipio").attr("name", "domicilios["+ index +"].municipio");
+			$(this).find(".municipio").attr("id", "municipio"+ index);
+			
+			$(this).find(".colonia").attr("name", "domicilios["+ index +"].colonia");
+			$(this).find(".colonia").attr("id", "colonia"+ index);
+			
+			$(this).find(".codigoPostal").attr("name", "domicilios["+ index +"].codigoPostal");
+			$(this).find(".codigoPostal").attr("id", "codigoPostal"+ index);
+		});
 		
 		if(trSize == 1) {
 			$("#pais").removeAttr("disabled");
@@ -83,7 +113,7 @@ $(document).ready(function() {
 			+ "<td width=\'70px\'><input id=\'codigoPostal"+ aux +"\' name=\'domicilios["+ aux +"].codigoPostal\' class=\'form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]]\' type=\'text\'></td>"
 	//		+ "<td><input id=\'referencia" + aux +"\' name=\'domicilios["+ aux +"].referencia\' class=\'form-control input-xsm\' type=\'text\'></td>"
 	//		+ "<td><input id=\'localidad" + aux +"\' name=\'domicilios["+ aux +"].localidad\' class=\'form-control input-xsm\' type=\'text\'></td>"				
-			+ "<td><button id=\'delete\' type=\'button\' class=\'btn btn-danger btn-xs\'><span class=\'glyphicon glyphicon-trash\'></span></button></td>"
+			+ "<td><button id=\'delete\' type=\'button\' class=\'btn btn-danger btn-xs\'><i class=\'fa fa-trash-o\'></i></button></td>"
 			+ "</tr>";
 			
 			$("#tblDireccion tbody").append(tr);
@@ -94,18 +124,18 @@ $(document).ready(function() {
 	
 $("#agregarCorregir").click(function() {
 		
-		var opPais = $("#pais").html();
-		var opEstado = $("#estado").html();
+		var opPais = $("#pais0").html();
+		var opEstado = $("#estado0").html();
 		
-		var idPais = $("#pais option:selected").val();
-		var idEstado = $("#estado option:selected").val();
+		var idPais = $(".pais option:selected").val();
+		var idEstado = $(".estado option:selected").val();
 		
 		if($("#clienteCorregirForm").validationEngine('validate')){
 			
 			var trSize = $("#tblDireccion tbody > tr").size();						
 			
 			if(trSize >= 1) {
-				$("#pais").attr("disabled", true);
+				$("#pais0").attr("disabled", true);
 				aux = trSize;
 			} else {				
 				aux = 0;
@@ -113,14 +143,14 @@ $("#agregarCorregir").click(function() {
 			
 			var tr = "<tr>"
 			+ "<td width=\'100px\'>" 
-			+ "<input id=\'calle"+ aux +"\' name=\'domicilios["+ aux +"].calle\' class=\'form-control input-xsm validate[required]\' type=\'text\'>"
+			+ "<input id=\'calle"+ aux +"\' name=\'domicilios["+ aux +"].calle\' class=\'form-control input-xsm validate[required] calle\' type=\'text\'>"
 			+ "<input id=\'id\' name=\'domicilios["+ aux +"].id\' type=\'hidden\'>"
 			+ "</td>"
-			+ "<td width=\'65px\'><input id=\'noExterior"+ aux +"\' name=\'domicilios["+ aux +"].noExterior\' class=\'form-control input-xsm validate[required, integer, minSize[1]]\' type=\'text\'></td>"
-			+ "<td width=\'65px\'><input id=\'noInterior"+ aux +"\' name=\'domicilios["+ aux +"].noInterior\' class=\'form-control input-xsm validate[integer]\' type=\'text\'></td>"		
+			+ "<td width=\'65px\'><input id=\'noExterior"+ aux +"\' name=\'domicilios["+ aux +"].noExterior\' class=\'form-control input-xsm validate[required, integer, minSize[1]] noExterior\' type=\'text\'></td>"
+			+ "<td width=\'65px\'><input id=\'noInterior"+ aux +"\' name=\'domicilios["+ aux +"].noInterior\' class=\'form-control input-xsm validate[integer] noInterior\' type=\'text\'></td>"		
 			+ "<td width=\'100px\'>"
 			+ "<input type=\'hidden\' name=\'domicilios["+ aux +"].estado.pais.id\' id=\'paisOculto\' value=\'"+ idPais +"\'/>"
-		  	+ "<select class=\'form-control-xsm validate[required]\' id=\'pais"+ aux +"\' name=\'domicilios["+ aux +"].estado.pais.id\'>"
+		  	+ "<select class=\'form-control-xsm validate[required] pais\' id=\'pais"+ aux +"\' name=\'domicilios["+ aux +"].estado.pais.id\'>"
 	  		+ opPais
 			+ "</select>"
 			+ "</td>"
@@ -130,12 +160,12 @@ $("#agregarCorregir").click(function() {
 	  		+ opEstado
 			+ "</select>"
 			+ "</td>"
-			+ "<td><input id=\'municipio"+ aux +"\' name=\'domicilios["+ aux +"].municipio\' class=\'form-control input-xsm validate[required]\' type=\'text\'></td>"
-			+ "<td width=\'200px\'><input id=\'colonia"+ aux +"\' name=\'domicilios["+ aux +"].colonia\' class=\'form-control input-xsm validate[required]\' type=\'text\'></td>"
-			+ "<td width=\'70px\'><input id=\'codigoPostal"+ aux +"\' name=\'domicilios["+ aux +"].codigoPostal\' class=\'form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]]\' type=\'text\'></td>"
+			+ "<td><input id=\'municipio"+ aux +"\' name=\'domicilios["+ aux +"].municipio\' class=\'form-control input-xsm validate[required] municipio\' type=\'text\'></td>"
+			+ "<td width=\'200px\'><input id=\'colonia"+ aux +"\' name=\'domicilios["+ aux +"].colonia\' class=\'form-control input-xsm validate[required] colonia\' type=\'text\'></td>"
+			+ "<td width=\'70px\'><input id=\'codigoPostal"+ aux +"\' name=\'domicilios["+ aux +"].codigoPostal\' class=\'form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]] codigoPostal\' type=\'text\'></td>"
 	//		+ "<td><input id=\'referencia\' name=\'domicilios["+ aux +"].referencia\' class=\'form-control input-xsm\' type=\'text\'></td>"
 	//		+ "<td><i/resources/js/sucursal/clienteForm.jsnput id=\'localidad\' name=\'domicilios["+ aux +"].localidad\' class=\'form-control input-xsm\' type=\'text\'></td>"				
-			+ "<td><button id=\'delete\' type=\'button\' class=\'btn btn-danger btn-xs\'><span class=\'glyphicon glyphicon-trash\'></span></button></td>"
+			+ "<td><button id=\'delete\' type=\'button\' class=\'btn btn-danger btn-xs\'><i class=\'fa fa-trash-o\'></i></button></td>"
 			+ "</tr>";
 			
 			$("#tblDireccion tbody").append(tr);

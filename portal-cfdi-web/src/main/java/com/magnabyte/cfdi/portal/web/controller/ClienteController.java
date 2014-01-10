@@ -76,7 +76,14 @@ public class ClienteController {
 			@PathVariable String viewError) {
 		logger.debug("Confimar datos");	
 		if (result.hasErrors()) {
+			model.put("errorSave", true);
+			model.put("errorMessage", result.getAllErrors());
+			model.put("listaPaises", opcionDeCatalogoService
+					.getCatalogo("c_pais", "id_pais"));
+			model.put("rfcExtranjeros", genericRfcExtranjeros);
 			logger.debug(result.getAllErrors().toString());
+			
+			return "sucursal/" + viewError;
 		}
 		
 		if(cliente.getId() != null) {		
