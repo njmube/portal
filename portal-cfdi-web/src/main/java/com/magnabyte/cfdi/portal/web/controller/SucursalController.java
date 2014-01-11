@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.google.gson.JsonObject;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.factory.ClienteFactory;
+import com.magnabyte.cfdi.portal.model.commons.Usuario;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
@@ -134,10 +135,15 @@ public class SucursalController {
 	@RequestMapping(value="/cierre", method = RequestMethod.POST)
 	public @ResponseBody String cierre(@RequestParam String usuario, @RequestParam String password,
 			@ModelAttribute Establecimiento establecimiento, ModelMap model, HttpServletRequest request) {
+		Usuario user = new Usuario();
+		
+		user.setEstablecimiento(establecimiento);
+		user.setUsuario(usuario);
+		user.setPassword(password);
 		
 		logger.debug("Llegue a cierre");
 		try {
-			autCierreService.autorizar(usuario, password);
+			autCierreService.autorizar(user);
 		} catch (PortalException ex) {
 			JsonObject json = new JsonObject();
 			json.addProperty("error", ex.getMessage());
