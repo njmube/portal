@@ -28,6 +28,8 @@ public class Ticket {
         @XmlTransient
         protected TipoEstadoTicket tipoEstadoTicket;
         
+        @XmlTransient
+        protected String nombreArchivo;
         
         public Integer getId() {
 			return id;
@@ -51,6 +53,14 @@ public class Ticket {
         
         public void setTipoEstadoTicket(TipoEstadoTicket tipoEstadoTicket) {
 			this.tipoEstadoTicket = tipoEstadoTicket;
+		}
+        
+        public String getNombreArchivo() {
+			return nombreArchivo;
+		}
+        
+        public void setNombreArchivo(String nombreArchivo) {
+			this.nombreArchivo = nombreArchivo;
 		}
         
 		@XmlAccessorType(XmlAccessType.FIELD)

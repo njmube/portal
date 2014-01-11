@@ -61,8 +61,14 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		logger.debug("en timbrar Documento");
 		WsResponseBO response = new WsResponseBO();
 		
-		response = wsEmisionTimbrado.emitirTimbrar(userWs, passwordWs, obtenerIdServicio(userWs, passwordWs), 
-			documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
+		try {
+			response = wsEmisionTimbrado.emitirTimbrar(userWs, passwordWs, obtenerIdServicio(userWs, passwordWs), 
+				documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
+		} catch(Exception ex) {
+			logger.debug("Ocurrío un error al realizar la conexión", ex);
+			throw new PortalException("Ocurrío un error al realizar la conexión", ex);
+		}
+		
 		
 		if (!response.isIsError()) {
 			timbre = new TimbreFiscalDigital();
@@ -106,13 +112,15 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	@Override
 	public void recuperarAcuse(Documento documento) {
 		logger.debug("recuperando acuse");
-		//FIXME
-		String user = "AAA010101AAA.Test.User";
-		String password = "Prueba$1";
 		
 		WsResponseBO response = new WsResponseBO();
-		response = wsEmisionTimbrado.recuperarAcuse(user, password, documento.getTimbreFiscalDigital().getUUID());
-		
+		try {
+			response = wsEmisionTimbrado.recuperarAcuse(userWs, passwordWs, documento.getTimbreFiscalDigital().getUUID());
+		} catch(Exception ex) {
+			logger.debug("Ocurrío un error al realizar la conexión", ex);
+			throw new PortalException("Ocurrío un error al realizar la conexión", ex);
+		}
+	
 		if (response.getAcuse() != null) {
 			logger.debug("llamada a samba");
 			sambaService.writeAcuseCfdiXmlFile(response.getAcuse(), documento);

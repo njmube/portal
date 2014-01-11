@@ -21,4 +21,6 @@ public interface TicketDao {
 
 	Integer readIdDocFromTicketGuardado(DocumentoSucursal documento);
 
+	List<String> readAllByDate(String fecha);
+
 }

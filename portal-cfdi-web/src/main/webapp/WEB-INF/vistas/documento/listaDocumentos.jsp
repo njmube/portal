@@ -71,7 +71,7 @@
 						
 						if($("#envioDocForm").validationEngine("validate")) {
 							$.ajax({
-								url: contextPath + "/documentoEnvio?ajax=true",
+								url: contextPath + "/portal/cfdi/documentoEnvio?ajax=true",
 								data: params,
 								type: "GET",								
 								success : function(response) {

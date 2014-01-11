@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -68,6 +69,21 @@ public class TicketServiceImpl implements TicketService {
 	
 	@Value("${ticket.clave.devolucion}")
 	private String claveDevolucionTicket;
+	
+	@Value("${vm.concepto.descripcion}")
+	private String vmConceptoDescripcion;
+	
+	@Value("${vm.concepto.unidad}")
+	private String vmConceptoUnidad;
+	
+	@Value("${vm.concepto.categoria}")
+	private String vmConceptoCategoria;
+	
+	@Value("${vm.metodo.pago}")
+	private String vmMetodoPago;
+	
+	@Value("${vm.moneda}")
+	private String vmMoneda;
 	
 	private static final String ticketGenerico = "0";
 	
@@ -156,6 +172,7 @@ public class TicketServiceImpl implements TicketService {
 							String numeroCuenta = ticket.getTransaccion().getInformacionPago().get(0).getNumeroCuenta();
 							ticket.getTransaccion().getInformacionPago().get(0).setNumeroCuenta(numeroCuenta.replaceAll("\\*", ""));
 						}
+						ticket.setNombreArchivo(file.getName());
 						return true;
 					}
 				}
@@ -176,25 +193,38 @@ public class TicketServiceImpl implements TicketService {
 		return false;
 	}
 	
-	//FIXME
 	@Override
 	public void closeOfDay(Establecimiento establecimiento, String fechaCierre, List<Ticket> ventas, List<Ticket> devoluciones) {
-		long inicio = new Date().getTime();
 		String urlTicketFiles = establecimiento.getRutaRepositorio().getRutaRepositorio() 
 				+ establecimiento.getRutaRepositorio().getRutaRepoIn() + fechaCierre + File.separator; 
 		String regex = "^\\d+_\\d+_\\d+_\\d{14}\\.xml$";
 		Pattern pattern = Pattern.compile(regex);
 		Matcher matcher = null;
 		SmbFile dir = null;
+		List<String> archivosVentasDelDia = new ArrayList<String>();
 		try {
 			dir = new SmbFile(urlTicketFiles);
 			if(dir.exists()) {
 				SmbFile[] files = dir.listFiles();
 				logger.debug("archivos {}", files.length);
 				for (SmbFile file : files) {
-					matcher = pattern.matcher(file.getName());
+					archivosVentasDelDia.add(file.getName());
+				}
+				logger.debug("ventas size {}", archivosVentasDelDia.size());
+				
+				//FIXME
+				List<String> archivosFacturados = ticketDao.readAllByDate("2014-01-10");
+				
+				logger.debug("facturados size {}", archivosFacturados.size());
+				
+				if (archivosFacturados != null) {
+					archivosVentasDelDia.removeAll(archivosFacturados);
+				}
+				
+				for(String file : archivosVentasDelDia) {
+					matcher = pattern.matcher(file);
 					if (matcher.matches()) {
-						Ticket ticketXml = (Ticket) unmarshaller.unmarshal(new StreamSource(sambaService.getFileStream(urlTicketFiles, file.getName())));
+						Ticket ticketXml = (Ticket) unmarshaller.unmarshal(new StreamSource(sambaService.getFileStream(urlTicketFiles, file)));
 						if (ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveVentaTicket)) {
 							ventas.add(ticketXml);
 						} else if (ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveDevolucionTicket)) {
@@ -203,10 +233,9 @@ public class TicketServiceImpl implements TicketService {
 					}
 				}
 			}
-			long fin = new Date().getTime();
-			logger.debug("total{}", ((fin - inicio) / 1000));
 		} catch(IOException ex) {
-			
+			logger.error("Ocurrió un error al generar la factura de ventas mostrador");
+			throw new PortalException("Ocurrió un error al generar la factura de ventas mostrador");
 		}
 	}
 	
@@ -254,9 +283,8 @@ public class TicketServiceImpl implements TicketService {
 		Pago pago = new Pago();
 		BigDecimal precioTotal = new BigDecimal(0);
 		BigDecimal descuentoTotal = new BigDecimal(0);
-		//FIXME
-		pago.setMetodoPago("EFECTIVO");
-		pago.setMoneda("MXN");
+		pago.setMetodoPago(vmMetodoPago);
+		pago.setMoneda(vmMoneda);
 		
 		infoPago.setPago(pago);
 		transaccion.setTransaccionHeader(header);
@@ -269,11 +297,10 @@ public class TicketServiceImpl implements TicketService {
 		header.setFechaHora(sdf.format(new Date()));
 		
 		concepto.setCantidad(new BigDecimal(0));
-		//FIXME
 		articulo.setId(null);
-		articulo.setDescripcion("Ventas al 16%");
-		articulo.setUnidad("PZA");
-		articulo.setTipoCategoria("");
+		articulo.setDescripcion(vmConceptoDescripcion);
+		articulo.setUnidad(vmConceptoUnidad);
+		articulo.setTipoCategoria(vmConceptoCategoria);
 		concepto.setArticulo(articulo);
 		
 		for (Ticket ticket : ventas) {

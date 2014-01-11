@@ -57,6 +57,11 @@ public class TicketDaoImpl extends GenericJdbcDao
 	}
 	
 	@Override
+	public List<String> readAllByDate(String fecha) {
+		return getJdbcTemplate().queryForList(TicketSql.READ_FACTURADOS_DIA, String.class, fecha);
+	}
+	
+	@Override
 	public Ticket read(Ticket ticket, Establecimiento establecimiento) {
 		try {
 			return getJdbcTemplate().queryForObject(TicketSql.READ, MAPPER_TICKET, 
@@ -109,6 +114,7 @@ public class TicketDaoImpl extends GenericJdbcDao
 		params.addValue(TicketSql.FECHA, new Date());
 		params.addValue(TicketSql.NO_CAJA, documento.getTicket().getTransaccion().getTransaccionHeader().getIdCaja());
 		params.addValue(TicketSql.NO_TICKET, documento.getTicket().getTransaccion().getTransaccionHeader().getIdTicket());
+		params.addValue(TicketSql.FILENAME, documento.getTicket().getNombreArchivo());
 		
 		return params;
 	}

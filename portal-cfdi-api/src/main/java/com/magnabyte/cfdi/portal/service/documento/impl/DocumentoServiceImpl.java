@@ -651,7 +651,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			
 			@Override
 			public void run() {
-				String asunto = "Modatelas S.A.P.I de C.V. -CFDI Factura " + fileName;
+				String asunto = "Modatelas S.A.P.I de C.V. - CFDI Factura " + fileName;
 				String htmlPlantilla = null;
 				String textoPlanoPlantilla = null;
 				String htmlPlantillaError = null;

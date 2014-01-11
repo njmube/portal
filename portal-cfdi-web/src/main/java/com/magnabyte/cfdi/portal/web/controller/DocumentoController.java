@@ -145,7 +145,7 @@ public class DocumentoController {
 		}
 	}
 	
-	@RequestMapping(value = {"/documentoEnvio", "/portal/cfdi/documentoEnvio"}) 
+	@RequestMapping("/portal/cfdi/documentoEnvio") 
 	public @ResponseBody Boolean documentoEnvio(@RequestParam Integer idEstab, 
 			@RequestParam String fileName, @RequestParam String email) {
 		try {

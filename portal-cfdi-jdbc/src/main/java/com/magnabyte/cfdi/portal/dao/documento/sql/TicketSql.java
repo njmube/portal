@@ -11,13 +11,14 @@ public class TicketSql extends GenericSql {
 	public static final String FECHA = "fecha_ticket";
 	public static final String NO_TICKET = "no_ticket";
 	public static final String NO_CAJA = "no_caja";
+	public static final String FILENAME = "nombre_archivo";
 
 	public static final String READ;
 	public static final String READ_BY_STATUS;
 	public static final String UPDATE_FACTURADO;
 	public static final String READ_ART_SIN_PRECIO;
 	public static final String READ_ID_DOC_BY_TICKET;
-
+	public static final String READ_FACTURADOS_DIA;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -51,5 +52,11 @@ public class TicketSql extends GenericSql {
 		qryBuilder.append("and id_status_ticket = ?");
 		
 		READ_ID_DOC_BY_TICKET = qryBuilder.toString();
+		
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("select dbo.TRIM(nombre_archivo) as nombre_archivo from t_ticket where convert(varchar(10), fecha_ticket, 120) = ?");
+		
+		READ_FACTURADOS_DIA = qryBuilder.toString();
 	}
 }

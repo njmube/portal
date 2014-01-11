@@ -134,16 +134,19 @@ public class ClienteController {
 		Cliente cliente = clienteService.read(ClienteFactory.newInstance(id));
 		model.put("clienteCorregir", cliente);
 		model.put("rfcExtranjeros", genericRfcExtranjeros);
-		model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
+		model.put("listaEstados", opcionDeCatalogoService.getCatalogoParam("c_estado", "id_pais", 
+				cliente.getDomicilios().get(0).getEstado().getPais().getId().toString(), "id_estado"));
 		return "sucursal/clienteCorregir";
 	}
 	
 	@RequestMapping("/portal/cfdi/clienteCorregir/{id}")
 	public String corregirDatosPortal(@PathVariable Integer id, ModelMap model) {
 		logger.debug("confirmarDatos page");
-		model.put("clienteCorregir", clienteService.read(ClienteFactory.newInstance(id)));
-		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
-		model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
+		Cliente cliente = clienteService.read(ClienteFactory.newInstance(id));
+		model.put("clienteCorregir", cliente);
+		model.put("rfcExtranjeros", genericRfcExtranjeros);
+		model.put("listaEstados", opcionDeCatalogoService.getCatalogoParam("c_estado", "id_pais", 
+				cliente.getDomicilios().get(0).getEstado().getPais().getId().toString(), "id_estado"));
 		return "portal/clienteCorregir";
 	}
 	

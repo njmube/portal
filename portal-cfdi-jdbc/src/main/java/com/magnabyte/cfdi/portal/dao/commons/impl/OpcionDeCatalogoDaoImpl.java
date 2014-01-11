@@ -16,7 +16,7 @@ import com.magnabyte.cfdi.portal.dao.commons.OpcionDeCatalogoDao;
 import com.magnabyte.cfdi.portal.model.commons.OpcionDeCatalogo;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
-@Repository("opcionDeCatalodoDao")
+@Repository("opcionDeCatalogoDao")
 public class OpcionDeCatalogoDaoImpl extends GenericJdbcDao 
 	implements OpcionDeCatalogoDao {
 
