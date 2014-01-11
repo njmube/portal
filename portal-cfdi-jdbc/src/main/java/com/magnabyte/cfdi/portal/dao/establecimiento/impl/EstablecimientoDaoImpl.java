@@ -111,6 +111,13 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 		}
 	}
 	
+	@Override
+	public Establecimiento readFechaCierreById(Establecimiento establecimiento) {
+		String qry = EstablecimientoSql.READ_FECHA_CIERRE_BY_ID;
+		return getJdbcTemplate().queryForObject(qry, MAPPER_ESTABLECIMIENTO_CIERRE,
+				establecimiento.getId());
+	}
+	
 	private MapSqlParameterSource getParameters(Establecimiento establecimiento) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue(EstablecimientoSql.CLAVE, establecimiento.getClave());
@@ -204,5 +211,19 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 			return establecimiento;
 		}
 	};
+	
+	private static final RowMapper<Establecimiento> MAPPER_ESTABLECIMIENTO_CIERRE = new RowMapper<Establecimiento>() {
 
+		@Override
+		public Establecimiento mapRow(ResultSet rs, int rowNum)
+				throws SQLException {
+			Establecimiento establecimiento = new Establecimiento();
+			
+			establecimiento.setId(rs.getInt(EstablecimientoSql.ID_ESTABLECIMIENTO));
+			establecimiento.setSiguienteCierre(rs.getDate(EstablecimientoSql.SIGIENTE_CIERRE));
+			establecimiento.setUltimoCierre(rs.getDate(EstablecimientoSql.ULTIMO_CIERRE));
+
+			return establecimiento;
+		}
+	};
 }
