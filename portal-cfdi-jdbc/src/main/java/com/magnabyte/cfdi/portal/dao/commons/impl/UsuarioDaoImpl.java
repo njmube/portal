@@ -17,7 +17,7 @@ public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 
 	@Override
 	public Usuario getUsuarioByEstablecimiento(Usuario usuario) {
-		String qry = UsuarioSql.AUTENTIFICAR;
+		String qry = UsuarioSql.GET_BY_ESTABLECIMIENTO;
 		return getJdbcTemplate().queryForObject(qry, 
 				UASUARIO_MAPPER, usuario.getEstablecimiento().getId());
 	}

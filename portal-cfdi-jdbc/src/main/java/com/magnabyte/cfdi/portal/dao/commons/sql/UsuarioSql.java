@@ -11,13 +11,13 @@ public class UsuarioSql extends GenericSql {
 	public static final String USUARIO = "usuario";
 	public static final String PASSWORD = "password";
 	
-	public static final String AUTENTIFICAR;
+	public static final String GET_BY_ESTABLECIMIENTO;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
 		
 		qryBuilder.append(SELECT).append(EOL).append(TAB);
-		qryBuilder.append(ID_USUARIO).append(EOL_);
+		qryBuilder.append(ID_USUARIO).append(EOL_).append(TAB);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(USUARIO);
 		qryBuilder.append(PARENTESIS_FIN).append(AS).append(USUARIO).append(EOL_).append(TAB);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(PASSWORD);
@@ -28,10 +28,10 @@ public class UsuarioSql extends GenericSql {
 		qryBuilder.append(TABLE_NAME).append(EOL);
 		
 		qryBuilder.append(WHERE).append(EOL).append(TAB);
-		qryBuilder.append(ID_USUARIO).append(SET_PARAM);
+		qryBuilder.append(EstablecimientoSql.ID_ESTABLECIMIENTO).append(SET_PARAM);
 		
 		
-		AUTENTIFICAR = qryBuilder.toString();
+		GET_BY_ESTABLECIMIENTO = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 	}
 }
