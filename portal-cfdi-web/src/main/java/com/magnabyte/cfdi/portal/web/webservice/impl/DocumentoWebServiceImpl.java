@@ -133,7 +133,13 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	
 	private int obtenerIdServicio(String user, String password) {
 		int idServicio = 0;
-		WsServicioBO serviciosContratados = wsServicios.obtenerServicios(user, password);
+		WsServicioBO serviciosContratados = null;
+		try {
+			serviciosContratados = wsServicios.obtenerServicios(user, password);
+		} catch(Exception ex) {
+			logger.debug("Ocurrío un error al realizar la conexión", ex);
+			throw new PortalException("Ocurrío un error al realizar la conexión", ex);
+		}
 		if (serviciosContratados.getArray().size() > 0) {
 			for (WsServicioBO servicio : serviciosContratados.getArray()) {
 				logger.debug("Id proceso {}", servicio.getIdProcess());

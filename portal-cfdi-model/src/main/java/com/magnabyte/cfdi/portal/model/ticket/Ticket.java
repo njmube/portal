@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -135,6 +136,7 @@ public class Ticket {
                 @XmlAccessorType(XmlAccessType.FIELD)
                 public static class TransaccionHeader {
                         
+                		@Digits(integer=6, fraction=0)
                         @XmlElement(name = "lRetailStoreID")
                         protected String idSucursal;
                         

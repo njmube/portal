@@ -66,13 +66,13 @@ public class PortalController {
 	@RequestMapping(value = "/validaTicket", method = RequestMethod.POST)
 	public String validaTicket(@Valid @ModelAttribute Ticket ticket, BindingResult resultTicket, 
 			@ModelAttribute Establecimiento establecimiento, ModelMap model) {
+		if (resultTicket.hasErrors()) {
+			return "portal/buscaTicket";
+		}
 		logger.debug("controller portal cliente--{}", ticket);
 		establecimiento.setClave(ticketService.formatTicketClave(ticket));
 		establecimiento = establecimientoService.readByClave(establecimiento);
 		logger.debug("establecimiento {}", establecimiento);
-		if (resultTicket.hasErrors()) {
-			return "portal/buscaTicket";
-		}
 		if (ticketService.ticketExists(ticket, establecimiento)) {
 			if (!ticketService.ticketProcesado(ticket, establecimiento)) {
 				model.put("ticket", ticket);

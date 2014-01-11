@@ -19,6 +19,7 @@ import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
+import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
@@ -92,7 +93,10 @@ public class CfdiServiceImpl implements CfdiService {
 			int domicilioFiscal = cliente.getDomicilios().get(0).getId();
 			Comprobante comprobante = documentoService.obtenerComprobantePor(cliente, ticketVentasMostrador, domicilioFiscal, establecimiento);
 			Documento documento = new Documento();
+			documento.setEstablecimiento(establecimiento);
+			documento.setCliente(cliente);
 			documento.setComprobante(comprobante);
+			documento.setTipoDocumento(TipoDocumento.FACTURA);
 			generarDocumento(documento, request);
 			logger.debug("devoluciones {}", devoluciones.size());
 		} else {

@@ -51,7 +51,7 @@
 					</div>
 				</div>
 			</c:if>
-			<div class="well col-md-offset-2 col-md-8">
+			<div class="well col-md-offset-1 col-md-7">
 				<sec:authorize access="hasAnyRole('ROLE_SUC')">
 					<c:url var="urlTicket" value="/validaTicket"/>
 				</sec:authorize>
@@ -94,7 +94,7 @@
 					</div>
 					<div class="form-group">
 						<label for="hora" class="col-lg-5 control-label">Importe: </label>
-						<div class="col-lg-2">
+						<div class="col-lg-3">
 							<form:input path="transaccion.transaccionTotal.totalVenta" id="hora" cssClass="form-control input-sm validate[required]"/>
 						</div>
 						<small class="errorForm"><strong><form:errors path="transaccion.transaccionTotal.totalVenta" cssClass="text-danger"/></strong></small>
@@ -107,6 +107,9 @@
 						</div>
 					</div>
 				</form:form>
+			</div>
+			<div class="col-md-4">
+				<img src="<c:url value="/resources/img/ticket.jpg" />" alt="Ticket" style="width: 270px; height: 340px;" class="img-thumbnail">
 			</div>
 		</div>
 	</div>

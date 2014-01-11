@@ -446,7 +446,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 						logger.debug("El ticket ya fue guardado previamente.");
 						((DocumentoSucursal) documento).getTicket().setId(ticketDB.getId());
 						documento.setId(ticketService.readIdDocFromTicketGuardado((DocumentoSucursal) documento));
-						//FIXME
 						documentoDao.updateDocumentoCliente((DocumentoSucursal) documento);
 						Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolioDocumento(documento);
 						documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
@@ -459,22 +458,16 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 						break;
 					}
 				} else {
-					documentoDao.save(documento);
-					documentoDetalleService.save(documento);
+					saveDocumentAndDetail(documento);
 					ticketService.save((DocumentoSucursal) documento);
-					
-					synchronized (documentoSerieDao) {
-						Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolio(documento);
-						documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
-						documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO_CONSECUTIVO));
-						documentoSerieDao.updateFolioSerie(documento);
-						documentoDao.insertDocumentoFolio(documento);
-					}
+					asignarSerieYFolio(documento);
 				}
 			} else if (documento instanceof DocumentoCorporativo) {
-				documentoDao.save(documento);
-				documentoDetalleService.save(documento);
+				saveDocumentAndDetail(documento);
 				documentoDao.insertDocumentoFolio(documento);
+			} else {
+				saveDocumentAndDetail(documento);
+				asignarSerieYFolio(documento);
 			}
 		} else {
 			logger.debug("El Documento no puede ser nulo.");
@@ -483,6 +476,21 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		
 	}
 	
+	private void asignarSerieYFolio(Documento documento) {
+		synchronized (documentoSerieDao) {
+			Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolio(documento);
+			documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
+			documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO_CONSECUTIVO));
+			documentoSerieDao.updateFolioSerie(documento);
+			documentoDao.insertDocumentoFolio(documento);
+		}
+	}
+
+	private void saveDocumentAndDetail(Documento documento) {
+		documentoDao.save(documento);
+		documentoDetalleService.save(documento);		
+	}
+
 	@Transactional
 	@Override
 	public void insertAcusePendiente(Documento documento) {

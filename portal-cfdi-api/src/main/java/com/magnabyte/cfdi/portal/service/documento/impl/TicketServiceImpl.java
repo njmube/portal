@@ -213,7 +213,7 @@ public class TicketServiceImpl implements TicketService {
 				logger.debug("ventas size {}", archivosVentasDelDia.size());
 				
 				//FIXME
-				List<String> archivosFacturados = ticketDao.readAllByDate("2014-01-10");
+				List<String> archivosFacturados = ticketDao.readAllByDate("2014-01-11");
 				
 				logger.debug("facturados size {}", archivosFacturados.size());
 				
