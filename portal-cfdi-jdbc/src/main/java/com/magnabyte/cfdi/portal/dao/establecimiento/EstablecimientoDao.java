@@ -14,6 +14,8 @@ public interface EstablecimientoDao {
 	Establecimiento readByClave(Establecimiento establecimiento);
 
 	Establecimiento readById(Establecimiento establecimiento);
+	
+	Establecimiento readFechaCierreById(Establecimiento establecimiento);
 
 	List<Establecimiento> readAll();
 

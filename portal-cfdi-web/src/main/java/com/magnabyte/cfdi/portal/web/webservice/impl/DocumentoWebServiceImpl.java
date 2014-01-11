@@ -77,7 +77,8 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			documento.setXmlCfdi(response.getXML());
 			if (documento instanceof DocumentoCorporativo) {
 				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
-			} 
+			}
+			//FIXME
 			sambaService.writeProcessedCfdiXmlFile(response.getXML(), documento);
 			sambaService.writePdfFile(documento, request);
 			return true;

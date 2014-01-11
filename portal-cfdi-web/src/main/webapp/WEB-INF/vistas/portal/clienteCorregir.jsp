@@ -12,11 +12,11 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		$(document.body).on("change","#pais",function() {
+		$(document.body).on("change",".pais",function() {
 			var tr = $(this).parent().parent();
 			$(tr).find("input:hidden[id=paisOculto]").val($("option:selected", this).val());
 		});
-		$(document.body).on("change","#estado",function() {
+		$(document.body).on("change",".estado",function() {
 			var tr = $(this).parent().parent();
 			$(tr).find("input:hidden[id=estadoOculto]").val($("option:selected", this).val());
 		});
@@ -136,12 +136,12 @@
 									<c:when test="${not empty clienteCorregir.domicilios}">
 										<c:forEach items="${clienteCorregir.domicilios}" var="domicilio" varStatus="theCount">
 											<tr>
-												<td width="200px"><form:input path="domicilios[${theCount.index}].calle" id="calle" cssClass="form-control input-xsm validate[required]"/></td>
-												<td width="65px"><form:input path="domicilios[${theCount.index}].noExterior" id="noExterior" cssClass="form-control input-xsm validate[required, integer, minSize[1]]"/></td>
-												<td width="65px"><form:input path="domicilios[${theCount.index}].noInterior" id="noInteriorr" cssClass="form-control input-xsm validate[integer]"/></td>
+												<td width="200px"><form:input path="domicilios[${theCount.index}].calle" id="calle${theCount.index}" cssClass="form-control input-xsm validate[required] calle"/></td>
+												<td width="65px"><form:input path="domicilios[${theCount.index}].noExterior" id="noExterior${theCount.index}" cssClass="form-control input-xsm validate[required, integer, minSize[1]] noExterior"/></td>
+												<td width="65px"><form:input path="domicilios[${theCount.index}].noInterior" id="noInteriorr${theCount.index}" cssClass="form-control input-xsm validate[integer] noInterior"/></td>
 												<td width="100px">
 													<form:hidden path="domicilios[${theCount.index}].estado.pais.id" id="paisOculto"/>
-												  	<select class="form-control-xsm validate[required]" id="pais">
+												  	<select class="form-control-xsm validate[required] pais" id="pais${theCount.index}">
 												  		<option value="">- Seleccione una opción -</option>
 												    	<option value="${domicilio.estado.pais.id}" selected>
 												    		${domicilio.estado.pais.nombre}</option>
@@ -149,7 +149,7 @@
 												</td>
 												<td width="100px">
 													<form:hidden path="domicilios[${theCount.index}].estado.id" id="estadoOculto"/>
-													<select class="form-control-xsm validate[required]" id="estado" >
+													<select class="form-control-xsm validate[required] estado" id="estado${theCount.index}" >
 												  		<option value="">- Seleccione una opción -</option>
 												  		<c:forEach items="${listaEstados}" var="estado">
 												  			<option value="${estado.id}" ${domicilio.estado.id eq estado.id ? 'selected' : ''}>
@@ -157,10 +157,10 @@
 												  		</c:forEach>									  		
 			  										</select>
 												</td>
-												<td><form:input path="domicilios[${theCount.index}].municipio" id="municipio" cssClass="form-control input-xsm validate[required]"/></td>
-												<td width="200px"><form:input  path="domicilios[${theCount.index}].colonia" id="colonia" cssClass="form-control input-xsm validate[required]"/></td>
-												<td width="70px"><form:input  path="domicilios[${theCount.index}].codigoPostal" id="codigoPostal" 
-													cssClass="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]"/></td>
+												<td><form:input path="domicilios[${theCount.index}].municipio" id="municipio${theCount.index}" cssClass="form-control input-xsm validate[required] municipio"/></td>
+												<td width="200px"><form:input  path="domicilios[${theCount.index}].colonia" id="colonia${theCount.index}" cssClass="form-control input-xsm validate[required] colonia"/></td>
+												<td width="70px"><form:input  path="domicilios[${theCount.index}].codigoPostal" id="codigoPostal${theCount.index}" 
+													cssClass="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5] codigoPostal"/></td>
 <%-- 												<td><form:input path="domicilios[${theCount.index}].referencia" id="referencia" cssClass="form-control input-xsm "/></td> --%>
 <%-- 												<td><form:input path="domicilios[${theCount.index}].localidad" id="localidad" cssClass="form-control input-xsm"/></td> --%>
 												<c:if test="${theCount.index > 0}">

@@ -19,7 +19,7 @@ public class EmpresaEmisor {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
+	
 	public String getTelefono() {
 		return telefono;
 	}

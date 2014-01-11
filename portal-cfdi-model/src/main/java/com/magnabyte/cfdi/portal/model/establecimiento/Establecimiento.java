@@ -1,6 +1,7 @@
 package com.magnabyte.cfdi.portal.model.establecimiento;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 
@@ -12,6 +13,8 @@ public class Establecimiento implements Serializable {
 	private String clave;
 	private String nombre;
 	private String password;
+	private Date siguienteCierre;
+	private Date ultimoCierre;
 	private EmpresaEmisor empresa;
 	private RutaRepositorio rutaRepositorio;
 	private TipoEstablecimiento tipoEstablecimiento;
@@ -87,6 +90,22 @@ public class Establecimiento implements Serializable {
 
 	public void setRutaRepositorio(RutaRepositorio rutaRepositorio) {
 		this.rutaRepositorio = rutaRepositorio;
+	}
+
+	public Date getSiguienteCierre() {
+		return siguienteCierre;
+	}
+
+	public void setSiguienteCierre(Date siguienteCierre) {
+		this.siguienteCierre = siguienteCierre;
+	}
+
+	public Date getUltimoCierre() {
+		return ultimoCierre;
+	}
+
+	public void setUltimoCierre(Date ultimoCierre) {
+		this.ultimoCierre = ultimoCierre;
 	}
 
 	@Override

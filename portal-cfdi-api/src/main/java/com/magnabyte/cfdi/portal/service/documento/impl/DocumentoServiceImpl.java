@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.MessagingException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
@@ -43,7 +42,6 @@ import javax.xml.transform.stream.StreamSource;
 import mx.gob.sat.cfd._3.Comprobante;
 import mx.gob.sat.cfd._3.Comprobante.Conceptos;
 import mx.gob.sat.cfd._3.Comprobante.Conceptos.Concepto;
-import mx.gob.sat.cfd._3.Comprobante.Emisor;
 import mx.gob.sat.cfd._3.Comprobante.Impuestos;
 import mx.gob.sat.cfd._3.Comprobante.Receptor;
 import mx.gob.sat.cfd._3.TUbicacion;
@@ -65,7 +63,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoSerieDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
-import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
 import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
@@ -74,7 +71,6 @@ import com.magnabyte.cfdi.portal.model.commons.Pais;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
-import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.factory.EstablecimientoFactory;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
@@ -82,7 +78,6 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDescuento;
-import com.magnabyte.cfdi.portal.service.certificado.CertificadoService;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 import com.magnabyte.cfdi.portal.service.commons.EmailService;
@@ -90,6 +85,7 @@ import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoDetalleService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
+import com.magnabyte.cfdi.portal.service.emisor.EmisorService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
@@ -104,7 +100,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	private DocumentoXmlService documentoXmlService;
 	
 	@Autowired
-	private EmisorDao emisorDao;
+	private EmisorService emisorService;
 	
 	@Autowired
 	private DocumentoDao documentoDao;
@@ -288,7 +284,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			
 			inicializaComprobante(comprobante, ticket);
 			formatTicketDate(ticket);
-			comprobante.setEmisor(getEmisorPorEstablecimiento(establecimiento));
+			comprobante.setEmisor(emisorService.getEmisorPorEstablecimiento(establecimiento));
 			comprobante.setReceptor(createReceptor(cliente, idDomicilioFiscal));
 			getDetalleFromTicket(ticket, comprobante);
 			createFechaDocumento(comprobante);
@@ -334,24 +330,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 	}
 
-	private Emisor getEmisorPorEstablecimiento(Establecimiento establecimiento) {
-		EmpresaEmisor empresaEmisor = emisorDao.read(establecimiento.getEmpresaEmisor());
-		TUbicacion expedidoEn = emisorDao.readLugarExpedicion(establecimiento);
-		if (expedidoEn.getNoExterior() != null && expedidoEn.getNoExterior().trim().isEmpty()) 
-			expedidoEn.setNoExterior(null);
-		if (expedidoEn.getNoInterior() != null && expedidoEn.getNoInterior().trim().isEmpty()) {
-			expedidoEn.setNoInterior(null);
-		}
-		
-		if (empresaEmisor.getEmisor().getDomicilioFiscal().getNoInterior() != null
-				&& empresaEmisor.getEmisor().getDomicilioFiscal().getNoInterior().trim().isEmpty()) {
-			empresaEmisor.getEmisor().getDomicilioFiscal().setNoInterior(null);
-		}
-		
-		empresaEmisor.getEmisor().setExpedidoEn(expedidoEn);
-		return empresaEmisor.getEmisor();
-	}
-	
 	private Receptor createReceptor(Cliente cliente, Integer idDomicilioFiscal) {
 		Receptor receptor = new Receptor();
 		TUbicacion tUbicacion = new TUbicacion();
@@ -403,7 +381,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 				concepto.setUnidad(partida.getArticulo().getUnidad());
 				concepto.setImporte(partida.getPrecioTotal().divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
 				concepto.setValorUnitario(partida.getPrecioUnitario().divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
-				if (!partida.getArticulo().getTipoCategoria().equals("PROMOCIONES")) {
+				if (partida.getArticulo().getTipoCategoria() != null && !partida.getArticulo().getTipoCategoria().equals("PROMOCIONES")) {
 					subTotal = subTotal.add(concepto.getImporte());
 				}
 				conceptos.getConcepto().add(concepto);
@@ -425,7 +403,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		comprobante.setTotal(comprobante.getSubTotal().subtract(comprobante.getDescuento()).add(comprobante.getImpuestos().getTotalImpuestosTrasladados()).setScale(2, BigDecimal.ROUND_UP));
 	}
 	
-	private boolean isArticuloSinPrecio(String claveArticulo) {
+	@Transactional(readOnly = true)
+	@Override
+	public boolean isArticuloSinPrecio(String claveArticulo) {
 		List<String> articulosSinPrecio = ticketService.readArticulosSinPrecio();
 		if (articulosSinPrecio != null) {
 			return articulosSinPrecio.contains(claveArticulo);
@@ -439,7 +419,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		try {
 			XMLGregorianCalendar fechaComprobante = DatatypeFactory.newInstance().newXMLGregorianCalendar(dateNow.get(Calendar.YEAR), 
 					dateNow.get(Calendar.MONTH) + 1, dateNow.get(Calendar.DAY_OF_MONTH), 
-					dateNow.get(Calendar.HOUR), dateNow.get(Calendar.MINUTE), dateNow.get(Calendar.SECOND), 
+					dateNow.get(Calendar.HOUR_OF_DAY), dateNow.get(Calendar.MINUTE), dateNow.get(Calendar.SECOND), 
 					DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED); 
 			comprobante.setFecha(fechaComprobante);
 		} catch (DatatypeConfigurationException e) {

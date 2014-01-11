@@ -63,6 +63,9 @@ public class Ticket {
                 @XmlElement(name = "ART_SALE")
                 protected List<Ticket.Transaccion.Partida> partidas;
                 
+                @XmlElement(name = "ART_RETURN")
+                protected List<Ticket.Transaccion.PartidaDevolucion> partidasDevolucion;
+                
                 @XmlElement(name = "DISC_INFO")
                 protected List<Ticket.Transaccion.PartidaDescuento> partidasDescuentos;
                 
@@ -84,14 +87,21 @@ public class Ticket {
 
                 public List<Ticket.Transaccion.Partida> getPartidas() {
                         if (partidas == null) {
-                                return new ArrayList<Ticket.Transaccion.Partida>();
+                        	return partidas = new ArrayList<Ticket.Transaccion.Partida>();
                         }
                         return partidas;
                 }
                 
+                public List<Ticket.Transaccion.PartidaDevolucion> getPartidasDevolucion() {
+                	if (partidasDevolucion == null) {
+                		return partidasDevolucion = new ArrayList<Ticket.Transaccion.PartidaDevolucion>();
+                	}
+					return partidasDevolucion;
+				}
+                
                 public List<Ticket.Transaccion.PartidaDescuento> getPartidasDescuentos() {
                         if (partidasDescuentos == null) {
-                                return new ArrayList<Ticket.Transaccion.PartidaDescuento>();
+                        	return partidasDescuentos = new ArrayList<Ticket.Transaccion.PartidaDescuento>();
                         }
                         return partidasDescuentos;
                 }
@@ -102,7 +112,7 @@ public class Ticket {
                 
                 public List<Ticket.Transaccion.InformacionPago> getInformacionPago() {
                 	if (informacionPago == null) {
-                		return new ArrayList<Ticket.Transaccion.InformacionPago>();
+                		return informacionPago = new ArrayList<Ticket.Transaccion.InformacionPago>();
                 	}
 					return informacionPago;
 				}
@@ -334,6 +344,198 @@ public class Ticket {
                         }
                         
                 }
+                
+                @XmlAccessorType(XmlAccessType.FIELD)
+                public static class PartidaDevolucion {
+                	
+                    @XmlElement(name = "ARTICLE")
+                    protected Ticket.Transaccion.PartidaDevolucion.ArticuloDevolucion articulo;
+                	
+                	@XmlElement(name = "szOrgFileName")
+                	protected String ticketFileOrigen;
+                	
+                	@XmlElement(name = "szOrgDate")
+                	protected String fechaVentaOrigen;
+                	
+                	@XmlElement(name = "lOrgTaNmbr")
+                	protected String ticketOrigen;
+                	
+                	@XmlElement(name = "lOrgRetailStoreID")
+                	protected String sucursalOrigen;
+                	
+                	@XmlElement(name = "dTaPrice")
+                    protected BigDecimal precioUnitario;
+                    
+                    @XmlElement(name = "dTaQty")
+                    protected BigDecimal cantidad;
+                    
+                    @XmlElement(name = "dTaTotal")
+                    protected BigDecimal precioTotal;
+                    
+                    public Ticket.Transaccion.PartidaDevolucion.ArticuloDevolucion getArticulo() {
+						return articulo;
+					}
+
+					public void setArticulo(Ticket.Transaccion.PartidaDevolucion.ArticuloDevolucion articulo) {
+						this.articulo = articulo;
+					}
+
+					public String getTicketFileOrigen() {
+						return ticketFileOrigen;
+					}
+
+					public void setTicketFileOrigen(String ticketFileOrigen) {
+						this.ticketFileOrigen = ticketFileOrigen;
+					}
+
+					public String getFechaVentaOrigen() {
+						return fechaVentaOrigen;
+					}
+
+					public void setFechaVentaOrigen(String fechaVentaOrigen) {
+						this.fechaVentaOrigen = fechaVentaOrigen;
+					}
+
+					public String getTicketOrigen() {
+						return ticketOrigen;
+					}
+
+					public void setTicketOrigen(String ticketOrigen) {
+						this.ticketOrigen = ticketOrigen;
+					}
+
+					public String getSucursalOrigen() {
+						return sucursalOrigen;
+					}
+
+					public void setSucursalOrigen(String sucursalOrigen) {
+						this.sucursalOrigen = sucursalOrigen;
+					}
+
+					public BigDecimal getPrecioUnitario() {
+						return precioUnitario;
+					}
+
+					public void setPrecioUnitario(BigDecimal precioUnitario) {
+						this.precioUnitario = precioUnitario;
+					}
+
+					public BigDecimal getCantidad() {
+						return cantidad;
+					}
+
+					public void setCantidad(BigDecimal cantidad) {
+						this.cantidad = cantidad;
+					}
+
+					public BigDecimal getPrecioTotal() {
+						return precioTotal;
+					}
+
+					public void setPrecioTotal(BigDecimal precioTotal) {
+						this.precioTotal = precioTotal;
+					}
+
+					@XmlAccessorType(XmlAccessType.FIELD)
+                    public static class ArticuloDevolucion {
+                            
+                        @XmlElement(name = "szPOSItemID")
+                        protected String id;
+                        
+                        @XmlElement(name = "szDesc")
+                        protected String descripcion;
+                        
+                        @XmlElement(name = "szPriceUnitOfMeasureName")
+                        protected String unidad;
+
+                        @XmlElement(name = "szItemCategoryTypeCode")
+                        protected String tipoCategoria;
+                        
+                        @XmlElement(name = "szPOSDepartmentID")
+                        protected String deptoId;
+
+                        public String getId() {
+                                return id;
+                        }
+
+                        public void setId(String id) {
+                                this.id = id;
+                        }
+
+                        public String getDescripcion() {
+                                return descripcion;
+                        }
+
+                        public void setDescripcion(String descripcion) {
+                                this.descripcion = descripcion;
+                        }
+
+                        public String getUnidad() {
+							return unidad;
+						}
+                        
+                        public void setUnidad(String unidad) {
+							this.unidad = unidad;
+						}
+                        
+                        public String getTipoCategoria() {
+                                return tipoCategoria;
+                        }
+
+                        public void setTipoCategoria(String tipoCategoria) {
+                                this.tipoCategoria = tipoCategoria;
+                        }
+
+                        public String getDeptoId() {
+                                return deptoId;
+                        }
+
+                        public void setDeptoId(String deptoId) {
+                                this.deptoId = deptoId;
+                        }
+
+						@Override
+						public String toString() {
+							StringBuilder builder = new StringBuilder();
+							builder.append("Articulo [id=");
+							builder.append(id);
+							builder.append(", descripcion=");
+							builder.append(descripcion);
+							builder.append(", unidad=");
+							builder.append(unidad);
+							builder.append(", tipoCategoria=");
+							builder.append(tipoCategoria);
+							builder.append(", deptoId=");
+							builder.append(deptoId);
+							builder.append("]");
+							return builder.toString();
+						}
+                    }
+
+					@Override
+					public String toString() {
+						StringBuilder builder = new StringBuilder();
+						builder.append("PartidaDevolucion [articulo=");
+						builder.append(articulo);
+						builder.append(", ticketFileOrigen=");
+						builder.append(ticketFileOrigen);
+						builder.append(", fechaVentaOrigen=");
+						builder.append(fechaVentaOrigen);
+						builder.append(", ticketOrigen=");
+						builder.append(ticketOrigen);
+						builder.append(", sucursalOrigen=");
+						builder.append(sucursalOrigen);
+						builder.append(", precioUnitario=");
+						builder.append(precioUnitario);
+						builder.append(", cantidad=");
+						builder.append(cantidad);
+						builder.append(", precioTotal=");
+						builder.append(precioTotal);
+						builder.append("]");
+						return builder.toString();
+					}
+					
+                }
 
                 @XmlAccessorType(XmlAccessType.FIELD)
                 public static class PartidaDescuento {
@@ -496,6 +698,8 @@ public class Ticket {
 					builder.append(transaccionHeader);
 					builder.append(", partidas=");
 					builder.append(partidas);
+					builder.append(", partidasDevolucion=");
+					builder.append(partidasDevolucion);
 					builder.append(", partidasDescuentos=");
 					builder.append(partidasDescuentos);
 					builder.append(", transaccionTotal=");

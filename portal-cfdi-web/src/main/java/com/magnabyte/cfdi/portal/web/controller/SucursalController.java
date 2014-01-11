@@ -1,5 +1,6 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import mx.gob.sat.cfd._3.Comprobante;
@@ -15,18 +16,26 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.google.gson.JsonObject;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.factory.ClienteFactory;
+import com.magnabyte.cfdi.portal.model.commons.Usuario;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
+import com.magnabyte.cfdi.portal.service.establecimiento.AutorizacionCierreService;
+import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
+import com.magnabyte.cfdi.portal.web.cfdi.CfdiService;
 
 @Controller
 @SessionAttributes({"establecimiento", "ticket", "cliente", "documento"})
@@ -45,7 +54,16 @@ public class SucursalController {
 	private DocumentoService documentoService;
 	
 	@Autowired
+	private CfdiService cfdiService;
+	
+	@Autowired
 	private TaskExecutor executor;
+	
+	@Autowired
+	private AutorizacionCierreService autCierreService;
+	
+	@Autowired
+	private EstablecimientoService establecimientoService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(SucursalController.class);
 	
@@ -109,10 +127,32 @@ public class SucursalController {
 		return "sucursal/facturaValidate";
 	}
 	
-	@RequestMapping("/cierre")
-	public String cierre(@ModelAttribute Establecimiento establecimiento, ModelMap model) {
-//		ticketService.closeOfDay(establecimiento, executor);
-		logger.debug("aqui ando");
+	@RequestMapping(value="/fechaCierre", method = RequestMethod.POST)
+	public @ResponseBody String fechaCierre(@ModelAttribute Establecimiento establecimiento) {
+		return establecimientoService.readFechaCierreById(establecimiento);
+	}
+	
+	@RequestMapping(value="/cierre", method = RequestMethod.POST)
+	public @ResponseBody String cierre(@RequestParam String usuario, @RequestParam String password,
+			@ModelAttribute Establecimiento establecimiento, ModelMap model, HttpServletRequest request) {
+		Usuario user = new Usuario();
+		
+		user.setEstablecimiento(establecimiento);
+		user.setUsuario(usuario);
+		user.setPassword(password);
+		
+		logger.debug("Llegue a cierre");
+		try {
+			autCierreService.autorizar(user);
+		} catch (PortalException ex) {
+			JsonObject json = new JsonObject();
+			json.addProperty("error", ex.getMessage());
+//			model.put("errorForm", ex.getMessage());
+			return json.toString();
+		}
+		
+//		logger.debug("cierre...");
+//		cfdiService.closeOfDay(establecimiento, request);
 		return "menu/menu";
 	}
 }

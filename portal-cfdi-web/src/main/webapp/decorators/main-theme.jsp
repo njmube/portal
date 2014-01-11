@@ -30,24 +30,20 @@
 	href="<c:url value="/resources/css/validationEngine.jquery.css" />" />
 <link rel="stylesheet" type="text/css"
 	href="<c:url value="/resources/css/prettyLoader.css" />" />
-<script
-	src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
-<script
-	src="<c:url value="/resources/js/jquery/jquery.dataTables.min.js" />"></script>
+	
+<script src="<c:url value="/resources/js/jquery/jquery-1.10.2.min.js" />"></script>
+<script src="<c:url value="/resources/js/jquery/jquery.dataTables.min.js" />"></script>
 
 <script src="<c:url value="/resources/js/jquery/jquery.validate.js" />"></script>
-<script
-	src="<c:url value="/resources/js/jquery/jquery.validationEngine.js" />"></script>
-<script
-	src="<c:url value="/resources/js/jquery/jquery.validationEngine-es.js" />"></script>
+<script src="<c:url value="/resources/js/jquery/jquery.prettyLoader.js" />"></script>
+<script src="<c:url value="/resources/js/jquery/jquery.validationEngine.js" />"></script>
+<script src="<c:url value="/resources/js/jquery/jquery.validationEngine-es.js" />"></script>
 
 <script src="<c:url value="/resources/js/datatable/datatable.js" />"></script>
-<script
-	src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.js" />"></script>
-<script
-	src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.es.js" />"></script>
-<script
-	src="<c:url value="/resources/js/jquery/jquery.prettyLoader.js" />"></script>
+
+<script src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.js" />"></script>
+<script src="<c:url value="/resources/js/datepicker/bootstrap-datepicker.es.js" />"></script>
+
 <script type="text/javascript">
 	var contextPath = "${pageContext.request.contextPath}";
 
@@ -62,6 +58,7 @@
 		autoClosingAlert("div.alert", 2500);
 	});
 </script>
+
 <decorator:head />
 </head>
 <body>
@@ -162,8 +159,8 @@
 		</div>
 	</div>
 	<script src="<c:url value="/resources/js/vendor/bootstrap.min.js" />"></script>
-	<script
-		src="<c:url value="/resources/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js" />"></script>
+	<script src="<c:url value="/resources/js/vendor/bootstrap-confirmation.js" />"></script>
+	<script src="<c:url value="/resources/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js" />"></script>
 	<script src="<c:url value="/resources/js/main/modatelas.js"/>"></script>
 </body>
 </html>

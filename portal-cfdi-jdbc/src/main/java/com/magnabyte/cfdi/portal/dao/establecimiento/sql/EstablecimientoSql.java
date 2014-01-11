@@ -8,6 +8,7 @@ public class EstablecimientoSql extends GenericSql {
 	public static final String TABLE_NAME = "t_establecimiento";
 	public static final String TABLE_DOM_ESTAB = "t_domicilio_establecimiento";
 	public static final String TABLE_RUTA_ESTAB = "t_ruta_establecimiento";
+	public static final String TABLE_ESTAB_CIERRE = "t_establecimiento_cierre";
 	public static final String CATALOGO_TIPO_ESTAB = "c_tipo_establecimiento";
 	
 	public static final String ALIAS_TABLE = "te";
@@ -35,6 +36,9 @@ public class EstablecimientoSql extends GenericSql {
 	public static final String RUTA_REPOSITORIO = "ruta_repo";
 	public static final String ID_RUTA_ESTAB = "id_ruta_establecimiento";
 	
+	public static final String SIGIENTE_CIERRE = "siguiente_cierre";
+	public static final String ULTIMO_CIERRE = "ultimo_cierre";
+	
 	public static final String GET_ROLES;
 	public static final String FIND_BY_CLAVE;
 	public static final String READ_BY_CLAVE;
@@ -43,6 +47,7 @@ public class EstablecimientoSql extends GenericSql {
 	public static final String READ_ALL_WITH_IDS;
 	public static final String UPDATE_ESTABLECIMIENTO;
 	public static final String READ_BY_ID;
+	public static final String READ_FECHA_CIERRE_BY_ID;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -232,5 +237,15 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append("tre.id_ruta_establecimiento where te.id_establecimiento = ?");
 		
 		READ_BY_ID = qryBuilder.toString();
+		
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append(SELECT).append(EOL).append(TAB).append(ALL).append(EOL);
+		qryBuilder.append(FROM).append(EOL).append(TAB).append(TABLE_ESTAB_CIERRE).append(EOL);
+		qryBuilder.append(WHERE).append(EOL).append(TAB).append(ID_ESTABLECIMIENTO).append(SET_PARAM);
+		
+		READ_FECHA_CIERRE_BY_ID = qryBuilder.toString();		
+		
+		clearAndReuseStringBuilder(qryBuilder);
 	}	
 }

@@ -32,7 +32,7 @@ public class CloseOfDayInterceptor extends HandlerInterceptorAdapter {
 		int hour = calendar.get(Calendar.HOUR_OF_DAY);
 		logger.debug("la hour {}", hour);
 		
-		if (hour >= horaInicio && hour < horaCierre) {
+		if (hour > horaCierre) {
 			return true;
 		} else {
 			response.sendRedirect("loginFailed");

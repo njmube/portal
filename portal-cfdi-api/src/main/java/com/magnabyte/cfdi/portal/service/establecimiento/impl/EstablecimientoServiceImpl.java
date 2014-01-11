@@ -1,5 +1,7 @@
 package com.magnabyte.cfdi.portal.service.establecimiento.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,5 +59,16 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 	@Override
 	public void save (Establecimiento establecimiento) {
 		establecimientoDao.save(establecimiento);
+	}
+
+	@Override
+	public String readFechaCierreById(Establecimiento establecimiento) {
+		Establecimiento estab = establecimientoDao
+				.readFechaCierreById(establecimiento);
+		
+		DateFormat formatoFecha = new SimpleDateFormat("dd-MM-yyyy");
+		String fechaCierreSig = formatoFecha.format(estab.getSiguienteCierre());
+		
+		return fechaCierreSig;
 	}
 }

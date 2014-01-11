@@ -13,12 +13,12 @@
 
 	<mvc:annotation-driven />
 
-	<mvc:interceptors>
-		<mvc:interceptor>
-			<mvc:mapping path="/cierre"/>
-			<bean class="com.magnabyte.cfdi.portal.web.interceptor.CloseOfDayInterceptor"></bean>
-		</mvc:interceptor>
-	</mvc:interceptors>
+<!-- 	<mvc:interceptors> -->
+<!-- 		<mvc:interceptor> -->
+<!-- 			<mvc:mapping path="/cierre"/> -->
+<!-- 			<bean class="com.magnabyte.cfdi.portal.web.interceptor.CloseOfDayInterceptor"></bean> -->
+<!-- 		</mvc:interceptor> -->
+<!-- 	</mvc:interceptors> -->
 
 	<mvc:resources location="/resources/" mapping="/resources/**" cache-period="0"/>
 
