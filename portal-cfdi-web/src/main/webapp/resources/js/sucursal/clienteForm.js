@@ -102,7 +102,8 @@ $(document).ready(function() {
 	$("#agregar").click(function() {
 		var opPais = "<option value=" +$("#pais option:selected").val()+ ">" 
 			+ $("#pais option:selected").text() + "</option>" ;
-		var opEstado = $("#estado").html();	
+		
+		var opEstado = $("#estado").html();
 		
 		if($("#clienteForm").validationEngine('validate')) {
 			
@@ -135,6 +136,7 @@ $(document).ready(function() {
 			+ "</tr>";
 			
 			$("#tblDireccion tbody").append(tr);
+			$('option:selected', '#estado' + aux).removeAttr('selected');
 			
 			aux++;
 		}
@@ -146,7 +148,6 @@ $("#agregarCorregir").click(function() {
 		var opEstado = $("#estado0").html();
 		
 		var idPais = $(".pais option:selected").val();
-		var idEstado = $(".estado option:selected").val();
 		
 		if($("#clienteCorregirForm").validationEngine('validate')){
 			
@@ -173,7 +174,7 @@ $("#agregarCorregir").click(function() {
 			+ "</select>"
 			+ "</td>"
 			+ "<td width=\'100px\'>"
-			+ "<input type=\'hidden\' name=\'domicilios["+ aux +"].estado.id\' id=\'estadoOculto\' value=\'"+ idEstado +"\'/>"
+			+ "<input type=\'hidden\' name=\'domicilios["+ aux +"].estado.id\' id=\'estadoOculto\' value=\'\'/>"
 		  	+ "<select class=\'form-control-xsm validate[required] estado\' id=\'estado"+ aux +"\' name=\'domicilios["+ aux +"].estado.id\'>"
 	  		+ opEstado
 			+ "</select>"
@@ -187,6 +188,7 @@ $("#agregarCorregir").click(function() {
 			+ "</tr>";
 			
 			$("#tblDireccion tbody").append(tr);
+			$('option:selected', '#estado' + aux).removeAttr('selected');
 			
 			aux++;
 		}

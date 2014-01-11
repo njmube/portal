@@ -61,6 +61,10 @@
 						$("#fileNameModal").val(tr.find("#fileName").val());
 					});
 					
+					$(document.body).on("click", "#closeModal", function() {
+						$("#email").val("");
+					});
+					
 					$("#enviaMail").click(function() {
 						var params = "idEstab=" + $("#idEstabModal").val() 
 							+ "&fileName=" + $("#fileNameModal").val() + "&email=" + $("#email").val();  
@@ -75,7 +79,7 @@
 								data: params,
 								type: "GET",								
 								success : function(response) {
-									$("#close").click();
+									$("#closeModal").click();
 									
 									message = "";
 									messageClass = "";
@@ -123,7 +127,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <button type="button" id="closeModal" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title text-primary">Enviar Documentos</h4>
       </div>
       <div class="modal-body">
@@ -142,7 +146,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" id="close" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" id="closeModal" class="btn btn-default" data-dismiss="modal">Cerrar</button>
         <button type="button" id="enviaMail" class="btn btn-primary">Enviar</button>
       </div>
     </div><!-- /.modal-content -->

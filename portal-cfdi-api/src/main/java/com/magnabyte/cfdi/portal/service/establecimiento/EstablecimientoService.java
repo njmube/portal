@@ -12,6 +12,8 @@ public interface EstablecimientoService {
 	Establecimiento readByClave(Establecimiento establecimiento);
 
 	Establecimiento readById(Establecimiento establecimiento);
+	
+	String readFechaCierreById(Establecimiento establecimiento);
 
 	List<Establecimiento> readAll();
 
