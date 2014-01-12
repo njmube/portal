@@ -86,23 +86,21 @@
 						<c:set var="urlMenu" value="/menuPage"/>		
 					</sec:authorize>
 					<ul class="nav navbar-nav">
-
-						<li class="dropdown"><sec:authorize access="hasAnyRole('ROLE_ADMIN')">
-								<a class="dropdown-toggle" data-toggle="dropdown">Catálogos <b class="caret"></b></a>
-								<ul class="dropdown-menu">
-									<c:url var="logoutUrl" value="/perform_logout" />
-									<c:url var="catalogoEstablecimiento" value="/catalogoEstablecimiento" />
-									<li><a href="#"><span class="glyphicon "></span>Formas de pago</a></li>
-									<li><a href="#"><span class="glyphicon "></span>Condiciones de pago</a></li>
-									<li><a href="#"><span class="glyphicon "></span>Iva</a></li>
-									<li><a href="${catalogoEstablecimiento}"><span class="glyphicon "></span> Establecimiento</a></li>
-								</ul>
-							</sec:authorize></li>
 						<c:if test="${!isLoginPage}">	
 							<li><a href="<c:url value="${urlMenu}" />">Menú Principal
 									<i class="fa fa-home"></i>
 							</a></li>
 						</c:if>
+						<li class="dropdown"><sec:authorize access="hasAnyRole('ROLE_ADMIN')">
+								<a class="dropdown-toggle" data-toggle="dropdown">Catálogos <b class="caret"></b></a>
+								<ul class="dropdown-menu">
+									<c:url var="logoutUrl" value="/perform_logout" />
+									<c:url var="catalogoEstablecimiento" value="/catalogoEstablecimiento" />
+									c<c:url var="catalogousuarios" value="/catalogoUsuarios"></c:url>
+									<li><a href="#"><span class="glyphicon "></span>Usuarios</a></li>
+									<li><a href="${catalogoEstablecimiento}"><span class="glyphicon "></span> Establecimiento</a></li>
+								</ul>
+							</sec:authorize></li>
 					</ul>
 					<sec:authorize
 						access="hasAnyRole('ROLE_SUC', 'ROLE_CORP', 'ROLE_ADMIN')">

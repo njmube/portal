@@ -89,12 +89,8 @@
 									<form:input path="rutaRepositorio.rutaRepoIn" cssClass="form-control input-sm validate[required]" id="txtIn"/>
 								</div>
 							</div>
-							<div class="form-group">
-								<label for="txtRutaProc" class="col-lg-3 control-label">Ruta Procesado: </label>
-								<div class="col-lg-9">
-									<form:input path="rutaRepositorio.rutaRepoInProc" cssClass="form-control input-sm " id="txtRutaProc"/>
-								</div>
-							</div>
+								<br><br>
+								<div style="padding: 3px"></div>
 						</fieldset>
 					</div>
 				</div>
@@ -118,13 +114,13 @@
 								</div>
 								<label for="txtLocalidad" class="col-lg-1 control-label">Localidad: </label>
 								<div class="col-lg-3"> 
-									<form:input path="domicilio.localidad"  cssClass="form-control input-sm validate[required]" id="txtLocalidad" />
+									<form:input path="domicilio.localidad"  cssClass="form-control input-sm validate[required" id="txtLocalidad" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="txtNumeroInt" class="col-lg-1 control-label">Núm. Int. </label>
 								<div class="col-lg-3"> 
-									<form:input path="domicilio.noInterior"  cssClass="form-control input-sm validate[required]" id="txtNumeroInt" />
+									<form:input path="domicilio.noInterior"  cssClass="form-control input-sm" id="txtNumeroInt" />
 								</div>
 								<label for="txtNumeroExt" class="col-lg-1 control-label">Núm Ext. </label>
 								<div class="col-lg-3"> 

@@ -134,7 +134,7 @@
 							<div class="form-group">
 								<label for="txtNumeroInt" class="col-lg-1 control-label">Núm. Int. </label>
 								<div class="col-lg-3"> 
-									<form:input path="domicilio.noInterior"  cssClass="form-control input-sm validate[required]" id="txtNumeroInt" />
+									<form:input path="domicilio.noInterior"  cssClass="form-control input-sm " id="txtNumeroInt" />
 								</div>
 								<label for="txtNumeroExt" class="col-lg-1 control-label">Núm Ext. </label>
 								<div class="col-lg-3"> 

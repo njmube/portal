@@ -4,9 +4,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Condiciones de pago</title>
+<title>Catalogo Usuarios</title>
 </head>
 <body>
-<H1></H1>
+
 </body>
 </html>
