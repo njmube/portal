@@ -81,7 +81,7 @@
 				
 				$('[data-toggle="confirmation"]').confirmation({onConfirm: function(){
 					var params = "usuario=" + $("#usuario").val() 
-					+ "&password=" + $("#password").val();  
+					+ "&password=" + $("#password").val() + "&fechaCierre=" + $("#hdnfechaCierre").val();  
 			
 					console.log(params);
 					

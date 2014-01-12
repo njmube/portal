@@ -134,7 +134,7 @@ public class SucursalController {
 	
 	@RequestMapping(value="/cierre", method = RequestMethod.POST)
 	public @ResponseBody String cierre(@RequestParam String usuario, @RequestParam String password,
-			@RequestParam String hdnfechaCierre, @ModelAttribute Establecimiento establecimiento, 
+			@RequestParam String fechaCierre, @ModelAttribute Establecimiento establecimiento, 
 			ModelMap model, HttpServletRequest request) {
 		Usuario user = new Usuario();
 		
