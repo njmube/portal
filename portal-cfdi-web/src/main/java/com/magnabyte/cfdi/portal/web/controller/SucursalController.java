@@ -134,7 +134,8 @@ public class SucursalController {
 	
 	@RequestMapping(value="/cierre", method = RequestMethod.POST)
 	public @ResponseBody String cierre(@RequestParam String usuario, @RequestParam String password,
-			@ModelAttribute Establecimiento establecimiento, ModelMap model, HttpServletRequest request) {
+			@RequestParam String hdnfechaCierre, @ModelAttribute Establecimiento establecimiento, 
+			ModelMap model, HttpServletRequest request) {
 		Usuario user = new Usuario();
 		
 		user.setEstablecimiento(establecimiento);
@@ -151,8 +152,8 @@ public class SucursalController {
 			return json.toString();
 		}
 		
-//		logger.debug("cierre...");
-//		cfdiService.closeOfDay(establecimiento, request);
+		logger.debug("cierre...");
+		cfdiService.closeOfDay(establecimiento, request);
 		return "menu/menu";
 	}
 }
