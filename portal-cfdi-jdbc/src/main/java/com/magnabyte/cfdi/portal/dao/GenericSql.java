@@ -27,6 +27,7 @@ public class GenericSql {
 	public static final String EOL_ = ",\n";
 	public static final String DOT = ".";
 	public static final String SET = "SET";
+	public static final String AND = "AND";
 	
 	
 	public static void clearAndReuseStringBuilder(final StringBuilder qry) {

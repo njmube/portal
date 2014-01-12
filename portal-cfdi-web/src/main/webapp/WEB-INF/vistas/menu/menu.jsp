@@ -61,8 +61,18 @@
 					$.ajax({
 						url: contextPath + "/fechaCierre?ajax=true",
 						type: "POST",								
-						success : function(response) {							
-							$("#fechaCierre").val(response);
+						success : function(response) {
+							if(response != null) {
+								$("#fechaCierre").val(response);
+								$("#hdnfechaCierre").val(response);
+							} else  {								
+								$("#fechaCierre").val("");
+								$("#hdnfechaCierre").val("");
+							}
+						},
+						error : function() {
+							$("#fechaCierre").val("");
+							$("#hdnfechaCierre").val("");
 						}
 					});
 				});
@@ -100,11 +110,14 @@
 									
 									$('[data-toggle="confirmation"]').confirmation('toggle');
 								} else {
+									
 									$("#closeAut").click();
 									
 									$("#fechaCierre").val("");
 									$("#usuario").val("");
-									$("#password").val("");									
+									$("#password").val("");
+									
+									location.href = contextPath + response; 
 								}
 																	
 							}
@@ -127,6 +140,7 @@
 	        		<p>Proporcione un nombre de usuario y contreseña de autorizaci&oacute;n para el cierre del d&iacute;a.</p>
 	        	</blockquote>
 	        	<div class="form-group">
+	        		<input type="hidden" name="hdnfechaCierre" value="">
 	        		<label for="fechaCierre" class="col-lg-4 control-label">Fecha Cierre: </label>
 					<div class="col-lg-5">
 			        	<input type="text" id="fechaCierre" name="fechaCierre" class="form-control input-sm" 

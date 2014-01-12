@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.google.gson.JsonObject;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.factory.ClienteFactory;
+import com.magnabyte.cfdi.portal.model.commons.Usuario;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
@@ -131,21 +132,25 @@ public class SucursalController {
 		return establecimientoService.readFechaCierreById(establecimiento);
 	}
 	
-	@RequestMapping(value="/cierre", method = RequestMethod.GET)
-//	public @ResponseBody String cierre(@RequestParam String usuario, @RequestParam String password,
-//			@ModelAttribute Establecimiento establecimiento, ModelMap model, HttpServletRequest request) {
-		public @ResponseBody String cierre(
-				@ModelAttribute Establecimiento establecimiento, ModelMap model, HttpServletRequest request) {
+	@RequestMapping(value="/cierre", method = RequestMethod.POST)
+	public @ResponseBody String cierre(@RequestParam String usuario, @RequestParam String password,
+			@RequestParam String hdnfechaCierre, @ModelAttribute Establecimiento establecimiento, 
+			ModelMap model, HttpServletRequest request) {
+		Usuario user = new Usuario();
 		
-//		logger.debug("Llegue a cierre");
-//		try {
-//			autCierreService.autorizar(usuario, password);
-//		} catch (PortalException ex) {
-//			JsonObject json = new JsonObject();
-//			json.addProperty("error", ex.getMessage());
-////			model.put("errorForm", ex.getMessage());
-//			return json.toString();
-//		}
+		user.setEstablecimiento(establecimiento);
+		user.setUsuario(usuario);
+		user.setPassword(password);
+		
+		logger.debug("Llegue a cierre");
+		try {
+			autCierreService.autorizar(user);
+		} catch (PortalException ex) {
+			JsonObject json = new JsonObject();
+			json.addProperty("error", ex.getMessage());
+//			model.put("errorForm", ex.getMessage());
+			return json.toString();
+		}
 		
 		logger.debug("cierre...");
 		cfdiService.closeOfDay(establecimiento, request);
