@@ -7,7 +7,7 @@ import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 
 public interface CfdiService {
 	
-	void generarDocumento(Documento documento, HttpServletRequest request);
+	void generarDocumento(Documento documento, HttpServletRequest request, boolean isVentasMostrador);
 
 	void closeOfDay(Establecimiento establecimiento, HttpServletRequest request);
 	

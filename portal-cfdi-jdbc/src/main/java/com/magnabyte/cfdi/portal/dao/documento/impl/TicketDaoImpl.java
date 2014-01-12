@@ -1,5 +1,6 @@
 package com.magnabyte.cfdi.portal.dao.documento.impl;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -19,6 +21,7 @@ import com.magnabyte.cfdi.portal.dao.documento.TicketDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 import com.magnabyte.cfdi.portal.dao.documento.sql.TicketSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
+import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
@@ -43,6 +46,30 @@ public class TicketDaoImpl extends GenericJdbcDao
 			logger.debug("No se pudo registrar el Ticket en la base de datos.", ex);
 			throw new PortalException("No se pudo registrar el Ticket en la base de datos.", ex);
 		}
+	}
+	
+	@Override
+	public void saveTicketVentasMostrador(final Documento documento) {
+		int[] insertCounts = getJdbcTemplate().batchUpdate(TicketSql.SAVE_TICKETS_VM, new BatchPreparedStatementSetter() {
+			
+			@Override
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				ps.setInt(1, Integer.parseInt(documento.getVentas().get(i).getTransaccion().getTransaccionHeader().getIdTicket()));
+				ps.setInt(2, documento.getEstablecimiento().getId());
+				ps.setInt(3, Integer.parseInt(documento.getVentas().get(i).getTransaccion().getTransaccionHeader().getIdCaja()));
+				//FIXME
+				ps.setDate(4, new java.sql.Date(new Date().getTime()));
+				ps.setInt(5, TipoEstadoTicket.FACTURADO_MOSTRADOR.getId());
+				ps.setInt(6, documento.getId());
+				ps.setString(7, documento.getVentas().get(i).getNombreArchivo());
+			}
+			
+			@Override
+			public int getBatchSize() {
+				return documento.getVentas().size();
+			}
+		});
+		logger.info("tickets guardados {}", insertCounts.length);
 	}
 	
 	@Override
@@ -111,6 +138,7 @@ public class TicketDaoImpl extends GenericJdbcDao
 		params.addValue(DocumentoSql.ID_DOCUMENTO, documento.getId());
 		params.addValue(EstablecimientoSql.ID_ESTABLECIMIENTO, documento.getEstablecimiento().getId());
 		params.addValue(TicketSql.ID_STATUS, documento.getTicket().getTipoEstadoTicket().getId());
+		//FIXME
 		params.addValue(TicketSql.FECHA, new Date());
 		params.addValue(TicketSql.NO_CAJA, documento.getTicket().getTransaccion().getTransaccionHeader().getIdCaja());
 		params.addValue(TicketSql.NO_TICKET, documento.getTicket().getTransaccion().getTransaccionHeader().getIdTicket());

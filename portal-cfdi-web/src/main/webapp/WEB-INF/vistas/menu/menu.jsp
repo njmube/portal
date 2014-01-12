@@ -42,8 +42,11 @@
 				<hr>
 				<sec:authorize access="hasRole('ROLE_SUC')">
 					<p>
-						<button type="button" id="cierre" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#autCierre">
-						Cierre <i class="fa fa-arrow-right"></i></button>
+<!-- 						<button type="button" id="cierre" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#autCierre"> -->
+<!-- 						Cierre <i class="fa fa-arrow-right"></i></button> -->
+						<a href="<c:url value="/cierre"/>" class="btn btn-primary btn-lg" role="button">Cierre
+							<i class="fa fa-arrow-right"></i>
+						</a>
 					</p>
 					<hr>
 				</sec:authorize>

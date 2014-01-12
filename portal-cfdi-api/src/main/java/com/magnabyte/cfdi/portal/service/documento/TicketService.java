@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.service.documento;
 
 import java.util.List;
 
+import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
@@ -28,5 +29,7 @@ public interface TicketService {
 			Establecimiento establecimiento);
 
 	Integer readIdDocFromTicketGuardado(DocumentoSucursal documento);
+
+	void saveTicketVentasMostrador(Documento documento);
 
 }

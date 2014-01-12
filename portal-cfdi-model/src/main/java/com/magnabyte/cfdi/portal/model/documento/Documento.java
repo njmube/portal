@@ -2,12 +2,14 @@ package com.magnabyte.cfdi.portal.model.documento;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.List;
 
 import mx.gob.sat.cfd._3.Comprobante;
 import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
 
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 
 public class Documento implements Serializable {
 	/**
@@ -24,6 +26,7 @@ public class Documento implements Serializable {
 	private TimbreFiscalDigital timbreFiscalDigital;
 	private TipoDocumento tipoDocumento;
 	private String nombre;
+	private List<Ticket> ventas;
 	private byte[] xmlCfdi;
 
 	public Integer getId() {
@@ -88,6 +91,14 @@ public class Documento implements Serializable {
 	
 	public void setTipoDocumento(TipoDocumento tipoDocumento) {
 		this.tipoDocumento = tipoDocumento;
+	}
+	
+	public List<Ticket> getVentas() {
+		return ventas;
+	}
+	
+	public void setVentas(List<Ticket> ventas) {
+		this.ventas = ventas;
 	}
 	
 	public byte[] getXmlCfdi() {

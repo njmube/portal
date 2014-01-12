@@ -19,6 +19,7 @@ public class TicketSql extends GenericSql {
 	public static final String READ_ART_SIN_PRECIO;
 	public static final String READ_ID_DOC_BY_TICKET;
 	public static final String READ_FACTURADOS_DIA;
+	public static final String SAVE_TICKETS_VM;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -58,5 +59,12 @@ public class TicketSql extends GenericSql {
 		qryBuilder.append("select dbo.TRIM(nombre_archivo) as nombre_archivo from t_ticket where convert(varchar(10), fecha_ticket, 120) = ?");
 		
 		READ_FACTURADOS_DIA = qryBuilder.toString();
+		
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("insert into t_ticket (no_ticket, id_establecimiento, no_caja, fecha_ticket, id_status_ticket, id_documento, nombre_archivo) ");
+		qryBuilder.append("values (?, ?, ?, ?, ?, ?, ?)");
+		
+		SAVE_TICKETS_VM = qryBuilder.toString();
 	}
 }

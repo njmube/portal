@@ -60,10 +60,13 @@ public class CfdiServiceImpl implements CfdiService {
 	private String rfcVentasMostrador;
 	
 	@Override
-	public void generarDocumento(Documento documento, HttpServletRequest request) {
+	public void generarDocumento(Documento documento, HttpServletRequest request, boolean isVentasMostrador) {
 		logger.debug("cfdiService...");
 		CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
 		documentoService.guardarDocumento(documento);
+		if(isVentasMostrador) {
+			ticketService.saveTicketVentasMostrador(documento);
+		}
 		if (documentoService.sellarComprobante(documento.getComprobante(), certificado)) {
 			if (documentoWebService.timbrarDocumento(documento, request)) {
 				documentoService.insertDocumentoCfdi(documento);
@@ -75,7 +78,7 @@ public class CfdiServiceImpl implements CfdiService {
 		}	
 	}
 	
-	@Transactional(readOnly = true)
+	@Transactional
 	@Override
 	public void closeOfDay(Establecimiento establecimiento, HttpServletRequest request) {
 		List<Ticket> ventas = new ArrayList<Ticket>();
@@ -97,7 +100,9 @@ public class CfdiServiceImpl implements CfdiService {
 			documento.setCliente(cliente);
 			documento.setComprobante(comprobante);
 			documento.setTipoDocumento(TipoDocumento.FACTURA);
-			generarDocumento(documento, request);
+			documento.setVentas(ventas);
+			
+			generarDocumento(documento, request, true);
 			logger.debug("devoluciones {}", devoluciones.size());
 		} else {
 			logger.error("El cierre del dia actual es posible realizarlo hasta despues del cierre de la tienda");

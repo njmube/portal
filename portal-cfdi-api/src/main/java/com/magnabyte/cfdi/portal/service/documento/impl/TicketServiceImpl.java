@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.dao.documento.TicketDao;
+import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
@@ -99,6 +100,12 @@ public class TicketServiceImpl implements TicketService {
 			logger.debug("El Ticket no puede ser nulo.");
 			throw new PortalException("El Ticket no puede ser nulo.");
 		}
+	}
+	
+	@Transactional
+	@Override
+	public void saveTicketVentasMostrador(Documento documento) {
+		ticketDao.saveTicketVentasMostrador(documento);
 	}
 
 	@Transactional(readOnly = true)
@@ -225,6 +232,7 @@ public class TicketServiceImpl implements TicketService {
 					matcher = pattern.matcher(file);
 					if (matcher.matches()) {
 						Ticket ticketXml = (Ticket) unmarshaller.unmarshal(new StreamSource(sambaService.getFileStream(urlTicketFiles, file)));
+						ticketXml.setNombreArchivo(file);
 						if (ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveVentaTicket)) {
 							ventas.add(ticketXml);
 						} else if (ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveDevolucionTicket)) {
