@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.google.gson.JsonObject;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.factory.ClienteFactory;
 import com.magnabyte.cfdi.portal.model.commons.Usuario;
@@ -133,27 +132,23 @@ public class SucursalController {
 	}
 	
 	@RequestMapping(value="/cierre", method = RequestMethod.POST)
-	public @ResponseBody String cierre(@RequestParam String usuario, @RequestParam String password,
-			@RequestParam String fechaCierre, @ModelAttribute Establecimiento establecimiento, 
-			ModelMap model, HttpServletRequest request) {
-		Usuario user = new Usuario();
+	public String cierre(@RequestParam String fechaCierre, @ModelAttribute Usuario usuario,
+			@ModelAttribute Establecimiento establecimiento, 
+			ModelMap model, HttpServletRequest request) {		
 		
-		user.setEstablecimiento(establecimiento);
-		user.setUsuario(usuario);
-		user.setPassword(password);
+		usuario.setEstablecimiento(establecimiento);
 		
 		logger.debug("Llegue a cierre");
+		
 		try {
-			autCierreService.autorizar(user);
+			autCierreService.autorizar(usuario);
+			cfdiService.closeOfDay(establecimiento, request);
 		} catch (PortalException ex) {
-			JsonObject json = new JsonObject();
-			json.addProperty("error", ex.getMessage());
-//			model.put("errorForm", ex.getMessage());
-			return json.toString();
+			model.put("error", true);
+			model.put("messageError", ex.getMessage());
+			return "menu/menu";
 		}
 		
-		logger.debug("cierre...");
-		cfdiService.closeOfDay(establecimiento, request);
-		return "menu/menu";
+		return "redirect:/menuPage";
 	}
 }

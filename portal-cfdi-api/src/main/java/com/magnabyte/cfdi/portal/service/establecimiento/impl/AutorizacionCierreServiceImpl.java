@@ -28,9 +28,11 @@ public class AutorizacionCierreServiceImpl implements AutorizacionCierreService 
 		if(usuario.getUsuario().equals(usrBd.getUsuario()) && 
 				!usuario.getPassword().equals(usrBd.getPassword())) {
 			throw new PortalException("El password proporcionado es incorrecto.");
-		} else if (!usuario.getUsuario().equals(usrBd) && usuario.getPassword().equals(usrBd)) {
+		} else if (!usuario.getUsuario().equals(usrBd.getUsuario()) && 
+				usuario.getPassword().equals(usrBd.getPassword())) {
 			throw new PortalException("El usuario proporcionado es incorrecto.");			
-		} else if (!usuario.getUsuario().equals(usrBd) && !usuario.getPassword().equals(usrBd)) {
+		} else if (!usuario.getUsuario().equals(usrBd.getUsuario()) &&
+				!usuario.getPassword().equals(usrBd.getPassword())) {
 			throw new PortalException("El usuario y password proporcionado son incorrectos.");
 		} else {
 			return true;
