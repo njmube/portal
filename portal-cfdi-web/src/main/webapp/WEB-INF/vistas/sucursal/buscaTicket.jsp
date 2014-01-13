@@ -17,7 +17,7 @@
 			autoclose: true
 		});
 		
-		autoClosingAlert(".errorForm", 3500);
+// 		autoClosingAlert(".errorForm", 3500);
 	}); 
 </script>
 </head>

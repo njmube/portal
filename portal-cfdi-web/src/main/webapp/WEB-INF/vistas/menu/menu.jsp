@@ -3,6 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
 <title>Facturación en Línea</title>
@@ -26,6 +27,15 @@
 			</blockquote>
 			<hr>
 
+			<c:if test="${error}">
+				<div class="col-md-offset-3 col-md-6 alert alert-danger alert-dismissable alert-fixed">
+<!-- 					<div class=""> -->
+						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+						<spring:message code="messages.error.autorizacion.cierre"/>
+						<br><br> <strong>${messageError}</strong> 
+<!-- 					</div> -->
+				</div>
+			</c:if>
 			<div class="well col-md-6 col-md-offset-3 text-center">
 				<hr>
 				<p>
@@ -80,48 +90,13 @@
 				});
 				
 				$('[data-toggle="confirmation"]').confirmation({onConfirm: function(){
-					var params = "usuario=" + $("#usuario").val() 
-					+ "&password=" + $("#password").val() + "&fechaCierre=" + $("#hdnfechaCierre").val();  
-			
-					console.log(params);
-					
-					$("#autCierre").attr('aria-hidden', true);
-					$(".popover").hide();
-					
 					if($("#autorizacionForm").validationEngine("validate")) {
-						$.ajax({
-							url: contextPath + "/cierre?ajax=true",
-							data: params,
-							type: "POST",
-							dataType: 'JSON',
-							success : function(response) {
-								if(response != null && response.error !== "") {
-									$("#error").html("<small class=\'errorForm\'><strong><span>" 
-											+ response.error + "</span></strong></small>");
-									
-									autoClosingAlert(".errorForm", 4000);
-									
-									$(".popover").hide();
-									$("#usuario").val("");
-									$("#password").val("");
-									
-									$('[data-toggle="confirmation"]').confirmation('toggle');
-								} else {
-									
-									$("#closeAut").click();
-									
-									$("#fechaCierre").val("");
-									$("#usuario").val("");
-									$("#password").val("");
-									
-									location.href = contextPath + response; 
-								}
-																	
-							}
-						});
+						$("#page_loader").show();
+						$(".page_loader_content").show();
+						
+						$("#autorizacionForm").submit();
 					}
 				}});
-				
 			});
 	</script>
 	<div class="modal fade" id="autCierre" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -132,12 +107,11 @@
 	        <h4 class="modal-title text-primary">Autorizaci&oacute;n de Cierre</h4>
 	      </div>
 	      <div class="modal-body">
-	        <form action="#" id="autorizacionForm" method="post" class="form-horizontal">
+	        <form action="<c:url value="/cierre"/>" id="autorizacionForm" method="post" class="form-horizontal">
 	        	<blockquote>
 	        		<p>Proporcione un nombre de usuario y contreseña de autorizaci&oacute;n para el cierre del d&iacute;a.</p>
 	        	</blockquote>
 	        	<div class="form-group">
-	        		<input type="hidden" name="hdnfechaCierre" value="">
 	        		<label for="fechaCierre" class="col-lg-4 control-label">Fecha Cierre: </label>
 					<div class="col-lg-5">
 			        	<input type="text" id="fechaCierre" name="fechaCierre" class="form-control input-sm" 
