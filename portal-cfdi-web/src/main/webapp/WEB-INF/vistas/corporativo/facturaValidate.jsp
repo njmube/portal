@@ -139,8 +139,17 @@
 				</div>
 			</div>
 			<div class="row">
+				<div class="col-md-12 text-center">
+					<p>
+						<button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#articulos">
+						  Mostrar Artículos
+						</button>
+					</p>
+				</div>
+			</div>
+			<div class="row">
 				<div class="col-md-12">
-					<div class="white-panel table-responsive">
+					<div id="articulos" class="white-panel table-responsive collapse">
 						<fieldset>
 							<h5 class="text-primary">Artículos</h5>
 							<hr>
