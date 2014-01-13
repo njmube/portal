@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 import javax.xml.transform.stream.StreamSource;
 
 import jcifs.Config;
+import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
@@ -153,15 +154,20 @@ public class TicketServiceImpl implements TicketService {
 		String fecha = fechaXml.substring(6, 10) + fechaXml.substring(3, 5) + fechaXml.substring(0, 2);
 		String regex = noSucursal + "_" + noCaja + "_" + noTicket + "_" + fecha + "\\d{6}\\.xml$";
 		String urlTicketFiles = establecimiento.getRutaRepositorio().getRutaRepositorio() 
-				+ establecimiento.getRutaRepositorio().getRutaRepoIn() + fecha + File.separator; 
+				+ establecimiento.getRutaRepositorio().getRutaRepoIn() + fecha + "/"; 
 		logger.debug("Ruta ticket {}", urlTicketFiles);
 		Pattern pattern = Pattern.compile(regex);
+		logger.debug(regex);
 		SmbFile dir = null;
 		try {
+//			NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication("WORKGROUP", "", "");
 			dir = new SmbFile(urlTicketFiles);
 			if(dir.exists()) {
+				logger.debug("el dir existe");
 				SmbFile[] files = dir.listFiles();
+				logger.debug("archivos {}", files.length);
 				for (SmbFile file : files) {
+					logger.debug("archivo---{}", file.getName());
 					Matcher matcher = pattern.matcher(file.getName());
 					if (matcher.matches()) {
 						
@@ -183,6 +189,8 @@ public class TicketServiceImpl implements TicketService {
 						return true;
 					}
 				}
+			} else {
+				logger.debug("el archivo no existe");
 			}
 		} catch (MalformedURLException e) {
 			logger.error("La URL del archivo no es valida: ", e);
@@ -203,7 +211,7 @@ public class TicketServiceImpl implements TicketService {
 	@Override
 	public void closeOfDay(Establecimiento establecimiento, String fechaCierre, List<Ticket> ventas, List<Ticket> devoluciones) {
 		String urlTicketFiles = establecimiento.getRutaRepositorio().getRutaRepositorio() 
-				+ establecimiento.getRutaRepositorio().getRutaRepoIn() + fechaCierre + File.separator; 
+				+ establecimiento.getRutaRepositorio().getRutaRepoIn() + fechaCierre + "/"; 
 		String regex = "^\\d+_\\d+_\\d+_\\d{14}\\.xml$";
 		Pattern pattern = Pattern.compile(regex);
 		Matcher matcher = null;
