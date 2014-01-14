@@ -55,7 +55,7 @@
 	}	
 	$(function() {
 		$.prettyLoader();
-		autoClosingAlert("div.alert", 3500);
+		autoClosingAlert("div.auto-close", 3500);
 	});
 </script>
 

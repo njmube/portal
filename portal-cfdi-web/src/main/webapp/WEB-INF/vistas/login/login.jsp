@@ -15,7 +15,7 @@
 			<hr>
 			<c:if test="${error}">
 				<div class="col-md-offset-3 col-md-6">
-					<div class="alert alert-danger alert-dismissable">
+					<div class="alert alert-danger alert-dismissable auto-close">
 						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 						<spring:message code="messages.login.failed"/>
 						<br><br> <strong><spring:message code="messages.login.cause" />:</strong> 
