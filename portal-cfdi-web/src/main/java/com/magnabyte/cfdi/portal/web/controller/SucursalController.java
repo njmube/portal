@@ -148,7 +148,13 @@ public class SucursalController {
 			model.put("messageError", ex.getMessage());
 			return "menu/menu";
 		}
-		
-		return "redirect:/menuPage";
+		return "redirect:/successCierre";
+	}
+	
+	@RequestMapping("/successCierre")
+	public String successCierre(ModelMap model) {
+		model.put("success", true);
+		model.put("messageSuccess", "La factura se ha generado exitosamente.");
+		return "menu/menu";
 	}
 }
