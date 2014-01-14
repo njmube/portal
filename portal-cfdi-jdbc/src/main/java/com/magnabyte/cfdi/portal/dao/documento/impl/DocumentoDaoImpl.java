@@ -107,20 +107,20 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	}
 	
 	@Override
-	public void insertAcusePendiente(Documento documento) {
+	public void insertDocumentoPendiente(Documento documento, EstadoDocumentoPendiente estadoDocumento) {
 		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(getJdbcTemplate());
 		simpleJdbcInsert.setTableName(DocumentoSql.TABLE_DOC_PEND);
-		simpleJdbcInsert.execute(getParametersAcusePendiente(documento));
+		simpleJdbcInsert.execute(getParametersDocumentoPendiente(documento, estadoDocumento));
 	}
 
-	private MapSqlParameterSource getParametersAcusePendiente(Documento documento) {
+	private MapSqlParameterSource getParametersDocumentoPendiente(Documento documento, EstadoDocumentoPendiente estadoDocumento) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue(DocumentoSql.ID_DOCUMENTO, documento.getId());
 		params.addValue(DocumentoSql.SERIE, documento.getComprobante().getSerie());
 		params.addValue(DocumentoSql.FOLIO, documento.getComprobante().getFolio());
 		params.addValue(DocumentoSql.ID_TIPO_DOCUMENTO, documento.getTipoDocumento().getId());
 		params.addValue(DocumentoSql.ID_ESTABLECIMIENTO, documento.getEstablecimiento().getId());
-		params.addValue(DocumentoSql.ID_ESTADO_DOC, EstadoDocumentoPendiente.ACUSE_PENDIENTE.getId());
+		params.addValue(DocumentoSql.ID_ESTADO_DOC, estadoDocumento.getId());
 		return params;
 	}
 	

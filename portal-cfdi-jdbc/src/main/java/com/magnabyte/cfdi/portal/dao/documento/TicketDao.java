@@ -12,7 +12,7 @@ public interface TicketDao {
 
 	void save(DocumentoSucursal documento);
 
-	void updateEstadoFacturado(DocumentoSucursal documento);
+	void updateEstado(DocumentoSucursal documento);
 
 	Ticket readByStatus(Ticket ticket, Establecimiento establecimiento, TipoEstadoTicket estadoTicket);
 	

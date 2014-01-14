@@ -22,10 +22,12 @@ import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
+import com.magnabyte.cfdi.portal.model.documento.EstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
+import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
 import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.service.certificado.CertificadoService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
@@ -64,24 +66,58 @@ public class CfdiServiceImpl implements CfdiService {
 	private String rfcVentasMostrador;
 	
 	@Override
-	public void generarDocumento(Documento documento, HttpServletRequest request, boolean isVentasMostrador) {
+	public void generarDocumento(Documento documento, HttpServletRequest request) {
 		logger.debug("cfdiService...");
 		CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
 		documentoService.guardarDocumento(documento);
-		if(isVentasMostrador) {
+		if(documento.isVentasMostrador()) {
 			ticketService.saveTicketVentasMostrador(documento);
 		}
 		if (documentoService.sellarComprobante(documento.getComprobante(), certificado)) {
 			if (documentoWebService.timbrarDocumento(documento, request)) {
 				documentoService.insertDocumentoCfdi(documento);
-				documentoService.insertAcusePendiente(documento);
+				documentoService.insertDocumentoPendiente(documento, EstadoDocumentoPendiente.ACUSE_PENDIENTE);
 				if(documento instanceof DocumentoSucursal) {
 					ticketService.updateEstadoFacturado((DocumentoSucursal) documento);
+					if (((DocumentoSucursal) documento).isRequiereNotaCredito()) {
+						generarDocumentoNcr(documento, request);
+					}
 				}
 			}
-		}	
+		}
+		
 	}
 	
+	private void generarDocumentoNcr(Documento documento,
+			HttpServletRequest request) {
+		DocumentoSucursal documentoNcr = new DocumentoSucursal();
+		documentoNcr.setTicket(((DocumentoSucursal) documento).getTicket());
+		documentoNcr.getTicket().setTipoEstadoTicket(TipoEstadoTicket.GUARDADO_NCR);
+		
+		Cliente cliente = emisorService.readClienteVentasMostrador(documento.getEstablecimiento());
+		cliente.setRfc(rfcVentasMostrador);
+		int domicilioFiscal = cliente.getDomicilios().get(0).getId();
+		Comprobante comprobante = documentoService.obtenerComprobantePor(cliente, documentoNcr.getTicket(), 
+				domicilioFiscal, documento.getEstablecimiento(), TipoDocumento.NOTA_CREDITO);
+		
+		documentoNcr.setCliente(cliente);
+		documentoNcr.setComprobante(comprobante);
+		documentoNcr.setEstablecimiento(documento.getEstablecimiento());
+		documentoNcr.setTipoDocumento(TipoDocumento.NOTA_CREDITO);
+		documentoNcr.setRequiereNotaCredito(((DocumentoSucursal) documento).isRequiereNotaCredito());
+		CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
+		documentoService.guardarDocumento(documentoNcr);
+		if (documentoService.sellarComprobante(documentoNcr.getComprobante(), certificado)) {
+			if (documentoWebService.timbrarDocumento(documentoNcr, request)) {
+				documentoService.insertDocumentoCfdi(documentoNcr);
+				documentoService.insertDocumentoPendiente(documentoNcr, EstadoDocumentoPendiente.ACUSE_PENDIENTE);
+				if(documentoNcr instanceof DocumentoSucursal) {
+					ticketService.updateEstadoNcr((DocumentoSucursal) documentoNcr);
+				}
+			}
+		}
+	}
+
 	@Transactional
 	@Override
 	public void closeOfDay(String fechaCierre, Establecimiento establecimiento, HttpServletRequest request) {
@@ -112,15 +148,16 @@ public class CfdiServiceImpl implements CfdiService {
 			Cliente cliente = emisorService.readClienteVentasMostrador(establecimiento);
 			cliente.setRfc(rfcVentasMostrador);
 			int domicilioFiscal = cliente.getDomicilios().get(0).getId();
-			Comprobante comprobante = documentoService.obtenerComprobantePor(cliente, ticketVentasMostrador, domicilioFiscal, establecimiento);
+			Comprobante comprobante = documentoService.obtenerComprobantePor(cliente, ticketVentasMostrador, domicilioFiscal, establecimiento, TipoDocumento.FACTURA);
 			Documento documento = new Documento();
 			documento.setEstablecimiento(establecimiento);
 			documento.setCliente(cliente);
 			documento.setComprobante(comprobante);
 			documento.setTipoDocumento(TipoDocumento.FACTURA);
 			documento.setVentas(ventas);
+			documento.setVentasMostrador(true);
 			
-			generarDocumento(documento, request, true);
+			generarDocumento(documento, request);
 			
 		} else {
 			logger.error("El cierre del dia actual es posible realizarlo hasta despues del cierre de la tienda");

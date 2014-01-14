@@ -73,8 +73,8 @@ public class TicketDaoImpl extends GenericJdbcDao
 	}
 	
 	@Override
-	public void updateEstadoFacturado(DocumentoSucursal documento) {
-		getJdbcTemplate().update(TicketSql.UPDATE_FACTURADO, 
+	public void updateEstado(DocumentoSucursal documento) {
+		getJdbcTemplate().update(TicketSql.UPDATE_STATUS, 
 				documento.getTicket().getTipoEstadoTicket().getId(), documento.getTicket().getId());
 	}
 	

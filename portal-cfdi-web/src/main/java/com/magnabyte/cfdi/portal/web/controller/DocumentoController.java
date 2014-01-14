@@ -65,7 +65,7 @@ public class DocumentoController {
 			ModelMap model, HttpServletRequest request) {
 		logger.debug("generando documento");
 
-		cfdiService.generarDocumento(documento, request, false);
+		cfdiService.generarDocumento(documento, request);
 		model.put("documento", documento);
 		
 		if (documento instanceof DocumentoPortal) {

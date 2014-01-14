@@ -4,6 +4,7 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 
 public class DocumentoSucursal extends Documento {
 	private Ticket ticket;
+	private boolean requiereNotaCredito;
 
 	public Ticket getTicket() {
 		return ticket;
@@ -11,6 +12,14 @@ public class DocumentoSucursal extends Documento {
 
 	public void setTicket(Ticket ticket) {
 		this.ticket = ticket;
+	}
+	
+	public boolean isRequiereNotaCredito() {
+		return requiereNotaCredito;
+	}
+
+	public void setRequiereNotaCredito(boolean requiereNotaCredito) {
+		this.requiereNotaCredito = requiereNotaCredito;
 	}
 
 	@Override

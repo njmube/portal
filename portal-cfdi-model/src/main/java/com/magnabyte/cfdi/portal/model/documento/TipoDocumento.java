@@ -5,10 +5,11 @@ import java.util.Map;
 
 public enum TipoDocumento {
 	
-	FACTURA(1, "FACTURA"), NOTA_CREDITO(2, "NOTA DE CRÉDITO");
+	FACTURA(1, "FACTURA", "ingreso"), NOTA_CREDITO(2, "NOTA DE CRÉDITO", "egreso");
 	
 	private int id;
 	private String nombre;
+	private String nombreComprobante;
 	private static Map<Integer, TipoDocumento> idToTipoDocumentoMap;
 
 	static {
@@ -18,9 +19,10 @@ public enum TipoDocumento {
 		}
 	}
 	
-	private TipoDocumento(int id, String nombre) {
+	private TipoDocumento(int id, String nombre, String nombreComprobante) {
 		this.id = id;
 		this.nombre = nombre;
+		this.nombreComprobante = nombreComprobante;
 	}
 
 	public int getId() {
@@ -39,6 +41,14 @@ public enum TipoDocumento {
 		this.nombre = nombre;
 	}
 	
+	public String getNombreComprobante() {
+		return nombreComprobante;
+	}
+
+	public void setNombreComprobante(String nombreComprobante) {
+		this.nombreComprobante = nombreComprobante;
+	}
+
 	public static TipoDocumento getById(int id) {
 		return idToTipoDocumentoMap.get(id);
 	}
