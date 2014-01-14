@@ -8,16 +8,19 @@ public class UsuarioSql extends GenericSql {
 	public static final String TABLE_NAME = "t_usuario";
 	
 	public static final String ID_USUARIO = "id_usuario";
+	public static final String ID_STATUS = "id_estatus";
 	public static final String USUARIO = "usuario";
 	public static final String PASSWORD = "password";
 	
 	public static final String GET_BY_ESTABLECIMIENTO;
+
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
 		
 		qryBuilder.append(SELECT).append(EOL).append(TAB);
 		qryBuilder.append(ID_USUARIO).append(EOL_).append(TAB);
+		qryBuilder.append(ID_STATUS).append(EOL_).append(TAB);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(USUARIO);
 		qryBuilder.append(PARENTESIS_FIN).append(AS).append(USUARIO).append(EOL_).append(TAB);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(PASSWORD);

@@ -99,6 +99,8 @@
 									<c:url var="catalogousuarios" value="/catalogoUsuarios"></c:url>
 									<li><a href="#">Usuarios</a></li>
 									<li><a href="${catalogoEstablecimiento}">Establecimiento</a></li>
+									<li><a href="#"><span class="glyphicon "></span>Usuarios</a></li>
+									<li><a href="${catalogoEstablecimiento}"><span class="glyphicon "></span> Establecimiento</a></li>
 								</ul>
 							</sec:authorize></li>
 					</ul>

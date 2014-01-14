@@ -11,6 +11,7 @@ import com.magnabyte.cfdi.portal.dao.commons.UsuarioDao;
 import com.magnabyte.cfdi.portal.dao.commons.sql.UsuarioSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
 import com.magnabyte.cfdi.portal.model.commons.Usuario;
+import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusUsuario;
 
 @Repository("usuarioDao")
 public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
@@ -32,6 +33,7 @@ public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 			usuario.setUsuario(rs.getString(UsuarioSql.USUARIO));
 			usuario.setPassword(rs.getString(UsuarioSql.PASSWORD));
 			usuario.setId(rs.getInt(EstablecimientoSql.ID_ESTABLECIMIENTO));
+			usuario.setEstatus(EstatusUsuario.getById(rs.getInt(UsuarioSql.ID_STATUS)));
 			
 			return usuario;
 		}
