@@ -57,7 +57,7 @@ public class TicketDaoImpl extends GenericJdbcDao
 				ps.setInt(1, Integer.parseInt(documento.getVentas().get(i).getTransaccion().getTransaccionHeader().getIdTicket()));
 				ps.setInt(2, documento.getEstablecimiento().getId());
 				ps.setInt(3, Integer.parseInt(documento.getVentas().get(i).getTransaccion().getTransaccionHeader().getIdCaja()));
-				//FIXME
+				//FIXME corregir fecha de generacion de factura vm
 				ps.setDate(4, new java.sql.Date(new Date().getTime()));
 				ps.setInt(5, TipoEstadoTicket.FACTURADO_MOSTRADOR.getId());
 				ps.setInt(6, documento.getId());
@@ -73,8 +73,8 @@ public class TicketDaoImpl extends GenericJdbcDao
 	}
 	
 	@Override
-	public void updateEstadoFacturado(DocumentoSucursal documento) {
-		getJdbcTemplate().update(TicketSql.UPDATE_FACTURADO, 
+	public void updateEstado(DocumentoSucursal documento) {
+		getJdbcTemplate().update(TicketSql.UPDATE_STATUS, 
 				documento.getTicket().getTipoEstadoTicket().getId(), documento.getTicket().getId());
 	}
 	
@@ -144,7 +144,7 @@ public class TicketDaoImpl extends GenericJdbcDao
 		params.addValue(DocumentoSql.ID_DOCUMENTO, documento.getId());
 		params.addValue(EstablecimientoSql.ID_ESTABLECIMIENTO, documento.getEstablecimiento().getId());
 		params.addValue(TicketSql.ID_STATUS, documento.getTicket().getTipoEstadoTicket().getId());
-		//FIXME
+		//FIXME Corregir fecha de guardado de ticket
 		params.addValue(TicketSql.FECHA, new Date());
 		params.addValue(TicketSql.NO_CAJA, documento.getTicket().getTransaccion().getTransaccionHeader().getIdCaja());
 		params.addValue(TicketSql.NO_TICKET, documento.getTicket().getTransaccion().getTransaccionHeader().getIdTicket());

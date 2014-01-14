@@ -94,7 +94,9 @@ public class TicketServiceImpl implements TicketService {
 	@Override
 	public void save(DocumentoSucursal documento) {
 		if(documento.getTicket() != null) {
-			documento.getTicket().setTipoEstadoTicket(TipoEstadoTicket.GUARDADO);
+			if (!documento.isRequiereNotaCredito()) {
+				documento.getTicket().setTipoEstadoTicket(TipoEstadoTicket.GUARDADO);
+			}
 			ticketDao.save(documento);
 		} else {
 			logger.debug("El Ticket no puede ser nulo.");
@@ -138,7 +140,19 @@ public class TicketServiceImpl implements TicketService {
 	public void updateEstadoFacturado(DocumentoSucursal documento) {
 		if(documento.getTicket() != null) {
 			documento.getTicket().setTipoEstadoTicket(TipoEstadoTicket.FACTURADO);
-			ticketDao.updateEstadoFacturado(documento);
+			ticketDao.updateEstado(documento);
+		} else {
+			logger.debug("El Ticket no puede ser nulo.");
+			throw new PortalException("El Ticket no puede ser nulo.");
+		}
+	}
+	
+	@Transactional
+	@Override
+	public void updateEstadoNcr(DocumentoSucursal documento) {
+		if(documento.getTicket() != null) {
+			documento.getTicket().setTipoEstadoTicket(TipoEstadoTicket.NCR_GENERADA);
+			ticketDao.updateEstado(documento);
 		} else {
 			logger.debug("El Ticket no puede ser nulo.");
 			throw new PortalException("El Ticket no puede ser nulo.");
@@ -230,6 +244,7 @@ public class TicketServiceImpl implements TicketService {
 				}
 				logger.debug("tickets size {}", archivosTicketsDelDia.size());
 				
+				//FIXME Corregir lectura de tickets facturados
 //				List<String> archivosFacturados = ticketDao.readAllByDate(
 //						FechasUtils.specificStringFormatDate(fechaCierre, "yyyyMMdd", "yyyy-MM-dd"));
 				

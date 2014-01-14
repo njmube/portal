@@ -65,6 +65,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			response = wsEmisionTimbrado.emitirTimbrar(userWs, passwordWs, obtenerIdServicio(userWs, passwordWs), 
 				documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
 		} catch(Exception ex) {
+			//FIXME tratar error de web service
 			logger.debug("Ocurrío un error al realizar la conexión", ex);
 			throw new PortalException("Ocurrío un error al realizar la conexión", ex);
 		}
@@ -84,7 +85,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			if (documento instanceof DocumentoCorporativo) {
 				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
 			}
-			//FIXME
+			//FIXME cambiar logica de guardado de xml y pdf
 			sambaService.writeProcessedCfdiXmlFile(response.getXML(), documento);
 			sambaService.writePdfFile(documento, request);
 			return true;

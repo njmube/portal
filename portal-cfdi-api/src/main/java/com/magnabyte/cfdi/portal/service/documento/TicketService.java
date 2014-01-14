@@ -34,4 +34,6 @@ public interface TicketService {
 
 	boolean isTicketProcesado(String archivoOrigen);
 
+	void updateEstadoNcr(DocumentoSucursal documento);
+
 }

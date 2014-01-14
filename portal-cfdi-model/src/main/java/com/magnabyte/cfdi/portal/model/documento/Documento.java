@@ -28,6 +28,7 @@ public class Documento implements Serializable {
 	private String nombre;
 	private List<Ticket> ventas;
 	private byte[] xmlCfdi;
+	private boolean ventasMostrador;
 
 	public Integer getId() {
 		return id;
@@ -115,6 +116,14 @@ public class Documento implements Serializable {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public boolean isVentasMostrador() {
+		return ventasMostrador;
+	}
+
+	public void setVentasMostrador(boolean ventasMostrador) {
+		this.ventasMostrador = ventasMostrador;
 	}
 
 	@Override

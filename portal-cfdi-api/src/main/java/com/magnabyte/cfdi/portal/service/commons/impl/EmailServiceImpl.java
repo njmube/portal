@@ -96,6 +96,6 @@ public class EmailServiceImpl implements EmailService {
 	@Override
 	public void sendMailWithEngine(String message, String subject,
 			String template, Map<String, String> model, String... recipients){
-		// TODO Auto-generated method stub
+		throw new PortalException("Envío de mail con motor no implementado");
 	}
 }

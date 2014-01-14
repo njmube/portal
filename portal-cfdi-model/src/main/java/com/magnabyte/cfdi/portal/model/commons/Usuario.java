@@ -14,7 +14,7 @@ public class Usuario {
 	/**
 	 * Identificador unico de usuario
 	 */
-	private int id;
+	private Integer id;
 	
 	/**
 	 * Nombre de usuario
@@ -40,7 +40,7 @@ public class Usuario {
 	 * Obtiene el id de usuario
 	 * @return id
 	 */
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -48,7 +48,7 @@ public class Usuario {
 	 * Asigna el id de usuario
 	 * @param id
 	 */
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
