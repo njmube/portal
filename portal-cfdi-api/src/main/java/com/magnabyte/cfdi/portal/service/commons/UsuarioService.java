@@ -11,4 +11,6 @@ public interface UsuarioService {
 	List<Usuario> getAllUsuarios();
 
 	void update(Usuario usuario);
+
+	void save(Usuario usuario);
 }
