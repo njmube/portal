@@ -29,20 +29,16 @@
 
 			<c:if test="${error}">
 				<div class="col-md-offset-3 col-md-6 alert alert-danger alert-dismissable alert-fixed auto-close">
-<!-- 					<div class=""> -->
-						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-						<spring:message code="messages.error.autorizacion.cierre"/>
-						<br><br> <strong>${messageError}</strong> 
-<!-- 					</div> -->
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					<spring:message code="messages.error.autorizacion.cierre"/>
+					<br><br> <strong>${messageError}</strong> 
 				</div>
 			</c:if>
 			<c:if test="${success}">
 				<div class="col-md-offset-3 col-md-6 alert alert-success alert-dismissable alert-fixed">
-<!-- 					<div class=""> -->
-						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-						<spring:message code="messages.success.autorizacion.cierre"/>
-						<br><br> <strong>${messageSuccess}</strong> 
-<!-- 					</div> -->
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					<spring:message code="messages.success.autorizacion.cierre"/>
+					<br><br> <strong>${messageSuccess}</strong> 
 				</div>
 			</c:if>
 			<div class="well col-md-6 col-md-offset-3 text-center">

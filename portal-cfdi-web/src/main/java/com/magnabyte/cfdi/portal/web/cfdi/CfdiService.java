@@ -9,6 +9,6 @@ public interface CfdiService {
 	
 	void generarDocumento(Documento documento, HttpServletRequest request, boolean isVentasMostrador);
 
-	void closeOfDay(Establecimiento establecimiento, HttpServletRequest request);
+	void closeOfDay(String fechaCierre, Establecimiento establecimiento, HttpServletRequest request);
 	
 }

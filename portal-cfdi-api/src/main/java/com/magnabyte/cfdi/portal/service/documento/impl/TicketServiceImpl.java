@@ -121,6 +121,10 @@ public class TicketServiceImpl implements TicketService {
 		if (ticketDB != null) {
 			return ticketDB;
 		}
+		ticketDB = ticketDao.readByStatus(ticket, establecimiento, TipoEstadoTicket.FACTURADO_MOSTRADOR);
+		if (ticketDB != null) {
+			return ticketDB;
+		}
 		return ticketDB;
 	}
 	

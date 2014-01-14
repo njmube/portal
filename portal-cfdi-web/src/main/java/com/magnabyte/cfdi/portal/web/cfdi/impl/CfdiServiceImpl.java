@@ -80,15 +80,19 @@ public class CfdiServiceImpl implements CfdiService {
 	
 	@Transactional
 	@Override
-	public void closeOfDay(Establecimiento establecimiento, HttpServletRequest request) {
+	public void closeOfDay(String fechaCierre, Establecimiento establecimiento, HttpServletRequest request) {
 		List<Ticket> ventas = new ArrayList<Ticket>();
 		List<Ticket> devoluciones = new ArrayList<Ticket>();
 		Calendar calendar = Calendar.getInstance();
 		int hora = calendar.get(Calendar.HOUR_OF_DAY);
 		
 		if (hora > horaCierre) {
-			String fechaCierre = "20131217";
+			//FIXME
+			fechaCierre = "20131217";
 			ticketService.closeOfDay(establecimiento, fechaCierre, ventas, devoluciones);
+			
+			logger.debug("devoluciones {}", devoluciones.size());
+			//FIXME devoluciones
 			
 			Ticket ticketVentasMostrador = ticketService.crearTicketVentasMostrador(ventas, establecimiento);
 			Cliente cliente = emisorService.readClienteVentasMostrador(establecimiento);
@@ -103,7 +107,7 @@ public class CfdiServiceImpl implements CfdiService {
 			documento.setVentas(ventas);
 			
 			generarDocumento(documento, request, true);
-			logger.debug("devoluciones {}", devoluciones.size());
+			
 		} else {
 			logger.error("El cierre del dia actual es posible realizarlo hasta despues del cierre de la tienda");
 			throw new PortalException("El cierre del dia actual es posible realizarlo hasta despues del cierre de la tienda");

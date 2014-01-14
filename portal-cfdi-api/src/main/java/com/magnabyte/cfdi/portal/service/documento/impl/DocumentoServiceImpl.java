@@ -451,6 +451,10 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 						documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
 						documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO));
 						break;
+					case FACTURADO_MOSTRADOR:
+						logger.debug("El ticket ya fue facturado por ventas mostrador.");
+						
+						break;
 					case FACTURADO:
 						logger.debug("El ticket ya fue facturado.");
 						throw new PortalException("El ticket ya fue facturado con anterioridad.");

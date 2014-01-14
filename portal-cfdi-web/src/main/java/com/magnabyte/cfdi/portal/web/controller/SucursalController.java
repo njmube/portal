@@ -142,7 +142,7 @@ public class SucursalController {
 		
 		try {
 			autCierreService.autorizar(usuario);
-			cfdiService.closeOfDay(establecimiento, request);
+			cfdiService.closeOfDay(fechaCierre, establecimiento, request);
 		} catch (PortalException ex) {
 			model.put("error", true);
 			model.put("messageError", ex.getMessage());
