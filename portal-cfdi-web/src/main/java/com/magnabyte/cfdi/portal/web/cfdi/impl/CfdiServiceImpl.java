@@ -87,7 +87,7 @@ public class CfdiServiceImpl implements CfdiService {
 		int hora = calendar.get(Calendar.HOUR_OF_DAY);
 		
 		if (hora > horaCierre) {
-			String fechaCierre = "20131207";
+			String fechaCierre = "20131217";
 			ticketService.closeOfDay(establecimiento, fechaCierre, ventas, devoluciones);
 			
 			Ticket ticketVentasMostrador = ticketService.crearTicketVentasMostrador(ventas, establecimiento);
