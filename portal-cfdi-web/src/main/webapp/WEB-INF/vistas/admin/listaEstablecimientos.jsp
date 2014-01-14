@@ -10,7 +10,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Formulario de alta establecimiento</title>
+<title>Catalogo Establecimientos</title>
 </head>
 <body>
 	<div class="container main-content">
@@ -38,7 +38,7 @@
 						<c:set var="clave" value="Clave <i class='fa fa-sort'></i>"/>
 						<display:table htmlId="documents" id="document" name="${establecimientos}" 
  							class="table table-hover table-striped table-condensed"
- 							requestURI="/facturaCorp"> 
+ 							requestURI="/catalogoEstablecimiento"> 
  							<display:column title="#" headerClass="text-primary">${document_rowNum}</display:column>
  							<display:column title="${nombre}" property="nombre" headerClass="text-primary"></display:column>
  							<display:column title="${clave}" property="clave" headerClass="text-primary"/>
@@ -47,6 +47,7 @@
  								<i class="fa fa-list-alt"></i></a>
  							</display:column>
  						</display:table>
+ 						
 					</div>
 				</div>
 				</div>
