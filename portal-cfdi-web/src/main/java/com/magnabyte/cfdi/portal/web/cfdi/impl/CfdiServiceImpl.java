@@ -2,7 +2,10 @@ package com.magnabyte.cfdi.portal.web.cfdi.impl;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,6 +26,7 @@ import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
+import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.service.certificado.CertificadoService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
@@ -82,17 +86,27 @@ public class CfdiServiceImpl implements CfdiService {
 	@Override
 	public void closeOfDay(String fechaCierre, Establecimiento establecimiento, HttpServletRequest request) {
 		List<Ticket> ventas = new ArrayList<Ticket>();
+		List<Ticket> ventasDevueltas = new ArrayList<Ticket>();
 		List<Ticket> devoluciones = new ArrayList<Ticket>();
 		Calendar calendar = Calendar.getInstance();
 		int hora = calendar.get(Calendar.HOUR_OF_DAY);
 		
 		if (hora > horaCierre) {
-			//FIXME
-			fechaCierre = "20131217";
-			ticketService.closeOfDay(establecimiento, fechaCierre, ventas, devoluciones);
+			
+			ticketService.closeOfDay(establecimiento, 
+					FechasUtils.specificStringFormatDate(fechaCierre, "dd-MM-yyyy", "yyyyMMdd"), 
+					ventas, devoluciones);
 			
 			logger.debug("devoluciones {}", devoluciones.size());
-			//FIXME devoluciones
+			
+			logger.debug("Antes " + ventas.size());
+			
+			prepararDocumentoNcr(devoluciones);
+			
+			filtraDevolucionesVentas(ventas, devoluciones, ventasDevueltas);
+			
+			logger.debug("Despues " + ventas.size());
+			logger.debug("ventasDevueltas " + ventasDevueltas.size());
 			
 			Ticket ticketVentasMostrador = ticketService.crearTicketVentasMostrador(ventas, establecimiento);
 			Cliente cliente = emisorService.readClienteVentasMostrador(establecimiento);
@@ -113,5 +127,67 @@ public class CfdiServiceImpl implements CfdiService {
 			throw new PortalException("El cierre del dia actual es posible realizarlo hasta despues del cierre de la tienda");
 		}
 	}
+	
+	private void prepararDocumentoNcr(List<Ticket> devoluciones) {
+		Set<String> archivosOrigenDevolucion = new HashSet<String>();
+		
+		for(Ticket devolucion : devoluciones) {
+			archivosOrigenDevolucion.add(devolucion.getTransaccion().
+					getPartidasDevolucion().get(0).getTicketFileOrigen());
+		}
+		logger.debug(archivosOrigenDevolucion.toString());
+		
+		for (Iterator<String> it = archivosOrigenDevolucion.iterator(); it.hasNext(); ){
+			if(ticketService.isTicketProcesado(it.next())){
+				
+			}
+		}
+	}
 
+	private void filtraDevolucionesVentas(List<Ticket> ventas,
+			List<Ticket> devoluciones, List<Ticket> ventasDevueltas) {
+	
+		Set<String> archivosOrigenDevolucion = new HashSet<String>();
+		
+		for(Ticket devolucion : devoluciones) {
+			archivosOrigenDevolucion.add(devolucion.getTransaccion().
+					getPartidasDevolucion().get(0).getTicketFileOrigen());
+		}
+		logger.debug(archivosOrigenDevolucion.toString());
+		
+		for(String archivoOrigen : archivosOrigenDevolucion) {
+			for(int i = 0; i < ventas.size(); i++) {
+				if(ventas.get(i).getNombreArchivo().equals(archivoOrigen)) {
+					ventasDevueltas.add(ventas.get(i));
+					ventas.remove(i);
+					break;
+				}
+			}				
+		}
+	}
+	
+//	public static void main(String[] args) {
+//
+//		    Set<String> set = new HashSet<String>();
+//		    set.add("Hello");
+//		    set.add("Hello1");
+//		    set.add("Hello2");
+//		    set.add("Hello3");
+//
+//		    for (Iterator<String> it = set.iterator(); it.hasNext(); ) {
+//		        String f = it.next();
+//		        if (f.equals("Hello")) {
+//		        	System.out.println("foo found");
+//		        	it.remove();
+//		        	set.remove(f);
+//		        }
+//		        if (f.equals("Hello1")) {
+//		        	System.out.println("foo found");
+//		        	it.remove();
+//		        	set.remove(f);
+//		        }
+//		    }
+//		    
+//		    System.out.println(set.toString());
+//	}
 }

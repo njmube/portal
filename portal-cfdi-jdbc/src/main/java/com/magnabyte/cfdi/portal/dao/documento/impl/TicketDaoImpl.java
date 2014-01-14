@@ -122,6 +122,12 @@ public class TicketDaoImpl extends GenericJdbcDao
 		}
 	}
 	
+	@Override
+	public int readProcesado(String archivoOrigen,
+			TipoEstadoTicket facturado, TipoEstadoTicket facturadoMostrador) {
+		return getJdbcTemplate().queryForObject(TicketSql.READ_PROCESADO, Integer.class, archivoOrigen, facturado, facturadoMostrador);
+	}
+	
 	private static final RowMapper<Ticket> MAPPER_TICKET = new RowMapper<Ticket>() {
 		
 		@Override

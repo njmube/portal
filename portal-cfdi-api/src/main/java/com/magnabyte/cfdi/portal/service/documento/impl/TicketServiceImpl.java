@@ -1,6 +1,5 @@
 package com.magnabyte.cfdi.portal.service.documento.impl;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
@@ -16,7 +15,6 @@ import java.util.regex.Pattern;
 import javax.xml.transform.stream.StreamSource;
 
 import jcifs.Config;
-import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
@@ -37,13 +35,14 @@ import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion;
-import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago.Pago;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago.Pago;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida.Articulo;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDescuento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.TransaccionHeader;
 import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
+import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
@@ -220,27 +219,30 @@ public class TicketServiceImpl implements TicketService {
 		Pattern pattern = Pattern.compile(regex);
 		Matcher matcher = null;
 		SmbFile dir = null;
-		List<String> archivosVentasDelDia = new ArrayList<String>();
+		List<String> archivosTicketsDelDia = new ArrayList<String>();
 		try {
 			dir = new SmbFile(urlTicketFiles);
 			if(dir.exists()) {
 				SmbFile[] files = dir.listFiles();
 				logger.debug("archivos {}", files.length);
 				for (SmbFile file : files) {
-					archivosVentasDelDia.add(file.getName());
+					archivosTicketsDelDia.add(file.getName());
 				}
-				logger.debug("ventas size {}", archivosVentasDelDia.size());
+				logger.debug("tickets size {}", archivosTicketsDelDia.size());
 				
-				//FIXME
-				List<String> archivosFacturados = ticketDao.readAllByDate("2014-01-11");
+//				List<String> archivosFacturados = ticketDao.readAllByDate(
+//						FechasUtils.specificStringFormatDate(fechaCierre, "yyyyMMdd", "yyyy-MM-dd"));
+				
+				List<String> archivosFacturados = ticketDao.readAllByDate(
+						FechasUtils.specificStringFormatDate("20140113", "yyyyMMdd", "yyyy-MM-dd"));
 				
 				logger.debug("facturados size {}", archivosFacturados.size());
 				
 				if (archivosFacturados != null) {
-					archivosVentasDelDia.removeAll(archivosFacturados);
+					archivosTicketsDelDia.removeAll(archivosFacturados);
 				}
 				
-				for(String file : archivosVentasDelDia) {
+				for(String file : archivosTicketsDelDia) {
 					matcher = pattern.matcher(file);
 					if (matcher.matches()) {
 						Ticket ticketXml = (Ticket) unmarshaller.unmarshal(new StreamSource(sambaService.getFileStream(urlTicketFiles, file)));
@@ -261,12 +263,18 @@ public class TicketServiceImpl implements TicketService {
 	
 	@Transactional(readOnly = true)
 	@Override
-	public boolean ticketProcesado(Ticket ticket, Establecimiento establecimiento) {
+	public boolean isTicketFacturado(Ticket ticket, Establecimiento establecimiento) {
 		Ticket ticketDB = ticketDao.readByStatus(ticket, establecimiento, TipoEstadoTicket.FACTURADO);
 		if (ticketDB != null) {
 			return true;
 		}
 		return false;
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public boolean isTicketProcesado(String archivoOrigen) {
+		return ticketDao.readProcesado(archivoOrigen, TipoEstadoTicket.FACTURADO, TipoEstadoTicket.FACTURADO_MOSTRADOR) > 0;
 	}
 	
 	@Transactional(readOnly = true)

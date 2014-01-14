@@ -74,7 +74,7 @@ public class PortalController {
 		establecimiento = establecimientoService.readByClave(establecimiento);
 		logger.debug("establecimiento {}", establecimiento);
 		if (ticketService.ticketExists(ticket, establecimiento)) {
-			if (!ticketService.ticketProcesado(ticket, establecimiento)) {
+			if (!ticketService.isTicketFacturado(ticket, establecimiento)) {
 				model.put("ticket", ticket);
 				model.put("establecimiento", establecimiento);
 				return "redirect:/portal/cfdi/buscaRfc";

@@ -8,6 +8,8 @@ import java.io.InputStream;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.context.ContextConfiguration;
@@ -20,6 +22,9 @@ import com.magnabyte.cfdi.portal.service.xml.impl.DocumentoXmlServiceImpl;
 @ContextConfiguration("classpath:/serviceApplicationContextTest.xml")
 public class DocumentoXmlServiceTest implements ResourceLoaderAware {
 
+	public static final Logger logger = 
+			LoggerFactory.getLogger(DocumentoXmlServiceTest.class);
+	
 	DocumentoXmlService documentoXmlService = new DocumentoXmlServiceImpl();
 	
 	ResourceLoader resourceLoader;

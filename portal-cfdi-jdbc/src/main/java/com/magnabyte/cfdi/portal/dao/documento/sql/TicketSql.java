@@ -20,6 +20,7 @@ public class TicketSql extends GenericSql {
 	public static final String READ_ID_DOC_BY_TICKET;
 	public static final String READ_FACTURADOS_DIA;
 	public static final String SAVE_TICKETS_VM;
+	public static final String READ_PROCESADO;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -66,5 +67,11 @@ public class TicketSql extends GenericSql {
 		qryBuilder.append("values (?, ?, ?, ?, ?, ?, ?)");
 		
 		SAVE_TICKETS_VM = qryBuilder.toString();
+		
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("select count(*) from t_ticket where nombre_archivo = ? and (id_status_ticket = ? or id_status_ticket = ?)");
+		
+		READ_PROCESADO = qryBuilder.toString();
 	}
 }

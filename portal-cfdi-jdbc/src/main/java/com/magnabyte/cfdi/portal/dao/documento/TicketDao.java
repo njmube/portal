@@ -26,4 +26,7 @@ public interface TicketDao {
 
 	void saveTicketVentasMostrador(Documento documento);
 
+	int readProcesado(String archivoOrigen, TipoEstadoTicket facturado,
+			TipoEstadoTicket facturadoMostrador);
+
 }

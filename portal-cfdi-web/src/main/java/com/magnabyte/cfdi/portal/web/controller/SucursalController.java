@@ -82,7 +82,7 @@ public class SucursalController {
 			return buscaTicketPage;
 		}
 		if (ticketService.ticketExists(ticket, establecimiento)) {
-			if (!ticketService.ticketProcesado(ticket, establecimiento)) {
+			if (!ticketService.isTicketFacturado(ticket, establecimiento)) {
 				model.put("ticket", ticket);
 				return "redirect:/buscaRfc";
 			} else {

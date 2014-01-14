@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum TipoEstadoTicket {
-	GUARDADO(1), FACTURADO_MOSTRADOR(2), FACTURADO(3);
+	GUARDADO(1), FACTURADO_MOSTRADOR(2), FACTURADO(3), VENTA_DEVUELTA(4);
 	
 	private int id;
 	

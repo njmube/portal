@@ -19,7 +19,7 @@ public interface TicketService {
 
 	Ticket read(Ticket ticket, Establecimiento establecimiento);
 
-	boolean ticketProcesado(Ticket ticket, Establecimiento establecimiento);
+	boolean isTicketFacturado(Ticket ticket, Establecimiento establecimiento);
 
 	List<String> readArticulosSinPrecio();
 
@@ -31,5 +31,7 @@ public interface TicketService {
 	Integer readIdDocFromTicketGuardado(DocumentoSucursal documento);
 
 	void saveTicketVentasMostrador(Documento documento);
+
+	boolean isTicketProcesado(String archivoOrigen);
 
 }
