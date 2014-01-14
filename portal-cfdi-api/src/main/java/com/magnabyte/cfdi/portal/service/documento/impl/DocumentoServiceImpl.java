@@ -294,7 +294,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			comprobante.setLugarExpedicion(comprobante.getEmisor().getExpedidoEn().getLocalidad());
 			
 			comprobante.setTipoDeComprobante(tipoDocumento.getNombreComprobante());
-			//FIXME
+			//FIXME corregir porperties de comprobante en duro
 			comprobante.setTipoCambio("1");
 			comprobante.setCondicionesDePago("PAGO DE CONTADO");
 			comprobante.setFormaDePago("PAGO EN UNA SOLA EXHIBICION");

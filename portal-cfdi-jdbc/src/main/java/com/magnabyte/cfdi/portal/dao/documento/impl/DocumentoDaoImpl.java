@@ -60,7 +60,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		if(documento instanceof DocumentoCorporativo){
 			params.addValue(DocumentoSql.FOLIO_SAP, ((DocumentoCorporativo) documento).getFolioSap());
 		}
-		//FIXME
+		//FIXME Corregir fecha de generacion del documento
 		params.addValue(DocumentoSql.FECHA_DOCUMENTO, new Date());
 		params.addValue(DocumentoSql.TOTAL_DESCUENTO, documento.getComprobante().getDescuento());
 		params.addValue(DocumentoSql.SUBTOTAL, documento.getComprobante().getSubTotal());
@@ -101,7 +101,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		params.addValue(DocumentoSql.CADENA, documento.getCadenaOriginal());
 		params.addValue(DocumentoSql.SELLO_CFDI, documento.getTimbreFiscalDigital().getSelloCFD());
 		params.addValue(DocumentoSql.UUID, documento.getTimbreFiscalDigital().getUUID());
-		//FIXME
+		//FIXME Corregirfecha de certificacion
 		params.addValue(DocumentoSql.FECHA_HORA, new Date());
 		return params;
 	}

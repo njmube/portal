@@ -244,6 +244,7 @@ public class TicketServiceImpl implements TicketService {
 				}
 				logger.debug("tickets size {}", archivosTicketsDelDia.size());
 				
+				//FIXME Corregir lectura de tickets facturados
 //				List<String> archivosFacturados = ticketDao.readAllByDate(
 //						FechasUtils.specificStringFormatDate(fechaCierre, "yyyyMMdd", "yyyy-MM-dd"));
 				
