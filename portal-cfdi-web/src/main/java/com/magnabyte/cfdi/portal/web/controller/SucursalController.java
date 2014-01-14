@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.google.gson.JsonObject;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.factory.ClienteFactory;
 import com.magnabyte.cfdi.portal.model.commons.Usuario;
@@ -128,7 +129,13 @@ public class SucursalController {
 	
 	@RequestMapping(value="/fechaCierre", method = RequestMethod.POST)
 	public @ResponseBody String fechaCierre(@ModelAttribute Establecimiento establecimiento) {
-		return establecimientoService.readFechaCierreById(establecimiento);
+
+		String fechaSiguienteCierre = establecimientoService.readFechaCierreById(establecimiento); 
+		
+		JsonObject json = new JsonObject();
+		json.addProperty("fecha", fechaSiguienteCierre);		
+		
+		return json.toString();
 	}
 	
 	@RequestMapping(value="/cierre", method = RequestMethod.POST)

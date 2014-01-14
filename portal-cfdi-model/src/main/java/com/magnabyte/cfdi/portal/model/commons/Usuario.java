@@ -1,5 +1,6 @@
 package com.magnabyte.cfdi.portal.model.commons;
 
+import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusUsuario;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 
 /**
@@ -29,6 +30,11 @@ public class Usuario {
 	 * Establecimiento al que pertenece el usuario
 	 */
 	private Establecimiento establecimiento;
+	
+	/**
+	 * Estatus del usuario
+	 */
+	private EstatusUsuario estatus;
 
 	/**
 	 * Obtiene el id de usuario
@@ -92,6 +98,22 @@ public class Usuario {
 	 */
 	public void setEstablecimiento(Establecimiento establecimiento) {
 		this.establecimiento = establecimiento;
+	}
+
+	/**
+	 * Obtiene el estatus de usuario
+	 * @return estatus
+	 */
+	public EstatusUsuario getEstatus() {
+		return estatus;
+	}
+
+	/**
+	 * Asigna el estatus de usuario
+	 * @param estatus
+	 */
+	public void setEstatus(EstatusUsuario estatus) {
+		this.estatus = estatus;
 	}
 	
 	
