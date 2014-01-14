@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.dao.commons.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -20,7 +21,24 @@ public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 	public Usuario getUsuarioByEstablecimiento(Usuario usuario) {
 		String qry = UsuarioSql.GET_BY_ESTABLECIMIENTO;
 		return getJdbcTemplate().queryForObject(qry, 
-				UASUARIO_MAPPER, usuario.getEstablecimiento().getId());
+				UASUARIO_MAPPER, usuario.getEstablecimiento().getId(), usuario.getUsuario());
+	}
+	
+	@Override
+	public List<Usuario> getAllUsuarios() {
+		return getJdbcTemplate().query(UsuarioSql.GET_ALL, UASUARIO_MAPPER);
+	}
+	
+	@Override
+	public void update(Usuario usuario) {
+		String qry = UsuarioSql.UPDATE_USUARIO;
+		
+		getJdbcTemplate().update(qry, new Object [] {
+			usuario.getUsuario(),
+			usuario.getPassword(),
+			usuario.getEstablecimiento().getId(),
+			usuario.getEstatus().getId()
+		});
 	}
 	
 	private static final RowMapper<Usuario> UASUARIO_MAPPER = new RowMapper<Usuario>() {

@@ -17,7 +17,7 @@ public class SqlGenericTest {
 
 	@Test
 	public void qryTest() {
-		String qryString = UsuarioSql.GET_BY_ESTABLECIMIENTO;
+		String qryString = UsuarioSql.GET_ALL;
 		logger.info(qryString);
 		Assert.assertNotNull(qryString);
 	}
