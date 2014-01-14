@@ -72,19 +72,17 @@
 				$("#cierre").click(function() {
 					$.ajax({
 						url: contextPath + "/fechaCierre?ajax=true",
-						type: "POST",								
+						type: "POST",
+						dataType: "json",
 						success : function(response) {
-							if(response != null) {
-								$("#fechaCierre").val(response);
-								$("#hdnfechaCierre").val(response);
+							if(response.fecha != null && response.fecha !== "" ) {
+								$("#fechaCierre").val(response.fecha);
 							} else  {								
 								$("#fechaCierre").val("");
-								$("#hdnfechaCierre").val("");
 							}
 						},
 						error : function() {
 							$("#fechaCierre").val("");
-							$("#hdnfechaCierre").val("");
 						}
 					});
 				});
@@ -119,7 +117,7 @@
 	        	<div class="form-group">
 	        		<label for="fechaCierre" class="col-lg-4 control-label">Fecha Cierre: </label>
 					<div class="col-lg-5">
-			        	<input type="text" id="fechaCierre" name="fechaCierre" class="form-control input-sm" 
+			        	<input type="text" id="fechaCierre" name="fechaCierre" class="form-control input-sm validate[required]" 
 			        		readonly="readonly"/>
 					</div>
 				</div>
