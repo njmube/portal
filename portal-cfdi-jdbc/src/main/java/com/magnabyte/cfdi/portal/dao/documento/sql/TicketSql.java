@@ -15,7 +15,7 @@ public class TicketSql extends GenericSql {
 
 	public static final String READ;
 	public static final String READ_BY_STATUS;
-	public static final String UPDATE_FACTURADO;
+	public static final String UPDATE_STATUS;
 	public static final String READ_ART_SIN_PRECIO;
 	public static final String READ_ID_DOC_BY_TICKET;
 	public static final String READ_FACTURADOS_DIA;
@@ -40,7 +40,7 @@ public class TicketSql extends GenericSql {
 		
 		qryBuilder.append("update t_ticket set id_status_ticket = ? where id_ticket = ?");
 		
-		UPDATE_FACTURADO = qryBuilder.toString();
+		UPDATE_STATUS = qryBuilder.toString();
 		
 		clearAndReuseStringBuilder(qryBuilder);
 		

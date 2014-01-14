@@ -71,6 +71,8 @@ import com.magnabyte.cfdi.portal.model.commons.Pais;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
+import com.magnabyte.cfdi.portal.model.documento.EstadoDocumentoPendiente;
+import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.factory.EstablecimientoFactory;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
@@ -78,6 +80,7 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDescuento;
+import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 import com.magnabyte.cfdi.portal.service.commons.EmailService;
@@ -273,7 +276,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Transactional(readOnly = true)
 	@Override
 	public Comprobante obtenerComprobantePor(Cliente cliente, Ticket ticket,
-		Integer idDomicilioFiscal, Establecimiento establecimiento) {
+		Integer idDomicilioFiscal, Establecimiento establecimiento, TipoDocumento tipoDocumento) {
 		Comprobante comprobante = new Comprobante();
 		
 		if (ticket != null && ticket.getTransaccion().getTransaccionHeader().getIdTicket() != null &&
@@ -290,7 +293,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			createFechaDocumento(comprobante);
 			comprobante.setLugarExpedicion(comprobante.getEmisor().getExpedidoEn().getLocalidad());
 			
-			comprobante.setTipoDeComprobante("ingreso");
+			comprobante.setTipoDeComprobante(tipoDocumento.getNombreComprobante());
+			//FIXME corregir porperties de comprobante en duro
 			comprobante.setTipoCambio("1");
 			comprobante.setCondicionesDePago("PAGO DE CONTADO");
 			comprobante.setFormaDePago("PAGO EN UNA SOLA EXHIBICION");
@@ -439,7 +443,13 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	public void guardarDocumento(Documento documento) {
 		if(documento != null) {
 			if(documento instanceof DocumentoSucursal) {
-				Ticket ticketDB = ticketService.read(((DocumentoSucursal) documento).getTicket(), documento.getEstablecimiento());
+				Ticket ticketDB = null;
+				if(((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket() != null 
+						&& ((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket().equals(TipoEstadoTicket.GUARDADO_NCR)) {
+					ticketDB = null;
+				} else {
+					ticketDB = ticketService.read(((DocumentoSucursal) documento).getTicket(), documento.getEstablecimiento());
+				}
 				if (ticketDB != null) {
 					switch (ticketDB.getTipoEstadoTicket()) {
 					case GUARDADO:
@@ -453,7 +463,10 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 						break;
 					case FACTURADO_MOSTRADOR:
 						logger.debug("El ticket ya fue facturado por ventas mostrador.");
-						
+						saveDocumentAndDetail(documento);
+						ticketService.save((DocumentoSucursal) documento);
+						asignarSerieYFolio(documento);
+						((DocumentoSucursal) documento).setRequiereNotaCredito(true);
 						break;
 					case FACTURADO:
 						logger.debug("El ticket ya fue facturado.");
@@ -497,8 +510,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 
 	@Transactional
 	@Override
-	public void insertAcusePendiente(Documento documento) {
-		documentoDao.insertAcusePendiente(documento);
+	public void insertDocumentoPendiente(Documento documento, EstadoDocumentoPendiente estadoDocumento) {
+		documentoDao.insertDocumentoPendiente(documento, estadoDocumento);
 	}
 	
 	@Transactional(readOnly = true)

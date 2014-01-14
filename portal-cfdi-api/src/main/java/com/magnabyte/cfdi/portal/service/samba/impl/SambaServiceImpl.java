@@ -242,7 +242,7 @@ public class SambaServiceImpl implements SambaService {
 		try {
 			reporteCompleto = JasperFillManager.fillReport(reporteCompilado, map, dataSource);
 			byte[] bytesReport = JasperExportManager.exportReportToPdf(reporteCompleto);
-			//FIXME
+			//FIXME cambiar guardado de samba por guardado local
 			SmbFile filePdf = new SmbFile(documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() 
 					+ documento.getEstablecimiento().getRutaRepositorio().getRutaRepoOut(), 
 					documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".pdf");

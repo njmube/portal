@@ -5,6 +5,7 @@ import java.util.List;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
+import com.magnabyte.cfdi.portal.model.documento.EstadoDocumentoPendiente;
 
 public interface DocumentoDao {
 	
@@ -14,7 +15,7 @@ public interface DocumentoDao {
 
 	void insertDocumentoCfdi(Documento documento);
 
-	void insertAcusePendiente(Documento documento);
+	void insertDocumentoPendiente(Documento documento, EstadoDocumentoPendiente estadoDocumento);
 
 	List<Documento> obtenerAcusesPendientes();
 	
