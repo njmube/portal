@@ -71,6 +71,6 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 			return fechaCierreSig;
 		}
 		
-		return "";
+		return null;
 	}
 }

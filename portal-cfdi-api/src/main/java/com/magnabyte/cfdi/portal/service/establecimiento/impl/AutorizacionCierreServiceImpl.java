@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.magnabyte.cfdi.portal.model.commons.Usuario;
+import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusUsuario;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.commons.UsuarioService;
 import com.magnabyte.cfdi.portal.service.establecimiento.AutorizacionCierreService;
@@ -25,17 +26,22 @@ public class AutorizacionCierreServiceImpl implements AutorizacionCierreService 
 		
 		Usuario usrBd = usuarioService.getUsuarioByEstablecimiento(usuario);
 		
-		if(usuario.getUsuario().equals(usrBd.getUsuario()) && 
-				!usuario.getPassword().equals(usrBd.getPassword())) {
-			throw new PortalException("El password proporcionado es incorrecto.");
-		} else if (!usuario.getUsuario().equals(usrBd.getUsuario()) && 
-				usuario.getPassword().equals(usrBd.getPassword())) {
-			throw new PortalException("El usuario proporcionado es incorrecto.");			
-		} else if (!usuario.getUsuario().equals(usrBd.getUsuario()) &&
-				!usuario.getPassword().equals(usrBd.getPassword())) {
-			throw new PortalException("El usuario y password proporcionado son incorrectos.");
+		if(usrBd.getEstatus().getId() != EstatusUsuario.INACTIVO.getId()) {
+			if(usuario.getUsuario().equals(usrBd.getUsuario()) && 
+					!usuario.getPassword().equals(usrBd.getPassword())) {
+				throw new PortalException("El password proporcionado es incorrecto.");
+			} else if (!usuario.getUsuario().equals(usrBd.getUsuario()) && 
+					usuario.getPassword().equals(usrBd.getPassword())) {
+				throw new PortalException("El usuario proporcionado es incorrecto.");			
+			} else if (!usuario.getUsuario().equals(usrBd.getUsuario()) &&
+					!usuario.getPassword().equals(usrBd.getPassword())) {
+				throw new PortalException("El usuario y password proporcionado son incorrectos.");
+			} else {
+				return true;
+			}
 		} else {
-			return true;
+			throw new PortalException("No se pudo autorizar el cierre,"
+					+ " el usuario esta inactivo");
 		}
 	}
 
