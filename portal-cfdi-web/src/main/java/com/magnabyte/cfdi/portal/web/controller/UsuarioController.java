@@ -1,5 +1,7 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +27,9 @@ public class UsuarioController {
 	@RequestMapping("/catalogoUsuarios")
 	public String catalogoEstablecimiento(ModelMap model) {
 		logger.debug("-- catalogoUsuarios");
-//		List<Usuario> usuarios = usuarioService.getUsuarioByEstablecimiento(usuario)
-//		model.put("listaUsuarios", usuarios);
-		return "admin/listaEstablecimientos";
+		List<Usuario> usuarios = usuarioService.getAllUsuarios();
+		model.put("usuarios", usuarios);
+		return "admin/listaUsuarios";
 	}
 	
 	@RequestMapping("/mostrarUsuario/{id}")
