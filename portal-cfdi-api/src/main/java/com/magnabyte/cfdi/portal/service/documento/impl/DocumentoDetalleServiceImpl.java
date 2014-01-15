@@ -1,5 +1,7 @@
 package com.magnabyte.cfdi.portal.service.documento.impl;
 
+import mx.gob.sat.cfd._3.Comprobante.Conceptos;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,10 @@ public class DocumentoDetalleServiceImpl  implements DocumentoDetalleService {
 			logger.error("La lista de Conceptos no puede ser nula.");
 			throw new PortalException("La lista de Conceptos no puede ser nula.");
 		}
+	}
+	
+	public Conceptos read(Documento documento) {
+		return documentoDetalleDao.read(documento);
 	}
 
 }

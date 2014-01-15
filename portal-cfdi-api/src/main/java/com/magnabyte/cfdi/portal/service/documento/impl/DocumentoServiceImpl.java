@@ -730,17 +730,23 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	public Documento read(Documento documento) {
 		Documento docBD = null;
 		Cliente clienteBD = null;
-		Comprobante comprobanteBD = null;
+		Conceptos conceptosBD = null;
+		Comprobante comprobante = new Comprobante();
+				
 		Establecimiento estabBD = null;
 		
 		if(documento.getId() != null) {
 			docBD = documentoDao.read(documento);
 			clienteBD = clienteService.read(docBD.getCliente());
 			estabBD = establecimientoService.readById(docBD.getEstablecimiento());
-//			comprobanteBD = documentoDetalleService.
+			conceptosBD = documentoDetalleService.read(documento);
+			
+			comprobante.setConceptos(conceptosBD);
+			
 			docBD.setCliente(clienteBD);
-//			docBD.setComprobante(comprobante);
+			docBD.setComprobante(comprobante);
 			docBD.setEstablecimiento(estabBD);
+			
 		}
 		return docBD;
 	}
