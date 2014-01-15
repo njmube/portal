@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
+import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
@@ -137,12 +138,12 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 					Establecimiento establecimiento = new Establecimiento();
 					Comprobante comprobante = new Comprobante();
 					
-					documento.setId(rs.getInt(1));
-					documento.setTipoDocumento(TipoDocumento.getById(rs.getInt("id_tipo_documento")));
-					comprobante.setSerie(rs.getString("serie"));
-					comprobante.setFolio(rs.getString("folio"));
-					establecimiento.setId(rs.getInt("id_establecimiento"));
-					timbreFiscalDigital.setUUID(rs.getString("uuid"));
+					documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
+					documento.setTipoDocumento(TipoDocumento.getById(rs.getInt(DocumentoSql.ID_TIPO_DOCUMENTO)));
+					comprobante.setSerie(rs.getString(DocumentoSql.SERIE));
+					comprobante.setFolio(rs.getString(DocumentoSql.FOLIO));
+					establecimiento.setId(rs.getInt(EstablecimientoSql.ID_ESTABLECIMIENTO));
+					timbreFiscalDigital.setUUID(rs.getString(DocumentoSql.UUID));
 					documento.setTimbreFiscalDigital(timbreFiscalDigital);
 					documento.setComprobante(comprobante);
 					documento.setEstablecimiento(establecimiento);
@@ -154,12 +155,38 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			return null;
 		}
 	}
+	
+	@Override
+	public List<Documento> obtenerDocumentosTimbrePendientes() {
+		try {
+			return getJdbcTemplate().query(DocumentoSql.READ_DOCUMENTOS_PENDIENTES, new RowMapper<Documento>() {
+				@Override
+				public Documento mapRow(ResultSet rs, int rowNum) throws SQLException {
+					Documento documento = new Documento();
+					Establecimiento establecimiento = new Establecimiento();
+					Comprobante comprobante = new Comprobante();
+					
+					documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
+					documento.setTipoDocumento(TipoDocumento.getById(rs.getInt(DocumentoSql.ID_TIPO_DOCUMENTO)));
+					comprobante.setSerie(rs.getString(DocumentoSql.SERIE));
+					comprobante.setFolio(rs.getString(DocumentoSql.FOLIO));
+					establecimiento.setId(rs.getInt(EstablecimientoSql.ID_ESTABLECIMIENTO));
+					documento.setComprobante(comprobante);
+					documento.setEstablecimiento(establecimiento);
+					return documento;
+				}
+			}, EstadoDocumentoPendiente.TIMBRE_PENDIENTE.getId());
+		} catch (EmptyResultDataAccessException ex) {
+			logger.debug("No hay acuses pendientes");
+			return null;
+		}
+	}
 
 	@Override
 	public List<Documento> getNombreDocumentoFacturado(List<Integer> idDocumentos) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("idDocumentos", idDocumentos);
-		return getNamedParameterJdbcTemplate().query(DocumentoSql.READ_DOCUMENTO, map, DOCUMENTO_MAPPER);
+		return getNamedParameterJdbcTemplate().query(DocumentoSql.READ_DOCUMENTOS, map, DOCUMENTO_MAPPER);
 	}
 	
 	private static final RowMapper<Documento> DOCUMENTO_MAPPER = new RowMapper<Documento>() {
@@ -193,5 +220,10 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	@Override
 	public List<Documento> getDocumentoByCliente(Cliente cliente) {		
 		return getJdbcTemplate().query(DocumentoSql.READ_DOCUMENTO_RUTA, DOCUMENTO_RUTA_MAPPER, cliente.getRfc());
+	}
+
+	@Override
+	public Documento read(Documento documento) {
+		return getJdbcTemplate().queryForObject(DocumentoSql.READ_DOCUMENTO_BY_ID, DOCUMENTO_MAPPER, documento.getId());
 	}
 }

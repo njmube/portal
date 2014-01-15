@@ -19,6 +19,7 @@ import com.certus.facturehoy.ws2.cfdi.WsServicioBO;
 import com.certus.facturehoy.ws2.cfdi.WsServicios;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
+import com.magnabyte.cfdi.portal.model.documento.EstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
@@ -62,14 +63,16 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		WsResponseBO response = new WsResponseBO();
 		
 		try {
-			response = wsEmisionTimbrado.emitirTimbrar(userWs, passwordWs, idServicio, 
-				documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
+//			response = wsEmisionTimbrado.emitirTimbrar(userWs, passwordWs, idServicio, 
+//				documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
+			if(documento != null) {
+				throw new Exception("Sin servicio web service.");
+			}
 		} catch(Exception ex) {
-			//FIXME tratar error de web service
+			documentoService.insertDocumentoPendiente(documento, EstadoDocumentoPendiente.TIMBRE_PENDIENTE);
 			logger.debug("Ocurrío un error al realizar la conexión", ex);
 			throw new PortalException("Ocurrío un error al realizar la conexión", ex);
 		}
-		
 		
 		if (!response.isIsError()) {
 			timbre = new TimbreFiscalDigital();
@@ -86,7 +89,9 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
 			}
 			sambaService.writeProcessedCfdiXmlFile(response.getXML(), documento);
-			sambaService.writePdfFile(documento, request);
+			if(request != null) {
+				sambaService.writePdfFile(documento, request);
+			}
 			return true;
 		} else {
 			logger.debug("El Web Service devolvió un error: {}", response.getMessage());
