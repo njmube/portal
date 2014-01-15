@@ -25,6 +25,12 @@ public class UsuarioServiceImpl implements UsuarioService {
 	
 	@Transactional(readOnly = true)
 	@Override
+	public Usuario read(Usuario usuario) {
+		return usuarioDao.read(usuario);
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
 	public List<Usuario> getAllUsuarios() {
 		return usuarioDao.getAllUsuarios();
 	}
