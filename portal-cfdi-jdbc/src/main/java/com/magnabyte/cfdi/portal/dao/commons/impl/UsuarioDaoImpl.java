@@ -54,6 +54,12 @@ public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 	}
 	
 	@Override
+	public Usuario read(Usuario usuario) {
+		return getJdbcTemplate().queryForObject(UsuarioSql.READ, 
+				UASUARIO_MAPPER, usuario.getId());
+	}
+	
+	@Override
 	public List<Usuario> getAllUsuarios() {
 		return getJdbcTemplate().query(UsuarioSql.GET_ALL, UASUARIO_MAPPER);
 	}
