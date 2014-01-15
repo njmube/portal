@@ -41,7 +41,7 @@ public class AutorizacionCierreServiceImpl implements AutorizacionCierreService 
 			}
 		} else {
 			throw new PortalException("No se pudo autorizar el cierre,"
-					+ " el usuario esta inactivo");
+					+ " el usuario esta inactivo.");
 		}
 	}
 

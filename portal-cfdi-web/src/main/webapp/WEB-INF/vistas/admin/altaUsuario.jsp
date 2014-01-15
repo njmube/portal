@@ -21,7 +21,7 @@
 <body>
 		<div class="container">
 		<div class="white-panel row">
-			<h2>Actualizar usuario</h2>
+			<h2>Alta de  usuario</h2>
 			<blockquote>
 				<p class="text-info">Ingresa los datos del usuario.</p>
 			</blockquote>

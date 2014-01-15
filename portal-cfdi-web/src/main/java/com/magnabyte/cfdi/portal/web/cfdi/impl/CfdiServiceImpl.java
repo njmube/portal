@@ -88,7 +88,6 @@ public class CfdiServiceImpl implements CfdiService {
 				}
 			}
 		}
-		
 	}
 	
 	private void generarDocumentoNcr(Documento documento,
