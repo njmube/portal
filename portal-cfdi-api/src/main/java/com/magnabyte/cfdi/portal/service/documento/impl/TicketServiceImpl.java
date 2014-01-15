@@ -94,7 +94,7 @@ public class TicketServiceImpl implements TicketService {
 	public void save(DocumentoSucursal documento) {
 		if(documento.getTicket() != null) {
 			if (!documento.isRequiereNotaCredito()) {
-				documento.getTicket().setTipoEstadoTicket(TipoEstadoTicket.GUARDADO);
+				documento.getTicket().setTipoEstadoTicket(TipoEstadoTicket.FACTURADO);
 			}
 			ticketDao.save(documento);
 		} else {
@@ -123,10 +123,10 @@ public class TicketServiceImpl implements TicketService {
 		if (ticketDB != null) {
 			return ticketDB;
 		}
-		ticketDB = ticketDao.readByStatus(ticket, establecimiento, TipoEstadoTicket.GUARDADO);
-		if (ticketDB != null) {
-			return ticketDB;
-		}
+//		ticketDB = ticketDao.readByStatus(ticket, establecimiento, TipoEstadoTicket.GUARDADO);
+//		if (ticketDB != null) {
+//			return ticketDB;
+//		}
 		ticketDB = ticketDao.readByStatus(ticket, establecimiento, TipoEstadoTicket.FACTURADO_MOSTRADOR);
 		if (ticketDB != null) {
 			return ticketDB;
@@ -134,11 +134,11 @@ public class TicketServiceImpl implements TicketService {
 		return ticketDB;
 	}
 	
-	@Transactional(readOnly = true)
-	@Override
-	public Integer readIdDocFromTicketGuardado(DocumentoSucursal documento) {
-		return ticketDao.readIdDocFromTicketGuardado(documento);
-	}
+//	@Transactional(readOnly = true)
+//	@Override
+//	public Integer readIdDocFromTicketGuardado(DocumentoSucursal documento) {
+//		return ticketDao.readIdDocFromTicketGuardado(documento);
+//	}
 	
 	@Transactional
 	@Override

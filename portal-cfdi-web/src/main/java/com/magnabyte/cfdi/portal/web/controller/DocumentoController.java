@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
@@ -79,6 +80,13 @@ public class DocumentoController {
 	public String imprimirFactura() {
 		logger.debug("Factura generada...");
 		return "documento/documentoSuccess";
+	}
+	
+	//FIXME verificar limpieza de session
+	@RequestMapping("/restartFlow")
+	public String restarFlow(SessionStatus status) {
+		logger.debug("reiniciando flujo");
+		return "redirect:/menu";
 	}
 
 	@RequestMapping(value = {"/reporte", "/portal/cfdi/reporte"})

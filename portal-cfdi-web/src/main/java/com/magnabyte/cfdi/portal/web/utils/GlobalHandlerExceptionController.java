@@ -3,6 +3,7 @@ package com.magnabyte.cfdi.portal.web.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.web.HttpSessionRequiredException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,10 +30,17 @@ public class GlobalHandlerExceptionController {
 		return mav;
 	}
 	
+	@ExceptionHandler(DataAccessException.class)
 	public ModelAndView handlerDataAccesException(DataAccessException ex) {
 		ModelAndView mav = new ModelAndView("error/dataError");
 		logger.error("Ocurrió un error: ", ex);
 		mav.addObject("errMsg", ex);
 		return mav;
+	}
+	
+	@ExceptionHandler(HttpSessionRequiredException.class)
+	public String restartFlow() {
+		logger.debug("redireccionando session incompleta");
+	    return "redirect:/menuPage";
 	}
 }

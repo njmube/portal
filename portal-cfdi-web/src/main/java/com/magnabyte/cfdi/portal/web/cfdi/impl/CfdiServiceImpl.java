@@ -227,29 +227,4 @@ public class CfdiServiceImpl implements CfdiService {
 			}				
 		}
 	}
-	
-//	public static void main(String[] args) {
-//
-//		    Set<String> set = new HashSet<String>();
-//		    set.add("Hello");
-//		    set.add("Hello1");
-//		    set.add("Hello2");
-//		    set.add("Hello3");
-//
-//		    for (Iterator<String> it = set.iterator(); it.hasNext(); ) {
-//		        String f = it.next();
-//		        if (f.equals("Hello")) {
-//		        	System.out.println("foo found");
-//		        	it.remove();
-//		        	set.remove(f);
-//		        }
-//		        if (f.equals("Hello1")) {
-//		        	System.out.println("foo found");
-//		        	it.remove();
-//		        	set.remove(f);
-//		        }
-//		    }
-//		    
-//		    System.out.println(set.toString());
-//	}
 }
