@@ -31,6 +31,20 @@ public class UsuarioServiceImpl implements UsuarioService {
 	
 	@Transactional
 	@Override
+	public void save(Usuario usuario) {
+		if(usuario != null) {
+			if(usuario.getId() != null) {
+				usuarioDao.save(usuario);		
+			} else {
+				throw new PortalException("El id de usuario no puede ser nulo");
+			}
+		} else {
+			throw new PortalException("El usuario no puede ser nulo");
+		}
+	}
+	
+	@Transactional
+	@Override
 	public void update(Usuario usuario) {
 		if(usuario != null) {
 			if(usuario.getId() != null) {
