@@ -34,7 +34,7 @@
 							<div class="form-group">
 								<label for="folioSap" class="col-lg-4 control-label"><small>Folio SAP: </small></label>
 								<div class="col-lg-8">
-									<input id="folioSap" class="form-control input-sm" value="${folioSap}" readonly="readonly"/>
+									<input id="folioSap" class="form-control input-sm" value="${documento.folioSap}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">

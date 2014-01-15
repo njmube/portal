@@ -591,6 +591,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 					boolean existeDom = false;
 					for(DomicilioCliente domicilioBD : domiciliosBD) {
 						if(clienteService.comparaDirecciones(dom, domicilioBD)) {
+							dom.setId(domicilioBD.getId());
 							existeDom = true;
 							break;
 						}					

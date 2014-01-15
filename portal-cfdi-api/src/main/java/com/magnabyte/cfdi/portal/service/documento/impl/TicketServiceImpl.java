@@ -347,6 +347,7 @@ public class TicketServiceImpl implements TicketService {
 		for (Ticket ticket : ventas) {
 			for (Partida partida : ticket.getTransaccion().getPartidas()) {
 				if (!documentoService.isArticuloSinPrecio(partida.getArticulo().getId())) {
+					//FIXME Categoria articulo sin precio pasar a property
 					if (partida.getArticulo().getTipoCategoria() != null && !partida.getArticulo().getTipoCategoria().equals("PROMOCIONES")) {
 						precioTotal = precioTotal.add(partida.getPrecioTotal());
 					}

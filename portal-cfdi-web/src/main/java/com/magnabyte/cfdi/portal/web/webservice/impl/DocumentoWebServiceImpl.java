@@ -63,11 +63,11 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		WsResponseBO response = new WsResponseBO();
 		
 		try {
-//			response = wsEmisionTimbrado.emitirTimbrar(userWs, passwordWs, idServicio, 
-//				documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
-			if(documento != null) {
-				throw new Exception("Sin servicio web service.");
-			}
+			response = wsEmisionTimbrado.emitirTimbrar(userWs, passwordWs, idServicio, 
+				documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
+//			if(documento != null) {
+//				throw new Exception("Sin servicio web service.");
+//			}
 		} catch(Exception ex) {
 			documentoService.insertDocumentoPendiente(documento, EstadoDocumentoPendiente.TIMBRE_PENDIENTE);
 			logger.debug("Ocurrío un error al realizar la conexión", ex);

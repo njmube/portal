@@ -13,6 +13,7 @@ public class DocumentoSql extends GenericSql {
 	public static final String ID_DOCUMENTO = "id_documento";
 	public static final String ID_ESTABLECIMIENTO = "id_establecimiento";
 	public static final String ID_CLIENTE = "id_cliente";
+	public static final String ID_DOMICILIO_CLIENTE = "id_domicilio_cliente";
 	public static final String ID_TICKET = "id_ticket";
 	public static final String FOLIO_SAP = "folio_sap";
 	public static final String FECHA_DOCUMENTO = "fecha_doc";
