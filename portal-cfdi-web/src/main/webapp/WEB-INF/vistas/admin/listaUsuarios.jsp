@@ -20,28 +20,29 @@
 			<hr>
 			<div class="text-center">
 				<p>
-				<a href="<c:url value="/altaEstablecimiento"/>" class="btn btn-warning" > Nuevo Usuario </a>
+				<a href="<c:url value="/altaUsuario"/>" class="btn btn-warning" > Nuevo Usuario </a>
 				</p>
 			</div>
 			<div class="col-md-offset-1 col-md-10">
 				<div class="panel panel-danger">
 					<div class="panel-heading">
 						<strong>Usuarios registrados</strong>
-						<a href="<c:url value="/catalogoEstablecimiento"/>" class="pull-right btn btn-primary btn-xs">
+						<a href="<c:url value="/catalogoUsuarios"/>" class="pull-right btn btn-primary btn-xs">
 							Recargar <span class="glyphicon glyphicon-refresh"></span>
 						</a>
 					</div>
 					
 					<div class="table-responsive">
-						<c:set var="nombre" value="Establecimiento <i class='fa fa-sort'></i>"/>
-						<c:set var="clave" value="Clave <i class='fa fa-sort'></i>"/>
+						<c:set var="usuario" value="Usuario <i class='fa fa-sort'></i>"/>
+						<c:set var="sucursal" value="Sucursal <i class='fa fa-sort'></i>"/>
+						<c:set var="estatus" value="Estatus <i class='fa fa-sort'></i>"/>
 						<display:table htmlId="documents" id="document" name="${usuarios}" 
  							class="table table-hover table-striped table-condensed"
- 							requestURI="/catalogoEstablecimiento"> 
+ 							requestURI="/catalogoUsuarios"> 
  							<display:column title="#" headerClass="text-primary">${document_rowNum}</display:column>
- 							<display:column title="${nombre}" property="nombre" headerClass="text-primary"></display:column>
- 							<display:column title="Sucursal" property="establecimiento.nombre" headerClass="text-primary"/>
- 							<display:column title="Status" property="status.nombre" headerClass="text-primary"/>
+ 							<display:column title="${usuario}" property="usuario" headerClass="text-primary"></display:column>
+ 							<display:column title="${sucursal }" property="establecimiento.nombre" headerClass="text-primary"/>
+ 							<display:column title="${estatus }" property="estatus.nombre" headerClass="text-primary"/>
  							<display:column title="Modificar" headerClass="text-primary text-center" class="text-center">
  								<a href="<c:url value="/mostrarUsuario/${document.id}"/>" class="btn btn-xs btn-success">
  								<i class="fa fa-list-alt"></i></a>
