@@ -105,8 +105,14 @@ public class TicketServiceImpl implements TicketService {
 	
 	@Transactional
 	@Override
-	public void saveTicketVentasMostrador(Documento documento) {
-		ticketDao.saveTicketVentasMostrador(documento);
+	public void guardarTicketsCierreDia(Documento documento) {
+		if (documento.getVentas() != null && !documento.getVentas().isEmpty()) {
+			ticketDao.saveTicketsCierreDia(documento, TipoEstadoTicket.FACTURADO_MOSTRADOR);
+		}
+		
+		if (documento.getDevoluciones() != null && !documento.getDevoluciones().isEmpty()) {
+			ticketDao.saveTicketsCierreDia(documento, TipoEstadoTicket.DEVUELTO);
+		}
 	}
 
 	@Transactional(readOnly = true)

@@ -30,7 +30,7 @@ public interface TicketService {
 
 	Integer readIdDocFromTicketGuardado(DocumentoSucursal documento);
 
-	void saveTicketVentasMostrador(Documento documento);
+	void guardarTicketsCierreDia(Documento documento);
 
 	boolean isTicketProcesado(String archivoOrigen);
 

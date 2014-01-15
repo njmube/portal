@@ -19,7 +19,7 @@ public class TicketSql extends GenericSql {
 	public static final String READ_ART_SIN_PRECIO;
 	public static final String READ_ID_DOC_BY_TICKET;
 	public static final String READ_FACTURADOS_DIA;
-	public static final String SAVE_TICKETS_VM;
+	public static final String SAVE_TICKETS_CIERRE;
 	public static final String READ_PROCESADO;
 	
 	static {
@@ -66,7 +66,7 @@ public class TicketSql extends GenericSql {
 		qryBuilder.append("insert into t_ticket (no_ticket, id_establecimiento, no_caja, fecha_ticket, id_status_ticket, id_documento, nombre_archivo) ");
 		qryBuilder.append("values (?, ?, ?, ?, ?, ?, ?)");
 		
-		SAVE_TICKETS_VM = qryBuilder.toString();
+		SAVE_TICKETS_CIERRE = qryBuilder.toString();
 		
 		clearAndReuseStringBuilder(qryBuilder);
 		

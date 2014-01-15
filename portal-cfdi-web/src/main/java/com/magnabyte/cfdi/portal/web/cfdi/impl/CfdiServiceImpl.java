@@ -74,7 +74,7 @@ public class CfdiServiceImpl implements CfdiService {
 		documento.setFechaFacturacion(new Date());
 		documentoService.guardarDocumento(documento);
 		if(documento.isVentasMostrador()) {
-			ticketService.saveTicketVentasMostrador(documento);
+			ticketService.guardarTicketsCierreDia(documento);
 		}
 		if (documentoService.sellarComprobante(documento.getComprobante(), certificado)) {
 			if (documentoWebService.timbrarDocumento(documento, request, idServicio)) {
@@ -125,7 +125,6 @@ public class CfdiServiceImpl implements CfdiService {
 	@Override
 	public void closeOfDay(String fechaCierre, Establecimiento establecimiento, HttpServletRequest request) {
 		List<Ticket> ventas = new ArrayList<Ticket>();
-		List<Ticket> ventasDevueltas = new ArrayList<Ticket>();
 		List<Ticket> devoluciones = new ArrayList<Ticket>();
 		Calendar calendar = Calendar.getInstance();
 		int hora = calendar.get(Calendar.HOUR_OF_DAY);
@@ -140,12 +139,11 @@ public class CfdiServiceImpl implements CfdiService {
 			
 			logger.debug("Antes " + ventas.size());
 			
-			prepararDocumentoNcr(devoluciones);
 			
-			filtraDevolucionesVentas(ventas, devoluciones, ventasDevueltas);
+			filtraDevolucionesVentas(ventas, devoluciones);
+			generarNotaCreditoDeTicketsFacturados(establecimiento, devoluciones);
 			
 			logger.debug("Despues " + ventas.size());
-			logger.debug("ventasDevueltas " + ventasDevueltas.size());
 			
 			Ticket ticketVentasMostrador = ticketService.crearTicketVentasMostrador(ventas, establecimiento);
 			Cliente cliente = emisorService.readClienteVentasMostrador(establecimiento);
@@ -158,6 +156,7 @@ public class CfdiServiceImpl implements CfdiService {
 			documento.setComprobante(comprobante);
 			documento.setTipoDocumento(TipoDocumento.FACTURA);
 			documento.setVentas(ventas);
+			documento.setDevoluciones(devoluciones);
 			documento.setVentasMostrador(true);
 			
 			generarDocumento(documento, request);
@@ -168,7 +167,7 @@ public class CfdiServiceImpl implements CfdiService {
 		}
 	}
 	
-	private void prepararDocumentoNcr(List<Ticket> devoluciones) {
+	private void generarNotaCreditoDeTicketsFacturados(Establecimiento establecimiento, List<Ticket> devoluciones) {
 		Set<String> archivosOrigenDevolucion = new HashSet<String>();
 		
 		for(Ticket devolucion : devoluciones) {
@@ -179,13 +178,13 @@ public class CfdiServiceImpl implements CfdiService {
 		
 		for (Iterator<String> it = archivosOrigenDevolucion.iterator(); it.hasNext(); ){
 			if(ticketService.isTicketProcesado(it.next())){
-				//FIXME Desarrollar generacion de ncr
+				//FIXME Desarrollar generacion de ncr armar documento
 			}
 		}
 	}
 
 	private void filtraDevolucionesVentas(List<Ticket> ventas,
-			List<Ticket> devoluciones, List<Ticket> ventasDevueltas) {
+			List<Ticket> devoluciones) {
 	
 		Set<String> archivosOrigenDevolucion = new HashSet<String>();
 		
@@ -198,7 +197,6 @@ public class CfdiServiceImpl implements CfdiService {
 		for(String archivoOrigen : archivosOrigenDevolucion) {
 			for(int i = 0; i < ventas.size(); i++) {
 				if(ventas.get(i).getNombreArchivo().equals(archivoOrigen)) {
-					ventasDevueltas.add(ventas.get(i));
 					ventas.remove(i);
 					break;
 				}

@@ -25,6 +25,7 @@ public class Documento implements Serializable {
 	private TipoDocumento tipoDocumento;
 	private String nombre;
 	private List<Ticket> ventas;
+	private List<Ticket> devoluciones;
 	private byte[] xmlCfdi;
 	private boolean ventasMostrador;
 
@@ -98,6 +99,14 @@ public class Documento implements Serializable {
 	
 	public void setVentas(List<Ticket> ventas) {
 		this.ventas = ventas;
+	}
+	
+	public List<Ticket> getDevoluciones() {
+		return devoluciones;
+	}
+	
+	public void setDevoluciones(List<Ticket> devoluciones) {
+		this.devoluciones = devoluciones;
 	}
 	
 	public byte[] getXmlCfdi() {

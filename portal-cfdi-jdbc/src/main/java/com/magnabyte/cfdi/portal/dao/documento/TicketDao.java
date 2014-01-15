@@ -24,7 +24,7 @@ public interface TicketDao {
 
 	List<String> readAllByDate(String fecha);
 
-	void saveTicketVentasMostrador(Documento documento);
+	void saveTicketsCierreDia(Documento documento, TipoEstadoTicket estadoTicket);
 
 	int readProcesado(String archivoOrigen, TipoEstadoTicket facturado,
 			TipoEstadoTicket facturadoMostrador);

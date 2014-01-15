@@ -49,8 +49,8 @@ public class TicketDaoImpl extends GenericJdbcDao
 	}
 	
 	@Override
-	public void saveTicketVentasMostrador(final Documento documento) {
-		int[] insertCounts = getJdbcTemplate().batchUpdate(TicketSql.SAVE_TICKETS_VM, new BatchPreparedStatementSetter() {
+	public void saveTicketsCierreDia(final Documento documento, final TipoEstadoTicket estadoTicket) {
+		int[] insertCounts = getJdbcTemplate().batchUpdate(TicketSql.SAVE_TICKETS_CIERRE, new BatchPreparedStatementSetter() {
 			
 			@Override
 			public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -60,7 +60,7 @@ public class TicketDaoImpl extends GenericJdbcDao
 				ps.setString(4, FechasUtils.specificStringFormatDate(documento.getVentas().get(i).
 						getTransaccion().getTransaccionHeader().getFechaHora(), 
 						"yyyyMMddHHmmss", "dd/MM/yyyy HH:mm:ss"));
-				ps.setInt(5, TipoEstadoTicket.FACTURADO_MOSTRADOR.getId());
+				ps.setInt(5, estadoTicket.getId());
 				ps.setInt(6, documento.getId());
 				ps.setString(7, documento.getVentas().get(i).getNombreArchivo());
 			}
