@@ -37,7 +37,7 @@ public class UsuarioController {
 		logger.debug("-- id "+id);
 		Usuario usu = new Usuario();
 		usu.setId(id);
-//		Usuario usuario = usuarioService.readById(usu);
+//		Usuario usuario = usuarioService.read(usu);
 		
 //		model.put("usuario", usuario);
 		

@@ -16,6 +16,7 @@ import com.magnabyte.cfdi.portal.dao.commons.sql.UsuarioSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
 import com.magnabyte.cfdi.portal.model.commons.Usuario;
 import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusUsuario;
+import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
 @Repository("usuarioDao")
@@ -81,11 +82,14 @@ public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 		@Override
 		public Usuario mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Usuario usuario = new Usuario();
+			Establecimiento estable = new Establecimiento();
 			
 			usuario.setId(rs.getInt(UsuarioSql.ID_USUARIO));
 			usuario.setUsuario(rs.getString(UsuarioSql.USUARIO));
 			usuario.setPassword(rs.getString(UsuarioSql.PASSWORD));
-			usuario.setId(rs.getInt(EstablecimientoSql.ID_ESTABLECIMIENTO));
+			estable.setId(rs.getInt(EstablecimientoSql.ID_ESTABLECIMIENTO));
+			estable.setNombre(rs.getString(EstablecimientoSql.NOM_ESTAB));
+			usuario.setEstablecimiento(estable);
 			usuario.setEstatus(EstatusUsuario.getById(rs.getInt(UsuarioSql.ID_STATUS)));
 			
 			return usuario;
