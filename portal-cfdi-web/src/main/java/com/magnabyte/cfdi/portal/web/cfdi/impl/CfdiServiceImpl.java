@@ -76,6 +76,13 @@ public class CfdiServiceImpl implements CfdiService {
 		if(documento.isVentasMostrador()) {
 			ticketService.saveTicketVentasMostrador(documento);
 		}
+		sellarYTimbrarComprobante(documento, request, idServicio, certificado);
+	}
+
+	@Override
+	public void sellarYTimbrarComprobante(Documento documento,
+			HttpServletRequest request, int idServicio,
+			CertificadoDigital certificado) {
 		if (documentoService.sellarComprobante(documento.getComprobante(), certificado)) {
 			if (documentoWebService.timbrarDocumento(documento, request, idServicio)) {
 				documentoService.insertDocumentoCfdi(documento);
@@ -86,6 +93,22 @@ public class CfdiServiceImpl implements CfdiService {
 						generarDocumentoNcr(documento, request, idServicio);
 					}
 				}
+			}
+		}
+	}
+	
+	public void recuperarTimbreDocumentosPendientes() {
+		List<Documento> documentosTimbrePendientes = new ArrayList<Documento>();
+		documentosTimbrePendientes = documentoService.obtenerDocumentosTimbrePendientes();		
+		
+		
+		if(!documentosTimbrePendientes.isEmpty()) {
+			int idServicio = documentoWebService.obtenerIdServicio();
+			
+			for(Documento documento : documentosTimbrePendientes) {
+				documentoService.read(documento);
+				CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
+				sellarYTimbrarComprobante(documento, null, idServicio, certificado);
 			}
 		}
 	}
@@ -182,7 +205,7 @@ public class CfdiServiceImpl implements CfdiService {
 				//FIXME Desarrollar generacion de ncr
 			}
 		}
-	}
+	}	
 
 	private void filtraDevolucionesVentas(List<Ticket> ventas,
 			List<Ticket> devoluciones, List<Ticket> ventasDevueltas) {

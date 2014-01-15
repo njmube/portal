@@ -719,4 +719,28 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			}
 		}).start();
 	}
+
+	@Override
+	public List<Documento> obtenerDocumentosTimbrePendientes() {
+		return documentoDao.obtenerDocumentosTimbrePendientes();
+	}
+
+	@Override
+	public Documento read(Documento documento) {
+		Documento docBD = null;
+		Cliente clienteBD = null;
+		Comprobante comprobanteBD = null;
+		Establecimiento estabBD = null;
+		
+		if(documento.getId() != null) {
+			docBD = documentoDao.read(documento);
+			clienteBD = clienteService.read(docBD.getCliente());
+			estabBD = establecimientoService.readById(docBD.getEstablecimiento());
+//			comprobanteBD = documentoDetalleService.
+			docBD.setCliente(clienteBD);
+//			docBD.setComprobante(comprobante);
+			docBD.setEstablecimiento(estabBD);
+		}
+		return docBD;
+	}
 }
