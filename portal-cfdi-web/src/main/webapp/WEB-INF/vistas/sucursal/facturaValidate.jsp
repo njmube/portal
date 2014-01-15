@@ -225,7 +225,7 @@
 			</div>
 			<p class="text-center">
 				<button id="generaFactura" type="button" class="btn btn-primary btn-lg"><small>Generar ${tipoComprobante}</small> <i class="fa fa-list-alt"></i></button>
-				<a href="<c:url value="/buscaRfc"/>" class="btn btn-warning btn-lg"><small>Regresar</small> <i class="fa fa-arrow-left"></i></span></a>
+				<a href="<c:url value="/buscaRfc"/>" class="btn btn-warning btn-lg"><small>Regresar</small> <i class="fa fa-arrow-left"></i></a>
 				<a id="cancel" href="<c:url value="/buscaTicket" />" class="btn btn-danger btn-lg"><small>Cancelar</small> <i class="fa fa-times"></i></a>
 			</p>
 		</div>

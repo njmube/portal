@@ -131,8 +131,6 @@ public class DocumentoController {
 			@PathVariable String fileName, @PathVariable String extension,
 			HttpServletResponse response) {
 		try {						
-			logger.debug("----------------------- File name {}", fileName);
-			
 			byte [] doc = documentoService.recuperarDocumentoArchivo(fileName, idEstab, extension);
 			
 			response.setHeader("Content-Disposition", "attachment; filename=" + fileName + "." + extension);
@@ -149,7 +147,6 @@ public class DocumentoController {
 	public @ResponseBody Boolean documentoEnvio(@RequestParam Integer idEstab, 
 			@RequestParam String fileName, @RequestParam String email) {
 		try {
-			logger.debug("----------------------- File Name {}", fileName);
 			documentoService.envioDocumentosFacturacion(email, fileName, idEstab);
 		} catch (PortalException ex) {
 			return false;

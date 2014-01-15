@@ -3,7 +3,6 @@ package com.magnabyte.cfdi.portal.dao.documento.impl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -27,6 +26,7 @@ import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
+import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 
 @Repository("ticketDao")
 public class TicketDaoImpl extends GenericJdbcDao 
@@ -57,8 +57,9 @@ public class TicketDaoImpl extends GenericJdbcDao
 				ps.setInt(1, Integer.parseInt(documento.getVentas().get(i).getTransaccion().getTransaccionHeader().getIdTicket()));
 				ps.setInt(2, documento.getEstablecimiento().getId());
 				ps.setInt(3, Integer.parseInt(documento.getVentas().get(i).getTransaccion().getTransaccionHeader().getIdCaja()));
-				//FIXME corregir fecha de generacion de factura vm
-				ps.setDate(4, new java.sql.Date(new Date().getTime()));
+				ps.setString(4, FechasUtils.specificStringFormatDate(documento.getVentas().get(i).
+						getTransaccion().getTransaccionHeader().getFechaHora(), 
+						"yyyyMMddHHmmss", "dd/MM/yyyy HH:mm:ss"));
 				ps.setInt(5, TipoEstadoTicket.FACTURADO_MOSTRADOR.getId());
 				ps.setInt(6, documento.getId());
 				ps.setString(7, documento.getVentas().get(i).getNombreArchivo());
@@ -125,7 +126,8 @@ public class TicketDaoImpl extends GenericJdbcDao
 	@Override
 	public int readProcesado(String archivoOrigen,
 			TipoEstadoTicket facturado, TipoEstadoTicket facturadoMostrador) {
-		return getJdbcTemplate().queryForObject(TicketSql.READ_PROCESADO, Integer.class, archivoOrigen, facturado, facturadoMostrador);
+		return getJdbcTemplate().queryForObject(TicketSql.READ_PROCESADO, 
+				Integer.class, archivoOrigen, facturado.getId(), facturadoMostrador.getId());
 	}
 	
 	private static final RowMapper<Ticket> MAPPER_TICKET = new RowMapper<Ticket>() {
@@ -144,8 +146,7 @@ public class TicketDaoImpl extends GenericJdbcDao
 		params.addValue(DocumentoSql.ID_DOCUMENTO, documento.getId());
 		params.addValue(EstablecimientoSql.ID_ESTABLECIMIENTO, documento.getEstablecimiento().getId());
 		params.addValue(TicketSql.ID_STATUS, documento.getTicket().getTipoEstadoTicket().getId());
-		//FIXME Corregir fecha de guardado de ticket
-		params.addValue(TicketSql.FECHA, new Date());
+		params.addValue(TicketSql.FECHA, documento.getTicket().getTransaccion().getTransaccionHeader().getFechaHora());
 		params.addValue(TicketSql.NO_CAJA, documento.getTicket().getTransaccion().getTransaccionHeader().getIdCaja());
 		params.addValue(TicketSql.NO_TICKET, documento.getTicket().getTransaccion().getTransaccionHeader().getIdTicket());
 		params.addValue(TicketSql.FILENAME, documento.getTicket().getNombreArchivo());

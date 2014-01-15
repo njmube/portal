@@ -1,7 +1,7 @@
 package com.magnabyte.cfdi.portal.model.documento;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 import mx.gob.sat.cfd._3.Comprobante;
@@ -12,9 +12,7 @@ import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 
 public class Documento implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 383916791240840326L;
 
 	private Integer id;

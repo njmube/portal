@@ -34,7 +34,6 @@ public class EmailServiceImpl implements EmailService {
 	public void sendMail(String message, String subject, String... recipients) {
 		SimpleMailMessage msg = new SimpleMailMessage();
 		
-		logger.debug("hilo mail {}", Thread.currentThread().getName());
 		logger.debug("Iniciando el envio de email");
 		
 		msg.setTo(recipients);
@@ -49,7 +48,6 @@ public class EmailServiceImpl implements EmailService {
 	public void sendMimeMail(String message, String messageHtml,
 			String subject, String... recipients) {
 		MimeMessage msg = javaMailSender.createMimeMessage();
-		logger.debug("hilo mail {}", Thread.currentThread().getName());
 		logger.debug("Iniciando el envio de email");
 		
 		MimeMessageHelper helper;
@@ -72,7 +70,6 @@ public class EmailServiceImpl implements EmailService {
 			String subject, Map<String, ByteArrayResource> attach, String... recipients) {
 
 		MimeMessage msg = javaMailSender.createMimeMessage();
-		logger.debug("hilo mail {}", Thread.currentThread().getName());
 		logger.debug("Iniciando el envio de email");
 		
 		MimeMessageHelper helper;

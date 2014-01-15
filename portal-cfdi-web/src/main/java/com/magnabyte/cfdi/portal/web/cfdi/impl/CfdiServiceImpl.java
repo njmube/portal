@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.web.cfdi.impl;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -68,19 +69,21 @@ public class CfdiServiceImpl implements CfdiService {
 	@Override
 	public void generarDocumento(Documento documento, HttpServletRequest request) {
 		logger.debug("cfdiService...");
+		int idServicio = documentoWebService.obtenerIdServicio();
 		CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
+		documento.setFechaFacturacion(new Date());
 		documentoService.guardarDocumento(documento);
 		if(documento.isVentasMostrador()) {
 			ticketService.saveTicketVentasMostrador(documento);
 		}
 		if (documentoService.sellarComprobante(documento.getComprobante(), certificado)) {
-			if (documentoWebService.timbrarDocumento(documento, request)) {
+			if (documentoWebService.timbrarDocumento(documento, request, idServicio)) {
 				documentoService.insertDocumentoCfdi(documento);
 				documentoService.insertDocumentoPendiente(documento, EstadoDocumentoPendiente.ACUSE_PENDIENTE);
 				if(documento instanceof DocumentoSucursal) {
 					ticketService.updateEstadoFacturado((DocumentoSucursal) documento);
 					if (((DocumentoSucursal) documento).isRequiereNotaCredito()) {
-						generarDocumentoNcr(documento, request);
+						generarDocumentoNcr(documento, request, idServicio);
 					}
 				}
 			}
@@ -89,7 +92,7 @@ public class CfdiServiceImpl implements CfdiService {
 	}
 	
 	private void generarDocumentoNcr(Documento documento,
-			HttpServletRequest request) {
+			HttpServletRequest request, int idServicio) {
 		DocumentoSucursal documentoNcr = new DocumentoSucursal();
 		documentoNcr.setTicket(((DocumentoSucursal) documento).getTicket());
 		documentoNcr.getTicket().setTipoEstadoTicket(TipoEstadoTicket.GUARDADO_NCR);
@@ -105,10 +108,11 @@ public class CfdiServiceImpl implements CfdiService {
 		documentoNcr.setEstablecimiento(documento.getEstablecimiento());
 		documentoNcr.setTipoDocumento(TipoDocumento.NOTA_CREDITO);
 		documentoNcr.setRequiereNotaCredito(((DocumentoSucursal) documento).isRequiereNotaCredito());
+		documentoNcr.setFechaFacturacion(new Date());
 		CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
 		documentoService.guardarDocumento(documentoNcr);
 		if (documentoService.sellarComprobante(documentoNcr.getComprobante(), certificado)) {
-			if (documentoWebService.timbrarDocumento(documentoNcr, request)) {
+			if (documentoWebService.timbrarDocumento(documentoNcr, request, idServicio)) {
 				documentoService.insertDocumentoCfdi(documentoNcr);
 				documentoService.insertDocumentoPendiente(documentoNcr, EstadoDocumentoPendiente.ACUSE_PENDIENTE);
 				if(documentoNcr instanceof DocumentoSucursal) {

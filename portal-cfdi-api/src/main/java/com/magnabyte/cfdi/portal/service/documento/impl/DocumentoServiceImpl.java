@@ -15,8 +15,6 @@ import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -81,6 +79,7 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDescuento;
 import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
+import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 import com.magnabyte.cfdi.portal.service.commons.EmailService;
@@ -139,6 +138,18 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	private CfdiConfiguration cfdiConfiguration;
 	
 	private ResourceLoader resourceLoader;
+	
+	@Value("${cfdi.comprobante.tipo.cambio}")
+	private String tipoCambio;
+	
+	@Value("${cfdi.comprobante.condiciones.pago}")
+	private String condicionesPago;
+	
+	@Value("${cfdi.comprobante.forma.pago}")
+	private String formaPago;
+	
+	@Value("${email.subject}")
+	private String subject;
 	
 	@Value("${email.plantilla.plaintext}")
 	private String namePlainText;
@@ -294,10 +305,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			comprobante.setLugarExpedicion(comprobante.getEmisor().getExpedidoEn().getLocalidad());
 			
 			comprobante.setTipoDeComprobante(tipoDocumento.getNombreComprobante());
-			//FIXME corregir porperties de comprobante en duro
-			comprobante.setTipoCambio("1");
-			comprobante.setCondicionesDePago("PAGO DE CONTADO");
-			comprobante.setFormaDePago("PAGO EN UNA SOLA EXHIBICION");
+			comprobante.setTipoCambio(tipoCambio);
+			comprobante.setCondicionesDePago(condicionesPago);
+			comprobante.setFormaDePago(formaPago);
 		} else {
 			throw new PortalException("El ticket no puedo ser nulo.");
 		}
@@ -306,19 +316,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	}
 
 	private void formatTicketDate(Ticket ticket) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		SimpleDateFormat sdfOrigen = new SimpleDateFormat("yyyyMMddHHmmss");
 		try {
-			
-			Date fechaTicket = sdfOrigen.parse(ticket.getTransaccion().getTransaccionHeader().getFechaHora());
-			ticket.getTransaccion().getTransaccionHeader().setFechaHora(sdf.format(fechaTicket));
-		} catch (ParseException e) {
-			try {
-				sdf.parse(ticket.getTransaccion().getTransaccionHeader().getFechaHora());
-			} catch (ParseException e1) {
-				logger.error("Ocurrió un error al obtener la fecha del ticket: ", e);
-				throw new PortalException("Ocurrió un error al obtener la fecha del ticket: ", e);
-			}
+			ticket.getTransaccion().getTransaccionHeader()
+				.setFechaHora(FechasUtils.specificStringFormatDate(ticket.getTransaccion().getTransaccionHeader().getFechaHora(), 
+						"yyyyMMddHHmmss", "dd/MM/yyyy HH:mm:ss"));
+		} catch (PortalException e) {
+			FechasUtils.parseStringToDate(ticket.getTransaccion().getTransaccionHeader().getFechaHora(), "dd/MM/yyyy HH:mm:ss");
 		} 
 	}
 
@@ -654,7 +657,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		try {
 			Establecimiento estab = establecimientoService.readById(
 					EstablecimientoFactory.newInstance(idEstablecimiento));
-			//FIXME Cambiar la ruta out
 			InputStream file = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
 					+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + "." + extension);
 			
@@ -670,13 +672,11 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	public void envioDocumentosFacturacion(final String para, final String fileName,
 		final Integer idEstablecimiento) {
 	
-		logger.debug("hilo principal {}", Thread.currentThread().getName());
-		
 		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
-				String asunto = "Modatelas S.A.P.I de C.V. - CFDI Factura " + fileName;
+				String asunto = subject + fileName;
 				String htmlPlantilla = null;
 				String textoPlanoPlantilla = null;
 				String htmlPlantillaError = null;
@@ -706,7 +706,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 					
 					htmlPlantilla = IOUtils.toString(htmlResource.getInputStream(), "UTF-8");
 					textoPlanoPlantilla = IOUtils.toString(plainTextResource.getInputStream(), "UTF-8");
-					
+					//FIXME Cambiar configuracion mail
 					emailService.sendMailWithAttach(textoPlanoPlantilla,htmlPlantilla, asunto, attach, para);
 					
 				} catch (PortalException ex) {

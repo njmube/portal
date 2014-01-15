@@ -3,6 +3,9 @@ package com.magnabyte.cfdi.portal.model.documento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 
 public class DocumentoSucursal extends Documento {
+	
+	private static final long serialVersionUID = 3038505761611083436L;
+	
 	private Ticket ticket;
 	private boolean requiereNotaCredito;
 

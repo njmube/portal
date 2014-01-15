@@ -1,6 +1,9 @@
 package com.magnabyte.cfdi.portal.model.documento;
 
 public class DocumentoCorporativo extends Documento {
+	
+	private static final long serialVersionUID = -6239507110898792522L;
+	
 	private String folioSap;
 	private String nombreXmlPrevio;
 

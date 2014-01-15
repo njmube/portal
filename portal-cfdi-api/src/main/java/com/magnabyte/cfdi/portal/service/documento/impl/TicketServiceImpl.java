@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -177,14 +176,12 @@ public class TicketServiceImpl implements TicketService {
 		logger.debug(regex);
 		SmbFile dir = null;
 		try {
-//			NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication("WORKGROUP", "", "");
 			dir = new SmbFile(urlTicketFiles);
 			if(dir.exists()) {
 				logger.debug("el dir existe");
 				SmbFile[] files = dir.listFiles();
 				logger.debug("archivos {}", files.length);
 				for (SmbFile file : files) {
-					logger.debug("archivo---{}", file.getName());
 					Matcher matcher = pattern.matcher(file.getName());
 					if (matcher.matches()) {
 						
@@ -244,12 +241,8 @@ public class TicketServiceImpl implements TicketService {
 				}
 				logger.debug("tickets size {}", archivosTicketsDelDia.size());
 				
-				//FIXME Corregir lectura de tickets facturados
-//				List<String> archivosFacturados = ticketDao.readAllByDate(
-//						FechasUtils.specificStringFormatDate(fechaCierre, "yyyyMMdd", "yyyy-MM-dd"));
-				
 				List<String> archivosFacturados = ticketDao.readAllByDate(
-						FechasUtils.specificStringFormatDate("20140113", "yyyyMMdd", "yyyy-MM-dd"));
+						FechasUtils.specificStringFormatDate(fechaCierre, "yyyyMMdd", "yyyy-MM-dd"));
 				
 				logger.debug("facturados size {}", archivosFacturados.size());
 				
@@ -336,8 +329,7 @@ public class TicketServiceImpl implements TicketService {
 		header.setIdTicket(ticketGenerico);
 		header.setIdCaja(cajaGenerica);
 		header.setIdSucursal(establecimiento.getClave());
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		header.setFechaHora(sdf.format(new Date()));
+		header.setFechaHora(FechasUtils.parseDateToString(new Date(), "dd/MM/yyyy HH:mm:ss"));
 		
 		concepto.setCantidad(new BigDecimal(0));
 		articulo.setId(null);

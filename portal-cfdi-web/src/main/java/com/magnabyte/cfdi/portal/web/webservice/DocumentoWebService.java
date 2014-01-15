@@ -6,9 +6,11 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 
 public interface DocumentoWebService {
 
-	boolean timbrarDocumento(Documento documento, HttpServletRequest request);
+	boolean timbrarDocumento(Documento documento, HttpServletRequest request, int idServicio);
 
 	void recuperarAcusesPendientes();
 	
 	void recuperarAcuse(Documento documento);
+
+	int obtenerIdServicio();
 }

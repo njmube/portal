@@ -2,7 +2,6 @@ package com.magnabyte.cfdi.portal.dao.documento.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 
 import mx.gob.sat.cfd._3.Comprobante;
@@ -60,8 +59,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		if(documento instanceof DocumentoCorporativo){
 			params.addValue(DocumentoSql.FOLIO_SAP, ((DocumentoCorporativo) documento).getFolioSap());
 		}
-		//FIXME Corregir fecha de generacion del documento
-		params.addValue(DocumentoSql.FECHA_DOCUMENTO, new Date());
+		params.addValue(DocumentoSql.FECHA_DOCUMENTO, documento.getFechaFacturacion());
 		params.addValue(DocumentoSql.TOTAL_DESCUENTO, documento.getComprobante().getDescuento());
 		params.addValue(DocumentoSql.SUBTOTAL, documento.getComprobante().getSubTotal());
 		params.addValue(DocumentoSql.IVA, documento.getComprobante().getImpuestos().getTotalImpuestosTrasladados());
@@ -101,8 +99,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		params.addValue(DocumentoSql.CADENA, documento.getCadenaOriginal());
 		params.addValue(DocumentoSql.SELLO_CFDI, documento.getTimbreFiscalDigital().getSelloCFD());
 		params.addValue(DocumentoSql.UUID, documento.getTimbreFiscalDigital().getUUID());
-		//FIXME Corregirfecha de certificacion
-		params.addValue(DocumentoSql.FECHA_HORA, new Date());
+		params.addValue(DocumentoSql.FECHA_HORA, documento.getTimbreFiscalDigital().getFechaTimbrado().toGregorianCalendar().getTime());
 		return params;
 	}
 	
@@ -151,7 +148,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 					documento.setEstablecimiento(establecimiento);
 					return documento;
 				}
-			});
+			}, EstadoDocumentoPendiente.ACUSE_PENDIENTE.getId());
 		} catch (EmptyResultDataAccessException ex) {
 			logger.debug("No hay acuses pendientes");
 			return null;

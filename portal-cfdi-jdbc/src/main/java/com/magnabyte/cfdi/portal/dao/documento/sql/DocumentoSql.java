@@ -75,7 +75,7 @@ public class DocumentoSql extends GenericSql {
 		qryBuilder.append("select *").append(EOL);
 		qryBuilder.append("from t_documento_pendiente as tdp").append(EOL);
 		qryBuilder.append("inner join t_documento_cfdi as tdc on tdp.id_documento = tdc.id_documento").append(EOL);
-		qryBuilder.append("where tdp.id_estado_documento = 3").append(EOL);
+		qryBuilder.append("where tdp.id_estado_documento = ?").append(EOL);
 		
 		READ_ACUSE_PEND = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);

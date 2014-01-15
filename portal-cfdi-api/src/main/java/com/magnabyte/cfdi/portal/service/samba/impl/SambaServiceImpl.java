@@ -8,8 +8,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -59,7 +57,6 @@ public class SambaServiceImpl implements SambaService {
 	
 	@Override
 	public InputStream getFileStream(String url, String fileName) {
-//		logger.debug("sambaService getFileStream...");
 		SmbFileInputStream smbIs = null;
 		BufferedInputStream bis = null;
 		Config.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
@@ -242,7 +239,6 @@ public class SambaServiceImpl implements SambaService {
 		try {
 			reporteCompleto = JasperFillManager.fillReport(reporteCompilado, map, dataSource);
 			byte[] bytesReport = JasperExportManager.exportReportToPdf(reporteCompleto);
-			//FIXME cambiar guardado de samba por guardado local
 			SmbFile filePdf = new SmbFile(documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() 
 					+ documento.getEstablecimiento().getRutaRepositorio().getRutaRepoOut(), 
 					documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".pdf");
