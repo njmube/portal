@@ -74,7 +74,7 @@ public class CfdiServiceImpl implements CfdiService {
 		documento.setFechaFacturacion(new Date());
 		documentoService.guardarDocumento(documento);
 		if(documento.isVentasMostrador()) {
-			ticketService.saveTicketVentasMostrador(documento);
+			ticketService.guardarTicketsCierreDia(documento);
 		}
 		sellarYTimbrarComprobante(documento, request, idServicio, certificado);
 	}
