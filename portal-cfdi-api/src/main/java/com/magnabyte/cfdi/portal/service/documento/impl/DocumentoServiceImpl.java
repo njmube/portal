@@ -455,15 +455,15 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 				}
 				if (ticketDB != null) {
 					switch (ticketDB.getTipoEstadoTicket()) {
-					case GUARDADO:
-						logger.debug("El ticket ya fue guardado previamente.");
-						((DocumentoSucursal) documento).getTicket().setId(ticketDB.getId());
-						documento.setId(ticketService.readIdDocFromTicketGuardado((DocumentoSucursal) documento));
-						documentoDao.updateDocumentoCliente((DocumentoSucursal) documento);
-						Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolioDocumento(documento);
-						documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
-						documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO));
-						break;
+//					case GUARDADO:
+//						logger.debug("El ticket ya fue guardado previamente.");
+//						((DocumentoSucursal) documento).getTicket().setId(ticketDB.getId());
+//						documento.setId(ticketService.readIdDocFromTicketGuardado((DocumentoSucursal) documento));
+//						documentoDao.updateDocumentoCliente((DocumentoSucursal) documento);
+//						Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolioDocumento(documento);
+//						documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
+//						documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO));
+//						break;
 					case FACTURADO_MOSTRADOR:
 						logger.debug("El ticket ya fue facturado por ventas mostrador.");
 						saveDocumentAndDetail(documento);

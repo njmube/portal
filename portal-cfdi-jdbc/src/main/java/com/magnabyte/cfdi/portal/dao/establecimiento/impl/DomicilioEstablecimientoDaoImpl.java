@@ -91,7 +91,7 @@ public class DomicilioEstablecimientoDaoImpl extends GenericJdbcDao implements
 	public void update(DomicilioEstablecimiento domicilio) {
 		getJdbcTemplate().update(DomicilioEstablecimientoSql.UPDATE_DOMICILIO_ESTABLECIMIENTO, new Object[] {
 				
-//				domicilio.getEstado().getId(),
+				domicilio.getEstado().getId(),
 				domicilio.getCalle(),
 				domicilio.getNoExterior(),
 				domicilio.getNoInterior(),
