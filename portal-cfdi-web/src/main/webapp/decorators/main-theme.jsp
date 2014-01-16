@@ -98,7 +98,7 @@
 									<c:url var="catalogoEstablecimiento" value="/catalogoEstablecimiento" />
 									<c:url var="catalogoUsuarios" value="/catalogoUsuarios"></c:url>
 									<li><a href="${catalogoUsuarios }">Usuarios</a></li>
-									<li><a href="${catalogoEstablecimiento}">Establecimiento</a></li>
+									<li><a href="${catalogoEstablecimiento}">Establecimientos</a></li>
 								</ul>
 							</sec:authorize></li>
 					</ul>

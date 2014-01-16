@@ -4,8 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -24,8 +22,6 @@ import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
 @Repository("usuarioDao")
 public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
-	
-	private static final Logger logger = LoggerFactory.getLogger(UsuarioDaoImpl.class);
 
 	@Override
 	public void save(Usuario usuario) {
@@ -104,7 +100,6 @@ public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 			estable.setNombre(rs.getString(EstablecimientoSql.NOM_ESTAB));
 			usuario.setEstablecimiento(estable);
 			usuario.setEstatus(EstatusUsuario.getById(rs.getInt(UsuarioSql.ID_STATUS)));
-			
 			return usuario;
 		}
 	};
