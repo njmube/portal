@@ -111,7 +111,7 @@ public class CfdiServiceImpl implements CfdiService {
 				
 				logger.debug("Sello y timbro");
 				
-				//TODO Delete
+				//TODO Delete pendiente
 			}
 		}
 	}
