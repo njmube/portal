@@ -53,10 +53,10 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 	
 	@Override
 	public Establecimiento read(Establecimiento establecimiento) {
-		logger.debug(EstablecimientoSql.READ_BY_CLAVE);
+		logger.debug(EstablecimientoSql.READ_BY_ID);
 		
 		return getJdbcTemplate().queryForObject(EstablecimientoSql.READ_BY_ID, MAPPER_ESTAB_COMPLETO,
-				establecimiento.getClave());
+				establecimiento.getId());
 	}
 	
 	@Override
