@@ -77,6 +77,10 @@
 					</a>
 				</div>
 
+				<c:url var="logoutUrl" value="/perform_logout" />
+				<c:url var="catalogoEstablecimiento" value="/catalogoEstablecimiento" />
+				<c:url var="catalogoUsuarios" value="/catalogoUsuarios"></c:url>
+				
 				<div class="collapse navbar-collapse pull-right">
 					<sec:authorize access="isAnonymous()">
 						<c:set var="urlMenu" value="/portal/cfdi/menu"/>	
@@ -87,20 +91,21 @@
 					</sec:authorize>
 					<ul class="nav navbar-nav">
 						<c:if test="${!isLoginPage}">	
-							<li><a href="<c:url value="${urlMenu}" />">Menú Principal
+							<li>
+								<a href="<c:url value="${urlMenu}" />">Menú Principal
 									<i class="fa fa-home"></i>
-							</a></li>
+								</a>
+							</li>
 						</c:if>
-						<li class="dropdown"><sec:authorize access="hasAnyRole('ROLE_ADMIN')">
-								<a class="dropdown-toggle" data-toggle="dropdown" >Catálogos<b class="caret"></b></a>
+						<li class="dropdown">
+							<sec:authorize access="hasAnyRole('ROLE_ADMIN')">
+								<a href="" class="dropdown-toggle" data-toggle="dropdown" >Catálogos <b class="caret"></b></a>
 								<ul class="dropdown-menu">
-									<c:url var="logoutUrl" value="/perform_logout" />
-									<c:url var="catalogoEstablecimiento" value="/catalogoEstablecimiento" />
-									<c:url var="catalogoUsuarios" value="/catalogoUsuarios"></c:url>
-									<li><a href="${catalogoUsuarios }">Usuarios</a></li>
+									<li><a href="${catalogoUsuarios}">Usuarios</a></li>
 									<li><a href="${catalogoEstablecimiento}">Establecimientos</a></li>
 								</ul>
-							</sec:authorize></li>
+							</sec:authorize>
+						</li>
 					</ul>
 					<sec:authorize
 						access="hasAnyRole('ROLE_SUC', 'ROLE_CORP', 'ROLE_ADMIN')">
@@ -115,8 +120,11 @@
 								</button>
 								<ul class="dropdown-menu" role="menu">
 									<c:url var="logoutUrl" value="/perform_logout" />
-									<li><a href="${logoutUrl}">
-									<i class="fa fa-sign-out"></i> Cerrar sesión</a></li>
+									<li>
+										<a href="${logoutUrl}">
+											<i class="fa fa-sign-out"></i> Cerrar sesión
+										</a>
+									</li>
 								</ul>
 							</div>
 						</div>
