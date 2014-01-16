@@ -146,7 +146,7 @@ public class TicketDaoImpl extends GenericJdbcDao
 		params.addValue(DocumentoSql.ID_DOCUMENTO, documento.getId());
 		params.addValue(EstablecimientoSql.ID_ESTABLECIMIENTO, documento.getEstablecimiento().getId());
 		params.addValue(TicketSql.ID_STATUS, documento.getTicket().getTipoEstadoTicket().getId());
-		params.addValue(TicketSql.FECHA, documento.getTicket().getTransaccion().getTransaccionHeader().getFechaHora());
+		params.addValue(TicketSql.FECHA, FechasUtils.parseStringToDate(documento.getTicket().getTransaccion().getTransaccionHeader().getFechaHora(), "dd/MM/yyyy HH:mm:ss"));
 		params.addValue(TicketSql.NO_CAJA, documento.getTicket().getTransaccion().getTransaccionHeader().getIdCaja());
 		params.addValue(TicketSql.NO_TICKET, documento.getTicket().getTransaccion().getTransaccionHeader().getIdTicket());
 		params.addValue(TicketSql.FILENAME, documento.getTicket().getNombreArchivo());

@@ -28,8 +28,8 @@
 				<p class="text-info">Ingresa los datos del usuario.</p>
 			</blockquote>
 			<hr>
-			<c:url var="update" value="/guardarUsuario" />
-			<form:form id="usuarioForm" action="${update }" method="post" modelAttribute="usuario" cssClass="form-horizontal"	role="form">
+			<c:url var="guardar" value="/guardarUsuario" />
+			<form:form id="usuarioForm" action="${guardar }" method="post" modelAttribute="usuario" cssClass="form-horizontal"	role="form">
 			<div class="row">
 				<div class="col-md-6 col-md-offset-3">
 					<div class="white-panel form-horizontal">
@@ -61,7 +61,7 @@
 								<form:select  path="establecimiento.id" id="establecimiento" class="form-control input-sm validate[required]">
 									<form:option value="">- Seleccione una opción -</form:option>
 									<c:forEach items="${listaEstablecimientos}" var="establecimiento">
-										<option value="${establecimiento.id}"}>
+										<option value="${establecimiento.id}" ${usuario.establecimiento.id eq establecimiento.id  ? 'selected' : ''}>
 										${establecimiento.nombre}</option>
 									</c:forEach>
 								</form:select>
