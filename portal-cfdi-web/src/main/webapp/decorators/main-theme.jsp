@@ -92,7 +92,7 @@
 							</a></li>
 						</c:if>
 						<li class="dropdown"><sec:authorize access="hasAnyRole('ROLE_ADMIN')">
-								<a class="dropdown-toggle" data-toggle="dropdown">Catálogos <b class="caret"></b></a>
+								<a class="dropdown-toggle" data-toggle="dropdown" >Catálogos<b class="caret"></b></a>
 								<ul class="dropdown-menu">
 									<c:url var="logoutUrl" value="/perform_logout" />
 									<c:url var="catalogoEstablecimiento" value="/catalogoEstablecimiento" />

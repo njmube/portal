@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -50,8 +51,15 @@ public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 	@Override
 	public Usuario getUsuarioByEstablecimiento(Usuario usuario) {
 		String qry = UsuarioSql.GET_BY_ESTABLECIMIENTO;
-		return getJdbcTemplate().queryForObject(qry, 
-				UASUARIO_MAPPER, usuario.getEstablecimiento().getId(), usuario.getUsuario());
+		Usuario object = null;
+		try {
+			object = getJdbcTemplate().queryForObject(qry, 
+					UASUARIO_MAPPER, usuario.getEstablecimiento().getId(), usuario.getUsuario());
+		} catch (EmptyResultDataAccessException ex) {
+			return null;
+		}
+		return object;
+				
 	}
 	
 	@Override
@@ -73,7 +81,8 @@ public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 			usuario.getUsuario(),
 			usuario.getPassword(),
 			usuario.getEstablecimiento().getId(),
-			usuario.getEstatus().getId()
+			usuario.getEstatus().getId(),
+			usuario.getId()
 		});
 	}
 	

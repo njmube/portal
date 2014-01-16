@@ -68,7 +68,8 @@ public class EstablecimientoController {
 		
 		model.put("establecimiento", estable);
 		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
-		model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
+		model.put("listaEstados", opcionDeCatalogoService.getCatalogoParam("c_estado", "id_pais", 
+				estable.getDomicilio().getEstado().getPais().getId().toString(), "id_estado"));
 		return "admin/establecimientoForm";
 	}
 	

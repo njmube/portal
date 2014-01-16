@@ -39,8 +39,27 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	public void save(Usuario usuario) {
 		if(usuario != null) {
-			if(usuario.getId() != null) {
+			if (!exist(usuario)) {
 				usuarioDao.save(usuario);		
+			} else {
+				throw new PortalException("Ya existe un usuario con este "
+						+ "nombre en la sucursal.");
+			}
+		 } else {
+			throw new PortalException("El usuario no puede ser nulo");
+		 }
+	}
+	
+	@Transactional
+	@Override
+	public void update(Usuario usuario) {
+		if(usuario != null) {
+			if(usuario.getId() != null)  {
+				if (!exist(usuario)) {
+					usuarioDao.update(usuario);		
+				} else {
+					throw new PortalException("Ya existe el usuario en la sucursal.");
+				}
 			} else {
 				throw new PortalException("El id de usuario no puede ser nulo");
 			}
@@ -49,18 +68,25 @@ public class UsuarioServiceImpl implements UsuarioService {
 		}
 	}
 	
-	@Transactional
-	@Override
-	public void update(Usuario usuario) {
-		if(usuario != null) {
-			if(usuario.getId() != null) {
-				usuarioDao.update(usuario);		
-			} else {
-				throw new PortalException("El id de usuario no puede ser nulo");
+	public boolean exist(Usuario usuario) {
+		Usuario usu = usuarioDao.getUsuarioByEstablecimiento(usuario);
+		
+		if(usuario.getId() != null) {
+			if(usu != null) {
+				if(!usuario.getPassword().equals(usu.getPassword()) || 
+						usuario.getEstatus().getId() != usu.getEstatus().getId()) {
+					return false;
+					
+				}
+				return true;
 			}
 		} else {
-			throw new PortalException("El usuario no puede ser nulo");
+			if(usu != null) {
+				return true;
+			}
 		}
+		
+		return false;
 	}
 
 }
