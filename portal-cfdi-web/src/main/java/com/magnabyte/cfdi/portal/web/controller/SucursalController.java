@@ -24,6 +24,7 @@ import com.google.gson.JsonObject;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.factory.ClienteFactory;
 import com.magnabyte.cfdi.portal.model.commons.Usuario;
+import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
@@ -122,8 +123,13 @@ public class SucursalController {
 		documento.setEstablecimiento(establecimiento);
 		documento.setTipoDocumento(TipoDocumento.FACTURA);
 		model.put("documento", documento);
-		model.put("comprobante", comprobante);
 		model.put("ticket", ticket);
+		return "redirect:/confirmarDatosFacturacion";
+	}
+	
+	@RequestMapping("/confirmarDatosFacturacion")
+	public String confirmarDatosFacturacion(@ModelAttribute Documento documento, ModelMap model) {
+		model.put("comprobante", documento.getComprobante());
 		return "sucursal/facturaValidate";
 	}
 	

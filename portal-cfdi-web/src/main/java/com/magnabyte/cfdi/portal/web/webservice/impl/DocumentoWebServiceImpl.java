@@ -19,6 +19,7 @@ import com.certus.facturehoy.ws2.cfdi.WsServicioBO;
 import com.certus.facturehoy.ws2.cfdi.WsServicios;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
+import com.magnabyte.cfdi.portal.model.documento.EstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
@@ -56,20 +57,22 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	private String passwordWs;
 	
 	@Override
-	public boolean timbrarDocumento(Documento documento, HttpServletRequest request) {
+	public boolean timbrarDocumento(Documento documento, HttpServletRequest request, int idServicio) {
 		TimbreFiscalDigital timbre = null;
 		logger.debug("en timbrar Documento");
 		WsResponseBO response = new WsResponseBO();
 		
 		try {
-			response = wsEmisionTimbrado.emitirTimbrar(userWs, passwordWs, obtenerIdServicio(userWs, passwordWs), 
+			response = wsEmisionTimbrado.emitirTimbrar(userWs, passwordWs, idServicio, 
 				documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
+//			if(documento != null) {
+//				throw new Exception("Sin servicio web service.");
+//			}
 		} catch(Exception ex) {
-			//FIXME tratar error de web service
+			documentoService.insertDocumentoPendiente(documento, EstadoDocumentoPendiente.TIMBRE_PENDIENTE);
 			logger.debug("Ocurrío un error al realizar la conexión", ex);
 			throw new PortalException("Ocurrío un error al realizar la conexión", ex);
 		}
-		
 		
 		if (!response.isIsError()) {
 			timbre = new TimbreFiscalDigital();
@@ -85,9 +88,10 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			if (documento instanceof DocumentoCorporativo) {
 				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
 			}
-			//FIXME cambiar logica de guardado de xml y pdf
 			sambaService.writeProcessedCfdiXmlFile(response.getXML(), documento);
-			sambaService.writePdfFile(documento, request);
+			if(request != null) {
+				sambaService.writePdfFile(documento, request);
+			}
 			return true;
 		} else {
 			logger.debug("El Web Service devolvió un error: {}", response.getMessage());
@@ -132,14 +136,15 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		}
 	}
 	
-	private int obtenerIdServicio(String user, String password) {
+	@Override
+	public int obtenerIdServicio() {
 		int idServicio = 0;
 		WsServicioBO serviciosContratados = null;
 		try {
-			serviciosContratados = wsServicios.obtenerServicios(user, password);
+			serviciosContratados = wsServicios.obtenerServicios(userWs, passwordWs);
 		} catch(Exception ex) {
-			logger.debug("Ocurrío un error al realizar la conexión", ex);
-			throw new PortalException("Ocurrío un error al realizar la conexión", ex);
+			logger.debug("Ocurrío un error al realizar la conexión, el sistema de facturación no se encuentra disponible por el momento", ex);
+			throw new PortalException("Ocurrío un error al realizar la conexión, el sistema de facturación no se encuentra disponible por el momento", ex);
 		}
 		if (serviciosContratados.getArray().size() > 0) {
 			for (WsServicioBO servicio : serviciosContratados.getArray()) {
@@ -153,7 +158,6 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		}
 		//FIXME Comentar para produccion
 		idServicio = 5652528;
-		//
 		return idServicio;
 	}
 }

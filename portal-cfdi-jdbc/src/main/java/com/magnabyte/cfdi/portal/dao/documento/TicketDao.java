@@ -20,11 +20,11 @@ public interface TicketDao {
 
 	List<String> readArticulosSinPrecio();
 
-	Integer readIdDocFromTicketGuardado(DocumentoSucursal documento);
+//	Integer readIdDocFromTicketGuardado(DocumentoSucursal documento);
 
 	List<String> readAllByDate(String fecha);
 
-	void saveTicketVentasMostrador(Documento documento);
+	void saveTicketsCierreDia(Documento documento, TipoEstadoTicket estadoTicket);
 
 	int readProcesado(String archivoOrigen, TipoEstadoTicket facturado,
 			TipoEstadoTicket facturadoMostrador);

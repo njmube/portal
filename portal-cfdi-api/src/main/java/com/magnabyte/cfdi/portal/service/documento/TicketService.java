@@ -28,9 +28,9 @@ public interface TicketService {
 	Ticket crearTicketVentasMostrador(List<Ticket> ventas,
 			Establecimiento establecimiento);
 
-	Integer readIdDocFromTicketGuardado(DocumentoSucursal documento);
+//	Integer readIdDocFromTicketGuardado(DocumentoSucursal documento);
 
-	void saveTicketVentasMostrador(Documento documento);
+	void guardarTicketsCierreDia(Documento documento);
 
 	boolean isTicketProcesado(String archivoOrigen);
 

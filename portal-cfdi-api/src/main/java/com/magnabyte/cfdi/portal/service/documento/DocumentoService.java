@@ -41,4 +41,8 @@ public interface DocumentoService {
 
 	boolean isArticuloSinPrecio(String claveArticulo);
 
+	List<Documento> obtenerDocumentosTimbrePendientes();
+
+	Documento read(Documento documento);
+
 }

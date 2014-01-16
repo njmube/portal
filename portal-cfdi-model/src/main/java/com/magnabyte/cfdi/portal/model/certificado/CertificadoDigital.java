@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class CertificadoDigital implements Serializable {
+	
+	private static final long serialVersionUID = 4104198836947726745L;
+	
 	private Integer id;
 	private String numeroCertificado;
 	private String rutaKey;

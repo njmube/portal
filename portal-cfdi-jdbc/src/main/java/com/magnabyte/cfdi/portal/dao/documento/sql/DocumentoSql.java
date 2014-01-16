@@ -13,6 +13,7 @@ public class DocumentoSql extends GenericSql {
 	public static final String ID_DOCUMENTO = "id_documento";
 	public static final String ID_ESTABLECIMIENTO = "id_establecimiento";
 	public static final String ID_CLIENTE = "id_cliente";
+	public static final String ID_DOMICILIO_CLIENTE = "id_domicilio_cliente";
 	public static final String ID_TICKET = "id_ticket";
 	public static final String FOLIO_SAP = "folio_sap";
 	public static final String FECHA_DOCUMENTO = "fecha_doc";
@@ -34,7 +35,9 @@ public class DocumentoSql extends GenericSql {
 
 	public static final String ID_ESTADO_DOC = "id_estado_documento";
 	
-	public static final String READ_DOCUMENTO;
+	public static final String READ_DOCUMENTO_BY_ID;
+	public static final String READ_DOCUMENTOS;
+	public static final String READ_DOCUMENTOS_PENDIENTES;
 	public static final String READ_DOCUMENTO_RUTA;
 	public static final String READ_NEXT_SERIE_FOLIO;
 	public static final String UPDATE_FOLIO_SERIE;
@@ -75,7 +78,7 @@ public class DocumentoSql extends GenericSql {
 		qryBuilder.append("select *").append(EOL);
 		qryBuilder.append("from t_documento_pendiente as tdp").append(EOL);
 		qryBuilder.append("inner join t_documento_cfdi as tdc on tdp.id_documento = tdc.id_documento").append(EOL);
-		qryBuilder.append("where tdp.id_estado_documento = 3").append(EOL);
+		qryBuilder.append("where tdp.id_estado_documento = ?").append(EOL);
 		
 		READ_ACUSE_PEND = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
@@ -96,7 +99,22 @@ public class DocumentoSql extends GenericSql {
 		qryBuilder.append(INNER).append(EOL).append(TAB).append("t_documento_folio as folio on cfdi.id_documento = folio.id_documento").append(EOL);
 		qryBuilder.append(WHERE).append(EOL).append(TAB).append("cfdi.id_documento in (:idDocumentos)");
 		
-		READ_DOCUMENTO = qryBuilder.toString();
+		READ_DOCUMENTOS = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append(SELECT).append(EOL).append(TAB).append("id_documento, status_doc, fecha_doc, id_cliente, subtotal,"
+				+ " iva, total_doc, folio_sap, total_descuento").append(EOL);
+		qryBuilder.append(FROM).append(EOL).append(TAB).append("t_documento").append(EOL);
+		qryBuilder.append(WHERE).append(EOL).append(TAB).append("id_documento = ?");
+		
+		READ_DOCUMENTO_BY_ID = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append(SELECT).append(EOL).append(TAB).append("id_documento, serie, folio, id_tipo_documento, id_establecimiento").append(EOL);
+		qryBuilder.append(FROM).append(EOL).append(TAB).append("t_documento_pendiente").append(EOL);
+		qryBuilder.append(WHERE).append(EOL).append(TAB).append("id_estado_documento = ?");
+		
+		READ_DOCUMENTOS_PENDIENTES = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append("update t_documento set id_cliente = ? where id_documento = ?");

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
@@ -60,9 +61,14 @@ public class CorporativoController {
 		documento.setFolioSap(fileName.substring(1, 11));
 		documento.setNombreXmlPrevio(fileName);
 		documento.setEstablecimiento(establecimiento);
-		model.put("folioSap", documento.getFolioSap());
 		model.put("comprobante", comprobante);
 		model.put("documento", documento);
+		return "redirect:/facturaCorp/confirmarDatosFacturacion";
+	}
+	
+	@RequestMapping("/facturaCorp/confirmarDatosFacturacion")
+	public String confirmarDatosFacturacion(@ModelAttribute Documento documento, ModelMap model) {
+		model.put("comprobante", documento.getComprobante());
 		return "corporativo/facturaValidate";
 	}
 	

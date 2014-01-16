@@ -27,4 +27,8 @@ public interface DocumentoDao {
 
 	void updateDocumentoCliente(DocumentoSucursal documento);
 
+	List<Documento> obtenerDocumentosTimbrePendientes();
+
+	Documento read(Documento documento);
+
 }

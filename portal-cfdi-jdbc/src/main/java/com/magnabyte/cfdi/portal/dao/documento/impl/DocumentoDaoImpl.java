@@ -2,7 +2,6 @@ package com.magnabyte.cfdi.portal.dao.documento.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 
 import mx.gob.sat.cfd._3.Comprobante;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
+import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
@@ -57,11 +57,14 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue(DocumentoSql.ID_ESTABLECIMIENTO, documento.getEstablecimiento().getId());
 		params.addValue(DocumentoSql.ID_CLIENTE, documento.getCliente().getId());
+		if (documento.getCliente().getDomicilios().get(0).getId() != null 
+				&& documento.getCliente().getDomicilios().get(0).getId() > 0) {
+			params.addValue(DocumentoSql.ID_DOMICILIO_CLIENTE, documento.getCliente().getDomicilios().get(0).getId());
+		}
 		if(documento instanceof DocumentoCorporativo){
 			params.addValue(DocumentoSql.FOLIO_SAP, ((DocumentoCorporativo) documento).getFolioSap());
 		}
-		//FIXME Corregir fecha de generacion del documento
-		params.addValue(DocumentoSql.FECHA_DOCUMENTO, new Date());
+		params.addValue(DocumentoSql.FECHA_DOCUMENTO, documento.getFechaFacturacion());
 		params.addValue(DocumentoSql.TOTAL_DESCUENTO, documento.getComprobante().getDescuento());
 		params.addValue(DocumentoSql.SUBTOTAL, documento.getComprobante().getSubTotal());
 		params.addValue(DocumentoSql.IVA, documento.getComprobante().getImpuestos().getTotalImpuestosTrasladados());
@@ -101,8 +104,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		params.addValue(DocumentoSql.CADENA, documento.getCadenaOriginal());
 		params.addValue(DocumentoSql.SELLO_CFDI, documento.getTimbreFiscalDigital().getSelloCFD());
 		params.addValue(DocumentoSql.UUID, documento.getTimbreFiscalDigital().getUUID());
-		//FIXME Corregirfecha de certificacion
-		params.addValue(DocumentoSql.FECHA_HORA, new Date());
+		params.addValue(DocumentoSql.FECHA_HORA, documento.getTimbreFiscalDigital().getFechaTimbrado().toGregorianCalendar().getTime());
 		return params;
 	}
 	
@@ -140,18 +142,44 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 					Establecimiento establecimiento = new Establecimiento();
 					Comprobante comprobante = new Comprobante();
 					
-					documento.setId(rs.getInt(1));
-					documento.setTipoDocumento(TipoDocumento.getById(rs.getInt("id_tipo_documento")));
-					comprobante.setSerie(rs.getString("serie"));
-					comprobante.setFolio(rs.getString("folio"));
-					establecimiento.setId(rs.getInt("id_establecimiento"));
-					timbreFiscalDigital.setUUID(rs.getString("uuid"));
+					documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
+					documento.setTipoDocumento(TipoDocumento.getById(rs.getInt(DocumentoSql.ID_TIPO_DOCUMENTO)));
+					comprobante.setSerie(rs.getString(DocumentoSql.SERIE));
+					comprobante.setFolio(rs.getString(DocumentoSql.FOLIO));
+					establecimiento.setId(rs.getInt(EstablecimientoSql.ID_ESTABLECIMIENTO));
+					timbreFiscalDigital.setUUID(rs.getString(DocumentoSql.UUID));
 					documento.setTimbreFiscalDigital(timbreFiscalDigital);
 					documento.setComprobante(comprobante);
 					documento.setEstablecimiento(establecimiento);
 					return documento;
 				}
-			});
+			}, EstadoDocumentoPendiente.ACUSE_PENDIENTE.getId());
+		} catch (EmptyResultDataAccessException ex) {
+			logger.debug("No hay acuses pendientes");
+			return null;
+		}
+	}
+	
+	@Override
+	public List<Documento> obtenerDocumentosTimbrePendientes() {
+		try {
+			return getJdbcTemplate().query(DocumentoSql.READ_DOCUMENTOS_PENDIENTES, new RowMapper<Documento>() {
+				@Override
+				public Documento mapRow(ResultSet rs, int rowNum) throws SQLException {
+					Documento documento = new Documento();
+					Establecimiento establecimiento = new Establecimiento();
+					Comprobante comprobante = new Comprobante();
+					
+					documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
+					documento.setTipoDocumento(TipoDocumento.getById(rs.getInt(DocumentoSql.ID_TIPO_DOCUMENTO)));
+					comprobante.setSerie(rs.getString(DocumentoSql.SERIE));
+					comprobante.setFolio(rs.getString(DocumentoSql.FOLIO));
+					establecimiento.setId(rs.getInt(EstablecimientoSql.ID_ESTABLECIMIENTO));
+					documento.setComprobante(comprobante);
+					documento.setEstablecimiento(establecimiento);
+					return documento;
+				}
+			}, EstadoDocumentoPendiente.TIMBRE_PENDIENTE.getId());
 		} catch (EmptyResultDataAccessException ex) {
 			logger.debug("No hay acuses pendientes");
 			return null;
@@ -162,7 +190,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	public List<Documento> getNombreDocumentoFacturado(List<Integer> idDocumentos) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("idDocumentos", idDocumentos);
-		return getNamedParameterJdbcTemplate().query(DocumentoSql.READ_DOCUMENTO, map, DOCUMENTO_MAPPER);
+		return getNamedParameterJdbcTemplate().query(DocumentoSql.READ_DOCUMENTOS, map, DOCUMENTO_MAPPER);
 	}
 	
 	private static final RowMapper<Documento> DOCUMENTO_MAPPER = new RowMapper<Documento>() {
@@ -196,5 +224,10 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	@Override
 	public List<Documento> getDocumentoByCliente(Cliente cliente) {		
 		return getJdbcTemplate().query(DocumentoSql.READ_DOCUMENTO_RUTA, DOCUMENTO_RUTA_MAPPER, cliente.getRfc());
+	}
+
+	@Override
+	public Documento read(Documento documento) {
+		return getJdbcTemplate().queryForObject(DocumentoSql.READ_DOCUMENTO_BY_ID, DOCUMENTO_MAPPER, documento.getId());
 	}
 }

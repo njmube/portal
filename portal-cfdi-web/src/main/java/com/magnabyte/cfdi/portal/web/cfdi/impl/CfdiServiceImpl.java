@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.web.cfdi.impl;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -68,27 +69,51 @@ public class CfdiServiceImpl implements CfdiService {
 	@Override
 	public void generarDocumento(Documento documento, HttpServletRequest request) {
 		logger.debug("cfdiService...");
+		int idServicio = documentoWebService.obtenerIdServicio();
 		CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
+		documento.setFechaFacturacion(new Date());
 		documentoService.guardarDocumento(documento);
 		if(documento.isVentasMostrador()) {
-			ticketService.saveTicketVentasMostrador(documento);
+			ticketService.guardarTicketsCierreDia(documento);
 		}
+		sellarYTimbrarComprobante(documento, request, idServicio, certificado);
+	}
+
+	@Override
+	public void sellarYTimbrarComprobante(Documento documento,
+			HttpServletRequest request, int idServicio,
+			CertificadoDigital certificado) {
 		if (documentoService.sellarComprobante(documento.getComprobante(), certificado)) {
-			if (documentoWebService.timbrarDocumento(documento, request)) {
+			if (documentoWebService.timbrarDocumento(documento, request, idServicio)) {
 				documentoService.insertDocumentoCfdi(documento);
 				documentoService.insertDocumentoPendiente(documento, EstadoDocumentoPendiente.ACUSE_PENDIENTE);
 				if(documento instanceof DocumentoSucursal) {
 					ticketService.updateEstadoFacturado((DocumentoSucursal) documento);
 					if (((DocumentoSucursal) documento).isRequiereNotaCredito()) {
-						generarDocumentoNcr(documento, request);
+						generarDocumentoNcr(documento, request, idServicio);
 					}
 				}
 			}
 		}
 	}
 	
+	public void recuperarTimbreDocumentosPendientes() {
+		List<Documento> documentosTimbrePendientes = new ArrayList<Documento>();
+		documentosTimbrePendientes = documentoService.obtenerDocumentosTimbrePendientes();		
+		
+		if(!documentosTimbrePendientes.isEmpty()) {
+			int idServicio = documentoWebService.obtenerIdServicio();
+			
+			for(Documento documento : documentosTimbrePendientes) {
+				documentoService.read(documento);
+				CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
+				sellarYTimbrarComprobante(documento, null, idServicio, certificado);
+			}
+		}
+	}
+	
 	private void generarDocumentoNcr(Documento documento,
-			HttpServletRequest request) {
+			HttpServletRequest request, int idServicio) {
 		DocumentoSucursal documentoNcr = new DocumentoSucursal();
 		documentoNcr.setTicket(((DocumentoSucursal) documento).getTicket());
 		documentoNcr.getTicket().setTipoEstadoTicket(TipoEstadoTicket.GUARDADO_NCR);
@@ -104,10 +129,11 @@ public class CfdiServiceImpl implements CfdiService {
 		documentoNcr.setEstablecimiento(documento.getEstablecimiento());
 		documentoNcr.setTipoDocumento(TipoDocumento.NOTA_CREDITO);
 		documentoNcr.setRequiereNotaCredito(((DocumentoSucursal) documento).isRequiereNotaCredito());
+		documentoNcr.setFechaFacturacion(new Date());
 		CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
 		documentoService.guardarDocumento(documentoNcr);
 		if (documentoService.sellarComprobante(documentoNcr.getComprobante(), certificado)) {
-			if (documentoWebService.timbrarDocumento(documentoNcr, request)) {
+			if (documentoWebService.timbrarDocumento(documentoNcr, request, idServicio)) {
 				documentoService.insertDocumentoCfdi(documentoNcr);
 				documentoService.insertDocumentoPendiente(documentoNcr, EstadoDocumentoPendiente.ACUSE_PENDIENTE);
 				if(documentoNcr instanceof DocumentoSucursal) {
@@ -178,7 +204,7 @@ public class CfdiServiceImpl implements CfdiService {
 				//FIXME Desarrollar generacion de ncr
 			}
 		}
-	}
+	}	
 
 	private void filtraDevolucionesVentas(List<Ticket> ventas,
 			List<Ticket> devoluciones, List<Ticket> ventasDevueltas) {
@@ -201,29 +227,4 @@ public class CfdiServiceImpl implements CfdiService {
 			}				
 		}
 	}
-	
-//	public static void main(String[] args) {
-//
-//		    Set<String> set = new HashSet<String>();
-//		    set.add("Hello");
-//		    set.add("Hello1");
-//		    set.add("Hello2");
-//		    set.add("Hello3");
-//
-//		    for (Iterator<String> it = set.iterator(); it.hasNext(); ) {
-//		        String f = it.next();
-//		        if (f.equals("Hello")) {
-//		        	System.out.println("foo found");
-//		        	it.remove();
-//		        	set.remove(f);
-//		        }
-//		        if (f.equals("Hello1")) {
-//		        	System.out.println("foo found");
-//		        	it.remove();
-//		        	set.remove(f);
-//		        }
-//		    }
-//		    
-//		    System.out.println(set.toString());
-//	}
 }

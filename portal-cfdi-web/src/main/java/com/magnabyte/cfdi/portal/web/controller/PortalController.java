@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.factory.ClienteFactory;
+import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoPortal;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
@@ -114,9 +115,13 @@ public class PortalController {
 		documento.setEstablecimiento(establecimiento);
 		documento.setTipoDocumento(TipoDocumento.FACTURA);
 		model.put("documento", documento);
-		model.put("comprobante", comprobante);
 		model.put("ticket", ticket);
-		return "portal/facturaValidate";
+		return "redirect:/portal/cfdi/confirmarDatosFacturacion";
 	}
 	
+	@RequestMapping("/confirmarDatosFacturacion")
+	public String confirmarDatosFacturacion(@ModelAttribute Documento documento, ModelMap model) {
+		model.put("comprobante", documento.getComprobante());
+		return "portal/facturaValidate";
+	}
 }

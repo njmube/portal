@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -95,7 +94,7 @@ public class TicketServiceImpl implements TicketService {
 	public void save(DocumentoSucursal documento) {
 		if(documento.getTicket() != null) {
 			if (!documento.isRequiereNotaCredito()) {
-				documento.getTicket().setTipoEstadoTicket(TipoEstadoTicket.GUARDADO);
+				documento.getTicket().setTipoEstadoTicket(TipoEstadoTicket.FACTURADO);
 			}
 			ticketDao.save(documento);
 		} else {
@@ -106,8 +105,14 @@ public class TicketServiceImpl implements TicketService {
 	
 	@Transactional
 	@Override
-	public void saveTicketVentasMostrador(Documento documento) {
-		ticketDao.saveTicketVentasMostrador(documento);
+	public void guardarTicketsCierreDia(Documento documento) {
+		if (documento.getVentas() != null && !documento.getVentas().isEmpty()) {
+			ticketDao.saveTicketsCierreDia(documento, TipoEstadoTicket.FACTURADO_MOSTRADOR);
+		}
+		
+		if (documento.getDevoluciones() != null && !documento.getDevoluciones().isEmpty()) {
+			ticketDao.saveTicketsCierreDia(documento, TipoEstadoTicket.DEVUELTO);
+		}
 	}
 
 	@Transactional(readOnly = true)
@@ -118,10 +123,10 @@ public class TicketServiceImpl implements TicketService {
 		if (ticketDB != null) {
 			return ticketDB;
 		}
-		ticketDB = ticketDao.readByStatus(ticket, establecimiento, TipoEstadoTicket.GUARDADO);
-		if (ticketDB != null) {
-			return ticketDB;
-		}
+//		ticketDB = ticketDao.readByStatus(ticket, establecimiento, TipoEstadoTicket.GUARDADO);
+//		if (ticketDB != null) {
+//			return ticketDB;
+//		}
 		ticketDB = ticketDao.readByStatus(ticket, establecimiento, TipoEstadoTicket.FACTURADO_MOSTRADOR);
 		if (ticketDB != null) {
 			return ticketDB;
@@ -129,11 +134,11 @@ public class TicketServiceImpl implements TicketService {
 		return ticketDB;
 	}
 	
-	@Transactional(readOnly = true)
-	@Override
-	public Integer readIdDocFromTicketGuardado(DocumentoSucursal documento) {
-		return ticketDao.readIdDocFromTicketGuardado(documento);
-	}
+//	@Transactional(readOnly = true)
+//	@Override
+//	public Integer readIdDocFromTicketGuardado(DocumentoSucursal documento) {
+//		return ticketDao.readIdDocFromTicketGuardado(documento);
+//	}
 	
 	@Transactional
 	@Override
@@ -177,14 +182,12 @@ public class TicketServiceImpl implements TicketService {
 		logger.debug(regex);
 		SmbFile dir = null;
 		try {
-//			NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication("WORKGROUP", "", "");
 			dir = new SmbFile(urlTicketFiles);
 			if(dir.exists()) {
 				logger.debug("el dir existe");
 				SmbFile[] files = dir.listFiles();
 				logger.debug("archivos {}", files.length);
 				for (SmbFile file : files) {
-					logger.debug("archivo---{}", file.getName());
 					Matcher matcher = pattern.matcher(file.getName());
 					if (matcher.matches()) {
 						
@@ -244,12 +247,8 @@ public class TicketServiceImpl implements TicketService {
 				}
 				logger.debug("tickets size {}", archivosTicketsDelDia.size());
 				
-				//FIXME Corregir lectura de tickets facturados
-//				List<String> archivosFacturados = ticketDao.readAllByDate(
-//						FechasUtils.specificStringFormatDate(fechaCierre, "yyyyMMdd", "yyyy-MM-dd"));
-				
 				List<String> archivosFacturados = ticketDao.readAllByDate(
-						FechasUtils.specificStringFormatDate("20140113", "yyyyMMdd", "yyyy-MM-dd"));
+						FechasUtils.specificStringFormatDate(fechaCierre, "yyyyMMdd", "yyyy-MM-dd"));
 				
 				logger.debug("facturados size {}", archivosFacturados.size());
 				
@@ -336,8 +335,7 @@ public class TicketServiceImpl implements TicketService {
 		header.setIdTicket(ticketGenerico);
 		header.setIdCaja(cajaGenerica);
 		header.setIdSucursal(establecimiento.getClave());
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		header.setFechaHora(sdf.format(new Date()));
+		header.setFechaHora(FechasUtils.parseDateToString(new Date(), "dd/MM/yyyy HH:mm:ss"));
 		
 		concepto.setCantidad(new BigDecimal(0));
 		articulo.setId(null);
@@ -349,6 +347,7 @@ public class TicketServiceImpl implements TicketService {
 		for (Ticket ticket : ventas) {
 			for (Partida partida : ticket.getTransaccion().getPartidas()) {
 				if (!documentoService.isArticuloSinPrecio(partida.getArticulo().getId())) {
+					//FIXME Categoria articulo sin precio pasar a property
 					if (partida.getArticulo().getTipoCategoria() != null && !partida.getArticulo().getTipoCategoria().equals("PROMOCIONES")) {
 						precioTotal = precioTotal.add(partida.getPrecioTotal());
 					}
