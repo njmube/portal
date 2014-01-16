@@ -319,9 +319,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		try {
 			ticket.getTransaccion().getTransaccionHeader()
 				.setFechaHora(FechasUtils.specificStringFormatDate(ticket.getTransaccion().getTransaccionHeader().getFechaHora(), 
-						"yyyyMMddHHmmss", "dd/MM/yyyy HH:mm:ss"));
+						FechasUtils.formatyyyyMMddHHmmss, FechasUtils.formatddMMyyyyHHmmssSlash));
 		} catch (PortalException e) {
-			FechasUtils.parseStringToDate(ticket.getTransaccion().getTransaccionHeader().getFechaHora(), "dd/MM/yyyy HH:mm:ss");
+			FechasUtils.parseStringToDate(ticket.getTransaccion().getTransaccionHeader().getFechaHora(), FechasUtils.formatddMMyyyyHHmmssSlash);
 		} 
 	}
 
@@ -656,6 +656,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	public byte[] recuperarDocumentoArchivo(String fileName, 
 			Integer idEstablecimiento, String extension) {
 		try {
+			//FIXME Validar si funcion igual para corporativo y sucursal
 			Establecimiento estab = establecimientoService.readRutaById(
 					EstablecimientoFactory.newInstance(idEstablecimiento));
 			InputStream file = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
@@ -694,7 +695,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 					
 					Establecimiento estab = establecimientoService.readRutaById(
 							EstablecimientoFactory.newInstance(idEstablecimiento));
-					
+					//FIXME Validar ruta para corporativo y sucursal
 					InputStream pdf = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
 							+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + ".pdf");
 					

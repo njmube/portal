@@ -49,7 +49,6 @@ public class CorporativoController {
 	@RequestMapping("/facturaCorp/validate/{fileName:.+\\.[a-z]+}")
 	public String validarFactura(@ModelAttribute Establecimiento establecimiento, @PathVariable String fileName, ModelMap model) {
 		logger.debug("valida factura");
-		logger.debug(establecimiento.getRutaRepositorio() + fileName);
 		String urlSapFiles = establecimiento.getRutaRepositorio().getRutaRepositorio() + establecimiento.getRutaRepositorio().getRutaRepoIn();
 		Comprobante comprobante = documentoXmlService.convertXmlSapToCfdi(sambaService.getFileStream(urlSapFiles, fileName));
 		DocumentoCorporativo documento = new DocumentoCorporativo();

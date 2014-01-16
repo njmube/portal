@@ -20,6 +20,15 @@ public class FechasUtils {
 	public static final Logger logger =
 			LoggerFactory.getLogger(FechasUtils.class);
 	
+	public static final String formatddMMyyyyHyphen = "dd-MM-yyyy";
+	public static final String formatddMMyyyySlash = "dd/MM/yyyy";
+	public static final String formatyyyyMMdd = "yyyyMMdd";
+	public static final String formatyyyyMMddHyphen = "yyyy-MM-dd";
+	public static final String formatyyyyMMddSlash = "yyyy/MM/dd";
+	public static final String formatddMMyyyyHHmmssSlash = "dd/MM/yyyy HH:mm:ss";
+	public static final String formatyyyyMMddHHmmss = "yyyyMMddHHmmss";
+	public static final String formatyyyyMMddHHmmssHyphen = "yyyy-MM-dd HH:mm:ss";
+	
 	private static final long MILISECONDS_DAY = 24 * 60 * 60 * 1000;
 
 	public static Date parseStringToDate(String strDate, String formatDate) {

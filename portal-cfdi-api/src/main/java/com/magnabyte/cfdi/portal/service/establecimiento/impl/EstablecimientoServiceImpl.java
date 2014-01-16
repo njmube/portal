@@ -73,7 +73,7 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 		
 		if (estab.getSiguienteCierre() != null) {
 			String fechaCierreSig = FechasUtils.parseDateToString(
-					estab.getSiguienteCierre(), "dd-MM-yyyy");
+					estab.getSiguienteCierre(), FechasUtils.formatddMMyyyyHyphen);
 			return fechaCierreSig;
 		}
 		

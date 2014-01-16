@@ -159,7 +159,8 @@ public class CfdiServiceImpl implements CfdiService {
 		if (hora > horaCierre) {
 			
 			ticketService.closeOfDay(establecimiento, 
-					FechasUtils.specificStringFormatDate(fechaCierre, "dd-MM-yyyy", "yyyyMMdd"), 
+					FechasUtils.specificStringFormatDate(fechaCierre, FechasUtils.formatddMMyyyyHyphen, 
+					FechasUtils.formatyyyyMMdd), 
 					ventas, devoluciones);
 			
 			logger.debug("devoluciones {}", devoluciones.size());

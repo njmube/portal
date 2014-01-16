@@ -1,8 +1,5 @@
 package com.magnabyte.cfdi.portal.service.certificado.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import mx.gob.sat.cfd._3.Comprobante;
 
 import org.slf4j.Logger;
@@ -12,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.magnabyte.cfdi.portal.dao.certificado.CertificadoDao;
 import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
+import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.service.certificado.CertificadoService;
 
 @Service("certificadoService")
@@ -25,13 +23,10 @@ public class CertificadoServiceImpl implements CertificadoService {
 	@Override
 	public CertificadoDigital readVigente(Comprobante comprobante) {
 		logger.debug("recuperando certificado vigente");
-		String fechaComprobante = obtenerFechaComprobante(comprobante.getFecha().toGregorianCalendar().getTime());
+		String fechaComprobante = FechasUtils
+				.parseDateToString(comprobante.getFecha().toGregorianCalendar().getTime(), 
+				FechasUtils.formatyyyyMMddHHmmssHyphen);
 		return certificadoDao.readVigente(fechaComprobante);
-	}
-
-	private String obtenerFechaComprobante(Date fechaComprobante) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		return sdf.format(fechaComprobante);
 	}
 
 }
