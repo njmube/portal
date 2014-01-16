@@ -62,7 +62,7 @@ public class DocumentoDetalleDaoImpl extends GenericJdbcDao
 	}
 	
 	public Conceptos read(Documento documento) {
-		return (Conceptos) getJdbcTemplate().query(
+		return getJdbcTemplate().queryForObject(
 				DocumentoDetalleSql.READ_DOC_DETALLE, DOC_DETALLE_MAPPER, documento.getId());
 	}
 	

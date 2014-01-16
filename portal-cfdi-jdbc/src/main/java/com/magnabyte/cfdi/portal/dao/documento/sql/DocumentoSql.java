@@ -36,7 +36,7 @@ public class DocumentoSql extends GenericSql {
 	public static final String ID_ESTADO_DOC = "id_estado_documento";
 	
 	public static final String READ_DOCUMENTO_BY_ID;
-	public static final String READ_DOCUMENTOS;
+	public static final String READ_DOCUMENTOS_FACTURADOS;
 	public static final String READ_DOCUMENTOS_PENDIENTES;
 	public static final String READ_DOCUMENTO_RUTA;
 	public static final String READ_NEXT_SERIE_FOLIO;
@@ -99,11 +99,11 @@ public class DocumentoSql extends GenericSql {
 		qryBuilder.append(INNER).append(EOL).append(TAB).append("t_documento_folio as folio on cfdi.id_documento = folio.id_documento").append(EOL);
 		qryBuilder.append(WHERE).append(EOL).append(TAB).append("cfdi.id_documento in (:idDocumentos)");
 		
-		READ_DOCUMENTOS = qryBuilder.toString();
+		READ_DOCUMENTOS_FACTURADOS = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		
-		qryBuilder.append(SELECT).append(EOL).append(TAB).append("id_documento, status_doc, fecha_doc, id_cliente, subtotal,"
-				+ " iva, total_doc, folio_sap, total_descuento, id_domicilio_cliente").append(EOL);
+		qryBuilder.append(SELECT).append(EOL).append(TAB).append("id_documento, id_establecimiento, status_doc, fecha_doc, id_cliente, subtotal,"
+				+ " iva, total_doc, dbo.TRIM(folio_sap) as folio_sap, total_descuento, id_domicilio_cliente").append(EOL);
 		qryBuilder.append(FROM).append(EOL).append(TAB).append("t_documento").append(EOL);
 		qryBuilder.append(WHERE).append(EOL).append(TAB).append("id_documento = ?");
 		

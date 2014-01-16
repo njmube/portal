@@ -656,7 +656,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	public byte[] recuperarDocumentoArchivo(String fileName, 
 			Integer idEstablecimiento, String extension) {
 		try {
-			Establecimiento estab = establecimientoService.readById(
+			Establecimiento estab = establecimientoService.readRutaById(
 					EstablecimientoFactory.newInstance(idEstablecimiento));
 			InputStream file = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
 					+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + "." + extension);
@@ -692,7 +692,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 					htmlPlantillaError = IOUtils.toString(htmlResourceError.getInputStream(),"UTF-8");
 					textoPlanoPlantillaError = IOUtils.toString(plainTextResourceError.getInputStream(),"UTF-8");
 					
-					Establecimiento estab = establecimientoService.readById(
+					Establecimiento estab = establecimientoService.readRutaById(
 							EstablecimientoFactory.newInstance(idEstablecimiento));
 					
 					InputStream pdf = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
@@ -732,13 +732,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		Cliente clienteBD = null;
 		Conceptos conceptosBD = null;
 		Comprobante comprobante = new Comprobante();
-				
 		Establecimiento estabBD = null;		
 		
 		if(documento.getId() != null) {
 			docBD = documentoDao.read(documento);
 			clienteBD = clienteService.read(docBD.getCliente());
-			estabBD = establecimientoService.readById(docBD.getEstablecimiento());
+			estabBD = establecimientoService.read(docBD.getEstablecimiento());
 			conceptosBD = documentoDetalleService.read(documento);			
 			
 			comprobante.setEmisor(emisorService.getEmisorPorEstablecimiento(estabBD));
