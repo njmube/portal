@@ -15,6 +15,8 @@ public static final String TABLE_NAME = "t_documento_detalle";
 	public static final String CANTIDAD = "cantidad";
 	
 	public static final String INSERT_DETALLE_DOC;
+	public static final String READ_DOC_DETALLE;
+
 	
 	static {
 		StringBuilder queryBuilder = new StringBuilder();
@@ -35,5 +37,26 @@ public static final String TABLE_NAME = "t_documento_detalle";
 		queryBuilder.append(PARENTESIS_FIN);
 		
 		INSERT_DETALLE_DOC = queryBuilder.toString();
+		clearAndReuseStringBuilder(queryBuilder);
+		
+		queryBuilder.append(SELECT).append(EOL).append(TAB);
+		queryBuilder.append(CANTIDAD).append(EOL_);
+		queryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(UNIDAD);
+		queryBuilder.append(PARENTESIS_FIN).append(AS).append(UNIDAD).append(EOL_);
+		queryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(DESCRIPCION);
+		queryBuilder.append(PARENTESIS_FIN).append(AS).append(DESCRIPCION).append(EOL_);
+		queryBuilder.append(TAB).append(PRECIO_UNITARIO).append(EOL_);
+		queryBuilder.append(TAB).append(PRECIO_TOTAL).append(EOL);
+		
+		queryBuilder.append(FROM).append(EOL).append(TAB);
+		queryBuilder.append(TABLE_NAME).append(EOL);
+		
+		queryBuilder.append(WHERE).append(EOL).append(TAB);
+		queryBuilder.append(ID_DOCUMENTO_DETALLE).append(SET_PARAM);
+		
+		
+		
+		READ_DOC_DETALLE = queryBuilder.toString();
+		clearAndReuseStringBuilder(queryBuilder);
 	}
 }

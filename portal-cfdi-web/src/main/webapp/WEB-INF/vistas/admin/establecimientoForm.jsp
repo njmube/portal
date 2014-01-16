@@ -110,7 +110,7 @@
 				</div>
 			</div>
 			
-			<div class="row">
+			<div class="">
 			<div class="col-md-12">
 					<div class="white-panel form-horizontal">
 						<h4 class="text-primary">Dirección</h4>

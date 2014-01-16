@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.magnabyte.cfdi.portal.model.commons.Usuario;
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.commons.UsuarioService;
+import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 
 @Controller
 public class UsuarioController {
@@ -23,6 +25,9 @@ public class UsuarioController {
 	
 	@Autowired
 	private UsuarioService usuarioService;
+	
+	@Autowired
+	private EstablecimientoService establecimientoService;
 	
 	@RequestMapping("/catalogoUsuarios")
 	public String catalogoEstablecimiento(ModelMap model) {
@@ -37,22 +42,46 @@ public class UsuarioController {
 		logger.debug("-- id "+id);
 		Usuario usu = new Usuario();
 		usu.setId(id);
-//		Usuario usuario = usuarioService.read(usu);
-		
-//		model.put("usuario", usuario);
+		Usuario usuario = usuarioService.read(usu);
+		model.put("listaEstablecimientos",establecimientoService.readAll()); 
+		model.put("usuario", usuario);
 		
 		return "admin/usuarioForm";	
 	}
 	
 	@RequestMapping(value = "/guardarUsuario", method = RequestMethod.POST)
-	public String guardarUsuarios (@ModelAttribute Usuario usuario ) {
-		if (usuario.getId() != 0){
-//			usuarioService.update(usuario);
-		} else {
-//			usuarioService.save(usuario);
+	public String guardarUsuarios (ModelMap model, @ModelAttribute Usuario usuario) {
+		try {
+			if (usuario.getId() != null) {
+				usuarioService.update(usuario);
+			} else {
+				usuarioService.save(usuario);
+			}
+		} catch (PortalException ex) {
+			
+				if (usuario.getId() != null){
+					model.put("error", true);
+					model.put("messageError", ex.getMessage());
+					model.put("listaEstablecimientos" ,establecimientoService.readAll());
+					model.put("usuario", usuarioService.read(usuario));
+					return "admin/usuarioForm";
+				} else {
+					model.put("error", true);
+					model.put("messageError", ex.getMessage());
+					model.put("listaEstablecimientos" ,establecimientoService.readAll());
+					model.put("usuario", usuarioService.getUsuarioByEstablecimiento(usuario));
+					return "admin/altaUsuario";
+				}
+				
 		}
-		
 		return "redirect:/catalogoUsuarios";
+	}
+	
+	@RequestMapping("/altaUsuario")
+	public String altaUsuarios(ModelMap model) {
+		model.put("listaEstablecimientos",establecimientoService.readAll());
+		model.put("usuario", new Usuario());
+		return "admin/altaUsuario";
 	}
 	
 }

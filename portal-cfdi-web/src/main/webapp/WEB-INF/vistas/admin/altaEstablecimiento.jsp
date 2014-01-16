@@ -10,6 +10,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Catalogo Establecimiento</title>
 <script src="<c:url value="/resources/js/commons/direccionFunctions.js"/>"></script>
+<script src="<c:url value="/resources/js/commons/validatePassword.js"/>"></script>
 <script src="<c:url value="/resources/js/admin/establecimientoForm.js"/>"></script>
 <script type="text/javascript">
 	$(document).ready(function() {

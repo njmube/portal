@@ -1,14 +1,17 @@
 package com.magnabyte.cfdi.portal.dao.documento.impl;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import mx.gob.sat.cfd._3.Comprobante.Conceptos;
 import mx.gob.sat.cfd._3.Comprobante.Conceptos.Concepto;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
@@ -25,33 +28,30 @@ public class DocumentoDetalleDaoImpl extends GenericJdbcDao
 			LoggerFactory.getLogger(DocumentoDetalleDaoImpl.class);
 
 	public void save(final Documento documento) {
-		 
 		String qry = DocumentoDetalleSql.INSERT_DETALLE_DOC;
 
 		try {
-
 			getJdbcTemplate().batchUpdate(qry,new BatchPreparedStatementSetter() {
+				@Override
+				public void setValues(PreparedStatement ps, int i)
+						throws SQLException {
+					Concepto conceptos = documento.getComprobante()
+							.getConceptos().getConcepto().get(i);
+					
+					ps.setInt(1, documento.getId());
+					ps.setBigDecimal(2, conceptos.getImporte());
+					ps.setBigDecimal(3, conceptos.getValorUnitario());
+					ps.setString(4, conceptos.getDescripcion());
+					ps.setString(5, conceptos.getUnidad());
+					ps.setBigDecimal(6, conceptos.getCantidad());
+				}
 
-						@Override
-						public void setValues(PreparedStatement ps, int i)
-								throws SQLException {
-							Concepto conceptos = documento.getComprobante()
-									.getConceptos().getConcepto().get(i);
-							
-							ps.setInt(1, documento.getId());
-							ps.setBigDecimal(2, conceptos.getImporte());
-							ps.setBigDecimal(3, conceptos.getValorUnitario());
-							ps.setString(4, conceptos.getDescripcion());
-							ps.setString(5, conceptos.getUnidad());
-							ps.setBigDecimal(6, conceptos.getCantidad());
-						}
-
-						@Override
-						public int getBatchSize() {
-							return documento.getComprobante().getConceptos()
-									.getConcepto().size();
-						}
-					});
+				@Override
+				public int getBatchSize() {
+					return documento.getComprobante().getConceptos()
+							.getConcepto().size();
+				}
+			});
 			
 		} catch (DataAccessException ex) {
 			logger.debug("No se pudo registrar el DocumentoDetalle "
@@ -60,4 +60,28 @@ public class DocumentoDetalleDaoImpl extends GenericJdbcDao
 					+ "en la base de datos.",ex);
 		}
 	}
+	
+	public Conceptos read(Documento documento) {
+		return (Conceptos) getJdbcTemplate().query(
+				DocumentoDetalleSql.READ_DOC_DETALLE, DOC_DETALLE_MAPPER, documento.getId());
+	}
+	
+	private static final RowMapper<Conceptos> DOC_DETALLE_MAPPER = new RowMapper<Conceptos>() {
+
+		@Override
+		public Conceptos mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Conceptos conceptos = new Conceptos();
+			Concepto concepto = new Concepto();
+			
+			concepto.setCantidad(rs.getBigDecimal(DocumentoDetalleSql.CANTIDAD));
+			concepto.setUnidad(rs.getString(DocumentoDetalleSql.UNIDAD));
+			concepto.setDescripcion(rs.getString(DocumentoDetalleSql.DESCRIPCION));
+			concepto.setValorUnitario(rs.getBigDecimal(DocumentoDetalleSql.PRECIO_UNITARIO));
+			concepto.setImporte(rs.getBigDecimal(DocumentoDetalleSql.PRECIO_TOTAL));
+			
+			conceptos.getConcepto().add(concepto);
+			
+			return conceptos;
+		}
+	};
 }

@@ -103,7 +103,7 @@ public class DocumentoSql extends GenericSql {
 		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append(SELECT).append(EOL).append(TAB).append("id_documento, status_doc, fecha_doc, id_cliente, subtotal,"
-				+ " iva, total_doc, folio_sap, total_descuento").append(EOL);
+				+ " iva, total_doc, folio_sap, total_descuento, id_domicilio_cliente").append(EOL);
 		qryBuilder.append(FROM).append(EOL).append(TAB).append("t_documento").append(EOL);
 		qryBuilder.append(WHERE).append(EOL).append(TAB).append("id_documento = ?");
 		

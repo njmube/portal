@@ -7,8 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.magnabyte.cfdi.portal.dao.commons.sql.UsuarioSql;
-import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
+import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoDetalleSql;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/jdbcApplicationContext.xml" })
@@ -18,7 +17,7 @@ public class SqlGenericTest {
 
 	@Test
 	public void qryTest() {
-		String qryString = DocumentoSql.READ_DOCUMENTOS_PENDIENTES;
+		String qryString = DocumentoDetalleSql.READ_DOC_DETALLE;
 		logger.info(qryString);
 		Assert.assertNotNull(qryString);
 	}

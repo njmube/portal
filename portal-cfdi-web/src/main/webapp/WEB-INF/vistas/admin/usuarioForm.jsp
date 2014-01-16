@@ -14,9 +14,10 @@
 		$(document.body).on("click","#cancelar",function() {
 			location.href = contextPath + "/catalogoUsuarios";
 		});
-		
 	});
 </script>
+<script src="<c:url value="/resources/js/commons/validatePassword.js"/>"></script>
+<script src="<c:url value="/resources/js/admin/usuarioForm.js"/>"></script>
 </head>
 <body>
 		<div class="container">
@@ -27,17 +28,25 @@
 			</blockquote>
 			<hr>
 			<c:url var="update" value="/guardarUsuario" />
-			<form:form id="usuarioForm" action="${update }" method="post" modelAttribute="usuario" cssClass="form-horizontal"	role="form">
+			<c:if test="${error}">
+				<div class="col-md-offset-3 col-md-6 alert alert-danger alert-dismissable alert-fixed auto-close">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					<spring:message code="messages.error.usuario.existente"/>
+					<br><br> <strong>${messageError}</strong> 
+				</div>
+			</c:if>
+			<form:form id="usuarioForm" action="${update}" method="post" modelAttribute="usuario" cssClass="form-horizontal"	role="form">
 			<div class="row">
-				<div class="col-md-5">
+				<div class="col-md-6 col-md-offset-3">
 					<div class="white-panel form-horizontal">
 						<h4 class="text-primary">Usuario</h4>
 						<hr>
 						<fieldset>
 							<div class="form-group">
-								<label for="txtNombre" class="col-lg-5 control-label">Nombre:</label>
+								<form:hidden path="id"/>
+								<label for="txtNombre" class="col-lg-5 control-label">Usuario:</label>
 								<div class="col-lg-5">
-									<form:input path="nombre" cssClass="form-control input-sm validate[required]" id="txtNombre" />
+									<form:input path="usuario" cssClass="form-control input-sm validate[required]" id="txtNombre" />
 								</div>
 							</div>
 							<div class="form-group">
@@ -55,19 +64,28 @@
 							<div class="form-group">
 								<label for="txtSucursal" class="col-lg-5 control-label">Sucursal: </label>
 								<div class="col-lg-5">
-									<form:select  path="establecimiento.id" id="establecimiento" class="form-control input-sm validate[required]">
+								<form:select  path="establecimiento.id" id="establecimiento" class="form-control input-sm validate[required]">
 									<form:option value="">- Seleccione una opción -</form:option>
-									<form:options items="${listaEstablecimientos }"  itemValue="id"></form:options>
+									<c:forEach items="${listaEstablecimientos}" var="establecimiento">
+										<option value="${establecimiento.id}" ${usuario.establecimiento.id eq establecimiento.id  ? 'selected' : '' }>
+										${establecimiento.nombre}</option>
+									</c:forEach>
 								</form:select>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="txtEstatus" class="col-lg-5 control-label">Estatus: </label>
 								<div class="col-lg-5">
-									<form:select  path="estatus" id="estatus" class="form-control input-sm validate[required]">
+								<form:select  path="estatus" id="estatus" class="form-control input-sm validate[required]">
 									<form:option value="">- Seleccione una opción -</form:option>
-									<form:option value="1">ACTIVO</form:option>
-									<form:option value="2">INACTIVO</form:option>
+										<c:if test="${usuario.estatus.id eq 1}">
+											<option value="ACTIVO" selected>ACTIVO</option>
+											<option value="INACTIVO">INACTIVO</option>
+										</c:if>
+										<c:if test="${usuario.estatus.id eq 2}">
+											<option value="ACTIVO">ACTIVO</option>
+											<option value="INACTIVO" selected>INACTIVO</option>
+										</c:if>
 								</form:select>
 								</div>
 							</div>
@@ -75,12 +93,10 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
-					<p class="form-grup text-center">
+				<p class="form-grup text-center">
 					<button id="guardar" type="submit" class="btn btn-primary">Actualizar <i class="fa fa-floppy-o"></i></button>
 					<button id="cancelar" type="button" class="btn btn-danger">Cancelar <i class="fa fa-times"></i></button>
-					</p>
-			</div>
+				</p>
 			</form:form>
 		</div>
 	</div>	

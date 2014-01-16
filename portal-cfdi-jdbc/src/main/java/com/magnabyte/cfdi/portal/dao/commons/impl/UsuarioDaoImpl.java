@@ -7,6 +7,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -23,9 +24,10 @@ import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
 @Repository("usuarioDao")
 public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
-	
-	private static final Logger logger = LoggerFactory.getLogger(UsuarioDaoImpl.class);
 
+	public static final Logger logger = 
+			LoggerFactory.getLogger(UsuarioDaoImpl.class);
+	
 	@Override
 	public void save(Usuario usuario) {
 		try {
@@ -54,8 +56,15 @@ public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 	@Override
 	public Usuario getUsuarioByEstablecimiento(Usuario usuario) {
 		String qry = UsuarioSql.GET_BY_ESTABLECIMIENTO;
-		return getJdbcTemplate().queryForObject(qry, 
-				UASUARIO_MAPPER, usuario.getEstablecimiento().getId(), usuario.getUsuario());
+		Usuario object = null;
+		try {
+			object = getJdbcTemplate().queryForObject(qry, 
+					UASUARIO_MAPPER, usuario.getEstablecimiento().getId(), usuario.getUsuario());
+		} catch (EmptyResultDataAccessException ex) {
+			return null;
+		}
+		return object;
+				
 	}
 	
 	@Override
@@ -77,7 +86,8 @@ public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 			usuario.getUsuario(),
 			usuario.getPassword(),
 			usuario.getEstablecimiento().getId(),
-			usuario.getEstatus().getId()
+			usuario.getEstatus().getId(),
+			usuario.getId()
 		});
 	}
 	
@@ -95,7 +105,6 @@ public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 			estable.setNombre(rs.getString(EstablecimientoSql.NOM_ESTAB));
 			usuario.setEstablecimiento(estable);
 			usuario.setEstatus(EstatusUsuario.getById(rs.getInt(UsuarioSql.ID_STATUS)));
-			
 			return usuario;
 		}
 	};

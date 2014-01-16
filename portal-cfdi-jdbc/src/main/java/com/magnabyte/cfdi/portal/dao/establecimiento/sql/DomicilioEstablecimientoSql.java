@@ -80,6 +80,7 @@ public class DomicilioEstablecimientoSql extends GenericSql   {
 		qryBuilder.append(UPDATE).append(EOL).append(TAB).append(TABLE_NAME);
 		qryBuilder.append(EOL).append(SET).append(EOL);
 		
+		qryBuilder.append(TAB).append(ID_ESTADO).append(SET_PARAM).append(EOL_);
 		qryBuilder.append(TAB).append(CALLE).append(SET_PARAM).append(EOL_);
 		qryBuilder.append(TAB).append(NO_EXTERIOR).append(SET_PARAM).append(EOL_);
 		qryBuilder.append(TAB).append(NO_INTERIOR).append(SET_PARAM).append(EOL_);
