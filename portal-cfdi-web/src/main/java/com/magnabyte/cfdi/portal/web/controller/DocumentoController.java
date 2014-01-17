@@ -139,16 +139,15 @@ public class DocumentoController {
 	//FIXME Exception io
 //	@RequestMapping(value = {"/documentoDownload/{idEstab}/{fileName}/{extension}"
 //			, "/portal/cfdi/documentoDownload/{idEstab}/{fileName}/{extension}"})
-	@RequestMapping(value = {"/documentoDownload/{idDoc}/{fileName}/{extension}"
-			, "/portal/cfdi/documentoDownload/{idDoc}/{fileName}/{extension}"})
-	public void documentoDownload(@PathVariable Integer idDoc, 
-			@PathVariable String fileName, @PathVariable String extension,
-			HttpServletResponse response) {
+	@RequestMapping(value = {"/documentoDownloadXml/{idDoc}/{fileName}"
+			, "/portal/cfdi/documentoDownloadXml/{idDoc}/{fileName}"})
+	public void documentoDownloadXml(@PathVariable Integer idDoc, 
+			@PathVariable String fileName, HttpServletResponse response) {
 		try {						
 //			byte [] doc = documentoService.recuperarDocumentoArchivo(fileName, idEstab, extension);
 			byte [] doc = documentoService.recuperarDocumentoXml(idDoc);
 			
-			response.setHeader("Content-Disposition", "attachment; filename=" + fileName + "." + extension);
+			response.setHeader("Content-Disposition", "attachment; filename=" + fileName + ".xml");
 			OutputStream out = response.getOutputStream();
 			out.write(doc);
 			out.flush();
