@@ -23,7 +23,6 @@ import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
-import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
@@ -273,5 +272,10 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	@Override
 	public Documento read(Documento documento) {
 		return getJdbcTemplate().queryForObject(DocumentoSql.READ_DOCUMENTO_BY_ID, DOCUMENTO_MAPPER, documento.getId());
+	}
+	
+	@Override
+	public void deletedDocumentoPendiente(Documento documento) {		
+		getJdbcTemplate().update(DocumentoSql.DELETE_DOCUMENTO_PENDIENTE, documento.getId());
 	}
 }

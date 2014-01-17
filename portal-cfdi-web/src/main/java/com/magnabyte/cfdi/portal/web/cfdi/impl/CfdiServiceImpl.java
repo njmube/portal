@@ -104,14 +104,12 @@ public class CfdiServiceImpl implements CfdiService {
 		if(!documentosTimbrePendientes.isEmpty()) {
 			int idServicio = documentoWebService.obtenerIdServicio();
 			
-			for(Documento documento : documentosTimbrePendientes) {
-				documentoService.read(documento);
+			for(Documento documentoPendiente : documentosTimbrePendientes) {
+				documentoService.read(documentoPendiente);
 //				CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
 //				sellarYTimbrarComprobante(documento, null, idServicio, certificado);
-				
 				logger.debug("Sello y timbro");
-				
-				//TODO Delete pendiente
+				documentoService.deleteDocumentoPendiente(documentoPendiente);
 			}
 		}
 	}
