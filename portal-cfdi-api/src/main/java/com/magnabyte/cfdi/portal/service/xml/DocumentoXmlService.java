@@ -16,4 +16,6 @@ public interface DocumentoXmlService {
 
 	String obtenerNumCertificado(byte[] xmlCfdi);
 
+	byte[] convierteComprobanteAByteArrayForWebService(Comprobante comprobante);
+
 }

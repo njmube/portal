@@ -64,7 +64,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		
 		try {
 			response = wsEmisionTimbrado.emitirTimbrar(userWs, passwordWs, idServicio, 
-				documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
+				documentoXmlService.convierteComprobanteAByteArrayForWebService(documento.getComprobante()));
 //			if(documento != null) {
 //				throw new Exception("Sin servicio web service.");
 //			}
@@ -86,11 +86,11 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(response.getXML()));
 			documento.setXmlCfdi(response.getXML());
 			if (documento instanceof DocumentoCorporativo) {
-				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
+//				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
 			}
-			sambaService.writeProcessedCfdiXmlFile(response.getXML(), documento);
+//			sambaService.writeProcessedCfdiXmlFile(response.getXML(), documento);
 			if(request != null) {
-				sambaService.writePdfFile(documento, request);
+//				sambaService.writePdfFile(documento, request);
 			}
 			return true;
 		} else {
@@ -128,7 +128,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	
 		if (response.getAcuse() != null) {
 			logger.debug("llamada a samba");
-			sambaService.writeAcuseCfdiXmlFile(response.getAcuse(), documento);
+//			sambaService.writeAcuseCfdiXmlFile(response.getAcuse(), documento);
 			documentoService.deleteFromAcusePendiente(documento);
 		} else {
 			logger.debug("El webservice no devolvio el acuse");

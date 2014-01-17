@@ -67,9 +67,11 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 					throws SQLException {
 				Establecimiento establecimiento = new Establecimiento();
 				RutaRepositorio rutaRepositorio = new RutaRepositorio();
-
-				rutaRepositorio.setRutaRepositorio(rs.getString("ruta_repo"));
-				rutaRepositorio.setRutaRepoOut(rs.getString("ruta_out"));
+				establecimiento.setSmbDomain(rs.getString(EstablecimientoSql.SMB_DOMAIN));
+				establecimiento.setSmbUsername(rs.getString(EstablecimientoSql.SMB_USERNAME));
+				establecimiento.setSmbPassword(rs.getString(EstablecimientoSql.SMB_PASSWORD));
+				rutaRepositorio.setRutaRepositorio(rs.getString(EstablecimientoSql.RUTA_REPOSITORIO));
+				rutaRepositorio.setRutaRepoOut(rs.getString(EstablecimientoSql.RUTA_OUT));
 				
 				establecimiento.setRutaRepositorio(rutaRepositorio);
 				return establecimiento;
@@ -132,7 +134,7 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 		params.addValue(EstablecimientoSql.NOMBRE, establecimiento.getNombre());
 		params.addValue(EstablecimientoSql.PASSWORD, establecimiento.getPassword());
 		params.addValue(EstablecimientoSql.ID_DOM_ESTAB, establecimiento.getDomicilio().getId());
-		params.addValue(EstablecimientoSql.ID_EMISOR, establecimiento.getEmisor().getId());
+		params.addValue(EstablecimientoSql.ID_EMISOR, establecimiento.getEmpresaEmisor().getId());
 		params.addValue(EstablecimientoSql.ID_RUTA_ESTAB, establecimiento.getRutaRepositorio().getId());
 		params.addValue(EstablecimientoSql.ID_TIPO_ESTAB, establecimiento.getTipoEstablecimiento().getId());
 
@@ -169,6 +171,9 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 			establecimiento.setId(rs.getInt(EstablecimientoSql.ID_ESTABLECIMIENTO));
 			establecimiento.setClave(String.valueOf(rs.getInt(EstablecimientoSql.CLAVE)));
 			establecimiento.setNombre(rs.getString(EstablecimientoSql.NOMBRE));
+			establecimiento.setSmbDomain(rs.getString(EstablecimientoSql.SMB_DOMAIN));
+			establecimiento.setSmbUsername(rs.getString(EstablecimientoSql.SMB_USERNAME));
+			establecimiento.setSmbPassword(rs.getString(EstablecimientoSql.SMB_PASSWORD));
 			
 			rutaRepo.setId(rs.getInt(EstablecimientoSql.ID_RUTA_ESTAB));
 			rutaRepo.setRutaRepositorio(rs.getString(EstablecimientoSql.RUTA_REPOSITORIO));
@@ -184,7 +189,7 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 			
 			empresa.setId(rs.getInt(EstablecimientoSql.ID_EMISOR));
 			
-			establecimiento.setEmisor(empresa);
+			establecimiento.setEmpresaEmisor(empresa);
 			establecimiento.setTipoEstablecimiento(tipoEstablecimiento);
 			establecimiento.setRutaRepositorio(rutaRepo);
 			establecimiento.setDomicilio(domEstablecimiento);

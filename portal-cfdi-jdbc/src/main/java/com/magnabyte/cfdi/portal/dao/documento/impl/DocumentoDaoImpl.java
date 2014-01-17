@@ -1,5 +1,6 @@
 package com.magnabyte.cfdi.portal.dao.documento.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -73,8 +74,11 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		params.addValue(DocumentoSql.IVA, documento.getComprobante().getImpuestos().getTotalImpuestosTrasladados());
 		params.addValue(DocumentoSql.TOTAL, documento.getComprobante().getTotal());
 		params.addValue(DocumentoSql.STATUS, true);
-		params.addValue(DocumentoSql.XML_FILE, new Jdbc4SqlXmlHandler().newSqlXmlValue("<?xml version=\"1.0\" encoding=\"UTF-16\" standalone=\"yes\"?><Comprobante><Emisor rfc=\"AAA010101AAA\" nombre=\"MODATELAS S.A.P.I DE C.V.\"/></Comprobante>"));
-//		params.addValue(DocumentoSql.XML_FILE, "<?xml version=\"1.0\" encoding=\"UTF-16\" standalone=\"yes\"?><Comprobante><Emisor rfc=\"AAA010101AAA\" nombre=\"MODATELAS S.A.P.I DE C.V.\"/></Comprobante>");
+		try {
+			params.addValue(DocumentoSql.XML_FILE, new String(documento.getXmlCfdi(), "UTF-16"));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		return params;
 	}
 
@@ -249,6 +253,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			documento.setCliente(cliente);
 			documento.setEstablecimiento(establecimiento);
 			documento.setComprobante(comprobante);
+			documento.setXmlCfdi(rs.getSQLXML(DocumentoSql.XML_FILE).getString().getBytes());
 			return documento;
 		}
 	};
@@ -274,6 +279,23 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	@Override
 	public Documento read(Documento documento) {
 		return getJdbcTemplate().queryForObject(DocumentoSql.READ_DOCUMENTO_BY_ID, DOCUMENTO_MAPPER, documento.getId());
+	}
+	
+	@Override
+	public Documento readDocumentoFolio(Documento documento) {
+		try {
+			return getJdbcTemplate().queryForObject(DocumentoSql.READ_DOC_BY_SERIE_FOLIO, new RowMapper<Documento>() {
+				@Override
+				public Documento mapRow(ResultSet rs, int rowNum)
+						throws SQLException {
+					Documento documento = new Documento();
+					documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
+					return documento;
+				}
+			}, documento.getComprobante().getSerie(), documento.getComprobante().getFolio());
+		} catch (EmptyResultDataAccessException ex) {
+			return null;
+		}
 	}
 	
 	@Override

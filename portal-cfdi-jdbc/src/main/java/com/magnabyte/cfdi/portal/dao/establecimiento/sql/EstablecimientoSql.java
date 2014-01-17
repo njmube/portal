@@ -20,6 +20,9 @@ public class EstablecimientoSql extends GenericSql {
 	public static final String CLAVE = "clave";
 	public static final String NOMBRE = "nombre";
 	public static final String PASSWORD = "password";
+	public static final String SMB_DOMAIN = "smb_domain";
+	public static final String SMB_USERNAME = "smb_username";
+	public static final String SMB_PASSWORD = "smb_password";
 	public static final String ID_ESTABLECIMIENTO = "id_establecimiento";
 	public static final String ID_EMISOR = "id_emisor";
 	
@@ -94,6 +97,12 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TIPO_ESTAB).append(DOT);
 		qryBuilder.append(ROL).append(PARENTESIS_FIN).append(AS).append(ROL).append(EOL_).append(TAB);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TABLE).append(DOT);
+		qryBuilder.append(SMB_DOMAIN).append(PARENTESIS_FIN).append(AS).append(SMB_DOMAIN).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TABLE).append(DOT);
+		qryBuilder.append(SMB_USERNAME).append(PARENTESIS_FIN).append(AS).append(SMB_USERNAME).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TABLE).append(DOT);
+		qryBuilder.append(SMB_PASSWORD).append(PARENTESIS_FIN).append(AS).append(SMB_PASSWORD).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TABLE).append(DOT);
 		qryBuilder.append(CLAVE).append(PARENTESIS_FIN).append(AS).append(CLAVE).append(EOL_).append(TAB);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TABLE).append(DOT);
 		qryBuilder.append(NOMBRE).append(PARENTESIS_FIN).append(AS).append(NOMBRE).append(EOL_).append(TAB);
@@ -138,6 +147,12 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(NOMBRE).append(PARENTESIS_FIN).append(AS).append(NOM_ESTAB).append(EOL_).append(TAB);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TIPO_ESTAB).append(DOT);
 		qryBuilder.append(ROL).append(PARENTESIS_FIN).append(AS).append(ROL).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TABLE).append(DOT);
+		qryBuilder.append(SMB_DOMAIN).append(PARENTESIS_FIN).append(AS).append(SMB_DOMAIN).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TABLE).append(DOT);
+		qryBuilder.append(SMB_USERNAME).append(PARENTESIS_FIN).append(AS).append(SMB_USERNAME).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TABLE).append(DOT);
+		qryBuilder.append(SMB_PASSWORD).append(PARENTESIS_FIN).append(AS).append(SMB_PASSWORD).append(EOL_).append(TAB);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TABLE).append(DOT);
 		qryBuilder.append(CLAVE).append(PARENTESIS_FIN).append(AS).append(CLAVE).append(EOL_).append(TAB);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TABLE).append(DOT);
@@ -279,8 +294,18 @@ public class EstablecimientoSql extends GenericSql {
 				
 		clearAndReuseStringBuilder(qryBuilder);
 		
-		qryBuilder.append("select * from t_establecimiento as te inner join t_ruta_establecimiento as tre on te.id_ruta_establecimiento = ");
-		qryBuilder.append("tre.id_ruta_establecimiento where te.id_establecimiento = ?");
+		qryBuilder.append("select ");
+		qryBuilder.append("dbo.TRIM(te.smb_domain) AS smb_domain, ");
+		qryBuilder.append("dbo.TRIM(te.smb_username) AS smb_username, ");
+		qryBuilder.append("dbo.TRIM(te.smb_password) AS smb_password, ");
+		qryBuilder.append("dbo.TRIM(tre.ruta_repo) AS ruta_repo, ");
+		qryBuilder.append("dbo.TRIM(tre.ruta_out) AS ruta_out ");
+		qryBuilder.append("from ");
+		qryBuilder.append("t_establecimiento as te ");
+		qryBuilder.append("inner join t_ruta_establecimiento as tre ");
+		qryBuilder.append("on te.id_ruta_establecimiento = ");
+		qryBuilder.append("tre.id_ruta_establecimiento ");
+		qryBuilder.append("where te.id_establecimiento = ?");
 		
 		READ_RUTA_BY_ID = qryBuilder.toString();
 		

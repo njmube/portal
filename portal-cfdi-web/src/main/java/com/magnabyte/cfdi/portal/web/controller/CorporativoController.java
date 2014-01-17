@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.web.controller;
 
 import java.util.List;
 
+import jcifs.smb.NtlmPasswordAuthentication;
 import mx.gob.sat.cfd._3.Comprobante;
 
 import org.slf4j.Logger;
@@ -38,10 +39,12 @@ public class CorporativoController {
 	private DocumentoService documentoService;
 	
 	@RequestMapping("/facturaCorp")
-	public String facturaCorp(@ModelAttribute Establecimiento sucursal, ModelMap model) {
+	public String facturaCorp(@ModelAttribute Establecimiento establecimiento, ModelMap model) {
 		logger.debug("facturaCorp...");
-		String urlSapFiles = sucursal.getRutaRepositorio().getRutaRepositorio() + sucursal.getRutaRepositorio().getRutaRepoIn();
-		List<DocumentoCorporativo> documentos = sambaService.getFilesFromDirectory(urlSapFiles);
+		String urlSapFiles = establecimiento.getRutaRepositorio().getRutaRepositorio() 
+				+ establecimiento.getRutaRepositorio().getRutaRepoIn();
+		NtlmPasswordAuthentication authentication = sambaService.getAuthentication(establecimiento);
+		List<DocumentoCorporativo> documentos = sambaService.getFilesFromDirectory(urlSapFiles, authentication);
 		model.put("documentos", documentos);
 		return "corporativo/facturaCorp";
 	}
@@ -50,7 +53,8 @@ public class CorporativoController {
 	public String validarFactura(@ModelAttribute Establecimiento establecimiento, @PathVariable String fileName, ModelMap model) {
 		logger.debug("valida factura");
 		String urlSapFiles = establecimiento.getRutaRepositorio().getRutaRepositorio() + establecimiento.getRutaRepositorio().getRutaRepoIn();
-		Comprobante comprobante = documentoXmlService.convertXmlSapToCfdi(sambaService.getFileStream(urlSapFiles, fileName));
+		NtlmPasswordAuthentication authentication = sambaService.getAuthentication(establecimiento);
+		Comprobante comprobante = documentoXmlService.convertXmlSapToCfdi(sambaService.getFileStream(urlSapFiles, fileName, authentication));
 		DocumentoCorporativo documento = new DocumentoCorporativo();
 		documento.setCliente(documentoService.obtenerClienteDeComprobante(comprobante));
 		TipoDocumento tipoDocumento = comprobante.getTipoDeComprobante().equalsIgnoreCase("ingreso") 

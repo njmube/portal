@@ -125,7 +125,8 @@ public class DocumentoController {
 			String filename = documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".xml";
 			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
 			OutputStream out = response.getOutputStream();
-			out.write(documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
+			//FIXME metodo
+			out.write(documentoXmlService.convierteComprobanteAByteArrayForWebService(documento.getComprobante()));
 			out.flush();
 			out.close();
 		} catch (IOException e) {

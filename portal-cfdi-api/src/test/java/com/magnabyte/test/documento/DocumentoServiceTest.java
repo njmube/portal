@@ -1,5 +1,9 @@
 package com.magnabyte.test.documento;
 
+import java.io.UnsupportedEncodingException;
+
+import mx.gob.sat.cfd._3.Comprobante;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,8 +18,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoSerieDao;
+import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.impl.DocumentoServiceImpl;
+import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/serviceApplicationContext.xml", "classpath:/jdbcApplicationContext.xml"})
@@ -29,6 +35,12 @@ public class DocumentoServiceTest {
 	@Mock
 	DocumentoDao documentoDaoMock;
 	
+	@Autowired
+	DocumentoDao documentoDao;
+	
+	@Autowired
+	DocumentoXmlService documentoXmlService;
+	
 	@InjectMocks
 	@Autowired
 	DocumentoService documentoService = new DocumentoServiceImpl();
@@ -38,7 +50,7 @@ public class DocumentoServiceTest {
 		MockitoAnnotations.initMocks(this);
 	}
 	
-	@Test
+//	@Test
 	public void insertDocumentoFolioTest() {
 //		Documento documento = new DocumentoSucursal();
 //		documento.setId(8);
@@ -54,5 +66,17 @@ public class DocumentoServiceTest {
 //		
 //		Mockito.verify(documentoSerieDaoMock, Mockito.atLeastOnce()).updateFolioSerie(documento);
 //		Mockito.verify(documentoDaoMock, Mockito.atLeastOnce()).insertDocumentoFolio(documento);
+	}
+	
+	@Test
+	public void read() throws UnsupportedEncodingException {
+		Documento documento = new Documento();
+		documento.setId(368);
+		documento = documentoDao.read(documento);
+		logger.debug(new String(documento.getXmlCfdi(), "UTF-8"));
+		Comprobante comprobante = documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi());
+		documentoXmlService.convierteComprobanteAByteArrayForWebService(comprobante);
+		
+		logger.debug("fin");
 	}
 }
