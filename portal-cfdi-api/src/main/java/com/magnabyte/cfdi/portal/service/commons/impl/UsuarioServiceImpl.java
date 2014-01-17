@@ -73,11 +73,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 		
 		if(usuario.getId() != null) {
 			if(usu != null) {
-				if(!usuario.getPassword().equals(usu.getPassword()) || 
-						usuario.getEstatus().getId() != usu.getEstatus().getId()) {
-					return false;
-					
-				}
+//				if(!usuario.getPassword().equals(usu.getPassword()) || 
+//						usuario.getEstatus().getId() != usu.getEstatus().getId()) {
+//					return false;
+//					
+//				}
 				return true;
 			}
 		} else {
