@@ -26,5 +26,7 @@ public interface EstablecimientoDao {
 	void save(Establecimiento establecimiento);
 
 	Establecimiento read(Establecimiento establecimiento);
+
+	Establecimiento findbyName(Establecimiento establecimiento);
 	
 }

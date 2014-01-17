@@ -28,6 +28,8 @@ public class GenericSql {
 	public static final String DOT = ".";
 	public static final String SET = "SET";
 	public static final String AND = "AND";
+	public static final String OR = "OR";
+	
 	
 	
 	public static void clearAndReuseStringBuilder(final StringBuilder qry) {

@@ -65,6 +65,16 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 	public void save (Establecimiento establecimiento) {
 		establecimientoDao.save(establecimiento);
 	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public boolean exist(Establecimiento establecimiento) {
+		Establecimiento esta = establecimientoDao.findbyName(establecimiento);
+		if (esta != null) {
+			return true;
+		}
+		return false;
+	}
 
 	@Override
 	public String readFechaCierreById(Establecimiento establecimiento) {

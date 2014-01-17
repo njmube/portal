@@ -52,6 +52,7 @@ public class EstablecimientoSql extends GenericSql {
 	public static final String UPDATE_ESTABLECIMIENTO;
 	public static final String READ_RUTA_BY_ID;
 	public static final String READ_FECHA_CIERRE_BY_ID;
+	public static final String FIND_by_NAME;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -316,7 +317,29 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(WHERE).append(EOL).append(TAB).append(ID_ESTABLECIMIENTO).append(SET_PARAM);
 		
 		READ_FECHA_CIERRE_BY_ID = qryBuilder.toString();		
-		
 		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append(SELECT).append(EOL).append(TAB);
+		qryBuilder.append(ID_ESTABLECIMIENTO).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(CLAVE)
+		.append(PARENTESIS_FIN).append(AS).append(CLAVE).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(NOMBRE)
+		.append(PARENTESIS_FIN).append(AS).append(NOMBRE).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(PASSWORD)
+		.append(PARENTESIS_FIN).append(AS).append(PASSWORD).append(EOL);
+		
+		
+		qryBuilder.append(FROM).append(EOL).append(TAB);
+		qryBuilder.append(TABLE_NAME).append(EOL);
+		
+		qryBuilder.append(WHERE).append(EOL).append(TAB);
+		qryBuilder.append(CLAVE).append(SET_PARAM);
+		
+		qryBuilder.append(OR).append(EOL).append(TAB);
+		qryBuilder.append(NOMBRE).append(SET_PARAM);
+		
+		FIND_by_NAME = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
+		
 	}	
 }

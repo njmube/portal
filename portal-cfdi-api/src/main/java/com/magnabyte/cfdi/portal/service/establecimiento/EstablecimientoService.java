@@ -24,5 +24,7 @@ public interface EstablecimientoService {
 	void save(Establecimiento establecimiento);
 
 	Establecimiento read(Establecimiento establecimiento);
+
+	boolean exist(Establecimiento establecimiento);
 	
 }
