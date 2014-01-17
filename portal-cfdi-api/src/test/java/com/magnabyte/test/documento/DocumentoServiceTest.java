@@ -71,7 +71,7 @@ public class DocumentoServiceTest {
 	@Test
 	public void read() throws UnsupportedEncodingException {
 		Documento documento = new Documento();
-		documento.setId(368);
+		documento.setId(375);
 		documento = documentoDao.read(documento);
 		logger.debug(new String(documento.getXmlCfdi(), "UTF-8"));
 		Comprobante comprobante = documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi());

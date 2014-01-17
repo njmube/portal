@@ -57,6 +57,21 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		getJdbcTemplate().update(DocumentoSql.UPDATE_DOC_CTE, documento.getCliente().getId(), documento.getId());
 	}
 
+	//FIXME exceptions
+	@Override
+	public void updateDocumentoXmlCfdi(Documento documento) {
+		try {
+			getJdbcTemplate().update(DocumentoSql.UPDATE_DOC_XML_FILE, 
+					new String(documento.getXmlCfdi(), "UTF-16"), documento.getId());
+		} catch (DataAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	private MapSqlParameterSource getParameters(Documento documento) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue(DocumentoSql.ID_ESTABLECIMIENTO, documento.getEstablecimiento().getId());

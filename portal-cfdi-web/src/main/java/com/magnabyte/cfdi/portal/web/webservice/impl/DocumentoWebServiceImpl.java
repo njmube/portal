@@ -84,7 +84,10 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			documento.setCadenaOriginal(response.getCadenaOriginal());
 			documento.setTimbreFiscalDigital(timbre);
 			documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(response.getXML()));
-			documento.setXmlCfdi(response.getXML());
+			documento.setXmlCfdi(documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
+			//FIXME
+			documentoService.updateDocumentoXmlCfdi(documento);
+			
 			if (documento instanceof DocumentoCorporativo) {
 //				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
 			}

@@ -35,4 +35,6 @@ public interface DocumentoDao {
 
 	Documento readDocumentoFolio(Documento documento);
 
+	void updateDocumentoXmlCfdi(Documento documento);
+
 }

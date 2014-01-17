@@ -504,6 +504,11 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		
 	}
 	
+	@Override
+	public void updateDocumentoXmlCfdi(Documento documento) {
+		documentoDao.updateDocumentoXmlCfdi(documento);
+	}
+	
 	private boolean isFacturable(Documento documento) {
 		Documento documentoBD = documentoDao.readDocumentoFolio(documento);
 		return documentoBD == null;
