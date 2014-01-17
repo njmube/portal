@@ -104,10 +104,12 @@ public class CfdiServiceImpl implements CfdiService {
 		if(!documentosTimbrePendientes.isEmpty()) {
 			int idServicio = documentoWebService.obtenerIdServicio();
 			
-			for(Documento documento : documentosTimbrePendientes) {
-				documentoService.read(documento);
-				CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
-				sellarYTimbrarComprobante(documento, null, idServicio, certificado);
+			for(Documento documentoPendiente : documentosTimbrePendientes) {
+				documentoService.read(documentoPendiente);
+//				CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
+//				sellarYTimbrarComprobante(documento, null, idServicio, certificado);
+				logger.debug("Sello y timbro");
+				documentoService.deleteDocumentoPendiente(documentoPendiente);
 			}
 		}
 	}
@@ -155,7 +157,8 @@ public class CfdiServiceImpl implements CfdiService {
 		if (hora > horaCierre) {
 			
 			ticketService.closeOfDay(establecimiento, 
-					FechasUtils.specificStringFormatDate(fechaCierre, "dd-MM-yyyy", "yyyyMMdd"), 
+					FechasUtils.specificStringFormatDate(fechaCierre, FechasUtils.formatddMMyyyyHyphen, 
+					FechasUtils.formatyyyyMMdd), 
 					ventas, devoluciones);
 			
 			logger.debug("devoluciones {}", devoluciones.size());

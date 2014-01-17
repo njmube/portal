@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import mx.gob.sat.cfd._3.Comprobante;
+import mx.gob.sat.cfd._3.Comprobante.Impuestos;
 import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
 
 import org.slf4j.Logger;
@@ -17,11 +18,11 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
+import com.magnabyte.cfdi.portal.dao.cliente.sql.ClienteSql;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
-import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
@@ -191,10 +192,11 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	public List<Documento> getNombreDocumentoFacturado(List<Integer> idDocumentos) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("idDocumentos", idDocumentos);
-		return getNamedParameterJdbcTemplate().query(DocumentoSql.READ_DOCUMENTOS, map, DOCUMENTO_MAPPER);
+		return getNamedParameterJdbcTemplate().query(DocumentoSql.READ_DOCUMENTOS_FACTURADOS,
+				map, DOCUMENTO_FACTURADO_MAPPER);
 	}
 	
-	private static final RowMapper<Documento> DOCUMENTO_MAPPER = new RowMapper<Documento>() {
+	private static final RowMapper<Documento> DOCUMENTO_FACTURADO_MAPPER = new RowMapper<Documento>() {
 
 		@Override
 		public Documento mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -206,6 +208,44 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
 			documento.setTipoDocumento(TipoDocumento.FACTURA);
 			documento.setId_domicilio(rs.getInt(DocumentoSql.ID_DOMICILIO_CLIENTE));
+			documento.setComprobante(comprobante);
+			return documento;
+		}
+	};
+	
+	private static final RowMapper<Documento> DOCUMENTO_MAPPER = new RowMapper<Documento>() {
+
+		@Override
+		public Documento mapRow(ResultSet rs, int rowNum) throws SQLException {
+			String folioSap = rs.getString(DocumentoSql.FOLIO_SAP);
+			
+			Documento documento = null;
+			
+			if(folioSap != null) {
+				documento  = new DocumentoCorporativo();
+				((DocumentoCorporativo) documento).setFolioSap(folioSap);
+			} else {
+				documento = new DocumentoSucursal();
+			}
+			
+			Establecimiento establecimiento = new Establecimiento();
+			Cliente cliente = new Cliente();
+			Comprobante comprobante = new Comprobante();
+			Impuestos impuesto = new Impuestos();
+		
+			documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
+			establecimiento.setId(rs.getInt(EstablecimientoSql.ID_ESTABLECIMIENTO));
+			documento.setFechaFacturacion(rs.getDate(DocumentoSql.FECHA_DOCUMENTO));
+			cliente.setId(rs.getInt(ClienteSql.ID_CLIENTE));
+			comprobante.setSubTotal(rs.getBigDecimal(DocumentoSql.SUBTOTAL));
+			impuesto.setTotalImpuestosTrasladados(rs.getBigDecimal(DocumentoSql.IVA));
+			comprobante.setTotal(rs.getBigDecimal(DocumentoSql.TOTAL));
+			comprobante.setDescuento(rs.getBigDecimal(DocumentoSql.TOTAL_DESCUENTO));
+			documento.setId_domicilio(rs.getInt(DocumentoSql.ID_DOMICILIO_CLIENTE));
+			
+			comprobante.setImpuestos(impuesto);
+			documento.setCliente(cliente);
+			documento.setEstablecimiento(establecimiento);
 			documento.setComprobante(comprobante);
 			return documento;
 		}
@@ -232,5 +272,10 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	@Override
 	public Documento read(Documento documento) {
 		return getJdbcTemplate().queryForObject(DocumentoSql.READ_DOCUMENTO_BY_ID, DOCUMENTO_MAPPER, documento.getId());
+	}
+	
+	@Override
+	public void deletedDocumentoPendiente(Documento documento) {		
+		getJdbcTemplate().update(DocumentoSql.DELETE_DOCUMENTO_PENDIENTE, documento.getId());
 	}
 }

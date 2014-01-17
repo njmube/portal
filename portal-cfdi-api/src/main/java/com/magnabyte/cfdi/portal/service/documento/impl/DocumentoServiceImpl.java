@@ -319,9 +319,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		try {
 			ticket.getTransaccion().getTransaccionHeader()
 				.setFechaHora(FechasUtils.specificStringFormatDate(ticket.getTransaccion().getTransaccionHeader().getFechaHora(), 
-						"yyyyMMddHHmmss", "dd/MM/yyyy HH:mm:ss"));
+						FechasUtils.formatyyyyMMddHHmmss, FechasUtils.formatddMMyyyyHHmmssSlash));
 		} catch (PortalException e) {
-			FechasUtils.parseStringToDate(ticket.getTransaccion().getTransaccionHeader().getFechaHora(), "dd/MM/yyyy HH:mm:ss");
+			FechasUtils.parseStringToDate(ticket.getTransaccion().getTransaccionHeader().getFechaHora(), FechasUtils.formatddMMyyyyHHmmssSlash);
 		} 
 	}
 
@@ -656,7 +656,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	public byte[] recuperarDocumentoArchivo(String fileName, 
 			Integer idEstablecimiento, String extension) {
 		try {
-			Establecimiento estab = establecimientoService.readById(
+			//FIXME Validar si funcion igual para corporativo y sucursal
+			Establecimiento estab = establecimientoService.readRutaById(
 					EstablecimientoFactory.newInstance(idEstablecimiento));
 			InputStream file = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
 					+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + "." + extension);
@@ -692,9 +693,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 					htmlPlantillaError = IOUtils.toString(htmlResourceError.getInputStream(),"UTF-8");
 					textoPlanoPlantillaError = IOUtils.toString(plainTextResourceError.getInputStream(),"UTF-8");
 					
-					Establecimiento estab = establecimientoService.readById(
+					Establecimiento estab = establecimientoService.readRutaById(
 							EstablecimientoFactory.newInstance(idEstablecimiento));
-					
+					//FIXME Validar ruta para corporativo y sucursal
 					InputStream pdf = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
 							+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + ".pdf");
 					
@@ -732,13 +733,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		Cliente clienteBD = null;
 		Conceptos conceptosBD = null;
 		Comprobante comprobante = new Comprobante();
-				
 		Establecimiento estabBD = null;		
 		
 		if(documento.getId() != null) {
 			docBD = documentoDao.read(documento);
 			clienteBD = clienteService.read(docBD.getCliente());
-			estabBD = establecimientoService.readById(docBD.getEstablecimiento());
+			estabBD = establecimientoService.read(docBD.getEstablecimiento());
 			conceptosBD = documentoDetalleService.read(documento);			
 			
 			comprobante.setEmisor(emisorService.getEmisorPorEstablecimiento(estabBD));
@@ -760,5 +760,11 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			
 		}
 		return docBD;
+	}
+
+	@Override
+	public void deleteDocumentoPendiente(Documento documento) {
+		documentoDao.deletedDocumentoPendiente(documento);
+		
 	}
 }

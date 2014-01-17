@@ -31,4 +31,6 @@ public interface DocumentoDao {
 
 	Documento read(Documento documento);
 
+	void deletedDocumentoPendiente(Documento documento);
+
 }

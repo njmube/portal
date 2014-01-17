@@ -52,7 +52,7 @@ public static final String TABLE_NAME = "t_documento_detalle";
 		queryBuilder.append(TABLE_NAME).append(EOL);
 		
 		queryBuilder.append(WHERE).append(EOL).append(TAB);
-		queryBuilder.append(ID_DOCUMENTO_DETALLE).append(SET_PARAM);
+		queryBuilder.append(DocumentoSql.ID_DOCUMENTO).append(SET_PARAM);
 		
 		
 		

@@ -13,7 +13,7 @@ public interface EstablecimientoDao {
 
 	Establecimiento readByClave(Establecimiento establecimiento);
 
-	Establecimiento readById(Establecimiento establecimiento);
+	Establecimiento readRutaById(Establecimiento establecimiento);
 	
 	Establecimiento readFechaCierreById(Establecimiento establecimiento);
 
@@ -24,5 +24,7 @@ public interface EstablecimientoDao {
 	void update(Establecimiento establecimiento);
 
 	void save(Establecimiento establecimiento);
+
+	Establecimiento read(Establecimiento establecimiento);
 	
 }

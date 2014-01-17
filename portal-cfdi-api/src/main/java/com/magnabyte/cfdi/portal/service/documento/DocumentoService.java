@@ -45,4 +45,6 @@ public interface DocumentoService {
 
 	Documento read(Documento documento);
 
+	void deleteDocumentoPendiente(Documento documento);
+
 }

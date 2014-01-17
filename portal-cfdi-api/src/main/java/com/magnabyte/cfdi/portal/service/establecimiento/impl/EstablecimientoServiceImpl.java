@@ -31,8 +31,14 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 	
 	@Transactional(readOnly = true)
 	@Override
-	public Establecimiento readById(Establecimiento establecimiento) {
-		return establecimientoDao.readById(establecimiento);
+	public Establecimiento read(Establecimiento establecimiento) {
+		return establecimientoDao.read(establecimiento);
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public Establecimiento readRutaById(Establecimiento establecimiento) {
+		return establecimientoDao.readRutaById(establecimiento);
 	}
 	
 	@Transactional(readOnly = true)
@@ -67,7 +73,7 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 		
 		if (estab.getSiguienteCierre() != null) {
 			String fechaCierreSig = FechasUtils.parseDateToString(
-					estab.getSiguienteCierre(), "dd-MM-yyyy");
+					estab.getSiguienteCierre(), FechasUtils.formatddMMyyyyHyphen);
 			return fechaCierreSig;
 		}
 		

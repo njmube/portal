@@ -42,11 +42,12 @@ public class EstablecimientoSql extends GenericSql {
 	public static final String GET_ROLES;
 	public static final String FIND_BY_CLAVE;
 	public static final String READ_BY_CLAVE;
+	public static final String READ_BY_ID;
 	public static final String READ_LUGAR_EXP;
 	public static final String READ_ALL;
 	public static final String READ_ALL_WITH_IDS;
 	public static final String UPDATE_ESTABLECIMIENTO;
-	public static final String READ_BY_ID;
+	public static final String READ_RUTA_BY_ID;
 	public static final String READ_FECHA_CIERRE_BY_ID;
 	
 	static {
@@ -127,6 +128,51 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(ALIAS_TABLE).append(DOT).append(CLAVE).append(SET_PARAM);
 		
 		READ_BY_CLAVE = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
+
+		qryBuilder.append(SELECT).append(EOL).append(TAB);
+		qryBuilder.append(ALIAS_TABLE).append(DOT).append(ID_ESTABLECIMIENTO).append(EOL_).append(TAB);
+		qryBuilder.append(ALIAS_TABLE).append(DOT).append(ID_EMISOR).append(EOL_).append(TAB);
+		qryBuilder.append(ALIAS_TIPO_ESTAB).append(DOT).append(ID_TIPO_ESTAB).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TIPO_ESTAB).append(DOT);
+		qryBuilder.append(NOMBRE).append(PARENTESIS_FIN).append(AS).append(NOM_ESTAB).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TIPO_ESTAB).append(DOT);
+		qryBuilder.append(ROL).append(PARENTESIS_FIN).append(AS).append(ROL).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TABLE).append(DOT);
+		qryBuilder.append(CLAVE).append(PARENTESIS_FIN).append(AS).append(CLAVE).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_TABLE).append(DOT);
+		qryBuilder.append(NOMBRE).append(PARENTESIS_FIN).append(AS).append(NOMBRE).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_DOM_ESTAB).append(DOT);
+		qryBuilder.append(LOCALIDAD).append(PARENTESIS_FIN).append(AS).append(LOCALIDAD).append(EOL_).append(TAB);
+		qryBuilder.append(ALIAS_RUTA_ESTAB).append(DOT).append(ID_RUTA_ESTAB).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_RUTA_ESTAB).append(DOT);
+		qryBuilder.append(RUTA_INPROC).append(PARENTESIS_FIN).append(AS).append(RUTA_INPROC).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_RUTA_ESTAB).append(DOT);
+		qryBuilder.append(RUTA_IN).append(PARENTESIS_FIN).append(AS).append(RUTA_IN).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_RUTA_ESTAB).append(DOT);
+		qryBuilder.append(RUTA_OUT).append(PARENTESIS_FIN).append(AS).append(RUTA_OUT).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_RUTA_ESTAB).append(DOT);
+		qryBuilder.append(RUTA_REPOSITORIO).append(PARENTESIS_FIN).append(AS).append(RUTA_REPOSITORIO).append(EOL);
+		
+		qryBuilder.append(FROM).append(EOL).append(TAB);
+		qryBuilder.append(TABLE_NAME).append(AS).append(ALIAS_TABLE).append(EOL).append(TAB);
+		
+		qryBuilder.append(INNER).append(CATALOGO_TIPO_ESTAB).append(AS).append(ALIAS_TIPO_ESTAB);
+		qryBuilder.append(ON).append(ALIAS_TABLE).append(DOT).append(ID_TIPO_ESTAB).append(EQ).append(ALIAS_TIPO_ESTAB);
+		qryBuilder.append(DOT).append(ID_TIPO_ESTAB).append(EOL).append(TAB);
+		
+		qryBuilder.append(INNER).append(TABLE_RUTA_ESTAB).append(AS).append(ALIAS_RUTA_ESTAB);
+		qryBuilder.append(ON).append(ALIAS_TABLE).append(DOT).append(ID_RUTA_ESTAB).append(EQ).append(ALIAS_RUTA_ESTAB);
+		qryBuilder.append(DOT).append(ID_RUTA_ESTAB).append(EOL).append(TAB);
+		
+		qryBuilder.append(INNER).append(TABLE_DOM_ESTAB).append(AS).append(ALIAS_DOM_ESTAB);
+		qryBuilder.append(ON).append(ALIAS_TABLE).append(DOT).append(ID_DOM_ESTAB).append(EQ).append(ALIAS_DOM_ESTAB);
+		qryBuilder.append(DOT).append(ID_DOM_ESTAB).append(EOL);
+		
+		qryBuilder.append(WHERE).append(EOL).append(TAB);
+		qryBuilder.append(ALIAS_TABLE).append(DOT).append(ID_ESTABLECIMIENTO).append(SET_PARAM);
+		
+		READ_BY_ID = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append(SELECT).append(EOL).append(TAB);
@@ -236,7 +282,7 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append("select * from t_establecimiento as te inner join t_ruta_establecimiento as tre on te.id_ruta_establecimiento = ");
 		qryBuilder.append("tre.id_ruta_establecimiento where te.id_establecimiento = ?");
 		
-		READ_BY_ID = qryBuilder.toString();
+		READ_RUTA_BY_ID = qryBuilder.toString();
 		
 		clearAndReuseStringBuilder(qryBuilder);
 		

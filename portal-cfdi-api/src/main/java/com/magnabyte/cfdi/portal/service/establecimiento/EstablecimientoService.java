@@ -11,7 +11,7 @@ public interface EstablecimientoService {
 	
 	Establecimiento readByClave(Establecimiento establecimiento);
 
-	Establecimiento readById(Establecimiento establecimiento);
+	Establecimiento readRutaById(Establecimiento establecimiento);
 	
 	String readFechaCierreById(Establecimiento establecimiento);
 
@@ -22,5 +22,7 @@ public interface EstablecimientoService {
 	void update(Establecimiento establecimiento);
 
 	void save(Establecimiento establecimiento);
+
+	Establecimiento read(Establecimiento establecimiento);
 	
 }

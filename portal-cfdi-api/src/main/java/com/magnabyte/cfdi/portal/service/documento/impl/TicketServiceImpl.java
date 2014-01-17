@@ -173,7 +173,7 @@ public class TicketServiceImpl implements TicketService {
 		String noTicket = ticket.getTransaccion().getTransaccionHeader().getIdTicket();
 		String fechaXml = ticket.getTransaccion().getTransaccionHeader().getFecha();
 		BigDecimal importe = ticket.getTransaccion().getTransaccionTotal().getTotalVenta();
-		String fecha = fechaXml.substring(6, 10) + fechaXml.substring(3, 5) + fechaXml.substring(0, 2);
+		String fecha = FechasUtils.specificStringFormatDate(fechaXml, FechasUtils.formatddMMyyyyHyphen, FechasUtils.formatyyyyMMdd);
 		String regex = noSucursal + "_" + noCaja + "_" + noTicket + "_" + fecha + "\\d{6}\\.xml$";
 		String urlTicketFiles = establecimiento.getRutaRepositorio().getRutaRepositorio() 
 				+ establecimiento.getRutaRepositorio().getRutaRepoIn() + fecha + "/"; 
@@ -248,7 +248,7 @@ public class TicketServiceImpl implements TicketService {
 				logger.debug("tickets size {}", archivosTicketsDelDia.size());
 				
 				List<String> archivosFacturados = ticketDao.readAllByDate(
-						FechasUtils.specificStringFormatDate(fechaCierre, "yyyyMMdd", "yyyy-MM-dd"));
+						FechasUtils.specificStringFormatDate(fechaCierre, FechasUtils.formatyyyyMMdd, FechasUtils.formatyyyyMMddHyphen));
 				
 				logger.debug("facturados size {}", archivosFacturados.size());
 				
@@ -335,7 +335,7 @@ public class TicketServiceImpl implements TicketService {
 		header.setIdTicket(ticketGenerico);
 		header.setIdCaja(cajaGenerica);
 		header.setIdSucursal(establecimiento.getClave());
-		header.setFechaHora(FechasUtils.parseDateToString(new Date(), "dd/MM/yyyy HH:mm:ss"));
+		header.setFechaHora(FechasUtils.parseDateToString(new Date(), FechasUtils.formatddMMyyyyHHmmssSlash));
 		
 		concepto.setCantidad(new BigDecimal(0));
 		articulo.setId(null);
