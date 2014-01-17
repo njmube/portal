@@ -760,4 +760,10 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 		return docBD;
 	}
+
+	@Override
+	public void deleteDocumentoPendiente(Documento documento) {
+		documentoDao.deletedDocumentoPendiente(documento);
+		
+	}
 }

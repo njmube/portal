@@ -44,6 +44,7 @@ public class DocumentoSql extends GenericSql {
 	public static final String READ_ACUSE_PEND;
 	public static final String UPDATE_DOC_CTE;
 	public static final String READ_SERIE_FOLIO_DOC;
+	public static final String DELETE_DOCUMENTO_PENDIENTE;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -120,6 +121,13 @@ public class DocumentoSql extends GenericSql {
 		qryBuilder.append("update t_documento set id_cliente = ? where id_documento = ?");
 		
 		UPDATE_DOC_CTE = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append(DELETE).append(" " + FROM).append(EOL);
+		qryBuilder.append(TABLE_DOC_PEND).append(EOL).append(WHERE);
+		qryBuilder.append(EOL).append(TAB).append(ID_DOCUMENTO).append(SET_PARAM);
+		
+		DELETE_DOCUMENTO_PENDIENTE = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 	}
 	
