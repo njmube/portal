@@ -93,12 +93,10 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
-					<p class="form-grup text-center">
+				<p class="form-grup text-center">
 					<button id="guardar" type="submit" class="btn btn-primary">Actualizar <i class="fa fa-floppy-o"></i></button>
 					<button id="cancelar" type="button" class="btn btn-danger">Cancelar <i class="fa fa-times"></i></button>
-					</p>
-			</div>
+				</p>
 			</form:form>
 		</div>
 	</div>	

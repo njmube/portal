@@ -16,6 +16,7 @@ public class Documento implements Serializable {
 	private static final long serialVersionUID = 383916791240840326L;
 
 	private Integer id;
+	private Integer id_domicilio;
 	private Comprobante comprobante;
 	private Cliente cliente;
 	private String cadenaOriginal;
@@ -131,6 +132,14 @@ public class Documento implements Serializable {
 
 	public void setVentasMostrador(boolean ventasMostrador) {
 		this.ventasMostrador = ventasMostrador;
+	}
+
+	public Integer getId_domicilio() {
+		return id_domicilio;
+	}
+
+	public void setId_domicilio(Integer id_domicilio) {
+		this.id_domicilio = id_domicilio;
 	}
 
 	@Override

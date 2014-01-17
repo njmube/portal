@@ -21,6 +21,7 @@ import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
+import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
@@ -199,10 +200,12 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		public Documento mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Documento documento = new Documento();
 			Comprobante comprobante = new Comprobante();
-			comprobante.setFolio(rs.getString("folio"));
-			comprobante.setSerie(rs.getString("serie"));
-			documento.setId(rs.getInt("id_documento"));
+			
+			comprobante.setFolio(rs.getString(DocumentoSql.FOLIO));
+			comprobante.setSerie(rs.getString(DocumentoSql.SERIE));
+			documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
 			documento.setTipoDocumento(TipoDocumento.FACTURA);
+			documento.setId_domicilio(rs.getInt(DocumentoSql.ID_DOMICILIO_CLIENTE));
 			documento.setComprobante(comprobante);
 			return documento;
 		}
