@@ -15,6 +15,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.xml.Jdbc4SqlXmlHandler;
 import org.springframework.stereotype.Repository;
 
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
@@ -72,7 +73,8 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		params.addValue(DocumentoSql.IVA, documento.getComprobante().getImpuestos().getTotalImpuestosTrasladados());
 		params.addValue(DocumentoSql.TOTAL, documento.getComprobante().getTotal());
 		params.addValue(DocumentoSql.STATUS, true);
-		
+		params.addValue(DocumentoSql.XML_FILE, new Jdbc4SqlXmlHandler().newSqlXmlValue("<?xml version=\"1.0\" encoding=\"UTF-16\" standalone=\"yes\"?><Comprobante><Emisor rfc=\"AAA010101AAA\" nombre=\"MODATELAS S.A.P.I DE C.V.\"/></Comprobante>"));
+//		params.addValue(DocumentoSql.XML_FILE, "<?xml version=\"1.0\" encoding=\"UTF-16\" standalone=\"yes\"?><Comprobante><Emisor rfc=\"AAA010101AAA\" nombre=\"MODATELAS S.A.P.I DE C.V.\"/></Comprobante>");
 		return params;
 	}
 

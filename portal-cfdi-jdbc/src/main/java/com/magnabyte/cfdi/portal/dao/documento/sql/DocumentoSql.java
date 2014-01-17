@@ -34,6 +34,7 @@ public class DocumentoSql extends GenericSql {
 	public static final String FECHA_HORA = "fecha_hora";
 
 	public static final String ID_ESTADO_DOC = "id_estado_documento";
+	public static final String XML_FILE = "xml_file";
 	
 	public static final String READ_DOCUMENTO_BY_ID;
 	public static final String READ_DOCUMENTOS_FACTURADOS;
