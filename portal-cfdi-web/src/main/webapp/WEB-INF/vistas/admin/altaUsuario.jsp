@@ -29,6 +29,13 @@
 			</blockquote>
 			<hr>
 			<c:url var="guardar" value="/guardarUsuario" />
+			<c:if test="${error}">
+				<div class="col-md-offset-3 col-md-6 alert alert-danger alert-dismissable alert-fixed auto-close">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					<spring:message code="messages.error.usuario.existente"/>
+					<br><br> <strong>${messageError}</strong> 
+				</div>
+			</c:if>
 			<form:form id="usuarioForm" action="${guardar }" method="post" modelAttribute="usuario" cssClass="form-horizontal"	role="form">
 			<div class="row">
 				<div class="col-md-6 col-md-offset-3">

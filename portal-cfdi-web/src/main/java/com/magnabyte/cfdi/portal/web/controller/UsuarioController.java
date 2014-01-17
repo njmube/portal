@@ -58,20 +58,17 @@ public class UsuarioController {
 				usuarioService.save(usuario);
 			}
 		} catch (PortalException ex) {
+				model.put("error", true);
+				model.put("messageError", ex.getMessage());
+				model.put("listaEstablecimientos" ,establecimientoService.readAll());
 			
 				if (usuario.getId() != null){
-					model.put("error", true);
-					model.put("messageError", ex.getMessage());
-					model.put("listaEstablecimientos" ,establecimientoService.readAll());
 					model.put("usuario", usuarioService.read(usuario));
-					return "admin/usuarioForm";
 				} else {
-					model.put("error", true);
-					model.put("messageError", ex.getMessage());
-					model.put("listaEstablecimientos" ,establecimientoService.readAll());
 					model.put("usuario", usuarioService.getUsuarioByEstablecimiento(usuario));
-					return "admin/altaUsuario";
 				}
+				
+			return  usuario.getId() != null ? "admin/usuarioForm"  : "admin/altaUsuario";
 				
 		}
 		return "redirect:/catalogoUsuarios";
