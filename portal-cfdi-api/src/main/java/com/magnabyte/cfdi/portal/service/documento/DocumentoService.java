@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.service.documento;
 
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import mx.gob.sat.cfd._3.Comprobante;
@@ -58,6 +59,6 @@ public interface DocumentoService {
 	void envioDocumentosFacturacionPorXml(String para, String fileName,
 			Integer idDocumento, HttpServletRequest request);
 
-	byte[] recuperarDocumentoPdf(Documento documento, HttpServletRequest request);
+	byte[] recuperarDocumentoPdf(Documento documento, ServletContext context);
 
 }

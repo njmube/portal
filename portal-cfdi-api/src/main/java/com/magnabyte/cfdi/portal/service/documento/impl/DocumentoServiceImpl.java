@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
@@ -718,15 +719,15 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	}
 	
 	@Override
-	public byte[] recuperarDocumentoPdf(Documento documento, HttpServletRequest request) {
+	public byte[] recuperarDocumentoPdf(Documento documento, ServletContext context) {
 		logger.debug("Creando reporte");
 		JasperPrint reporteCompleto = null;
-		String reporteCompilado = request.getSession().getServletContext().getRealPath("WEB-INF/reports/ReporteFactura.jasper");
+		String reporteCompilado = context.getRealPath("WEB-INF/reports/ReporteFactura.jasper");
 
 		Locale locale = new Locale("es", "MX");
 		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
 		comprobantes.add(documento.getComprobante());
-		String pathImages = request.getSession().getServletContext().getRealPath("resources/img");
+		String pathImages = context.getRealPath("resources/img");
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (documento instanceof DocumentoCorporativo) {
 			map.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
@@ -815,7 +816,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public void envioDocumentosFacturacionPorXml(final String para, final String fileName,
 		final Integer idDocumento, final HttpServletRequest request) {
-	
+		final ServletContext context = request.getSession().getServletContext();
 		new Thread(new Runnable() {
 			
 			@Override
@@ -839,7 +840,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 					textoPlanoPlantillaError = IOUtils.toString(plainTextResourceError.getInputStream(), PortalUtils.encodingUTF8);
 					
 					final Map<String, ByteArrayResource> attach = new HashMap<String, ByteArrayResource>();
-					attach.put(fileName + ".pdf", new ByteArrayResource(recuperarDocumentoPdf(documento, request)));
+					attach.put(fileName + ".pdf", new ByteArrayResource(recuperarDocumentoPdf(documento, context)));
 					attach.put(fileName + ".xml", new ByteArrayResource(recuperarDocumentoXml(documento)));
 					
 					htmlPlantilla = IOUtils.toString(htmlResource.getInputStream(), PortalUtils.encodingUTF8);
