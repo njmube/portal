@@ -43,6 +43,7 @@ import mx.gob.sat.cfd._3.Comprobante.Conceptos.Concepto;
 import mx.gob.sat.cfd._3.Comprobante.Impuestos;
 import mx.gob.sat.cfd._3.Comprobante.Receptor;
 import mx.gob.sat.cfd._3.TUbicacion;
+import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.ssl.PKCS8Key;
@@ -800,6 +801,32 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			
 		}
 		return docBD;
+	}
+	
+	@Override
+	public Documento findById(Documento documento) {
+		Documento documentoBD = null;
+		Documento documentoBDParaTipo = null;
+		Documento documentoBDParaTimbre = null;
+		Establecimiento establecimientoBD = null;
+		Comprobante comprobante = null;
+		if(documento.getId() != null) {
+			documentoBD = documentoDao.read(documento);
+			establecimientoBD = establecimientoService.read(documentoBD.getEstablecimiento());
+			comprobante = documentoXmlService.convierteByteArrayAComprobante(documentoBD.getXmlCfdi());
+			documentoBD.setComprobante(comprobante);
+			documentoBDParaTipo = documentoDao.readDocumentoFolio(documentoBD);
+			if (documentoBDParaTipo != null) {
+				documentoBD.setTipoDocumento(documentoBDParaTipo.getTipoDocumento());
+			}
+			documentoBD.setEstablecimiento(establecimientoBD);
+			documentoBDParaTimbre = documentoDao.readDocumentoCfdiById(documento);
+			if (documentoBDParaTimbre != null) {
+				documentoBD.setTimbreFiscalDigital(documentoBDParaTimbre.getTimbreFiscalDigital());
+				documentoBD.setCadenaOriginal(documentoBDParaTimbre.getCadenaOriginal());
+			}
+		}
+		return documentoBD;
 	}
 
 	@Override

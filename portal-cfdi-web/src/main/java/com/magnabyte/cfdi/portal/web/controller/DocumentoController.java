@@ -164,7 +164,7 @@ public class DocumentoController {
 		
 		Documento documento = new Documento();
 		documento.setId(idDoc);
-		model.put("documento", documentoService.read(documento));
+		model.put("documento", documentoService.findById(documento));
 		
 		if (origin.equals("in")) {
 			return "redirect:/reporte";

@@ -51,4 +51,6 @@ public interface DocumentoService {
 
 	byte[] recuperarDocumentoXml(Integer idDocumento);
 
+	Documento findById(Documento documento);
+
 }

@@ -3,7 +3,13 @@ package com.magnabyte.cfdi.portal.dao.documento.impl;
 import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLXML;
+import java.util.GregorianCalendar;
 import java.util.List;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import mx.gob.sat.cfd._3.Comprobante;
 import mx.gob.sat.cfd._3.Comprobante.Impuestos;
@@ -16,7 +22,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.xml.Jdbc4SqlXmlHandler;
 import org.springframework.stereotype.Repository;
 
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
@@ -269,7 +274,10 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			documento.setCliente(cliente);
 			documento.setEstablecimiento(establecimiento);
 			documento.setComprobante(comprobante);
-			documento.setXmlCfdi(rs.getSQLXML(DocumentoSql.XML_FILE).getString().getBytes());
+			SQLXML xmlFile =rs.getSQLXML(DocumentoSql.XML_FILE);
+			if (xmlFile != null) {
+				documento.setXmlCfdi(xmlFile.getString().getBytes());
+			}
 			return documento;
 		}
 	};
@@ -306,9 +314,42 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 						throws SQLException {
 					Documento documento = new Documento();
 					documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
+					documento.setTipoDocumento(TipoDocumento.getById(rs.getInt(DocumentoSql.ID_TIPO_DOCUMENTO)));
 					return documento;
 				}
 			}, documento.getComprobante().getSerie(), documento.getComprobante().getFolio());
+		} catch (EmptyResultDataAccessException ex) {
+			return null;
+		}
+	}
+	
+	@Override
+	public Documento readDocumentoCfdiById(Documento documento) {
+		try {
+			return getJdbcTemplate().queryForObject(DocumentoSql.READ_DOC_CFDI, new RowMapper<Documento>() {
+				@Override
+				public Documento mapRow(ResultSet rs, int rowNum)
+						throws SQLException {
+					Documento documento = new Documento();
+					TimbreFiscalDigital timbreFiscalDigital = new TimbreFiscalDigital();
+					documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
+					timbreFiscalDigital.setSelloCFD(rs.getString(DocumentoSql.SELLO_CFDI));
+					timbreFiscalDigital.setSelloSAT(rs.getString(DocumentoSql.SELLO_EMISOR));
+					timbreFiscalDigital.setUUID(rs.getString(DocumentoSql.UUID));
+					GregorianCalendar fechaTimbrado = (GregorianCalendar) GregorianCalendar.getInstance();
+					fechaTimbrado.setTime(rs.getTimestamp(DocumentoSql.FECHA_HORA));
+					try {
+						XMLGregorianCalendar fechaTimbradoXml = DatatypeFactory.newInstance().newXMLGregorianCalendar(fechaTimbrado);
+						timbreFiscalDigital.setFechaTimbrado(fechaTimbradoXml);
+					} catch (DatatypeConfigurationException e) {
+						logger.error("Ocurrió un error al asignar la fecha del Documento.", e);
+						throw new PortalException("Ocurrió un error al asignar la fecha del Documento.", e);
+					}
+					documento.setTimbreFiscalDigital(timbreFiscalDigital);
+					documento.setCadenaOriginal(rs.getString(DocumentoSql.CADENA));
+					return documento;
+				}
+			}, documento.getId());
 		} catch (EmptyResultDataAccessException ex) {
 			return null;
 		}

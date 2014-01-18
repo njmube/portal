@@ -2,6 +2,8 @@ package com.magnabyte.cfdi.portal.dao.documento;
 
 import java.util.List;
 
+import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
+
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
@@ -36,5 +38,7 @@ public interface DocumentoDao {
 	Documento readDocumentoFolio(Documento documento);
 
 	void updateDocumentoXmlCfdi(Documento documento);
+
+	Documento readDocumentoCfdiById(Documento documento);
 
 }

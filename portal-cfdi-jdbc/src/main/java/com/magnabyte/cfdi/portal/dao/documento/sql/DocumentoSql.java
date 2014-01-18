@@ -48,6 +48,7 @@ public class DocumentoSql extends GenericSql {
 	public static final String DELETE_DOCUMENTO_PENDIENTE;
 	public static final String READ_DOC_BY_SERIE_FOLIO;
 	public static final String UPDATE_DOC_XML_FILE;
+	public static final String READ_DOC_CFDI;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -133,7 +134,7 @@ public class DocumentoSql extends GenericSql {
 		DELETE_DOCUMENTO_PENDIENTE = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		
-		qryBuilder.append("select doc.id_documento "); 
+		qryBuilder.append("select doc.id_documento, docfolio.id_tipo_documento "); 
 		qryBuilder.append("from t_documento as doc "); 
 		qryBuilder.append("inner join t_documento_folio as docfolio "); 
 		qryBuilder.append("on doc.id_documento = docfolio.id_documento ");
@@ -146,6 +147,15 @@ public class DocumentoSql extends GenericSql {
 		qryBuilder.append("update t_documento set xml_file = ? where id_documento = ?");
 		
 		UPDATE_DOC_XML_FILE = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("select id_documento, dbo.TRIM(sello_emisor) as sello_emisor,").append(EOL);
+		qryBuilder.append("dbo.TRIM(sello_cfdi) as sello_cfdi, dbo.TRIM(uuid) as uuid,").append(EOL);
+		qryBuilder.append("dbo.TRIM(cadena) as cadena, fecha_hora").append(EOL);
+		qryBuilder.append("from t_documento_cfdi").append(EOL);
+		qryBuilder.append("where id_documento = ?").append(EOL);
+		
+		READ_DOC_CFDI = qryBuilder.toString();
 	}
 	
 }
