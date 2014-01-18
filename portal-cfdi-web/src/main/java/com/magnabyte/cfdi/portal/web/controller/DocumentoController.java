@@ -98,23 +98,23 @@ public class DocumentoController {
 		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
 		comprobantes.add(documento.getComprobante());
 		String pathImages = request.getSession().getServletContext().getRealPath("resources/img");
-		if (documento instanceof DocumentoCorporativo) {
-			model.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
-		} else if (documento instanceof DocumentoSucursal) {
-			model.put("SUCURSAL", documento.getEstablecimiento().getNombre());
-		}
-		model.put("TIPO_DOC", documento.getTipoDocumento().getNombre());
-		model.put("NUM_SERIE_CERT", documentoXmlService.obtenerNumCertificado(documento.getXmlCfdi()));
-		model.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
-		model.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
-		model.put("FECHA_TIMBRADO", documento.getTimbreFiscalDigital().getFechaTimbrado());
-		model.put("FOLIO_FISCAL", documento.getTimbreFiscalDigital().getUUID());
-		model.put("CADENA_ORIGINAL", documento.getCadenaOriginal());
+//		if (documento instanceof DocumentoCorporativo) {
+//			model.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
+//		} else if (documento instanceof DocumentoSucursal) {
+//			model.put("SUCURSAL", documento.getEstablecimiento().getNombre());
+//		}
+//		model.put("TIPO_DOC", documento.getTipoDocumento().getNombre());
+//		model.put("NUM_SERIE_CERT", documentoXmlService.obtenerNumCertificado(documento.getXmlCfdi()));
+//		model.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
+//		model.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
+//		model.put("FECHA_TIMBRADO", documento.getTimbreFiscalDigital().getFechaTimbrado());
+//		model.put("FOLIO_FISCAL", documento.getTimbreFiscalDigital().getUUID());
+//		model.put("CADENA_ORIGINAL", documento.getCadenaOriginal());
 		model.put("PATH_IMAGES", pathImages);
 		model.put(JRParameter.REPORT_LOCALE, locale);
-		model.put("QRCODE", codigoQRService.generaCodigoQR(documento));
-		model.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
-		model.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
+//		model.put("QRCODE", codigoQRService.generaCodigoQR(documento));
+//		model.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
+//		model.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
 		model.put("objetoKey", comprobantes);
 		return "reporte";
 	}
@@ -156,6 +156,24 @@ public class DocumentoController {
 			e.printStackTrace();
 		}
 	}
+	
+	@RequestMapping(value = {"/documentoDownloadPdf/{idDoc}/{fileName}/{origin}"
+			, "/portal/cfdi/documentoDownloadPdf/{idDoc}/{fileName}/{origin}"})
+	public String documentoDownloadPdf (@PathVariable Integer idDoc, 
+			@PathVariable String fileName, @PathVariable String origin, ModelMap model) {
+		
+		Documento documento = new Documento();
+		documento.setId(idDoc);
+		model.put("documento", documentoService.read(documento));
+		
+		if (origin.equals("in")) {
+			return "redirect:/reporte";
+		} else {
+			return "redirect:/portal/cfdi/reporte";
+		}
+		
+	}
+
 	
 	@RequestMapping("/portal/cfdi/documentoEnvio") 
 	public @ResponseBody Boolean documentoEnvio(@RequestParam Integer idEstab, 
