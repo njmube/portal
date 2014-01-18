@@ -71,22 +71,24 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public boolean exist(Usuario usuario) {
 		Usuario usu = usuarioDao.getUsuarioByEstablecimiento(usuario);
 		
-		if(usuario.getId() != null) {
-			if(usu != null) {
-//				if(!usuario.getPassword().equals(usu.getPassword()) || 
-//						usuario.getEstatus().getId() != usu.getEstatus().getId()) {
-//					return false;
-//					
-//				}
+		if (usuario.getId() != null) {
+			if (usu != null) {
+				if (usuario.getId() == usu.getId()){
+					if (!usuario.getPassword().equals(usu.getPassword()) || 
+							usuario.getEstatus().getId() != usu.getEstatus().getId()) {
+						return false;
+					}
+				}
 				return true;
 			}
 		} else {
-			if(usu != null) {
+			if (usu != null) {
 				return true;
 			}
 		}
-		
+	
 		return false;
+	
 	}
 
 }

@@ -42,25 +42,25 @@
 								<label for="txtClave" class="col-lg-5 control-label">Clave:	</label>
 								<div class="col-lg-5"> 
 									<form:hidden path="id"/>
-									<form:input path="clave" cssClass="form-control input-sm validate[required]" id="txtClave" />
+									<form:input path="clave" cssClass="form-control input-sm validate[required] noUpper" id="txtClave" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="txtNombre" class="col-lg-5 control-label">Nombre:</label>
 								<div class="col-lg-5">
-									<form:input path="nombre" cssClass="form-control input-sm validate[required]" id="txtNombre" />
+									<form:input path="nombre" cssClass="form-control input-sm validate[required] noUpper" id="txtNombre" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="txtPassword" class="col-lg-5 control-label">Password:</label>
 								<div class="col-lg-5">
-									<form:password  path="password" cssClass="form-control input-sm validate[required]" id="txtPassword" />
+									<form:password  path="password" cssClass="form-control input-sm validate[required] noUpper" id="txtPassword" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="txtConfirmarPassword" class="col-lg-5 control-label">Confirmar password:</label>
 								<div class="col-lg-5">
-									<form:password  path="" cssClass="form-control input-sm validate[required, equals[txtPassword]]" id="txtConfirmarPassword" />
+									<form:password  path="" cssClass="form-control input-sm validate[required, equals[txtPassword]] noUpper" id="txtConfirmarPassword" />
 								</div>
 							</div>
 						</fieldset>
@@ -75,19 +75,19 @@
 								<label for="txtRutaRepo" class="col-lg-3 control-label">Ruta Repositorio: </label>
 								<div class="col-lg-9">
 									<form:hidden path="rutaRepositorio.id"/>
-									<form:input path="rutaRepositorio.rutaRepositorio" cssClass="form-control input-sm validate[required]" id="txtRutaRepo"/>
+									<form:input path="rutaRepositorio.rutaRepositorio" cssClass="form-control input-sm validate[required] noUpper" id="txtRutaRepo"/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="txtOut" class="col-lg-3 control-label">Ruta Salida: </label>
 								<div class="col-lg-9">
-									<form:input path="rutaRepositorio.rutaRepoOut" cssClass="form-control input-sm validate[required]" id="txtOut"/>
+									<form:input path="rutaRepositorio.rutaRepoOut" cssClass="form-control input-sm validate[required] noUpper" id="txtOut"/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="txtIn" class="col-lg-3 control-label">Ruta Entrada: </label>
 								<div class="col-lg-9">
-									<form:input path="rutaRepositorio.rutaRepoIn" cssClass="form-control input-sm validate[required]" id="txtIn"/>
+									<form:input path="rutaRepositorio.rutaRepoIn" cssClass="form-control input-sm validate[required] noUpper" id="txtIn"/>
 								</div>
 							</div>
 								<br><br>
@@ -106,36 +106,36 @@
 							<div class="form-group">
 								<label for="txtCalle" class="col-lg-1 control-label">Calle: </label>
 								<div class="col-lg-3"> 
-									<form:input path="domicilio.calle"  cssClass="form-control input-sm validate[required]" id="txtCalle" />
+									<form:input path="domicilio.calle"  cssClass="form-control input-sm validate[required] noUpper" id="txtCalle" />
 								</div>
 								<label for="txtColonia" class="col-lg-1 control-label">Colonia: </label>
 								<div class="col-lg-3"> 
 								<form:hidden path="domicilio.id"/>
-									<form:input path="domicilio.colonia"  cssClass="form-control input-sm validate[required]" id="txtColonia" />
+									<form:input path="domicilio.colonia"  cssClass="form-control input-sm validate[required] noUpper" id="txtColonia" />
 								</div>
 								<label for="txtLocalidad" class="col-lg-1 control-label">Localidad: </label>
 								<div class="col-lg-3"> 
-									<form:input path="domicilio.localidad"  cssClass="form-control input-sm validate[required" id="txtLocalidad" />
+									<form:input path="domicilio.localidad"  cssClass="form-control input-sm validate[required noUpper" id="txtLocalidad" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="txtNumeroInt" class="col-lg-1 control-label">Núm. Int. </label>
 								<div class="col-lg-3"> 
-									<form:input path="domicilio.noInterior"  cssClass="form-control input-sm" id="txtNumeroInt" />
+									<form:input path="domicilio.noInterior"  cssClass="form-control input-sm noUpper" id="txtNumeroInt" />
 								</div>
 								<label for="txtNumeroExt" class="col-lg-1 control-label">Núm Ext. </label>
 								<div class="col-lg-3"> 
-									<form:input path="domicilio.noExterior"  cssClass="form-control input-sm validate[required]" id="txtNumeroExt" />
+									<form:input path="domicilio.noExterior"  cssClass="form-control input-sm validate[required] noUpper" id="txtNumeroExt" />
 								</div>
 								<label for="txtcp" class="col-lg-1 control-label">C.P. </label>
 								<div class="col-lg-3"> 
-									<form:input path="domicilio.codigoPostal" cssClass="form-control input-sm validate[required]" id="txtcp" />
+									<form:input path="domicilio.codigoPostal" cssClass="form-control input-sm validate[required] noUpper" id="txtcp" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="txtMunicipio" class="col-lg-1 control-label">Municipio: </label>
 								<div class="col-lg-3"> 
-									<form:input path="domicilio.municipio"  cssClass="form-control input-sm validate[required]" id="txtMunicipio" />
+									<form:input path="domicilio.municipio"  cssClass="form-control input-sm validate[required] noUpper" id="txtMunicipio" />
 								</div>
 								<label for="cmbPais" class="col-lg-1 control-label">País: </label>
 								<div class="col-lg-3">
@@ -149,7 +149,7 @@
 								<label for="txtEstado" class="col-lg-1 control-label">Estado: </label>
 								<div class="col-lg-3">
 								
-								<form:select path="domicilio.estado.id" id="estado" class="form-control input-sm validate[required]">
+								<form:select path="domicilio.estado.id" id="estado" class="form-control input-sm validate[required] noUpper">
 									<form:option value="">- Seleccione una opción -</form:option>
 <%-- 									<form:options items="${listaEstados }"></form:options> --%>
 								</form:select>

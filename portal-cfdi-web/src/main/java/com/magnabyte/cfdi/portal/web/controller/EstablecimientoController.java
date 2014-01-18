@@ -87,6 +87,7 @@ public class EstablecimientoController {
 			tipoEstablecimiento.setId(2);
 			establecimiento.setTipoEstablecimiento(tipoEstablecimiento);
 			establecimiento.setEmisor(empresaEmisor);
+			
 			domicilioEstablecimientoService.save(establecimiento.getDomicilio());
 			rutaEstablecimientoService.save(establecimiento.getRutaRepositorio());
 			establecimientoService.save(establecimiento);
