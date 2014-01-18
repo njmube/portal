@@ -1,5 +1,6 @@
 package com.magnabyte.cfdi.portal.dao.documento.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.xml.Jdbc4SqlXmlHandler;
 import org.springframework.stereotype.Repository;
 
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
@@ -55,6 +57,21 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		getJdbcTemplate().update(DocumentoSql.UPDATE_DOC_CTE, documento.getCliente().getId(), documento.getId());
 	}
 
+	//FIXME exceptions
+	@Override
+	public void updateDocumentoXmlCfdi(Documento documento) {
+		try {
+			getJdbcTemplate().update(DocumentoSql.UPDATE_DOC_XML_FILE, 
+					new String(documento.getXmlCfdi(), "UTF-16"), documento.getId());
+		} catch (DataAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	private MapSqlParameterSource getParameters(Documento documento) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue(DocumentoSql.ID_ESTABLECIMIENTO, documento.getEstablecimiento().getId());
@@ -72,7 +89,11 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		params.addValue(DocumentoSql.IVA, documento.getComprobante().getImpuestos().getTotalImpuestosTrasladados());
 		params.addValue(DocumentoSql.TOTAL, documento.getComprobante().getTotal());
 		params.addValue(DocumentoSql.STATUS, true);
-		
+		try {
+			params.addValue(DocumentoSql.XML_FILE, new String(documento.getXmlCfdi(), "UTF-16"));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		return params;
 	}
 
@@ -247,6 +268,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			documento.setCliente(cliente);
 			documento.setEstablecimiento(establecimiento);
 			documento.setComprobante(comprobante);
+			documento.setXmlCfdi(rs.getSQLXML(DocumentoSql.XML_FILE).getString().getBytes());
 			return documento;
 		}
 	};
@@ -272,6 +294,23 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	@Override
 	public Documento read(Documento documento) {
 		return getJdbcTemplate().queryForObject(DocumentoSql.READ_DOCUMENTO_BY_ID, DOCUMENTO_MAPPER, documento.getId());
+	}
+	
+	@Override
+	public Documento readDocumentoFolio(Documento documento) {
+		try {
+			return getJdbcTemplate().queryForObject(DocumentoSql.READ_DOC_BY_SERIE_FOLIO, new RowMapper<Documento>() {
+				@Override
+				public Documento mapRow(ResultSet rs, int rowNum)
+						throws SQLException {
+					Documento documento = new Documento();
+					documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
+					return documento;
+				}
+			}, documento.getComprobante().getSerie(), documento.getComprobante().getFolio());
+		} catch (EmptyResultDataAccessException ex) {
+			return null;
+		}
 	}
 	
 	@Override

@@ -34,6 +34,7 @@ public class DocumentoSql extends GenericSql {
 	public static final String FECHA_HORA = "fecha_hora";
 
 	public static final String ID_ESTADO_DOC = "id_estado_documento";
+	public static final String XML_FILE = "xml_file";
 	
 	public static final String READ_DOCUMENTO_BY_ID;
 	public static final String READ_DOCUMENTOS_FACTURADOS;
@@ -45,6 +46,8 @@ public class DocumentoSql extends GenericSql {
 	public static final String UPDATE_DOC_CTE;
 	public static final String READ_SERIE_FOLIO_DOC;
 	public static final String DELETE_DOCUMENTO_PENDIENTE;
+	public static final String READ_DOC_BY_SERIE_FOLIO;
+	public static final String UPDATE_DOC_XML_FILE;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -94,7 +97,7 @@ public class DocumentoSql extends GenericSql {
 		READ_DOCUMENTO_RUTA = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		
-		qryBuilder.append(SELECT).append(EOL).append(TAB).append("folio.id_documento, folio.serie, folio.folio, folio.id_tipo_documento").append(EOL);
+		qryBuilder.append(SELECT).append(EOL).append(TAB).append("folio.id_documento, folio.serie, folio.folio, folio.id_tipo_documento, doc.id_domicilio_cliente").append(EOL);
 		qryBuilder.append(FROM).append(EOL).append("t_documento_cfdi as cfdi").append(EOL).append(TAB);
 		qryBuilder.append(INNER).append(EOL).append(TAB).append("t_documento as doc on doc.id_documento = cfdi.id_documento").append(EOL).append(TAB);
 		qryBuilder.append(INNER).append(EOL).append(TAB).append("t_documento_folio as folio on cfdi.id_documento = folio.id_documento").append(EOL);
@@ -103,8 +106,8 @@ public class DocumentoSql extends GenericSql {
 		READ_DOCUMENTOS_FACTURADOS = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		
-		qryBuilder.append(SELECT).append(EOL).append(TAB).append("id_documento, id_establecimiento, status_doc, fecha_doc, id_cliente, subtotal,"
-				+ " iva, total_doc, dbo.TRIM(folio_sap) as folio_sap, total_descuento, id_domicilio_cliente").append(EOL);
+		qryBuilder.append(SELECT).append(EOL).append(TAB).append("id_documento, id_establecimiento, status_doc, fecha_doc, id_cliente, subtotal,");
+		qryBuilder.append(" iva, total_doc, dbo.TRIM(folio_sap) as folio_sap, total_descuento, id_domicilio_cliente, xml_file").append(EOL);
 		qryBuilder.append(FROM).append(EOL).append(TAB).append("t_documento").append(EOL);
 		qryBuilder.append(WHERE).append(EOL).append(TAB).append("id_documento = ?");
 		
@@ -129,6 +132,20 @@ public class DocumentoSql extends GenericSql {
 		
 		DELETE_DOCUMENTO_PENDIENTE = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("select doc.id_documento "); 
+		qryBuilder.append("from t_documento as doc "); 
+		qryBuilder.append("inner join t_documento_folio as docfolio "); 
+		qryBuilder.append("on doc.id_documento = docfolio.id_documento ");
+		qryBuilder.append("where docfolio.serie = ? ");
+		qryBuilder.append("and docfolio.folio = ? ");
+		
+		READ_DOC_BY_SERIE_FOLIO = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("update t_documento set xml_file = ? where id_documento = ?");
+		
+		UPDATE_DOC_XML_FILE = qryBuilder.toString();
 	}
 	
 }

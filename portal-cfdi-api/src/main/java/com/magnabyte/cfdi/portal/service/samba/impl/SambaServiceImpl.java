@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 import jcifs.Config;
+import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
@@ -38,6 +39,7 @@ import org.springframework.stereotype.Service;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
+import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
@@ -56,13 +58,25 @@ public class SambaServiceImpl implements SambaService {
 	private CodigoQRService codigoQRService;
 	
 	@Override
-	public InputStream getFileStream(String url, String fileName) {
+	public NtlmPasswordAuthentication getAuthentication(Establecimiento establecimiento) {
+		NtlmPasswordAuthentication authentication = null;
+		if (establecimiento.getSmbDomain() != null && !establecimiento.getSmbDomain().isEmpty()
+				&& establecimiento.getSmbUsername() != null && !establecimiento.getSmbUsername().isEmpty()
+				&& establecimiento.getSmbPassword() != null && !establecimiento.getSmbPassword().isEmpty()) {
+			authentication = new NtlmPasswordAuthentication(establecimiento.getSmbDomain(), 
+					establecimiento.getSmbUsername(), establecimiento.getSmbPassword());
+		}
+		return authentication;
+	}
+	
+	@Override
+	public InputStream getFileStream(String url, String fileName, NtlmPasswordAuthentication authentication) {
 		SmbFileInputStream smbIs = null;
 		BufferedInputStream bis = null;
 		Config.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
 		SmbFile file;
 		try {
-			file = new SmbFile(url, fileName);
+			file = new SmbFile(url, fileName, authentication);
 			if (file.exists()) {
 				smbIs = new SmbFileInputStream(file);
 				bis = new BufferedInputStream(smbIs);
@@ -88,7 +102,7 @@ public class SambaServiceImpl implements SambaService {
 	}
 
 	@Override
-	public List<DocumentoCorporativo> getFilesFromDirectory(String url) {
+	public List<DocumentoCorporativo> getFilesFromDirectory(String url, NtlmPasswordAuthentication authentication) {
 		List<DocumentoCorporativo> documentos = new ArrayList<DocumentoCorporativo>();
 		String regex = "^[F|N]\\d{10}[A-Z].+(\\.(?i)(xml))$";
 		Pattern pattern = Pattern.compile(regex);
@@ -96,7 +110,7 @@ public class SambaServiceImpl implements SambaService {
 		logger.debug("sambaService getFilesFromDirectory...");
 		logger.debug(url);
 		try {
-			SmbFile dir = new SmbFile(url);
+			SmbFile dir = new SmbFile(url, authentication);
 			if (dir.exists()) {
 				SmbFile[] files = dir.listFiles();
 				logger.debug("archivos en carpeta: {}", files.length);

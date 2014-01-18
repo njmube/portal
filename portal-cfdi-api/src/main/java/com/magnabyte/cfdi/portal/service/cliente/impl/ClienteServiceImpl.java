@@ -1,6 +1,8 @@
 package com.magnabyte.cfdi.portal.service.cliente.impl;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,7 @@ import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.cliente.comparator.ComparadorNombre;
 import com.magnabyte.cfdi.portal.model.cliente.comparator.ComparadorRfc;
+import com.magnabyte.cfdi.portal.model.cliente.enumeration.TipoPersona;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
@@ -138,6 +141,13 @@ public class ClienteServiceImpl implements ClienteService {
 	@Override
 	public void saveClienteCorporativo(Cliente cliente) {
 		if(cliente != null) {
+			Pattern pattern = Pattern.compile("^[A-Z,Ñ,&amp;]{4}[0-9]{2}[0-1][0-9][0-3][0-9][A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?$");
+			Matcher matcher = pattern.matcher(cliente.getRfc());
+			if (matcher.matches()) {
+				cliente.setTipoPersona(new TipoPersona(TipoPersona.PERSONA_FISICA));
+			} else {
+				cliente.setTipoPersona(new TipoPersona(TipoPersona.PERSONA_MORAL));
+			}
 			clienteDao.save(cliente);
 		}
 	}
@@ -229,4 +239,5 @@ public class ClienteServiceImpl implements ClienteService {
 	public Cliente findClienteByName(Cliente cliente) {		
 		return clienteDao.getClienteByNombre(cliente);
 	}
+	
 }

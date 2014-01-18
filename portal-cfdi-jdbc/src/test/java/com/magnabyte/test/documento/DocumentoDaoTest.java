@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoSerieDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
@@ -26,8 +27,11 @@ public class DocumentoDaoTest {
 	
 	@Autowired
 	private DocumentoSerieDao documentoSerieDao;
+	
+	@Autowired
+	private DocumentoDao documentoDao;
 
-	@Test
+//	@Test
 	public void pruebaSerieFolio() {
 		Documento d = new DocumentoSucursal();
 		Establecimiento e = new Establecimiento();
@@ -43,4 +47,12 @@ public class DocumentoDaoTest {
 		Assert.assertEquals(1, Integer.parseInt(((String) map.get(DocumentoSql.FOLIO_CONSECUTIVO))));
 	}
 	
+	@Test
+	public void read() {
+		Documento documento = new Documento();
+		documento.setId(363);
+		documento = documentoDao.read(documento);
+		
+		logger.debug("fin");
+	}
 }

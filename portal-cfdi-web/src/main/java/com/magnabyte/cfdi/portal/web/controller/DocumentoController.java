@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import mx.gob.sat.cfd._3.Comprobante;
 import net.sf.jasperreports.engine.JRParameter;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,7 +126,8 @@ public class DocumentoController {
 			String filename = documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".xml";
 			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
 			OutputStream out = response.getOutputStream();
-			out.write(documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
+			//FIXME metodo
+			out.write(documentoXmlService.convierteComprobanteAByteArrayForWebService(documento.getComprobante()));
 			out.flush();
 			out.close();
 		} catch (IOException e) {

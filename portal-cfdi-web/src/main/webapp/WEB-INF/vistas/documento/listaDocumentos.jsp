@@ -14,6 +14,7 @@
 					<display:column title="Nombre Documento" property="nombre" headerClass="text-primary text-center" class="text-center" />
 					<display:column title="PDF" headerClass="text-primary text-center" class="text-center">
 						<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_CORP')">
+						${documento.id}
 							<a href="<c:url value="/documentoDownload/${documento.establecimiento.id}/${documento.nombre}/pdf" />" class="btn btn-xs btn-danger">
 								Descargar <i class="fa fa-download"></i>
 							</a>

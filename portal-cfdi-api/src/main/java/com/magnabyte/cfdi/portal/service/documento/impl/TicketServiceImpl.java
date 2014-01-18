@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import javax.xml.transform.stream.StreamSource;
 
 import jcifs.Config;
+import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
@@ -181,8 +182,9 @@ public class TicketServiceImpl implements TicketService {
 		Pattern pattern = Pattern.compile(regex);
 		logger.debug(regex);
 		SmbFile dir = null;
+		NtlmPasswordAuthentication authentication = sambaService.getAuthentication(establecimiento);
 		try {
-			dir = new SmbFile(urlTicketFiles);
+			dir = new SmbFile(urlTicketFiles, authentication);
 			if(dir.exists()) {
 				logger.debug("el dir existe");
 				SmbFile[] files = dir.listFiles();
@@ -191,7 +193,8 @@ public class TicketServiceImpl implements TicketService {
 					Matcher matcher = pattern.matcher(file.getName());
 					if (matcher.matches()) {
 						
-						Ticket ticketXml = (Ticket) unmarshaller.unmarshal(new StreamSource(sambaService.getFileStream(urlTicketFiles, file.getName())));
+						Ticket ticketXml = (Ticket) unmarshaller.unmarshal(new StreamSource(sambaService
+								.getFileStream(urlTicketFiles, file.getName(), authentication)));
 						
 						if (!ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveVentaTicket)
 								|| ticketXml.getTransaccion().getTransaccionTotal().getTotalVenta().compareTo(importe) != 0) {
@@ -238,7 +241,8 @@ public class TicketServiceImpl implements TicketService {
 		SmbFile dir = null;
 		List<String> archivosTicketsDelDia = new ArrayList<String>();
 		try {
-			dir = new SmbFile(urlTicketFiles);
+			NtlmPasswordAuthentication authentication = sambaService.getAuthentication(establecimiento);
+			dir = new SmbFile(urlTicketFiles, authentication);
 			if(dir.exists()) {
 				SmbFile[] files = dir.listFiles();
 				logger.debug("archivos {}", files.length);
@@ -259,7 +263,7 @@ public class TicketServiceImpl implements TicketService {
 				for(String file : archivosTicketsDelDia) {
 					matcher = pattern.matcher(file);
 					if (matcher.matches()) {
-						Ticket ticketXml = (Ticket) unmarshaller.unmarshal(new StreamSource(sambaService.getFileStream(urlTicketFiles, file)));
+						Ticket ticketXml = (Ticket) unmarshaller.unmarshal(new StreamSource(sambaService.getFileStream(urlTicketFiles, file, authentication)));
 						ticketXml.setNombreArchivo(file);
 						if (ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveVentaTicket)) {
 							ventas.add(ticketXml);

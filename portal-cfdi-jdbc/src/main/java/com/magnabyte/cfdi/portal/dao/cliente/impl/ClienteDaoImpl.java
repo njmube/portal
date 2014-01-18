@@ -102,18 +102,17 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 		@Override
 		public Cliente mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Cliente cliente = new Cliente();
-			TipoPersona tipoPersona = new TipoPersona();
+			TipoPersona tipoPersona = null;
 			
 			cliente.setId(rs.getInt(ClienteSql.ID_CLIENTE));
 			cliente.setRfc(rs.getString(ClienteSql.RFC));
 			cliente.setNombre(rs.getString(ClienteSql.NOMBRE));
 			if(rs.getInt(ClienteSql.TIPO) == 1) {
-				tipoPersona.setId(TipoPersona.PERSONA_FISICA);				
-				cliente.setTipoPersona(tipoPersona);
+				tipoPersona = new TipoPersona(TipoPersona.PERSONA_FISICA);				
 			} else if(rs.getInt(ClienteSql.TIPO) == 2) {
-				tipoPersona.setId(TipoPersona.PERSONA_MORAL);				
-				cliente.setTipoPersona(tipoPersona);
+				tipoPersona = new TipoPersona(TipoPersona.PERSONA_MORAL);				
 			}
+			cliente.setTipoPersona(tipoPersona);
 			return cliente;
 		}
 	};

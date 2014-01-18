@@ -47,4 +47,6 @@ public interface DocumentoService {
 
 	void deleteDocumentoPendiente(Documento documento);
 
+	void updateDocumentoXmlCfdi(Documento documento);
+
 }

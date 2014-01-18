@@ -33,4 +33,8 @@ public interface DocumentoDao {
 
 	void deletedDocumentoPendiente(Documento documento);
 
+	Documento readDocumentoFolio(Documento documento);
+
+	void updateDocumentoXmlCfdi(Documento documento);
+
 }

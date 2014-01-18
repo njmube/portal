@@ -13,6 +13,9 @@ public class Establecimiento implements Serializable {
 	private String clave;
 	private String nombre;
 	private String password;
+	private String smbDomain;
+	private String smbUsername;
+	private String smbPassword;
 	private Date siguienteCierre;
 	private Date ultimoCierre;
 	private EmpresaEmisor empresa;
@@ -51,6 +54,30 @@ public class Establecimiento implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	public String getSmbDomain() {
+		return smbDomain;
+	}
+
+	public void setSmbDomain(String smbDomain) {
+		this.smbDomain = smbDomain;
+	}
+
+	public String getSmbUsername() {
+		return smbUsername;
+	}
+
+	public void setSmbUsername(String smbUsername) {
+		this.smbUsername = smbUsername;
+	}
+
+	public String getSmbPassword() {
+		return smbPassword;
+	}
+
+	public void setSmbPassword(String smbPassword) {
+		this.smbPassword = smbPassword;
+	}
 
 	public TipoEstablecimiento getTipoEstablecimiento() {
 		return tipoEstablecimiento;
@@ -58,14 +85,6 @@ public class Establecimiento implements Serializable {
 
 	public void setTipoEstablecimiento(TipoEstablecimiento tipoEstablecimiento) {
 		this.tipoEstablecimiento = tipoEstablecimiento;
-	}
-
-	public EmpresaEmisor getEmisor() {
-		return empresa;
-	}
-
-	public void setEmisor(EmpresaEmisor emisor) {
-		this.empresa = emisor;
 	}
 
 	public DomicilioEstablecimiento getDomicilio() {

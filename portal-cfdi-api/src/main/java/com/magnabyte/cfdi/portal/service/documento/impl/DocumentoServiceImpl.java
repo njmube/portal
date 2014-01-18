@@ -37,6 +37,7 @@ import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import jcifs.smb.NtlmPasswordAuthentication;
 import mx.gob.sat.cfd._3.Comprobante;
 import mx.gob.sat.cfd._3.Comprobante.Conceptos;
 import mx.gob.sat.cfd._3.Comprobante.Conceptos.Concepto;
@@ -226,6 +227,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			
 			Signature signature = Signature.getInstance("SHA1withRSA");
 			signature.initSign(privateKey);
+			//FIXME utf
 			signature.update(cadena.getBytes("UTF-8"));
 			byte[] firma = signature.sign();
 			logger.debug("regresando sello");
@@ -445,6 +447,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public void guardarDocumento(Documento documento) {
 		if(documento != null) {
+			documento.setXmlCfdi(documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
 			if(documento instanceof DocumentoSucursal) {
 				Ticket ticketDB = null;
 				if(((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket() != null 
@@ -483,8 +486,13 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 					asignarSerieYFolio(documento);
 				}
 			} else if (documento instanceof DocumentoCorporativo) {
-				saveDocumentAndDetail(documento);
-				documentoDao.insertDocumentoFolio(documento);
+				if (isFacturable(documento)) {
+					saveDocumentAndDetail(documento);
+					documentoDao.insertDocumentoFolio(documento);
+				} else {
+					logger.debug("La factura ya fue procesada con anterioridad.");
+					throw new PortalException("La factura ya fue procesada con anterioridad.");
+				}
 			} else {
 				saveDocumentAndDetail(documento);
 				asignarSerieYFolio(documento);
@@ -496,6 +504,16 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		
 	}
 	
+	@Override
+	public void updateDocumentoXmlCfdi(Documento documento) {
+		documentoDao.updateDocumentoXmlCfdi(documento);
+	}
+	
+	private boolean isFacturable(Documento documento) {
+		Documento documentoBD = documentoDao.readDocumentoFolio(documento);
+		return documentoBD == null;
+	}
+
 	private void asignarSerieYFolio(Documento documento) {
 		synchronized (documentoSerieDao) {
 			Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolio(documento);
@@ -657,10 +675,13 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			Integer idEstablecimiento, String extension) {
 		try {
 			//FIXME Validar si funcion igual para corporativo y sucursal
-			Establecimiento estab = establecimientoService.readRutaById(
+			Establecimiento establecimiento = establecimientoService.readRutaById(
 					EstablecimientoFactory.newInstance(idEstablecimiento));
-			InputStream file = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
-					+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + "." + extension);
+			NtlmPasswordAuthentication authentication = sambaService.getAuthentication(establecimiento);
+			InputStream file = sambaService.getFileStream(establecimiento.getRutaRepositorio().getRutaRepositorio() 
+					+ establecimiento.getRutaRepositorio().getRutaRepoOut(), 
+					fileName + "." + extension, 
+					authentication);
 			
 			return IOUtils.toByteArray(file);
 		
@@ -693,14 +714,15 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 					htmlPlantillaError = IOUtils.toString(htmlResourceError.getInputStream(),"UTF-8");
 					textoPlanoPlantillaError = IOUtils.toString(plainTextResourceError.getInputStream(),"UTF-8");
 					
-					Establecimiento estab = establecimientoService.readRutaById(
+					Establecimiento establecimiento = establecimientoService.readRutaById(
 							EstablecimientoFactory.newInstance(idEstablecimiento));
+					NtlmPasswordAuthentication authentication = sambaService.getAuthentication(establecimiento);
 					//FIXME Validar ruta para corporativo y sucursal
-					InputStream pdf = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
-							+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + ".pdf");
+					InputStream pdf = sambaService.getFileStream(establecimiento.getRutaRepositorio().getRutaRepositorio() 
+							+ establecimiento.getRutaRepositorio().getRutaRepoOut(), fileName + ".pdf", authentication);
 					
-					InputStream xml = sambaService.getFileStream(estab.getRutaRepositorio().getRutaRepositorio() 
-							+ estab.getRutaRepositorio().getRutaRepoOut(), fileName + ".xml");
+					InputStream xml = sambaService.getFileStream(establecimiento.getRutaRepositorio().getRutaRepositorio() 
+							+ establecimiento.getRutaRepositorio().getRutaRepoOut(), fileName + ".xml", authentication);
 					
 					final Map<String, ByteArrayResource> attach = new HashMap<String, ByteArrayResource>();
 					attach.put(fileName + ".pdf", new ByteArrayResource(IOUtils.toByteArray(pdf)));

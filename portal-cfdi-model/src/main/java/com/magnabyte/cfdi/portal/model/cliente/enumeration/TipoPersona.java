@@ -17,6 +17,11 @@ public class TipoPersona {
 	public TipoPersona() {		
 	}
 	
+	public TipoPersona(int id) {
+		super();
+		this.id = id;
+	}
+
 	/**
 	 * Identificador unico de tipo de cliente
 	 */
