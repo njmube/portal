@@ -333,7 +333,7 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(TABLE_NAME).append(EOL);
 		
 		qryBuilder.append(WHERE).append(EOL).append(TAB);
-		qryBuilder.append(CLAVE).append(SET_PARAM);
+		qryBuilder.append(CLAVE).append(SET_PARAM).append(TAB);
 		
 		qryBuilder.append(OR).append(EOL).append(TAB);
 		qryBuilder.append(NOMBRE).append(SET_PARAM);
