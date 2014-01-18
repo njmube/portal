@@ -51,4 +51,7 @@ public interface DocumentoService {
 
 	byte[] recuperarDocumentoXml(Integer idDocumento);
 
+	void envioDocumentosFacturacionPorXml(String para, String fileName,
+			Integer idDocumento);
+
 }
