@@ -707,7 +707,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Override
 	public byte[] recuperarDocumentoXml(Documento documento) {
-		documento = documentoDao.read(documento);
 		try {
 			logger.debug(new String(documento.getXmlCfdi(), PortalUtils.encodingUTF8));
 			Comprobante comprobante = documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi());
@@ -864,41 +863,46 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		return documentoDao.obtenerDocumentosTimbrePendientes();
 	}
 
+	//FIXME vieja implementacion
+//	@Override
+//	public Documento read(Documento documento) {
+//		Documento docBD = null;
+//		Cliente clienteBD = null;
+//		Conceptos conceptosBD = null;
+//		Comprobante comprobante = new Comprobante();
+//		Establecimiento estabBD = null;		
+//		
+//		if(documento.getId() != null) {
+//			docBD = documentoDao.read(documento);
+//			//FIXME CORREGIR
+//			documento.setTipoDocumento(TipoDocumento.FACTURA);
+//			clienteBD = clienteService.read(docBD.getCliente());
+//			estabBD = establecimientoService.read(docBD.getEstablecimiento());
+//			conceptosBD = documentoDetalleService.read(documento);			
+//			
+//			comprobante.setEmisor(emisorService.getEmisorPorEstablecimiento(estabBD));
+//			comprobante.setReceptor(createReceptor(clienteBD, docBD.getId_domicilio()));
+//			createFechaDocumento(comprobante);
+//			comprobante.setLugarExpedicion(comprobante.getEmisor().getExpedidoEn().getLocalidad());
+//			
+//			comprobante.setTipoDeComprobante(documento
+//					.getTipoDocumento().getNombre());
+//			comprobante.setTipoCambio(tipoCambio);
+//			comprobante.setCondicionesDePago(condicionesPago);
+//			comprobante.setFormaDePago(formaPago);
+//			
+//			comprobante.setConceptos(conceptosBD);
+//			
+//			docBD.setCliente(clienteBD);
+//			docBD.setComprobante(comprobante);
+//			docBD.setEstablecimiento(estabBD);
+//			
+//		}
+//		return docBD;
+//	}
 	@Override
 	public Documento read(Documento documento) {
-		Documento docBD = null;
-		Cliente clienteBD = null;
-		Conceptos conceptosBD = null;
-		Comprobante comprobante = new Comprobante();
-		Establecimiento estabBD = null;		
-		
-		if(documento.getId() != null) {
-			docBD = documentoDao.read(documento);
-			//FIXME CORREGIR
-			documento.setTipoDocumento(TipoDocumento.FACTURA);
-			clienteBD = clienteService.read(docBD.getCliente());
-			estabBD = establecimientoService.read(docBD.getEstablecimiento());
-			conceptosBD = documentoDetalleService.read(documento);			
-			
-			comprobante.setEmisor(emisorService.getEmisorPorEstablecimiento(estabBD));
-			comprobante.setReceptor(createReceptor(clienteBD, docBD.getId_domicilio()));
-			createFechaDocumento(comprobante);
-			comprobante.setLugarExpedicion(comprobante.getEmisor().getExpedidoEn().getLocalidad());
-			
-			comprobante.setTipoDeComprobante(documento
-					.getTipoDocumento().getNombre());
-			comprobante.setTipoCambio(tipoCambio);
-			comprobante.setCondicionesDePago(condicionesPago);
-			comprobante.setFormaDePago(formaPago);
-			
-			comprobante.setConceptos(conceptosBD);
-			
-			docBD.setCliente(clienteBD);
-			docBD.setComprobante(comprobante);
-			docBD.setEstablecimiento(estabBD);
-			
-		}
-		return docBD;
+		return documentoDao.read(documento);
 	}
 	
 	@Override

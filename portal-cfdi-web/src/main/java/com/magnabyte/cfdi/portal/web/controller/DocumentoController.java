@@ -146,6 +146,7 @@ public class DocumentoController {
 		try {						
 			Documento documento = new Documento();
 			documento.setId(idDocumento);
+			documento = documentoService.read(documento);
 //			byte [] doc = documentoService.recuperarDocumentoArchivo(fileName, idEstab, extension);
 			byte [] doc = documentoService.recuperarDocumentoXml(documento);
 			
