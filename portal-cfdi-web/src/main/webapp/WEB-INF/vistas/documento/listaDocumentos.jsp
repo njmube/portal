@@ -100,7 +100,7 @@ $(document).ready(function() {
 					});
 					
 					$("#enviaMail").click(function() {
-						var params = "idDoc=" + $("#idDocModal").val() 
+						var params = "idDocumento=" + $("#idDocModal").val() 
 							+ "&fileName=" + $("#fileNameModal").val() + "&email=" + $("#email").val();  
 						
 						console.log(params);
