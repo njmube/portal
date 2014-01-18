@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
@@ -43,7 +45,12 @@ import mx.gob.sat.cfd._3.Comprobante.Conceptos.Concepto;
 import mx.gob.sat.cfd._3.Comprobante.Impuestos;
 import mx.gob.sat.cfd._3.Comprobante.Receptor;
 import mx.gob.sat.cfd._3.TUbicacion;
-import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.ssl.PKCS8Key;
@@ -84,6 +91,7 @@ import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
+import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.commons.EmailService;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoDetalleService;
@@ -92,6 +100,7 @@ import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.emisor.EmisorService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
+import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.service.xml.util.CfdiConfiguration;
 
@@ -99,6 +108,9 @@ import com.magnabyte.cfdi.portal.service.xml.util.CfdiConfiguration;
 public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAware {
 
 	private static final Logger logger = LoggerFactory.getLogger(DocumentoServiceImpl.class);
+	
+	@Autowired
+	private CodigoQRService codigoQRService;
 	
 	@Autowired
 	private DocumentoXmlService documentoXmlService;
@@ -693,9 +705,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	}
 	
 	@Override
-	public byte[] recuperarDocumentoXml(Integer idDocumento) {
-		Documento documento = new Documento();
-		documento.setId(idDocumento);
+	public byte[] recuperarDocumentoXml(Documento documento) {
 		documento = documentoDao.read(documento);
 		try {
 			logger.debug(new String(documento.getXmlCfdi(), PortalUtils.encodingUTF8));
@@ -706,8 +716,49 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			throw new PortalException("Error al convertir el documento a bytes");
 		}
 	}
+	
+	@Override
+	public byte[] recuperarDocumentoPdf(Documento documento, HttpServletRequest request) {
+		logger.debug("Creando reporte");
+		JasperPrint reporteCompleto = null;
+		String reporteCompilado = request.getSession().getServletContext().getRealPath("WEB-INF/reports/ReporteFactura.jasper");
 
-	//FIXME Cambiar logica para envio de email
+		Locale locale = new Locale("es", "MX");
+		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
+		comprobantes.add(documento.getComprobante());
+		String pathImages = request.getSession().getServletContext().getRealPath("resources/img");
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (documento instanceof DocumentoCorporativo) {
+			map.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
+		} else if (documento instanceof DocumentoSucursal) {
+			map.put("SUCURSAL", documento.getEstablecimiento().getNombre());
+		}
+		
+		map.put("TIPO_DOC", documento.getTipoDocumento().getNombre());
+		map.put(JRParameter.REPORT_LOCALE, locale);
+		map.put("NUM_SERIE_CERT", documentoXmlService.obtenerNumCertificado(documento.getXmlCfdi()));
+		map.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
+		map.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
+		map.put("FECHA_TIMBRADO", documento.getTimbreFiscalDigital().getFechaTimbrado());
+		map.put("FOLIO_FISCAL", documento.getTimbreFiscalDigital().getUUID());
+		map.put("CADENA_ORIGINAL", documento.getCadenaOriginal());
+		map.put("PATH_IMAGES", pathImages);
+		map.put("QRCODE", codigoQRService.generaCodigoQR(documento));
+		map.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
+		map.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
+
+		JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(comprobantes);
+
+		try {
+			reporteCompleto = JasperFillManager.fillReport(reporteCompilado, map, dataSource);
+			byte[] bytesReport = JasperExportManager.exportReportToPdf(reporteCompleto);
+			return bytesReport;
+		} catch (JRException e) {
+			logger.error("Ocurrió un error al crear el PDF: {}", e);
+			throw new PortalException("Ocurrió un error al crear el PDF: " + e.getMessage());
+		}
+	}
+
 	@Override
 	public void envioDocumentosFacturacion(final String para, final String fileName,
 		final Integer idEstablecimiento) {
@@ -763,12 +814,15 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Override
 	public void envioDocumentosFacturacionPorXml(final String para, final String fileName,
-		final Integer idDocumento) {
+		final Integer idDocumento, final HttpServletRequest request) {
 	
 		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
+				Documento documento = new Documento();
+				documento.setId(idDocumento);
+				documento = findById(documento);
 				String asunto = subject + fileName;
 				String htmlPlantilla = null;
 				String textoPlanoPlantilla = null;
@@ -784,22 +838,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 					htmlPlantillaError = IOUtils.toString(htmlResourceError.getInputStream(), PortalUtils.encodingUTF8);
 					textoPlanoPlantillaError = IOUtils.toString(plainTextResourceError.getInputStream(), PortalUtils.encodingUTF8);
 					
-//					Establecimiento establecimiento = establecimientoService.readRutaById(
-//							EstablecimientoFactory.newInstance(idEstablecimiento));
-//					
-//					NtlmPasswordAuthentication authentication = sambaService.getAuthentication(establecimiento);
-					
-					byte [] docXml = recuperarDocumentoXml(idDocumento);
-
-//					InputStream pdf = sambaService.getFileStream(establecimiento.getRutaRepositorio().getRutaRepositorio() 
-//							+ establecimiento.getRutaRepositorio().getRutaRepoOut(), fileName + ".pdf", authentication);
-//					
-//					InputStream xml = sambaService.getFileStream(establecimiento.getRutaRepositorio().getRutaRepositorio() 
-//							+ establecimiento.getRutaRepositorio().getRutaRepoOut(), fileName + ".xml", authentication);
-					
 					final Map<String, ByteArrayResource> attach = new HashMap<String, ByteArrayResource>();
-//					attach.put(fileName + ".pdf", new ByteArrayResource(IOUtils.toByteArray(pdf)));
-					attach.put(fileName + ".xml", new ByteArrayResource(docXml));
+					attach.put(fileName + ".pdf", new ByteArrayResource(recuperarDocumentoPdf(documento, request)));
+					attach.put(fileName + ".xml", new ByteArrayResource(recuperarDocumentoXml(documento)));
 					
 					htmlPlantilla = IOUtils.toString(htmlResource.getInputStream(), PortalUtils.encodingUTF8);
 					textoPlanoPlantilla = IOUtils.toString(plainTextResource.getInputStream(), PortalUtils.encodingUTF8);
