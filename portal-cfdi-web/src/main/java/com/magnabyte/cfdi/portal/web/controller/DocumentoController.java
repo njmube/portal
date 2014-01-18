@@ -28,11 +28,14 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
+import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoPortal;
+import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
+import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.web.cfdi.CfdiService;
 import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
@@ -95,23 +98,23 @@ public class DocumentoController {
 		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
 		comprobantes.add(documento.getComprobante());
 		String pathImages = request.getSession().getServletContext().getRealPath("resources/img");
-//		if (documento instanceof DocumentoCorporativo) {
-//			model.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
-//		} else if (documento instanceof DocumentoSucursal) {
-//			model.put("SUCURSAL", documento.getEstablecimiento().getNombre());
-//		}
-//		model.put("TIPO_DOC", documento.getTipoDocumento().getNombre());
-//		model.put("NUM_SERIE_CERT", documentoXmlService.obtenerNumCertificado(documento.getXmlCfdi()));
-//		model.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
-//		model.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
-//		model.put("FECHA_TIMBRADO", documento.getTimbreFiscalDigital().getFechaTimbrado());
-//		model.put("FOLIO_FISCAL", documento.getTimbreFiscalDigital().getUUID());
-//		model.put("CADENA_ORIGINAL", documento.getCadenaOriginal());
+		if (documento instanceof DocumentoCorporativo) {
+			model.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
+		} else if (documento instanceof DocumentoSucursal) {
+			model.put("SUCURSAL", documento.getEstablecimiento().getNombre());
+		}
+		model.put("TIPO_DOC", documento.getTipoDocumento().getNombre());
+		model.put("NUM_SERIE_CERT", documentoXmlService.obtenerNumCertificado(documento.getXmlCfdi()));
+		model.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
+		model.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
+		model.put("FECHA_TIMBRADO", documento.getTimbreFiscalDigital().getFechaTimbrado());
+		model.put("FOLIO_FISCAL", documento.getTimbreFiscalDigital().getUUID());
+		model.put("CADENA_ORIGINAL", documento.getCadenaOriginal());
 		model.put("PATH_IMAGES", pathImages);
 		model.put(JRParameter.REPORT_LOCALE, locale);
-//		model.put("QRCODE", codigoQRService.generaCodigoQR(documento));
-//		model.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
-//		model.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
+		model.put("QRCODE", codigoQRService.generaCodigoQR(documento));
+		model.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
+		model.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
 		model.put("objetoKey", comprobantes);
 		return "reporte";
 	}
