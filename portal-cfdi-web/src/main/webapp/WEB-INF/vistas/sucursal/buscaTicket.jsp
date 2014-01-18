@@ -97,7 +97,7 @@
 		$(document).ready(function() {
 			$("#buscarCliente").click(function() {
 				if($("#ticketForm").validationEngine("validate")) {
-					$("#page_loader_ticket").show();
+					$("#page_loader").show();
 					$("#page_loader_ticket_content").show();
 					$("#ticketForm").submit();
 				}

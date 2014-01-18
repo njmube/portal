@@ -250,7 +250,7 @@
 		$(document).ready(function() {
 			$("#generaFactura").click(function() {
 				$("#page_loader").show();
-				$(".page_loader_content").show();
+				$("#page_loader_factura_content").show();
 				$(this).attr("disabled", "disabled");
 				$("#cancel").attr("disabled", "disabled");
 				$("#formPdf").submit();

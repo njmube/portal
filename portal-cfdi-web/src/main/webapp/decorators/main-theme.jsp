@@ -178,7 +178,7 @@
 	</div>
 	<div id="page_loader" class="page_loader">
 	</div>
-	<div class="page_loader_content text-center">
+	<div id="page_loader_factura_content" class="page_loader_content text-center">
 		<div class="row">
 			<div class="panel col-md-4 col-md-offset-4">
 				<h3>Generando Factura</h3>
@@ -188,8 +188,6 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	<div id="page_loader_ticket" class="page_loader">
 	</div>
 	<div id="page_loader_ticket_content" class="page_loader_content text-center">
 		<div class="row">
