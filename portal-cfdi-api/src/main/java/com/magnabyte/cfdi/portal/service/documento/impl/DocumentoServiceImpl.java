@@ -760,6 +760,62 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			}
 		}).start();
 	}
+	
+	@Override
+	public void envioDocumentosFacturacionPorXml(final String para, final String fileName,
+		final Integer idDocumento) {
+	
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				String asunto = subject + fileName;
+				String htmlPlantilla = null;
+				String textoPlanoPlantilla = null;
+				String htmlPlantillaError = null;
+				String textoPlanoPlantillaError = null;
+				
+				Resource htmlResource = resourceLoader.getResource("classpath:/" + nameHtmlText);
+				Resource plainTextResource = resourceLoader.getResource("classpath:/" + namePlainText);
+				Resource htmlResourceError = resourceLoader.getResource("classpath:/" + nameHtmlTextError);
+				Resource plainTextResourceError = resourceLoader.getResource("classpath:/" + namePlainTextError);
+				
+				try {
+					htmlPlantillaError = IOUtils.toString(htmlResourceError.getInputStream(), PortalUtils.encodingUTF8);
+					textoPlanoPlantillaError = IOUtils.toString(plainTextResourceError.getInputStream(), PortalUtils.encodingUTF8);
+					
+//					Establecimiento establecimiento = establecimientoService.readRutaById(
+//							EstablecimientoFactory.newInstance(idEstablecimiento));
+//					
+//					NtlmPasswordAuthentication authentication = sambaService.getAuthentication(establecimiento);
+					
+					byte [] docXml = recuperarDocumentoXml(idDocumento);
+
+//					InputStream pdf = sambaService.getFileStream(establecimiento.getRutaRepositorio().getRutaRepositorio() 
+//							+ establecimiento.getRutaRepositorio().getRutaRepoOut(), fileName + ".pdf", authentication);
+//					
+//					InputStream xml = sambaService.getFileStream(establecimiento.getRutaRepositorio().getRutaRepositorio() 
+//							+ establecimiento.getRutaRepositorio().getRutaRepoOut(), fileName + ".xml", authentication);
+					
+					final Map<String, ByteArrayResource> attach = new HashMap<String, ByteArrayResource>();
+//					attach.put(fileName + ".pdf", new ByteArrayResource(IOUtils.toByteArray(pdf)));
+					attach.put(fileName + ".xml", new ByteArrayResource(docXml));
+					
+					htmlPlantilla = IOUtils.toString(htmlResource.getInputStream(), PortalUtils.encodingUTF8);
+					textoPlanoPlantilla = IOUtils.toString(plainTextResource.getInputStream(), PortalUtils.encodingUTF8);
+					//FIXME Cambiar configuracion mail
+					emailService.sendMailWithAttach(textoPlanoPlantilla,htmlPlantilla, asunto, attach, para);
+					
+				} catch (PortalException ex) {
+					logger.error("Error al leer los archivos adjuntos.", ex);
+					emailService.sendMimeMail(textoPlanoPlantillaError, htmlPlantillaError ,asunto, para);
+				} catch (IOException ex) {
+					logger.error("Error al leer los archivos adjuntos.", ex);
+					emailService.sendMimeMail(textoPlanoPlantillaError, htmlPlantillaError ,asunto, para);
+				}
+			}
+		}).start();
+	}
 
 	@Override
 	public List<Documento> obtenerDocumentosTimbrePendientes() {

@@ -53,4 +53,7 @@ public interface DocumentoService {
 
 	Documento findById(Documento documento);
 
+	void envioDocumentosFacturacionPorXml(String para, String fileName,
+			Integer idDocumento);
+
 }
