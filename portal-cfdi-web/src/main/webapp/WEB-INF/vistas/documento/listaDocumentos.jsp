@@ -14,12 +14,12 @@
 					<display:column title="Nombre Documento" property="nombre" headerClass="text-primary text-center" class="text-center" />
 					<display:column title="PDF" headerClass="text-primary text-center" class="text-center">
 						<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_CORP')">
-							<a href="<c:url value="/documentoDownloadPdf/${documento.id}/${documento.nombre}" />" class="btn btn-xs btn-danger">
+							<a href="<c:url value="/documentoDownloadPdf/${documento.id}/${documento.nombre}/in" />" target="_blank" class="btn btn-xs btn-danger">
 								Descargar <i class="fa fa-download"></i>
 							</a>
 						</sec:authorize>
 						<sec:authorize access="isAnonymous()">
-							<a href="<c:url value="/portal/cfdi/documentoDownloadPdf/${documento.id}/${documento.nombre}" />" class="btn btn-xs btn-danger">
+							<a href="<c:url value="/portal/cfdi/documentoDownloadPdf/${documento.id}/${documento.nombre}/ex" />" target="_blank" class="btn btn-xs btn-danger">
 								Descargar <i class="fa fa-download"></i>
 							</a>
 						</sec:authorize>

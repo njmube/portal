@@ -776,6 +776,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		
 		if(documento.getId() != null) {
 			docBD = documentoDao.read(documento);
+			//FIXME CORREGIR
+			documento.setTipoDocumento(TipoDocumento.FACTURA);
 			clienteBD = clienteService.read(docBD.getCliente());
 			estabBD = establecimientoService.read(docBD.getEstablecimiento());
 			conceptosBD = documentoDetalleService.read(documento);			
