@@ -28,14 +28,11 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
-import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoPortal;
-import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
-import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.web.cfdi.CfdiService;
 import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
@@ -171,7 +168,6 @@ public class DocumentoController {
 		} else {
 			return "redirect:/portal/cfdi/reporte";
 		}
-		
 	}
 
 	
