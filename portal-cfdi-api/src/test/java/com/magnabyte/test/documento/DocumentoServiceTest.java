@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoSerieDao;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
+import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.impl.DocumentoServiceImpl;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
@@ -73,9 +74,8 @@ public class DocumentoServiceTest {
 		Documento documento = new Documento();
 		documento.setId(375);
 		documento = documentoDao.read(documento);
-		logger.debug(new String(documento.getXmlCfdi(), "UTF-8"));
 		Comprobante comprobante = documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi());
-		documentoXmlService.convierteComprobanteAByteArrayForWebService(comprobante);
+		documentoXmlService.convierteComprobanteAByteArray(comprobante, PortalUtils.encodingUTF8);
 		
 		logger.debug("fin");
 	}

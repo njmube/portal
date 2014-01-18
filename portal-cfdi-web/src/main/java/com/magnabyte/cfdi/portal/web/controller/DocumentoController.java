@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import mx.gob.sat.cfd._3.Comprobante;
 import net.sf.jasperreports.engine.JRParameter;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +32,7 @@ import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoPortal;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
+import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
@@ -119,6 +119,7 @@ public class DocumentoController {
 		return "reporte";
 	}
 
+	//FIXME Exception io
 	@RequestMapping(value = {"/documentoXml", "/portal/cfdi/documentoXml"})
 	public void documentoXml(@ModelAttribute Documento documento,
 			HttpServletResponse response) {
@@ -127,7 +128,7 @@ public class DocumentoController {
 			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
 			OutputStream out = response.getOutputStream();
 			//FIXME metodo
-			out.write(documentoXmlService.convierteComprobanteAByteArrayForWebService(documento.getComprobante()));
+			out.write(documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante(), PortalUtils.encodingUTF8));
 			out.flush();
 			out.close();
 		} catch (IOException e) {
@@ -135,13 +136,17 @@ public class DocumentoController {
 		}
 	}
 	
-	@RequestMapping(value = {"/documentoDownload/{idEstab}/{fileName}/{extension}"
-			, "/portal/cfdi/documentoDownload/{idEstab}/{fileName}/{extension}"})
-	public void documentoDownload(@PathVariable Integer idEstab, 
+	//FIXME Exception io
+//	@RequestMapping(value = {"/documentoDownload/{idEstab}/{fileName}/{extension}"
+//			, "/portal/cfdi/documentoDownload/{idEstab}/{fileName}/{extension}"})
+	@RequestMapping(value = {"/documentoDownload/{idDoc}/{fileName}/{extension}"
+			, "/portal/cfdi/documentoDownload/{idDoc}/{fileName}/{extension}"})
+	public void documentoDownload(@PathVariable Integer idDoc, 
 			@PathVariable String fileName, @PathVariable String extension,
 			HttpServletResponse response) {
 		try {						
-			byte [] doc = documentoService.recuperarDocumentoArchivo(fileName, idEstab, extension);
+//			byte [] doc = documentoService.recuperarDocumentoArchivo(fileName, idEstab, extension);
+			byte [] doc = documentoService.recuperarDocumentoXml(idDoc);
 			
 			response.setHeader("Content-Disposition", "attachment; filename=" + fileName + "." + extension);
 			OutputStream out = response.getOutputStream();

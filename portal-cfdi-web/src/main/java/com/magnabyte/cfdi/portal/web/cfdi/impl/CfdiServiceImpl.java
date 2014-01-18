@@ -204,7 +204,7 @@ public class CfdiServiceImpl implements CfdiService {
 		
 		for (Iterator<String> it = archivosOrigenDevolucion.iterator(); it.hasNext(); ){
 			if(ticketService.isTicketProcesado(it.next())){
-				//FIXME Desarrollar generacion de ncr
+				//TODO Desarrollar generacion de ncr
 			}
 		}
 	}	

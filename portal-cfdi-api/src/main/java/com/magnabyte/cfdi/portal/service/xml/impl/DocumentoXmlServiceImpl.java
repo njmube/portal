@@ -38,6 +38,7 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Service;
 
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
+import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.service.xml.util.CfdiConfiguration;
@@ -91,10 +92,9 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 				documento.setAttribute("noCertificado", cfdiConfiguration.getNumeroCertificadoPrevio());
 				documento.setAttribute("certificado", cfdiConfiguration.getCertificadoPrevio());
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				//FIXME utf
-				OutputStreamWriter oos = new OutputStreamWriter(baos, "UTF-16");
+				OutputStreamWriter oos = new OutputStreamWriter(baos, PortalUtils.encodingUTF16);
 				XMLOutputter outputter = new XMLOutputter();
-	            outputter.setFormat(Format.getPrettyFormat().setEncoding("UTF-16"));
+	            outputter.setFormat(Format.getPrettyFormat().setEncoding(PortalUtils.encodingUTF16));
 	            outputter.output(documentoCFD, oos);
 	            oos.flush();
 	            oos.close();
@@ -159,54 +159,24 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	
 	@Override
 	public InputStream convierteComprobanteAStream(Comprobante comprobante) {
-		return new ByteArrayInputStream(convierteComprobanteAByteArray(comprobante));
+		return new ByteArrayInputStream(convierteComprobanteAByteArray(comprobante, PortalUtils.encodingUTF16));
 	}
 	
 	@Override
-	public byte[] convierteComprobanteAByteArray(Comprobante comprobante) {
+	public byte[] convierteComprobanteAByteArray(Comprobante comprobante, String encoding) {
 		Map<String, Object> marshallerProperties = new HashMap<String, Object>();
 		marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_SCHEMA_LOCATION, cfdiConfiguration.getSchemaLocation());
 		marshallerProperties.put("com.sun.xml.bind.namespacePrefixMapper", customNamespacePrefixMapper);
-		marshallerProperties.put("jaxb.encoding", "UTF-16");
+		marshallerProperties.put("jaxb.encoding", encoding);
 		((Jaxb2Marshaller) marshaller).setMarshallerProperties(marshallerProperties);
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		OutputStreamWriter oos;
 		try {
-			oos = new OutputStreamWriter(baos, "UTF-16");
+			oos = new OutputStreamWriter(baos, encoding);
 			marshaller.marshal(comprobante, new StreamResult(oos));
-			//FIXME quitar produccion
-			marshaller.marshal(comprobante, new StreamResult(System.out));
-	        oos.flush();
-	        oos.close();
-		} catch (UnsupportedEncodingException e) {
-			logger.error("La codificacion no es soportada: ", e);
-			throw new PortalException("La codificacion no es soportada: " + e.getMessage());
-		} catch (IOException e) {
-			logger.error("Error al convertir el Comprobante a Arreglo de Bytes: ", e);
-			throw new PortalException("Error al convertir el Comprobante a Arreglo de Bytes: " + e.getMessage());
-		}
-		return baos.toByteArray();
-	}
-	
-	//FIXME logica
-	@Override
-	public byte[] convierteComprobanteAByteArrayForWebService(Comprobante comprobante) {
-		Map<String, Object> marshallerProperties = new HashMap<String, Object>();
-		marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_SCHEMA_LOCATION, cfdiConfiguration.getSchemaLocation());
-		marshallerProperties.put("com.sun.xml.bind.namespacePrefixMapper", customNamespacePrefixMapper);
-		marshallerProperties.put("jaxb.encoding", "UTF-8");
-		((Jaxb2Marshaller) marshaller).setMarshallerProperties(marshallerProperties);
-
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		OutputStreamWriter oos;
-		try {
-			oos = new OutputStreamWriter(baos, "UTF-8");
-			marshaller.marshal(comprobante, new StreamResult(oos));
-			//FIXME quitar produccion
-			marshaller.marshal(comprobante, new StreamResult(System.out));
+//			marshaller.marshal(comprobante, new StreamResult(System.out));
 	        oos.flush();
 	        oos.close();
 		} catch (UnsupportedEncodingException e) {

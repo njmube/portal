@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
@@ -81,6 +82,7 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDescuento;
 import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
 import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
+import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 import com.magnabyte.cfdi.portal.service.commons.EmailService;
@@ -194,7 +196,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			
 			Signature signature = Signature.getInstance("SHA1withRSA");
 			signature.initVerify(publicKey);
-			signature.update(cadena.getBytes("UTF-8"));
+			signature.update(cadena.getBytes(PortalUtils.encodingUTF8));
 			
 			return signature.verify(Base64.decode(sello));
 		} catch (CertificateException e) {
@@ -227,8 +229,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			
 			Signature signature = Signature.getInstance("SHA1withRSA");
 			signature.initSign(privateKey);
-			//FIXME utf
-			signature.update(cadena.getBytes("UTF-8"));
+			signature.update(cadena.getBytes(PortalUtils.encodingUTF8));
 			byte[] firma = signature.sign();
 			logger.debug("regresando sello");
 			return new String(Base64.encode(firma));
@@ -447,7 +448,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public void guardarDocumento(Documento documento) {
 		if(documento != null) {
-			documento.setXmlCfdi(documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
+			documento.setXmlCfdi(documentoXmlService
+					.convierteComprobanteAByteArray(documento.getComprobante(), PortalUtils.encodingUTF16));
 			if(documento instanceof DocumentoSucursal) {
 				Ticket ticketDB = null;
 				if(((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket() != null 
@@ -674,7 +676,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	public byte[] recuperarDocumentoArchivo(String fileName, 
 			Integer idEstablecimiento, String extension) {
 		try {
-			//FIXME Validar si funcion igual para corporativo y sucursal
 			Establecimiento establecimiento = establecimientoService.readRutaById(
 					EstablecimientoFactory.newInstance(idEstablecimiento));
 			NtlmPasswordAuthentication authentication = sambaService.getAuthentication(establecimiento);
@@ -690,7 +691,23 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			throw new PortalException("Error al convertir el documento a bytes");
 		}
 	}
+	
+	@Override
+	public byte[] recuperarDocumentoXml(Integer idDocumento) {
+		Documento documento = new Documento();
+		documento.setId(idDocumento);
+		documento = documentoDao.read(documento);
+		try {
+			logger.debug(new String(documento.getXmlCfdi(), PortalUtils.encodingUTF8));
+			Comprobante comprobante = documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi());
+			return documentoXmlService.convierteComprobanteAByteArray(comprobante, PortalUtils.encodingUTF8);
+		} catch (UnsupportedEncodingException ex) {
+			logger.error("Error al convertir el documento a bytes");
+			throw new PortalException("Error al convertir el documento a bytes");
+		}
+	}
 
+	//FIXME Cambiar logica para envio de email
 	@Override
 	public void envioDocumentosFacturacion(final String para, final String fileName,
 		final Integer idEstablecimiento) {
@@ -711,13 +728,13 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 				Resource plainTextResourceError = resourceLoader.getResource("classpath:/" + namePlainTextError);
 				
 				try {
-					htmlPlantillaError = IOUtils.toString(htmlResourceError.getInputStream(),"UTF-8");
-					textoPlanoPlantillaError = IOUtils.toString(plainTextResourceError.getInputStream(),"UTF-8");
+					htmlPlantillaError = IOUtils.toString(htmlResourceError.getInputStream(), PortalUtils.encodingUTF8);
+					textoPlanoPlantillaError = IOUtils.toString(plainTextResourceError.getInputStream(), PortalUtils.encodingUTF8);
 					
 					Establecimiento establecimiento = establecimientoService.readRutaById(
 							EstablecimientoFactory.newInstance(idEstablecimiento));
 					NtlmPasswordAuthentication authentication = sambaService.getAuthentication(establecimiento);
-					//FIXME Validar ruta para corporativo y sucursal
+
 					InputStream pdf = sambaService.getFileStream(establecimiento.getRutaRepositorio().getRutaRepositorio() 
 							+ establecimiento.getRutaRepositorio().getRutaRepoOut(), fileName + ".pdf", authentication);
 					
@@ -728,8 +745,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 					attach.put(fileName + ".pdf", new ByteArrayResource(IOUtils.toByteArray(pdf)));
 					attach.put(fileName + ".xml", new ByteArrayResource(IOUtils.toByteArray(xml)));
 					
-					htmlPlantilla = IOUtils.toString(htmlResource.getInputStream(), "UTF-8");
-					textoPlanoPlantilla = IOUtils.toString(plainTextResource.getInputStream(), "UTF-8");
+					htmlPlantilla = IOUtils.toString(htmlResource.getInputStream(), PortalUtils.encodingUTF8);
+					textoPlanoPlantilla = IOUtils.toString(plainTextResource.getInputStream(), PortalUtils.encodingUTF8);
 					//FIXME Cambiar configuracion mail
 					emailService.sendMailWithAttach(textoPlanoPlantilla,htmlPlantilla, asunto, attach, para);
 					
