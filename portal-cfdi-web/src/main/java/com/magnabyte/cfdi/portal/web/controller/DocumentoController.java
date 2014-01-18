@@ -141,11 +141,13 @@ public class DocumentoController {
 //			, "/portal/cfdi/documentoDownload/{idEstab}/{fileName}/{extension}"})
 	@RequestMapping(value = {"/documentoDownloadXml/{idDoc}/{fileName}"
 			, "/portal/cfdi/documentoDownloadXml/{idDoc}/{fileName}"})
-	public void documentoDownloadXml(@PathVariable Integer idDoc, 
+	public void documentoDownloadXml(@PathVariable Integer idDocumento, 
 			@PathVariable String fileName, HttpServletResponse response) {
 		try {						
+			Documento documento = new Documento();
+			documento.setId(idDocumento);
 //			byte [] doc = documentoService.recuperarDocumentoArchivo(fileName, idEstab, extension);
-			byte [] doc = documentoService.recuperarDocumentoXml(idDoc);
+			byte [] doc = documentoService.recuperarDocumentoXml(documento);
 			
 			response.setHeader("Content-Disposition", "attachment; filename=" + fileName + ".xml");
 			OutputStream out = response.getOutputStream();
@@ -175,10 +177,10 @@ public class DocumentoController {
 
 	
 	@RequestMapping("/portal/cfdi/documentoEnvio") 
-	public @ResponseBody Boolean documentoEnvio(@RequestParam Integer idEstab, 
-			@RequestParam String fileName, @RequestParam String email) {
+	public @ResponseBody Boolean documentoEnvio(@RequestParam Integer idDocumento, 
+			@RequestParam String fileName, @RequestParam String email, HttpServletRequest request) {
 		try {
-			documentoService.envioDocumentosFacturacion(email, fileName, idEstab);
+			documentoService.envioDocumentosFacturacionPorXml(email, fileName, idDocumento, request);
 		} catch (PortalException ex) {
 			return false;
 		}

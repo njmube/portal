@@ -2,6 +2,8 @@ package com.magnabyte.cfdi.portal.service.documento;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import mx.gob.sat.cfd._3.Comprobante;
 
 import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
@@ -49,11 +51,13 @@ public interface DocumentoService {
 
 	void updateDocumentoXmlCfdi(Documento documento);
 
-	byte[] recuperarDocumentoXml(Integer idDocumento);
+	byte[] recuperarDocumentoXml(Documento documento);
 
 	Documento findById(Documento documento);
 
 	void envioDocumentosFacturacionPorXml(String para, String fileName,
-			Integer idDocumento);
+			Integer idDocumento, HttpServletRequest request);
+
+	byte[] recuperarDocumentoPdf(Documento documento, HttpServletRequest request);
 
 }
