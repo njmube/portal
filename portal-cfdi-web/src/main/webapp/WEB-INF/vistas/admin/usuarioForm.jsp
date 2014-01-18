@@ -46,19 +46,19 @@
 								<form:hidden path="id"/>
 								<label for="txtNombre" class="col-lg-5 control-label">Usuario:</label>
 								<div class="col-lg-5">
-									<form:input path="usuario" cssClass="form-control input-sm validate[required]" id="txtNombre" />
+									<form:input path="usuario" cssClass="form-control input-sm validate[required] noUpper" id="txtNombre" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="txtPassword" class="col-lg-5 control-label">Password:</label>
 								<div class="col-lg-5">
-									<form:input  path="password" cssClass="form-control input-sm validate[required]" id="txtPassword" />
+									<form:input  path="password" cssClass="form-control input-sm validate[required] noUpper" id="txtPassword" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="txtConfirmarPassword" class="col-lg-5 control-label">Confirmar password: </label>
 								<div class="col-lg-5">
-									<input value="${usuario.password }" class="form-control input-sm validate[required, equals[txtPassword]]" id="txtConfirmarPassword" />
+									<input value="${usuario.password }" class="form-control input-sm validate[required, equals[txtPassword]] noUpper" id="txtConfirmarPassword" />
 								</div>
 							</div>
 							<div class="form-group">

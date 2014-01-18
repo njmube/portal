@@ -128,6 +128,9 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 				establecimiento.getId());
 	}
 	
+	public boolean exist(Establecimiento establecimiento) {
+		return false;
+	}
 	private MapSqlParameterSource getParameters(Establecimiento establecimiento) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue(EstablecimientoSql.CLAVE, establecimiento.getClave());
