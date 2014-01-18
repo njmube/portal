@@ -32,6 +32,7 @@ import com.magnabyte.cfdi.portal.model.documento.EstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
+import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 
 @Repository("documentoDao")
 public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
@@ -57,18 +58,18 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		getJdbcTemplate().update(DocumentoSql.UPDATE_DOC_CTE, documento.getCliente().getId(), documento.getId());
 	}
 
-	//FIXME exceptions
 	@Override
 	public void updateDocumentoXmlCfdi(Documento documento) {
 		try {
-			getJdbcTemplate().update(DocumentoSql.UPDATE_DOC_XML_FILE, 
-					new String(documento.getXmlCfdi(), "UTF-16"), documento.getId());
+			int rowsAffected = getJdbcTemplate().update(DocumentoSql.UPDATE_DOC_XML_FILE, 
+					new String(documento.getXmlCfdi(), PortalUtils.encodingUTF16), documento.getId());
+			logger.debug("archivos afectados {}", rowsAffected);
 		} catch (DataAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.debug("No se pudo actualizar el Documento en la base de datos.", e);
+			throw new PortalException("No se pudo actualizar el Documento en la base de datos.", e);
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.debug("No se pudo actualizar el Documento en la base de datos.", e);
+			throw new PortalException("No se pudo actualizar el Documento en la base de datos.", e);
 		}
 	}
 	

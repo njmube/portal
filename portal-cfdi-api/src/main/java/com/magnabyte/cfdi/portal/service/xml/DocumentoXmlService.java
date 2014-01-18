@@ -10,12 +10,10 @@ public interface DocumentoXmlService {
 
 	InputStream convierteComprobanteAStream(Comprobante comprobante);
 	
-	byte[] convierteComprobanteAByteArray(Comprobante comprobante);
-
 	Comprobante convierteByteArrayAComprobante(byte[] xmlCfdi);
 
 	String obtenerNumCertificado(byte[] xmlCfdi);
 
-	byte[] convierteComprobanteAByteArrayForWebService(Comprobante comprobante);
+	byte[] convierteComprobanteAByteArray(Comprobante comprobante, String encoding);
 
 }

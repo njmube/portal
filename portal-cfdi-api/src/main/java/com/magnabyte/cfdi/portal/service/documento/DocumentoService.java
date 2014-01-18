@@ -49,4 +49,6 @@ public interface DocumentoService {
 
 	void updateDocumentoXmlCfdi(Documento documento);
 
+	byte[] recuperarDocumentoXml(Integer idDocumento);
+
 }

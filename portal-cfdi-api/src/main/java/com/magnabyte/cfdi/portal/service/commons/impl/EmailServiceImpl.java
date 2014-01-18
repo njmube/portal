@@ -16,6 +16,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
+import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.commons.EmailService;
 
 @Service("emailService")
@@ -52,7 +53,7 @@ public class EmailServiceImpl implements EmailService {
 		
 		MimeMessageHelper helper;
 		try {
-			helper = new MimeMessageHelper(msg, true, "UTF-8");
+			helper = new MimeMessageHelper(msg, true, PortalUtils.encodingUTF8);
 			helper.setTo(recipients);
 			helper.setText(message, messageHtml);
 			helper.setSubject(subject);
@@ -74,7 +75,7 @@ public class EmailServiceImpl implements EmailService {
 		
 		MimeMessageHelper helper;
 		try {
-			helper = new MimeMessageHelper(msg, true, "UTF-8");
+			helper = new MimeMessageHelper(msg, true, PortalUtils.encodingUTF8);
 			helper.setTo(recipients);
 			helper.setText(message, messageHtml);
 			helper.setSubject(subject);

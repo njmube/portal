@@ -18,9 +18,9 @@ import com.certus.facturehoy.ws2.cfdi.WsResponseBO;
 import com.certus.facturehoy.ws2.cfdi.WsServicioBO;
 import com.certus.facturehoy.ws2.cfdi.WsServicios;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
-import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.EstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
+import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
@@ -64,7 +64,8 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		
 		try {
 			response = wsEmisionTimbrado.emitirTimbrar(userWs, passwordWs, idServicio, 
-				documentoXmlService.convierteComprobanteAByteArrayForWebService(documento.getComprobante()));
+				documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante(), PortalUtils.encodingUTF8));
+			//FIXME Quitar para produccion solo es para pruebas
 //			if(documento != null) {
 //				throw new Exception("Sin servicio web service.");
 //			}
@@ -84,17 +85,18 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			documento.setCadenaOriginal(response.getCadenaOriginal());
 			documento.setTimbreFiscalDigital(timbre);
 			documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(response.getXML()));
-			documento.setXmlCfdi(documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante()));
-			//FIXME
-			documentoService.updateDocumentoXmlCfdi(documento);
-			
-			if (documento instanceof DocumentoCorporativo) {
+			documento.setXmlCfdi(documentoXmlService
+					.convierteComprobanteAByteArray(documento.getComprobante(), PortalUtils.encodingUTF16));
+
+			//FIXME Verificar si se quita funcionalidad de guardado en disco
+//			if (documento instanceof DocumentoCorporativo) {
 //				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
-			}
+//			}
 //			sambaService.writeProcessedCfdiXmlFile(response.getXML(), documento);
-			if(request != null) {
+//			if(request != null) {
 //				sambaService.writePdfFile(documento, request);
-			}
+//			}
+			documentoService.updateDocumentoXmlCfdi(documento);
 			return true;
 		} else {
 			logger.debug("El Web Service devolvió un error: {}", response.getMessage());
@@ -131,6 +133,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	
 		if (response.getAcuse() != null) {
 			logger.debug("llamada a samba");
+			//FIXME Validar en donde se guardara el acuse
 //			sambaService.writeAcuseCfdiXmlFile(response.getAcuse(), documento);
 			documentoService.deleteFromAcusePendiente(documento);
 		} else {
