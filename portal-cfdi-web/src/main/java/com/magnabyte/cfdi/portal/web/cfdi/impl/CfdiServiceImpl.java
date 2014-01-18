@@ -71,7 +71,8 @@ public class CfdiServiceImpl implements CfdiService {
 		logger.debug("cfdiService...");
 		int idServicio = documentoWebService.obtenerIdServicio();
 		CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
-		documento.setFechaFacturacion(new Date());
+		Calendar fechaFacturacion = Calendar.getInstance();
+		documento.setFechaFacturacion(fechaFacturacion.getTime());
 		documentoService.guardarDocumento(documento);
 		if(documento.isVentasMostrador()) {
 			ticketService.guardarTicketsCierreDia(documento);

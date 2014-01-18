@@ -18,8 +18,6 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -424,8 +422,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	}
 
 	private void createFechaDocumento(Comprobante comprobante) {
-		GregorianCalendar dateNow = new GregorianCalendar();
-		dateNow.setTime(new Date());
+		Calendar dateNow = Calendar.getInstance();
+		//FIXME verificar hora servidor
+		dateNow.add(Calendar.HOUR_OF_DAY, -1);
 		try {
 			XMLGregorianCalendar fechaComprobante = DatatypeFactory.newInstance().newXMLGregorianCalendar(dateNow.get(Calendar.YEAR), 
 					dateNow.get(Calendar.MONTH) + 1, dateNow.get(Calendar.DAY_OF_MONTH), 
