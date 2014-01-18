@@ -72,12 +72,12 @@ $(document).ready(function() {
 					</display:column>
 					<display:column title="Enviar Docs." headerClass="text-primary text-center" class="text-center">
 						<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_CORP')">
-							<input type="hidden" id="idEstab" value="${documento.establecimiento.id}">
+							<input type="hidden" id="idDoc" value="${documento.id}">
 							<input type="hidden" id="fileName" value="${documento.nombre}">
 							<button type="button" id="enviarDocumento" class="btn btn-xs btn-success" data-toggle="modal" data-target="#enviaDocsModal">Enviar <span class="glyphicon glyphicon-envelope"></span></button>
 						</sec:authorize>
 						<sec:authorize access="isAnonymous()">
-							<input type="hidden" id="idEstab" value="${documento.establecimiento.id}">
+							<input type="hidden" id="idDoc" value="${documento.id}">
 							<input type="hidden" id="fileName" value="${documento.nombre}">
 							<button type="button" id="enviarDocumento" class="btn btn-xs btn-success" data-toggle="modal" data-target="#enviaDocsModal">Enviar <span class="glyphicon glyphicon-envelope"></span></button>
 						</sec:authorize>
@@ -91,7 +91,7 @@ $(document).ready(function() {
 					$(document.body).on("click", "#enviarDocumento", function() {
 						var tr = $(this).parent().parent();
 
-						$("#idEstabModal").val(tr.find("#idEstab").val());
+						$("#idDocModal").val(tr.find("#idDoc").val());
 						$("#fileNameModal").val(tr.find("#fileName").val());
 					});
 					
@@ -100,7 +100,7 @@ $(document).ready(function() {
 					});
 					
 					$("#enviaMail").click(function() {
-						var params = "idEstab=" + $("#idEstabModal").val() 
+						var params = "idDocumento=" + $("#idDocModal").val() 
 							+ "&fileName=" + $("#fileNameModal").val() + "&email=" + $("#email").val();  
 						
 						console.log(params);
@@ -168,7 +168,7 @@ $(document).ready(function() {
         	<blockquote>
         		<p>Proporcione un correo electronico para enviar los documentos.</p>
         	</blockquote>
-        	<input type="hidden" id="idEstabModal">
+        	<input type="hidden" id="idDocModal">
 			<input type="hidden" id="fileNameModal">
         	<div class="form-group">
 				<label for="email" class="col-lg-4 control-label">Email: </label>
