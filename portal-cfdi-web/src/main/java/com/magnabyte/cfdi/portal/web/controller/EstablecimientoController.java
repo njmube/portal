@@ -74,7 +74,7 @@ public class EstablecimientoController {
 	}
 	
 	@RequestMapping(value = "/guardarEstablecimiento", method = RequestMethod.POST)
-	public String guardarEstablecimiento(@ModelAttribute Establecimiento establecimiento){
+	public String guardarEstablecimiento(@ModelAttribute Establecimiento establecimiento, ModelMap model){
 		
 		if (establecimiento.getId() != null){
 			domicilioEstablecimientoService.update(establecimiento.getDomicilio());
@@ -83,14 +83,24 @@ public class EstablecimientoController {
 		}else {
 			TipoEstablecimiento  tipoEstablecimiento = new TipoEstablecimiento();
 			EmpresaEmisor empresaEmisor = new EmpresaEmisor();
-			empresaEmisor.setId(4);
+			empresaEmisor.setId(1);
 			tipoEstablecimiento.setId(2);
 			establecimiento.setTipoEstablecimiento(tipoEstablecimiento);
 			
 			establecimiento.setEmpresaEmisor(empresaEmisor);
-			domicilioEstablecimientoService.save(establecimiento.getDomicilio());
-			rutaEstablecimientoService.save(establecimiento.getRutaRepositorio());
-			establecimientoService.save(establecimiento);
+			if (!establecimientoService.exist(establecimiento)) {
+				domicilioEstablecimientoService.save(establecimiento.getDomicilio());
+				rutaEstablecimientoService.save(establecimiento.getRutaRepositorio());
+				establecimientoService.save(establecimiento);
+			} else {
+				model.put("error", true);
+				model.put("messageError", "El nombre o clave de sucusal ya existe");
+				model.put("establecimiento",  establecimiento);
+				model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
+				model.put("listaEstados", opcionDeCatalogoService.getCatalogoParam("c_estado", "id_pais", 
+						establecimiento.getDomicilio().getEstado().getPais().getId().toString(), "id_estado"));
+				return "admin/establecimientoForm";
+			}
 		}
 		
 		return "redirect:/catalogoEstablecimiento";

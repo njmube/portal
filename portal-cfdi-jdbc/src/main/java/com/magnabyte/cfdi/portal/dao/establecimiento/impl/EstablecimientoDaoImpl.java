@@ -128,8 +128,13 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 				establecimiento.getId());
 	}
 	
-	public boolean exist(Establecimiento establecimiento) {
-		return false;
+	@Override
+	public Establecimiento findbyName(Establecimiento establecimiento) {
+		logger.debug("findByName...------ "+ EstablecimientoSql.FIND_by_NAME);
+		String qry = EstablecimientoSql.FIND_by_NAME;
+		return getJdbcTemplate().queryForObject(qry, MAPPER_ESTABLECIMIENTO, establecimiento.getClave(), establecimiento.getNombre());
+		
+		
 	}
 	private MapSqlParameterSource getParameters(Establecimiento establecimiento) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
