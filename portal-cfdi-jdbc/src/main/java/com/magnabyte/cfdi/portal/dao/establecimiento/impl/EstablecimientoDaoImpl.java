@@ -132,7 +132,14 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 	public Establecimiento findbyName(Establecimiento establecimiento) {
 		logger.debug("findByName...------ "+ EstablecimientoSql.FIND_by_NAME);
 		String qry = EstablecimientoSql.FIND_by_NAME;
-		return getJdbcTemplate().queryForObject(qry, MAPPER_ESTABLECIMIENTO, establecimiento.getClave(), establecimiento.getNombre());
+		Establecimiento object = null;
+		try {
+			object = getJdbcTemplate().queryForObject(qry, MAPPER_ESTABLECIMIENTO, 
+					establecimiento.getClave(), establecimiento.getNombre());
+		} catch (EmptyResultDataAccessException ex) {
+			return null;
+		}
+		return object;
 		
 		
 	}

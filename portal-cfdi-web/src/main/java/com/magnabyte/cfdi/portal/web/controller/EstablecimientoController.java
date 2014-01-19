@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.magnabyte.cfdi.portal.model.commons.Estado;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.DomicilioEstablecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
@@ -65,45 +66,11 @@ public class EstablecimientoController {
 		estable.setDomicilio(domicilioEstablecimientoService.readById(domEsta));
 		estable.setRutaRepositorio(rutaEstablecimientoService.readById(rutaRepo));
 		
-		
 		model.put("establecimiento", estable);
 		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
 		model.put("listaEstados", opcionDeCatalogoService.getCatalogoParam("c_estado", "id_pais", 
 				estable.getDomicilio().getEstado().getPais().getId().toString(), "id_estado"));
 		return "admin/establecimientoForm";
-	}
-	
-	@RequestMapping(value = "/guardarEstablecimiento", method = RequestMethod.POST)
-	public String guardarEstablecimiento(@ModelAttribute Establecimiento establecimiento, ModelMap model){
-		
-		if (establecimiento.getId() != null){
-			domicilioEstablecimientoService.update(establecimiento.getDomicilio());
-			rutaEstablecimientoService.update(establecimiento.getRutaRepositorio());
-			establecimientoService.update(establecimiento); 
-		}else {
-			TipoEstablecimiento  tipoEstablecimiento = new TipoEstablecimiento();
-			EmpresaEmisor empresaEmisor = new EmpresaEmisor();
-			empresaEmisor.setId(1);
-			tipoEstablecimiento.setId(2);
-			establecimiento.setTipoEstablecimiento(tipoEstablecimiento);
-			
-			establecimiento.setEmpresaEmisor(empresaEmisor);
-			if (!establecimientoService.exist(establecimiento)) {
-				domicilioEstablecimientoService.save(establecimiento.getDomicilio());
-				rutaEstablecimientoService.save(establecimiento.getRutaRepositorio());
-				establecimientoService.save(establecimiento);
-			} else {
-				model.put("error", true);
-				model.put("messageError", "El nombre o clave de sucusal ya existe");
-				model.put("establecimiento",  establecimiento);
-				model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
-				model.put("listaEstados", opcionDeCatalogoService.getCatalogoParam("c_estado", "id_pais", 
-						establecimiento.getDomicilio().getEstado().getPais().getId().toString(), "id_estado"));
-				return "admin/establecimientoForm";
-			}
-		}
-		
-		return "redirect:/catalogoEstablecimiento";
 	}
 	
 	@RequestMapping(value = "/altaEstablecimiento")
@@ -112,5 +79,48 @@ public class EstablecimientoController {
 		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
 		model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
 		return "admin/altaEstablecimiento";
+	}
+	
+	@RequestMapping(value = "/guardarEstablecimiento", method = RequestMethod.POST)
+	public String guardarEstablecimiento(@ModelAttribute Establecimiento establecimiento, ModelMap model){
+		
+		if (!establecimientoService.exist(establecimiento)) {
+			if (establecimiento.getId() != null){
+				domicilioEstablecimientoService.update(establecimiento.getDomicilio());
+				rutaEstablecimientoService.update(establecimiento.getRutaRepositorio());
+				establecimientoService.update(establecimiento); 
+			} else {
+				TipoEstablecimiento  tipoEstablecimiento = new TipoEstablecimiento();
+				EmpresaEmisor empresaEmisor = new EmpresaEmisor();
+				empresaEmisor.setId(1);
+				tipoEstablecimiento.setId(2);
+				establecimiento.setTipoEstablecimiento(tipoEstablecimiento);
+				establecimiento.setEmpresaEmisor(empresaEmisor);
+				domicilioEstablecimientoService.save(establecimiento.getDomicilio());
+				rutaEstablecimientoService.save(establecimiento.getRutaRepositorio());
+				establecimientoService.save(establecimiento);
+			}
+		} else {
+			model = muestraError(model, establecimiento);
+			if (establecimiento.getId() != null){
+				return "admin/establecimientoForm";
+			} else {
+				return "admin/altaEstablecimiento";
+			}
+		}
+		return "redirect:/catalogoEstablecimiento";
+	}
+	
+	public ModelMap muestraError(ModelMap model, Establecimiento establecimiento) {
+		model.put("error", true);
+		model.put("messageError", "El nombre o clave de sucusal ya existe");
+		Estado estado = domicilioEstablecimientoService.findEstado(establecimiento.getDomicilio().getEstado());
+		establecimiento.getDomicilio().setEstado(estado);
+		model.put("establecimiento",  establecimiento);
+		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
+		model.put("listaEstados", opcionDeCatalogoService.getCatalogoParam("c_estado", "id_pais", 
+				establecimiento.getDomicilio().getEstado().getPais().getId().toString(), "id_estado"));
+		
+		return model;
 	}
 }

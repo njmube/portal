@@ -53,6 +53,11 @@ public class DomicilioEstablecimientoServiceImpl implements
 	}
 	
 	@Override
+	public Estado findEstado (Estado estado) {
+		return domicilioEstablecimientoDao.findEstado(estado);
+	}
+	
+	@Override
 	public DomicilioEstablecimiento readById(DomicilioEstablecimiento domicilioEstablecimiento) {
 		return domicilioEstablecimientoDao.readById(domicilioEstablecimiento);
 		
