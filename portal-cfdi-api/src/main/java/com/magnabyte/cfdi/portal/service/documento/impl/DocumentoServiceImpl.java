@@ -20,8 +20,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
@@ -43,6 +46,12 @@ import mx.gob.sat.cfd._3.Comprobante.Conceptos.Concepto;
 import mx.gob.sat.cfd._3.Comprobante.Impuestos;
 import mx.gob.sat.cfd._3.Comprobante.Receptor;
 import mx.gob.sat.cfd._3.TUbicacion;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.ssl.PKCS8Key;
@@ -83,6 +92,7 @@ import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
+import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.commons.EmailService;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoDetalleService;
@@ -91,6 +101,7 @@ import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.emisor.EmisorService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
+import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.service.xml.util.CfdiConfiguration;
 
@@ -98,6 +109,9 @@ import com.magnabyte.cfdi.portal.service.xml.util.CfdiConfiguration;
 public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAware {
 
 	private static final Logger logger = LoggerFactory.getLogger(DocumentoServiceImpl.class);
+	
+	@Autowired
+	private CodigoQRService codigoQRService;
 	
 	@Autowired
 	private DocumentoXmlService documentoXmlService;
@@ -692,10 +706,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	}
 	
 	@Override
-	public byte[] recuperarDocumentoXml(Integer idDocumento) {
-		Documento documento = new Documento();
-		documento.setId(idDocumento);
-		documento = documentoDao.read(documento);
+	public byte[] recuperarDocumentoXml(Documento documento) {
 		try {
 			logger.debug(new String(documento.getXmlCfdi(), PortalUtils.encodingUTF8));
 			Comprobante comprobante = documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi());
@@ -705,8 +716,49 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			throw new PortalException("Error al convertir el documento a bytes");
 		}
 	}
+	
+	@Override
+	public byte[] recuperarDocumentoPdf(Documento documento, ServletContext context) {
+		logger.debug("Creando reporte");
+		JasperPrint reporteCompleto = null;
+		String reporteCompilado = context.getRealPath("WEB-INF/reports/ReporteFactura.jasper");
 
-	//FIXME Cambiar logica para envio de email
+		Locale locale = new Locale("es", "MX");
+		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
+		comprobantes.add(documento.getComprobante());
+		String pathImages = context.getRealPath("resources/img");
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (documento instanceof DocumentoCorporativo) {
+			map.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
+		} else if (documento instanceof DocumentoSucursal) {
+			map.put("SUCURSAL", documento.getEstablecimiento().getNombre());
+		}
+		
+		map.put("TIPO_DOC", documento.getTipoDocumento().getNombre());
+		map.put(JRParameter.REPORT_LOCALE, locale);
+		map.put("NUM_SERIE_CERT", documentoXmlService.obtenerNumCertificado(documento.getXmlCfdi()));
+		map.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
+		map.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
+		map.put("FECHA_TIMBRADO", documento.getTimbreFiscalDigital().getFechaTimbrado());
+		map.put("FOLIO_FISCAL", documento.getTimbreFiscalDigital().getUUID());
+		map.put("CADENA_ORIGINAL", documento.getCadenaOriginal());
+		map.put("PATH_IMAGES", pathImages);
+		map.put("QRCODE", codigoQRService.generaCodigoQR(documento));
+		map.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
+		map.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
+
+		JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(comprobantes);
+
+		try {
+			reporteCompleto = JasperFillManager.fillReport(reporteCompilado, map, dataSource);
+			byte[] bytesReport = JasperExportManager.exportReportToPdf(reporteCompleto);
+			return bytesReport;
+		} catch (JRException e) {
+			logger.error("Ocurrió un error al crear el PDF: {}", e);
+			throw new PortalException("Ocurrió un error al crear el PDF: " + e.getMessage());
+		}
+	}
+
 	@Override
 	public void envioDocumentosFacturacion(final String para, final String fileName,
 		final Integer idEstablecimiento) {
@@ -759,47 +811,124 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			}
 		}).start();
 	}
+	
+	@Override
+	public void envioDocumentosFacturacionPorXml(final String para, final String fileName,
+		final Integer idDocumento, final HttpServletRequest request) {
+		final ServletContext context = request.getSession().getServletContext();
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				Documento documento = new Documento();
+				documento.setId(idDocumento);
+				documento = findById(documento);
+				String asunto = subject + fileName;
+				String htmlPlantilla = null;
+				String textoPlanoPlantilla = null;
+				String htmlPlantillaError = null;
+				String textoPlanoPlantillaError = null;
+				
+				Resource htmlResource = resourceLoader.getResource("classpath:/" + nameHtmlText);
+				Resource plainTextResource = resourceLoader.getResource("classpath:/" + namePlainText);
+				Resource htmlResourceError = resourceLoader.getResource("classpath:/" + nameHtmlTextError);
+				Resource plainTextResourceError = resourceLoader.getResource("classpath:/" + namePlainTextError);
+				
+				try {
+					htmlPlantillaError = IOUtils.toString(htmlResourceError.getInputStream(), PortalUtils.encodingUTF8);
+					textoPlanoPlantillaError = IOUtils.toString(plainTextResourceError.getInputStream(), PortalUtils.encodingUTF8);
+					
+					final Map<String, ByteArrayResource> attach = new HashMap<String, ByteArrayResource>();
+					attach.put(fileName + ".pdf", new ByteArrayResource(recuperarDocumentoPdf(documento, context)));
+					attach.put(fileName + ".xml", new ByteArrayResource(recuperarDocumentoXml(documento)));
+					
+					htmlPlantilla = IOUtils.toString(htmlResource.getInputStream(), PortalUtils.encodingUTF8);
+					textoPlanoPlantilla = IOUtils.toString(plainTextResource.getInputStream(), PortalUtils.encodingUTF8);
+					//FIXME Cambiar configuracion mail
+					emailService.sendMailWithAttach(textoPlanoPlantilla,htmlPlantilla, asunto, attach, para);
+					
+				} catch (PortalException ex) {
+					logger.error("Error al leer los archivos adjuntos.", ex);
+					emailService.sendMimeMail(textoPlanoPlantillaError, htmlPlantillaError ,asunto, para);
+				} catch (IOException ex) {
+					logger.error("Error al leer los archivos adjuntos.", ex);
+					emailService.sendMimeMail(textoPlanoPlantillaError, htmlPlantillaError ,asunto, para);
+				}
+			}
+		}).start();
+	}
 
 	@Override
 	public List<Documento> obtenerDocumentosTimbrePendientes() {
 		return documentoDao.obtenerDocumentosTimbrePendientes();
 	}
 
+	//FIXME vieja implementacion
+//	@Override
+//	public Documento read(Documento documento) {
+//		Documento docBD = null;
+//		Cliente clienteBD = null;
+//		Conceptos conceptosBD = null;
+//		Comprobante comprobante = new Comprobante();
+//		Establecimiento estabBD = null;		
+//		
+//		if(documento.getId() != null) {
+//			docBD = documentoDao.read(documento);
+//			//FIXME CORREGIR
+//			documento.setTipoDocumento(TipoDocumento.FACTURA);
+//			clienteBD = clienteService.read(docBD.getCliente());
+//			estabBD = establecimientoService.read(docBD.getEstablecimiento());
+//			conceptosBD = documentoDetalleService.read(documento);			
+//			
+//			comprobante.setEmisor(emisorService.getEmisorPorEstablecimiento(estabBD));
+//			comprobante.setReceptor(createReceptor(clienteBD, docBD.getId_domicilio()));
+//			createFechaDocumento(comprobante);
+//			comprobante.setLugarExpedicion(comprobante.getEmisor().getExpedidoEn().getLocalidad());
+//			
+//			comprobante.setTipoDeComprobante(documento
+//					.getTipoDocumento().getNombre());
+//			comprobante.setTipoCambio(tipoCambio);
+//			comprobante.setCondicionesDePago(condicionesPago);
+//			comprobante.setFormaDePago(formaPago);
+//			
+//			comprobante.setConceptos(conceptosBD);
+//			
+//			docBD.setCliente(clienteBD);
+//			docBD.setComprobante(comprobante);
+//			docBD.setEstablecimiento(estabBD);
+//			
+//		}
+//		return docBD;
+//	}
 	@Override
 	public Documento read(Documento documento) {
-		Documento docBD = null;
-		Cliente clienteBD = null;
-		Conceptos conceptosBD = null;
-		Comprobante comprobante = new Comprobante();
-		Establecimiento estabBD = null;		
-		
+		return documentoDao.read(documento);
+	}
+	
+	@Override
+	public Documento findById(Documento documento) {
+		Documento documentoBD = null;
+		Documento documentoBDParaTipo = null;
+		Documento documentoBDParaTimbre = null;
+		Establecimiento establecimientoBD = null;
+		Comprobante comprobante = null;
 		if(documento.getId() != null) {
-			docBD = documentoDao.read(documento);
-			//FIXME CORREGIR
-			documento.setTipoDocumento(TipoDocumento.FACTURA);
-			clienteBD = clienteService.read(docBD.getCliente());
-			estabBD = establecimientoService.read(docBD.getEstablecimiento());
-			conceptosBD = documentoDetalleService.read(documento);			
-			
-			comprobante.setEmisor(emisorService.getEmisorPorEstablecimiento(estabBD));
-			comprobante.setReceptor(createReceptor(clienteBD, docBD.getId_domicilio()));
-			createFechaDocumento(comprobante);
-			comprobante.setLugarExpedicion(comprobante.getEmisor().getExpedidoEn().getLocalidad());
-			
-			comprobante.setTipoDeComprobante(documento
-					.getTipoDocumento().getNombre());
-			comprobante.setTipoCambio(tipoCambio);
-			comprobante.setCondicionesDePago(condicionesPago);
-			comprobante.setFormaDePago(formaPago);
-			
-			comprobante.setConceptos(conceptosBD);
-			
-			docBD.setCliente(clienteBD);
-			docBD.setComprobante(comprobante);
-			docBD.setEstablecimiento(estabBD);
-			
+			documentoBD = documentoDao.read(documento);
+			establecimientoBD = establecimientoService.read(documentoBD.getEstablecimiento());
+			comprobante = documentoXmlService.convierteByteArrayAComprobante(documentoBD.getXmlCfdi());
+			documentoBD.setComprobante(comprobante);
+			documentoBDParaTipo = documentoDao.readDocumentoFolio(documentoBD);
+			if (documentoBDParaTipo != null) {
+				documentoBD.setTipoDocumento(documentoBDParaTipo.getTipoDocumento());
+			}
+			documentoBD.setEstablecimiento(establecimientoBD);
+			documentoBDParaTimbre = documentoDao.readDocumentoCfdiById(documento);
+			if (documentoBDParaTimbre != null) {
+				documentoBD.setTimbreFiscalDigital(documentoBDParaTimbre.getTimbreFiscalDigital());
+				documentoBD.setCadenaOriginal(documentoBDParaTimbre.getCadenaOriginal());
+			}
 		}
-		return docBD;
+		return documentoBD;
 	}
 
 	@Override

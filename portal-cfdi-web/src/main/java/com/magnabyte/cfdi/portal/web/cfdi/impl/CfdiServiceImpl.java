@@ -106,7 +106,7 @@ public class CfdiServiceImpl implements CfdiService {
 			int idServicio = documentoWebService.obtenerIdServicio();
 			
 			for(Documento documentoPendiente : documentosTimbrePendientes) {
-				documentoService.read(documentoPendiente);
+//				documentoService.read(documentoPendiente);
 //				CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
 //				sellarYTimbrarComprobante(documento, null, idServicio, certificado);
 				logger.debug("Sello y timbro");

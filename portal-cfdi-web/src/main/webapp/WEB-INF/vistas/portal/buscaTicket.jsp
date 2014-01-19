@@ -102,7 +102,7 @@
 					<hr>
 					<div class="form-group">
 						<div class="centered">
-							<button id="buscarCliente" type="submit" class="btn btn-primary">Buscar <i class="fa fa-search"></i></button>
+							<button id="buscarCliente" type="button" class="btn btn-primary">Buscar <i class="fa fa-search"></i></button>
 							<a id="cancelar" href="<c:url value="/portal/cfdi/menu"/>" class="btn btn-danger">Cancelar <i class="fa fa-times"></i></a>
 						</div>
 					</div>
@@ -113,6 +113,17 @@
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("#buscarCliente").click(function() {
+				if($("#ticketForm").validationEngine("validate")) {
+					$("#page_loader").show();
+					$("#page_loader_ticket_content").show();
+					$("#ticketForm").submit();
+				}
+			});
+		});
+	</script>
 	<script src="<c:url value="/resources/js/login/login.js" />"></script>	
 </body>
 </html>
