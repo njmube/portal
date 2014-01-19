@@ -28,7 +28,7 @@ public interface TicketService {
 	Ticket crearTicketVentasMostrador(List<Ticket> ventas,
 			Establecimiento establecimiento);
 
-//	Integer readIdDocFromTicketGuardado(DocumentoSucursal documento);
+	Integer readIdDocFromTicketFacturado(DocumentoSucursal documento);
 
 	void guardarTicketsCierreDia(Documento documento);
 

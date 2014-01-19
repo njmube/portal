@@ -28,6 +28,7 @@ public class Documento implements Serializable {
 	private List<Ticket> ventas;
 	private List<Ticket> devoluciones;
 	private byte[] xmlCfdi;
+	private byte[] xmlCfdiAcuse;
 	private boolean ventasMostrador;
 
 	public Integer getId() {
@@ -116,6 +117,14 @@ public class Documento implements Serializable {
 	
 	public void setXmlCfdi(byte[] xmlCfdi) {
 		this.xmlCfdi = xmlCfdi;
+	}
+
+	public byte[] getXmlCfdiAcuse() {
+		return xmlCfdiAcuse;
+	}
+
+	public void setXmlCfdiAcuse(byte[] xmlCfdiAcuse) {
+		this.xmlCfdiAcuse = xmlCfdiAcuse;
 	}
 
 	public String getNombre() {

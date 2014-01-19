@@ -99,7 +99,8 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	            oos.flush();
 	            oos.close();
 				comprobante = convierteByteArrayAComprobante(baos.toByteArray());
-				logger.debug("XML valido: " + validaComprobanteXml(comprobante));
+				//FIXME poner validacion general
+				logger.debug("XML valido: " + isValidComprobanteXml(comprobante));
 			}
 		} catch (IOException e) {
 			logger.error("Error al convertir el archivo SAP a CFDI: ", e);
@@ -143,7 +144,7 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 		return element;
 	}
 
-	public boolean validaComprobanteXml(Comprobante comprobante) {
+	public boolean isValidComprobanteXml(Comprobante comprobante) {
 		try {
 			InputStream comprobanteStream = convierteComprobanteAStream(comprobante);
 			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);

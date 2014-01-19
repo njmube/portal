@@ -23,7 +23,7 @@ import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
-import com.magnabyte.cfdi.portal.model.documento.EstadoDocumentoPendiente;
+import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
@@ -86,8 +86,9 @@ public class CfdiServiceImpl implements CfdiService {
 			CertificadoDigital certificado) {
 		if (documentoService.sellarComprobante(documento.getComprobante(), certificado)) {
 			if (documentoWebService.timbrarDocumento(documento, request, idServicio)) {
+				documentoService.updateDocumentoXmlCfdi(documento);
 				documentoService.insertDocumentoCfdi(documento);
-				documentoService.insertDocumentoPendiente(documento, EstadoDocumentoPendiente.ACUSE_PENDIENTE);
+				documentoService.insertDocumentoPendiente(documento, TipoEstadoDocumentoPendiente.ACUSE_PENDIENTE);
 				if(documento instanceof DocumentoSucursal) {
 					ticketService.updateEstadoFacturado((DocumentoSucursal) documento);
 					if (((DocumentoSucursal) documento).isRequiereNotaCredito()) {
@@ -138,7 +139,7 @@ public class CfdiServiceImpl implements CfdiService {
 		if (documentoService.sellarComprobante(documentoNcr.getComprobante(), certificado)) {
 			if (documentoWebService.timbrarDocumento(documentoNcr, request, idServicio)) {
 				documentoService.insertDocumentoCfdi(documentoNcr);
-				documentoService.insertDocumentoPendiente(documentoNcr, EstadoDocumentoPendiente.ACUSE_PENDIENTE);
+				documentoService.insertDocumentoPendiente(documentoNcr, TipoEstadoDocumentoPendiente.ACUSE_PENDIENTE);
 				if(documentoNcr instanceof DocumentoSucursal) {
 					ticketService.updateEstadoNcr((DocumentoSucursal) documentoNcr);
 				}

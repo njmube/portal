@@ -1,5 +1,6 @@
 package com.magnabyte.cfdi.portal.web.webservice.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import com.certus.facturehoy.ws2.cfdi.WsResponseBO;
 import com.certus.facturehoy.ws2.cfdi.WsServicioBO;
 import com.certus.facturehoy.ws2.cfdi.WsServicios;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
-import com.magnabyte.cfdi.portal.model.documento.EstadoDocumentoPendiente;
+import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
@@ -70,7 +71,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 //				throw new Exception("Sin servicio web service.");
 //			}
 		} catch(Exception ex) {
-			documentoService.insertDocumentoPendiente(documento, EstadoDocumentoPendiente.TIMBRE_PENDIENTE);
+			documentoService.insertDocumentoPendiente(documento, TipoEstadoDocumentoPendiente.TIMBRE_PENDIENTE);
 			logger.debug("Ocurrío un error al realizar la conexión", ex);
 			throw new PortalException("Ocurrío un error al realizar la conexión", ex);
 		}
@@ -96,7 +97,6 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 //			if(request != null) {
 //				sambaService.writePdfFile(documento, request);
 //			}
-			documentoService.updateDocumentoXmlCfdi(documento);
 			return true;
 		} else {
 			logger.debug("El Web Service devolvió un error: {}", response.getMessage());
@@ -135,6 +135,16 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			logger.debug("llamada a samba");
 			//FIXME Validar en donde se guardara el acuse
 //			sambaService.writeAcuseCfdiXmlFile(response.getAcuse(), documento);
+			//FIXME solo para pruebas
+			String acuse = "<acuse>Aqui va el acuse</acuse>";
+			try {
+				response.setAcuse(acuse.getBytes(PortalUtils.encodingUTF16));
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			documento.setXmlCfdiAcuse(response.getAcuse());
+			documentoService.saveAcuseCfdiXmlFile(documento);
 			documentoService.deleteFromAcusePendiente(documento);
 		} else {
 			logger.debug("El webservice no devolvio el acuse");

@@ -21,7 +21,7 @@ public class DocumentoSql extends GenericSql {
 	public static final String IVA = "iva";
 	public static final String TOTAL = "total_doc";
 	public static final String TOTAL_DESCUENTO = "total_descuento";
-	public static final String STATUS = "status_doc";
+	public static final String ID_STATUS = "id_status_doc";
 
 	public static final String SERIE = "serie";
 	public static final String FOLIO = "folio";
@@ -49,6 +49,7 @@ public class DocumentoSql extends GenericSql {
 	public static final String READ_DOC_BY_SERIE_FOLIO;
 	public static final String UPDATE_DOC_XML_FILE;
 	public static final String READ_DOC_CFDI;
+	public static final String SAVE_ACUSE;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -107,7 +108,7 @@ public class DocumentoSql extends GenericSql {
 		READ_DOCUMENTOS_FACTURADOS = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		
-		qryBuilder.append(SELECT).append(EOL).append(TAB).append("id_documento, id_establecimiento, status_doc, fecha_doc, id_cliente, subtotal,");
+		qryBuilder.append(SELECT).append(EOL).append(TAB).append("id_documento, id_establecimiento, id_status_doc, fecha_doc, id_cliente, subtotal,");
 		qryBuilder.append(" iva, total_doc, dbo.TRIM(folio_sap) as folio_sap, total_descuento, id_domicilio_cliente, xml_file").append(EOL);
 		qryBuilder.append(FROM).append(EOL).append(TAB).append("t_documento").append(EOL);
 		qryBuilder.append(WHERE).append(EOL).append(TAB).append("id_documento = ?");
@@ -144,7 +145,7 @@ public class DocumentoSql extends GenericSql {
 		READ_DOC_BY_SERIE_FOLIO = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		
-		qryBuilder.append("update t_documento set xml_file = ? where id_documento = ?");
+		qryBuilder.append("update t_documento set xml_file = ?, id_status_doc = ? where id_documento = ?");
 		
 		UPDATE_DOC_XML_FILE = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
@@ -156,6 +157,12 @@ public class DocumentoSql extends GenericSql {
 		qryBuilder.append("where id_documento = ?").append(EOL);
 		
 		READ_DOC_CFDI = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("update t_documento set xml_acuse_file = ? where id_documento = ?");
+		
+		SAVE_ACUSE = qryBuilder.toString();
+		
 	}
 	
 }

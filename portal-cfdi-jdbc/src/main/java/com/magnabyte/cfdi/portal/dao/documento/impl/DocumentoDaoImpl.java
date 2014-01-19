@@ -33,7 +33,8 @@ import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
-import com.magnabyte.cfdi.portal.model.documento.EstadoDocumentoPendiente;
+import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumento;
+import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
@@ -67,7 +68,9 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	public void updateDocumentoXmlCfdi(Documento documento) {
 		try {
 			int rowsAffected = getJdbcTemplate().update(DocumentoSql.UPDATE_DOC_XML_FILE, 
-					new String(documento.getXmlCfdi(), PortalUtils.encodingUTF16), documento.getId());
+					new String(documento.getXmlCfdi(), PortalUtils.encodingUTF16),
+					TipoEstadoDocumento.FACTURADO.getId(),
+					documento.getId());
 			logger.debug("archivos afectados {}", rowsAffected);
 		} catch (DataAccessException e) {
 			logger.debug("No se pudo actualizar el Documento en la base de datos.", e);
@@ -94,9 +97,10 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		params.addValue(DocumentoSql.SUBTOTAL, documento.getComprobante().getSubTotal());
 		params.addValue(DocumentoSql.IVA, documento.getComprobante().getImpuestos().getTotalImpuestosTrasladados());
 		params.addValue(DocumentoSql.TOTAL, documento.getComprobante().getTotal());
-		params.addValue(DocumentoSql.STATUS, true);
+		params.addValue(DocumentoSql.ID_STATUS, TipoEstadoDocumento.PENDIENTE.getId());
+		//FIXME exception
 		try {
-			params.addValue(DocumentoSql.XML_FILE, new String(documento.getXmlCfdi(), "UTF-16"));
+			params.addValue(DocumentoSql.XML_FILE, new String(documento.getXmlCfdi(), PortalUtils.encodingUTF16));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
@@ -138,13 +142,13 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	}
 	
 	@Override
-	public void insertDocumentoPendiente(Documento documento, EstadoDocumentoPendiente estadoDocumento) {
+	public void insertDocumentoPendiente(Documento documento, TipoEstadoDocumentoPendiente estadoDocumento) {
 		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(getJdbcTemplate());
 		simpleJdbcInsert.setTableName(DocumentoSql.TABLE_DOC_PEND);
 		simpleJdbcInsert.execute(getParametersDocumentoPendiente(documento, estadoDocumento));
 	}
 
-	private MapSqlParameterSource getParametersDocumentoPendiente(Documento documento, EstadoDocumentoPendiente estadoDocumento) {
+	private MapSqlParameterSource getParametersDocumentoPendiente(Documento documento, TipoEstadoDocumentoPendiente estadoDocumento) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue(DocumentoSql.ID_DOCUMENTO, documento.getId());
 		params.addValue(DocumentoSql.SERIE, documento.getComprobante().getSerie());
@@ -182,7 +186,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 					documento.setEstablecimiento(establecimiento);
 					return documento;
 				}
-			}, EstadoDocumentoPendiente.ACUSE_PENDIENTE.getId());
+			}, TipoEstadoDocumentoPendiente.ACUSE_PENDIENTE.getId());
 		} catch (EmptyResultDataAccessException ex) {
 			logger.debug("No hay acuses pendientes");
 			return null;
@@ -208,7 +212,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 					documento.setEstablecimiento(establecimiento);
 					return documento;
 				}
-			}, EstadoDocumentoPendiente.TIMBRE_PENDIENTE.getId());
+			}, TipoEstadoDocumentoPendiente.TIMBRE_PENDIENTE.getId());
 		} catch (EmptyResultDataAccessException ex) {
 			logger.debug("No hay acuses pendientes");
 			return null;
@@ -358,5 +362,17 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	@Override
 	public void deletedDocumentoPendiente(Documento documento) {		
 		getJdbcTemplate().update(DocumentoSql.DELETE_DOCUMENTO_PENDIENTE, documento.getId());
+	}
+	
+	@Override
+	public void saveAcuseCfdiXmlFile(Documento documento) {
+		//FIXME exception
+		try {
+			getJdbcTemplate().update(DocumentoSql.SAVE_ACUSE, 
+					new String(documento.getXmlCfdiAcuse(), PortalUtils.encodingUTF16), 
+					documento.getId());
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 }

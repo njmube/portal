@@ -135,11 +135,11 @@ public class TicketServiceImpl implements TicketService {
 		return ticketDB;
 	}
 	
-//	@Transactional(readOnly = true)
-//	@Override
-//	public Integer readIdDocFromTicketGuardado(DocumentoSucursal documento) {
-//		return ticketDao.readIdDocFromTicketGuardado(documento);
-//	}
+	@Transactional(readOnly = true)
+	@Override
+	public Integer readIdDocFromTicketFacturado(DocumentoSucursal documento) {
+		return ticketDao.readIdDocFromTicketFacturado(documento);
+	}
 	
 	@Transactional
 	@Override

@@ -78,7 +78,7 @@ import com.magnabyte.cfdi.portal.model.commons.Pais;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
-import com.magnabyte.cfdi.portal.model.documento.EstadoDocumentoPendiente;
+import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.factory.EstablecimientoFactory;
@@ -490,8 +490,17 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 						((DocumentoSucursal) documento).setRequiereNotaCredito(true);
 						break;
 					case FACTURADO:
-						logger.debug("El ticket ya fue facturado.");
-						throw new PortalException("El ticket ya fue facturado con anterioridad.");
+						documento.setId(ticketService.readIdDocFromTicketFacturado((DocumentoSucursal) documento));
+						Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolioDocumento(documento);
+						documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
+						documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO));
+						String msg = "El ticket ya fue facturado con anterioridad, puede consultar " 
+								+ "la " + documento.getTipoDocumento().getNombre() 
+								+ " " + documento.getComprobante().getSerie() 
+								+ "-" + documento.getComprobante().getFolio() 
+								+ " por medio de su RFC.";
+						logger.debug(msg);
+						throw new PortalException(msg);
 					default:
 						break;
 					}
@@ -501,12 +510,17 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 					asignarSerieYFolio(documento);
 				}
 			} else if (documento instanceof DocumentoCorporativo) {
-				if (isFacturable(documento)) {
+				Documento documentoDB = documentoDao.readDocumentoFolio(documento);
+				if (documentoDB != null) {
+					String msg = "La factura " + documento.getTipoDocumento().getNombre() 
+							+ " " + documento.getComprobante().getSerie() 
+							+ "-" + documento.getComprobante().getFolio() 
+							+ " ya fue procesada con anterioridad.";
+					logger.debug(msg);
+					throw new PortalException(msg);
+				} else {
 					saveDocumentAndDetail(documento);
 					documentoDao.insertDocumentoFolio(documento);
-				} else {
-					logger.debug("La factura ya fue procesada con anterioridad.");
-					throw new PortalException("La factura ya fue procesada con anterioridad.");
 				}
 			} else {
 				saveDocumentAndDetail(documento);
@@ -522,11 +536,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public void updateDocumentoXmlCfdi(Documento documento) {
 		documentoDao.updateDocumentoXmlCfdi(documento);
-	}
-	
-	private boolean isFacturable(Documento documento) {
-		Documento documentoBD = documentoDao.readDocumentoFolio(documento);
-		return documentoBD == null;
 	}
 
 	private void asignarSerieYFolio(Documento documento) {
@@ -546,7 +555,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 
 	@Transactional
 	@Override
-	public void insertDocumentoPendiente(Documento documento, EstadoDocumentoPendiente estadoDocumento) {
+	public void insertDocumentoPendiente(Documento documento, TipoEstadoDocumentoPendiente estadoDocumento) {
 		documentoDao.insertDocumentoPendiente(documento, estadoDocumento);
 	}
 	
@@ -935,5 +944,10 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	public void deleteDocumentoPendiente(Documento documento) {
 		documentoDao.deletedDocumentoPendiente(documento);
 		
+	}
+	
+	@Override
+	public void saveAcuseCfdiXmlFile(Documento documento) {
+		documentoDao.saveAcuseCfdiXmlFile(documento);
 	}
 }
