@@ -14,4 +14,6 @@ public interface DomicilioEstablecimientoService {
 	DomicilioEstablecimiento readById(
 			DomicilioEstablecimiento domicilioEstablecimiento);
 
+	Estado findEstado(Estado estado);
+
 }

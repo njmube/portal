@@ -80,6 +80,20 @@ public class DomicilioEstablecimientoDaoImpl extends GenericJdbcDao implements
 	}
 	
 	@Override
+	public Estado findEstado(Estado estado) {
+		String qry = "select ce.id_estado, ce.id_pais, dbo.TRIM(ce.nombre) as nom_estado, dbo.TRIM(cp.nombre)"
+				+ " as nom_pais from c_estado as ce inner join c_pais as cp on "
+				+ "ce.id_pais = cp.id_pais where ce.id_estado = ?";
+		try {
+			return getJdbcTemplate().queryForObject(qry, ESTADO_MAPPER,
+					estado.getId());
+		} catch (EmptyResultDataAccessException ex) {
+			logger.debug("El estado no existe.");
+			return null;
+		}
+	}
+	
+	@Override
 	public DomicilioEstablecimiento readById(DomicilioEstablecimiento domicilioEstablecimiento) {
 		String qry = DomicilioEstablecimientoSql.FIND_DOM_BY_ID; 
 		domicilioEstablecimiento = getJdbcTemplate().queryForObject(qry, DOMICILIO_MAPPER, domicilioEstablecimiento.getId());

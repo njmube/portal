@@ -649,7 +649,7 @@ $F{emisor.domicilioFiscal.estado}+""]]></textFieldExpression>
 					</textElement>
 					<textFieldExpression><![CDATA[($F{emisor.expedidoEn.calle} !=null ? $F{emisor.expedidoEn.calle} : "")+
 ($F{emisor.expedidoEn.colonia} !=null ? ", "+$F{emisor.expedidoEn.colonia} : "")+
-($F{emisor.expedidoEn.noExterior} !=null ? $F{emisor.expedidoEn.noExterior} : "")+
+($F{emisor.expedidoEn.noExterior} !=null ? ", "+$F{emisor.expedidoEn.noExterior} : "")+
 ($F{emisor.expedidoEn.noInterior} !=null ? ", "+$F{emisor.expedidoEn.noInterior} : "")]]></textFieldExpression>
 				</textField>
 				<textField>

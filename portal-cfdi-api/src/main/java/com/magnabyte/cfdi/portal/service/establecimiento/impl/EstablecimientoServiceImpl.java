@@ -70,8 +70,18 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 	@Override
 	public boolean exist(Establecimiento establecimiento) {
 		Establecimiento esta = establecimientoDao.findbyName(establecimiento);
-		if (esta != null) {
-			return true;
+		
+		if (establecimiento.getId() != null) {
+			if (esta != null) {
+				if(establecimiento.getId().equals(esta.getId())){
+					return false;
+				}
+				return true;
+			}
+		} else {
+			if (esta != null) {
+				return true;
+			}
 		}
 		return false;
 	}

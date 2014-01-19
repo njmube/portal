@@ -13,5 +13,7 @@ public interface DomicilioEstablecimientoDao {
 
 	DomicilioEstablecimiento readById(DomicilioEstablecimiento domicilioEstablecimiento);
 
+	Estado findEstado(Estado estado);
+
 
 }
