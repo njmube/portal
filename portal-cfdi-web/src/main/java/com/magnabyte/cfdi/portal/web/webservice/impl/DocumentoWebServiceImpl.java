@@ -4,8 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
 
 import org.slf4j.Logger;
@@ -58,16 +56,16 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	private String passwordWs;
 	
 	@Override
-	public boolean timbrarDocumento(Documento documento, HttpServletRequest request, int idServicio) {
+	public boolean timbrarDocumento(Documento documento, int idServicio) {
 		TimbreFiscalDigital timbre = null;
 		logger.debug("en timbrar Documento");
 		WsResponseBO response = new WsResponseBO();
 		
 		try {
 			//FIXME Quitar para produccion solo es para pruebas
-			if(documento != null) {
-				throw new Exception("Sin servicio web service.");
-			}
+//			if(documento != null) {
+//				throw new Exception("Sin servicio web service.");
+//			}
 			response = wsEmisionTimbrado.emitirTimbrar(userWs, passwordWs, idServicio, 
 				documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante(), PortalUtils.encodingUTF8));
 		} catch(Exception ex) {

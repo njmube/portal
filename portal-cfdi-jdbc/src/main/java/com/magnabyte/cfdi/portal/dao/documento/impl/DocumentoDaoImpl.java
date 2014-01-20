@@ -33,9 +33,9 @@ import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
+import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumento;
 import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
-import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
@@ -160,8 +160,25 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	}
 	
 	@Override
+	public Documento readDocumentoPendiente(Documento documento, TipoEstadoDocumentoPendiente estadoDocumento) {
+		try {
+			return getJdbcTemplate().queryForObject(DocumentoSql.READ_DOC_BY_ID_AND_ESTADO, new RowMapper<Documento>() {
+				@Override
+				public Documento mapRow(ResultSet rs, int rowNum)
+						throws SQLException {
+					Documento documento = new Documento();
+					documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
+					return documento;
+				}
+			}, documento.getId(), estadoDocumento.getId());
+		} catch (EmptyResultDataAccessException ex) {
+			return null;
+		}
+	}
+	
+	@Override
 	public void deleteFromAcusePendiente(Documento documento) {
-		getJdbcTemplate().update("delete from t_documento_pendiente where id_documento = ?", documento.getId());
+		getJdbcTemplate().update(DocumentoSql.DELETE_DOCUMENTO_PENDIENTE, documento.getId());
 	}
 	
 	@Override
@@ -312,7 +329,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	@Override
 	public Documento readDocumentoFolio(Documento documento) {
 		try {
-			return getJdbcTemplate().queryForObject(DocumentoSql.READ_DOC_BY_SERIE_FOLIO, new RowMapper<Documento>() {
+			return getJdbcTemplate().queryForObject(DocumentoSql.READ_DOCFOLIO_BY_SERIE_FOLIO, new RowMapper<Documento>() {
 				@Override
 				public Documento mapRow(ResultSet rs, int rowNum)
 						throws SQLException {
@@ -322,6 +339,28 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 					return documento;
 				}
 			}, documento.getComprobante().getSerie(), documento.getComprobante().getFolio());
+		} catch (EmptyResultDataAccessException ex) {
+			return null;
+		}
+	}
+	
+	@Override
+	public Documento readDocumentoFolioById(Documento documento) {
+		try {
+			return getJdbcTemplate().queryForObject(DocumentoSql.READ_DOCFOLIO_BY_ID, new RowMapper<Documento>() {
+				@Override
+				public Documento mapRow(ResultSet rs, int rowNum)
+						throws SQLException {
+					Documento documento = new Documento();
+					Comprobante comprobante = new Comprobante();
+					documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
+					comprobante.setSerie(rs.getString(DocumentoSql.SERIE));
+					comprobante.setFolio(rs.getString(DocumentoSql.FOLIO));
+					documento.setTipoDocumento(TipoDocumento.getById(rs.getInt(DocumentoSql.ID_TIPO_DOCUMENTO)));
+					documento.setComprobante(comprobante);
+					return documento;
+				}
+			}, documento.getId());
 		} catch (EmptyResultDataAccessException ex) {
 			return null;
 		}

@@ -137,6 +137,12 @@ public class TicketServiceImpl implements TicketService {
 		}
 		return ticketDB;
 	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public Ticket readByDocumento(Documento documento) {
+		return ticketDao.readByDocumento(documento);
+	}
 	
 	@Transactional(readOnly = true)
 	@Override

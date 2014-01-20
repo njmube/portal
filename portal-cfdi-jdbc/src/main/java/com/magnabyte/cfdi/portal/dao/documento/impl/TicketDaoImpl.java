@@ -102,6 +102,16 @@ public class TicketDaoImpl extends GenericJdbcDao
 	}
 	
 	@Override
+	public Ticket readByDocumento(Documento documento) {
+		try {
+			return getJdbcTemplate().queryForObject(TicketSql.READ_BY_DOC, MAPPER_TICKET, 
+					documento.getId(), TipoEstadoTicket.FACTURADO.getId());
+		} catch (EmptyResultDataAccessException ex) {
+			return null;
+		}
+	}
+	
+	@Override
 	public Integer readIdDocFromTicketFacturado(DocumentoSucursal documento) {
 		return getJdbcTemplate().queryForObject(TicketSql.READ_ID_DOC_BY_TICKET, Integer.class,
 				documento.getTicket().getTransaccion().getTransaccionHeader().getIdTicket(), 

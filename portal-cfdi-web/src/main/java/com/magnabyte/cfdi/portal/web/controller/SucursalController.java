@@ -1,6 +1,5 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import mx.gob.sat.cfd._3.Comprobante;
@@ -146,8 +145,7 @@ public class SucursalController {
 	
 	@RequestMapping(value="/cierre", method = RequestMethod.POST)
 	public String cierre(@RequestParam String fechaCierre, @ModelAttribute Usuario usuario,
-			@ModelAttribute Establecimiento establecimiento, 
-			ModelMap model, HttpServletRequest request) {		
+			@ModelAttribute Establecimiento establecimiento, ModelMap model) {		
 		
 		usuario.setEstablecimiento(establecimiento);
 		
@@ -155,7 +153,7 @@ public class SucursalController {
 		
 		try {
 			autCierreService.autorizar(usuario);
-			cfdiService.closeOfDay(fechaCierre, establecimiento, request);
+			cfdiService.closeOfDay(fechaCierre, establecimiento);
 		} catch (PortalException ex) {
 			model.put("error", true);
 			model.put("messageError", ex.getMessage());

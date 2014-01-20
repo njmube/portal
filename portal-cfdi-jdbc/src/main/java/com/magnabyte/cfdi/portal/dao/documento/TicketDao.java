@@ -29,4 +29,6 @@ public interface TicketDao {
 	int readProcesado(String archivoOrigen, TipoEstadoTicket facturado,
 			TipoEstadoTicket facturadoMostrador);
 
+	Ticket readByDocumento(Documento documento);
+
 }

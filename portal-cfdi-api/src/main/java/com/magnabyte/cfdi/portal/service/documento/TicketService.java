@@ -36,4 +36,6 @@ public interface TicketService {
 
 	void updateEstadoNcr(DocumentoSucursal documento);
 
+	Ticket readByDocumento(Documento documento);
+
 }

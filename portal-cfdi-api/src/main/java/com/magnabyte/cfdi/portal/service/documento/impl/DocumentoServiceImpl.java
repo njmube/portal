@@ -212,9 +212,27 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Transactional
 	@Override
 	public void insertDocumentoPendiente(Documento documento, TipoEstadoDocumentoPendiente estadoDocumento) {
-		documentoDao.insertDocumentoPendiente(documento, estadoDocumento);
+		switch (estadoDocumento) {
+		case ACUSE_PENDIENTE:
+			documentoDao.insertDocumentoPendiente(documento, estadoDocumento);
+			break;
+		case TIMBRE_PENDIENTE:
+			if (!isTimbrePendiente(documento)) {
+				documentoDao.insertDocumentoPendiente(documento, estadoDocumento);
+			} else {
+				logger.debug("El documento ya encuentra en la lista de pendientes por timbrar.");
+			}
+			break;
+		default:
+			break;
+		}
 	}
 	
+	private boolean isTimbrePendiente(Documento documento) {
+		Documento documentoDB = documentoDao.readDocumentoPendiente(documento, TipoEstadoDocumentoPendiente.TIMBRE_PENDIENTE); 
+		return documentoDB != null;
+	}
+
 	@Transactional(readOnly = true)
 	@Override
 	public List<Documento> obtenerAcusesPendientes() {
@@ -452,13 +470,22 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		Documento documentoBDParaTimbre = null;
 		Establecimiento establecimientoBD = null;
 		Comprobante comprobante = null;
+//		Ticket ticketBD = null;
 		if(documento.getId() != null) {
 			documentoBD = documentoDao.read(documento);
+//			if (documentoBD instanceof DocumentoSucursal) {
+//				ticketBD = ticketService.readByDocumento(documento);
+//				if (ticketBD != null) {
+//					((DocumentoSucursal) documentoBD).setTicket(ticketBD);
+//				}
+//			}
 			establecimientoBD = establecimientoService.read(documentoBD.getEstablecimiento());
 			comprobante = documentoXmlService.convierteByteArrayAComprobante(documentoBD.getXmlCfdi());
 			documentoBD.setComprobante(comprobante);
-			documentoBDParaTipo = documentoDao.readDocumentoFolio(documentoBD);
+			documentoBDParaTipo = documentoDao.readDocumentoFolioById(documentoBD);
 			if (documentoBDParaTipo != null) {
+				documentoBD.getComprobante().setSerie(documentoBDParaTipo.getComprobante().getSerie());
+				documentoBD.getComprobante().setFolio(documentoBDParaTipo.getComprobante().getFolio());
 				documentoBD.setTipoDocumento(documentoBDParaTipo.getTipoDocumento());
 			}
 			documentoBD.setEstablecimiento(establecimientoBD);

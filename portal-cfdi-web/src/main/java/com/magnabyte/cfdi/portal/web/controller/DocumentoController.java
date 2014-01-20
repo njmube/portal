@@ -63,11 +63,10 @@ public class DocumentoController {
 	private CfdiService cfdiService;
 	
 	@RequestMapping(value = {"/generarDocumento", "/portal/cfdi/generarDocumento"}, method = RequestMethod.POST)
-	public String generarDocumento(@ModelAttribute Documento documento,
-			ModelMap model, HttpServletRequest request) {
+	public String generarDocumento(@ModelAttribute Documento documento, ModelMap model) {
 		logger.debug("generando documento");
 
-		cfdiService.generarDocumento(documento, request);
+		cfdiService.generarDocumento(documento);
 		model.put("documento", documento);
 		
 		if (documento instanceof DocumentoPortal) {

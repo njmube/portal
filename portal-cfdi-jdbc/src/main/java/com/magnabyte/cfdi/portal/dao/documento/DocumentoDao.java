@@ -41,4 +41,8 @@ public interface DocumentoDao {
 
 	void saveAcuseCfdiXmlFile(Documento documento);
 
+	Documento readDocumentoPendiente(Documento documento, TipoEstadoDocumentoPendiente estadoDocumento);
+
+	Documento readDocumentoFolioById(Documento documento);
+
 }

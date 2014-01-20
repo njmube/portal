@@ -70,7 +70,7 @@
 
 	<task:scheduled-tasks>
 		<task:scheduled ref="documentoWebService" method="recuperarAcusesPendientes" cron="0 0/3 * 1/1 * ?" />
-<!-- 		<task:scheduled ref="cfdiService" method="recuperarTimbreDocumentosPendientes" cron="0 0/3 * 1/1 * ?" /> -->
+		<task:scheduled ref="cfdiService" method="recuperarTimbreDocumentosPendientes" cron="0 0/3 * 1/1 * ?" />
 	</task:scheduled-tasks>
 
 	<!-- <task:annotation-driven executor="executor" scheduler="scheduler"/> -->
