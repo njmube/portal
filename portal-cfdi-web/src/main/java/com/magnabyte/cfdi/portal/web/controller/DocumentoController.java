@@ -119,7 +119,6 @@ public class DocumentoController {
 		return "reporte";
 	}
 
-	//FIXME Exception io
 	@RequestMapping(value = {"/documentoXml", "/portal/cfdi/documentoXml"})
 	public void documentoXml(@ModelAttribute Documento documento,
 			HttpServletResponse response) {
@@ -127,18 +126,15 @@ public class DocumentoController {
 			String filename = documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".xml";
 			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
 			OutputStream out = response.getOutputStream();
-			//FIXME metodo
 			out.write(documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante(), PortalUtils.encodingUTF8));
 			out.flush();
 			out.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.debug("Ocurrió un error al descargar el XML.", e);
+			throw new PortalException("Ocurrió un error al descargar el XML.", e);
 		}
 	}
 	
-	//FIXME Exception io
-//	@RequestMapping(value = {"/documentoDownload/{idEstab}/{fileName}/{extension}"
-//			, "/portal/cfdi/documentoDownload/{idEstab}/{fileName}/{extension}"})
 	@RequestMapping(value = {"/documentoDownloadXml/{idDoc}/{fileName}"
 			, "/portal/cfdi/documentoDownloadXml/{idDoc}/{fileName}"})
 	public void documentoDownloadXml(@PathVariable Integer idDocumento, 
@@ -147,7 +143,6 @@ public class DocumentoController {
 			Documento documento = new Documento();
 			documento.setId(idDocumento);
 			documento = documentoService.read(documento);
-//			byte [] doc = documentoService.recuperarDocumentoArchivo(fileName, idEstab, extension);
 			byte [] doc = documentoService.recuperarDocumentoXml(documento);
 			
 			response.setHeader("Content-Disposition", "attachment; filename=" + fileName + ".xml");
@@ -156,7 +151,8 @@ public class DocumentoController {
 			out.flush();
 			out.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.debug("Ocurrió un error al descargar el XML.", e);
+			throw new PortalException("Ocurrió un error al descargar el XML.", e);
 		}
 	}
 	

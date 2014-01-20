@@ -86,6 +86,9 @@ public class TicketServiceImpl implements TicketService {
 	@Value("${vm.moneda}")
 	private String vmMoneda;
 	
+	@Value("${ticket.categoria.sinprecio}")
+	private String categoriaSinPrecio; 
+	
 	private static final String ticketGenerico = "0";
 	
 	private static final String cajaGenerica = "0";
@@ -351,8 +354,7 @@ public class TicketServiceImpl implements TicketService {
 		for (Ticket ticket : ventas) {
 			for (Partida partida : ticket.getTransaccion().getPartidas()) {
 				if (!documentoService.isArticuloSinPrecio(partida.getArticulo().getId())) {
-					//FIXME Categoria articulo sin precio pasar a property
-					if (partida.getArticulo().getTipoCategoria() != null && !partida.getArticulo().getTipoCategoria().equals("PROMOCIONES")) {
+					if (partida.getArticulo().getTipoCategoria() != null && !partida.getArticulo().getTipoCategoria().equals(categoriaSinPrecio)) {
 						precioTotal = precioTotal.add(partida.getPrecioTotal());
 					}
 				}

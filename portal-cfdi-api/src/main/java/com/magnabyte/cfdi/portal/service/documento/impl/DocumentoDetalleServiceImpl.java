@@ -34,6 +34,8 @@ public class DocumentoDetalleServiceImpl  implements DocumentoDetalleService {
 		}
 	}
 	
+	@Transactional(readOnly = true)
+	@Override
 	public Conceptos read(Documento documento) {
 		return documentoDetalleDao.read(documento);
 	}

@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.service.establecimiento.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.model.commons.Usuario;
 import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusUsuario;
@@ -21,6 +22,7 @@ public class AutorizacionCierreServiceImpl implements AutorizacionCierreService 
 	@Autowired
 	private UsuarioService usuarioService;
 	
+	@Transactional(readOnly = true)
 	@Override
 	public boolean autorizar(Usuario usuario) {
 		

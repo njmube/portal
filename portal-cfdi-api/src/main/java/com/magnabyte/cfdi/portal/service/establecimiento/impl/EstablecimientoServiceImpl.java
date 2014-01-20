@@ -86,6 +86,7 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 		return false;
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public String readFechaCierreById(Establecimiento establecimiento) {
 		Establecimiento estab = establecimientoDao

@@ -44,6 +44,7 @@ public class RutaEstablecimientoServiceImpl implements RutaEstablecimientoServic
 		}
 	}
 	
+	@Transactional(readOnly = true)
 	@Override
 	public RutaRepositorio readById (RutaRepositorio rutaRepositorio){
 		return rutaEstablecimientoDao.readById(rutaRepositorio);

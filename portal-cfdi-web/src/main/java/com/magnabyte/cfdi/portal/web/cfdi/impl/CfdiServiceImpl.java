@@ -23,17 +23,19 @@ import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
-import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
+import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
 import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.service.certificado.CertificadoService;
+import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.emisor.EmisorService;
+import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.web.cfdi.CfdiService;
 import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
 
@@ -49,6 +51,9 @@ public class CfdiServiceImpl implements CfdiService {
 	private DocumentoService documentoService;
 	
 	@Autowired
+	private ComprobanteService comprobanteService;
+	
+	@Autowired
 	private TicketService ticketService;
 	
 	@Autowired
@@ -56,6 +61,9 @@ public class CfdiServiceImpl implements CfdiService {
 	
 	@Autowired
 	private EmisorService emisorService;
+	
+	@Autowired
+	private DocumentoXmlService documentoXmlService;
 	
 	@Value("${hora.inicio}")
 	private int horaInicio;
@@ -69,22 +77,24 @@ public class CfdiServiceImpl implements CfdiService {
 	@Override
 	public void generarDocumento(Documento documento, HttpServletRequest request) {
 		logger.debug("cfdiService...");
-		int idServicio = documentoWebService.obtenerIdServicio();
-		CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
-		Calendar fechaFacturacion = Calendar.getInstance();
-		documento.setFechaFacturacion(fechaFacturacion.getTime());
-		documentoService.guardarDocumento(documento);
-		if(documento.isVentasMostrador()) {
-			ticketService.guardarTicketsCierreDia(documento);
+		if(documentoXmlService.isValidComprobanteXml(documento.getComprobante())) {
+			int idServicio = documentoWebService.obtenerIdServicio();
+			CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
+			Calendar fechaFacturacion = Calendar.getInstance();
+			documento.setFechaFacturacion(fechaFacturacion.getTime());
+			documentoService.guardarDocumento(documento);
+			if(documento.isVentasMostrador()) {
+				ticketService.guardarTicketsCierreDia(documento);
+			}
+			sellarYTimbrarComprobante(documento, request, idServicio, certificado);
 		}
-		sellarYTimbrarComprobante(documento, request, idServicio, certificado);
 	}
 
 	@Override
 	public void sellarYTimbrarComprobante(Documento documento,
 			HttpServletRequest request, int idServicio,
 			CertificadoDigital certificado) {
-		if (documentoService.sellarComprobante(documento.getComprobante(), certificado)) {
+		if (comprobanteService.sellarComprobante(documento.getComprobante(), certificado)) {
 			if (documentoWebService.timbrarDocumento(documento, request, idServicio)) {
 				documentoService.updateDocumentoXmlCfdi(documento);
 				documentoService.insertDocumentoCfdi(documento);
@@ -99,6 +109,7 @@ public class CfdiServiceImpl implements CfdiService {
 		}
 	}
 	
+	//FIXME desarrollar
 	public void recuperarTimbreDocumentosPendientes() {
 		List<Documento> documentosTimbrePendientes = new ArrayList<Documento>();
 		documentosTimbrePendientes = documentoService.obtenerDocumentosTimbrePendientes();		
@@ -125,7 +136,7 @@ public class CfdiServiceImpl implements CfdiService {
 		Cliente cliente = emisorService.readClienteVentasMostrador(documento.getEstablecimiento());
 		cliente.setRfc(rfcVentasMostrador);
 		int domicilioFiscal = cliente.getDomicilios().get(0).getId();
-		Comprobante comprobante = documentoService.obtenerComprobantePor(cliente, documentoNcr.getTicket(), 
+		Comprobante comprobante = comprobanteService.obtenerComprobantePor(cliente, documentoNcr.getTicket(), 
 				domicilioFiscal, documento.getEstablecimiento(), TipoDocumento.NOTA_CREDITO);
 		
 		documentoNcr.setCliente(cliente);
@@ -136,7 +147,7 @@ public class CfdiServiceImpl implements CfdiService {
 		documentoNcr.setFechaFacturacion(new Date());
 		CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
 		documentoService.guardarDocumento(documentoNcr);
-		if (documentoService.sellarComprobante(documentoNcr.getComprobante(), certificado)) {
+		if (comprobanteService.sellarComprobante(documentoNcr.getComprobante(), certificado)) {
 			if (documentoWebService.timbrarDocumento(documentoNcr, request, idServicio)) {
 				documentoService.insertDocumentoCfdi(documentoNcr);
 				documentoService.insertDocumentoPendiente(documentoNcr, TipoEstadoDocumentoPendiente.ACUSE_PENDIENTE);
@@ -178,7 +189,7 @@ public class CfdiServiceImpl implements CfdiService {
 			Cliente cliente = emisorService.readClienteVentasMostrador(establecimiento);
 			cliente.setRfc(rfcVentasMostrador);
 			int domicilioFiscal = cliente.getDomicilios().get(0).getId();
-			Comprobante comprobante = documentoService.obtenerComprobantePor(cliente, ticketVentasMostrador, domicilioFiscal, establecimiento, TipoDocumento.FACTURA);
+			Comprobante comprobante = comprobanteService.obtenerComprobantePor(cliente, ticketVentasMostrador, domicilioFiscal, establecimiento, TipoDocumento.FACTURA);
 			Documento documento = new Documento();
 			documento.setEstablecimiento(establecimiento);
 			documento.setCliente(cliente);

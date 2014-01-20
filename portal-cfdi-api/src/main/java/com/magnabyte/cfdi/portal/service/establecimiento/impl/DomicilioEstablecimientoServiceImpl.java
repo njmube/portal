@@ -20,7 +20,7 @@ public class DomicilioEstablecimientoServiceImpl implements
 			.getLogger(DomicilioEstablecimientoServiceImpl.class);
 
 	@Autowired
-	DomicilioEstablecimientoDao domicilioEstablecimientoDao;
+	private DomicilioEstablecimientoDao domicilioEstablecimientoDao;
 
 	@Transactional
 	@Override
@@ -47,16 +47,19 @@ public class DomicilioEstablecimientoServiceImpl implements
 		}
 	}
 	
+	@Transactional(readOnly = true)
 	@Override
 	public Estado readEstado(Estado estado) {
 		return domicilioEstablecimientoDao.readEstado(estado);
 	}
 	
+	@Transactional(readOnly = true)
 	@Override
 	public Estado findEstado (Estado estado) {
 		return domicilioEstablecimientoDao.findEstado(estado);
 	}
 	
+	@Transactional(readOnly = true)
 	@Override
 	public DomicilioEstablecimiento readById(DomicilioEstablecimiento domicilioEstablecimiento) {
 		return domicilioEstablecimientoDao.readById(domicilioEstablecimiento);

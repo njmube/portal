@@ -98,11 +98,11 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		params.addValue(DocumentoSql.IVA, documento.getComprobante().getImpuestos().getTotalImpuestosTrasladados());
 		params.addValue(DocumentoSql.TOTAL, documento.getComprobante().getTotal());
 		params.addValue(DocumentoSql.ID_STATUS, TipoEstadoDocumento.PENDIENTE.getId());
-		//FIXME exception
 		try {
 			params.addValue(DocumentoSql.XML_FILE, new String(documento.getXmlCfdi(), PortalUtils.encodingUTF16));
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			logger.debug("No se pudo registrar el Documento en la base de datos, ocurrió un error al guardar el xml.", e);
+			throw new PortalException("No se pudo registrar el Documento en la base de datos, ocurrió un error al guardar el xml.", e);
 		}
 		return params;
 	}
@@ -366,13 +366,13 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	
 	@Override
 	public void saveAcuseCfdiXmlFile(Documento documento) {
-		//FIXME exception
 		try {
 			getJdbcTemplate().update(DocumentoSql.SAVE_ACUSE, 
 					new String(documento.getXmlCfdiAcuse(), PortalUtils.encodingUTF16), 
 					documento.getId());
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			logger.debug("No se pudo actualizar el Documento en la base de datos, ocurrió un error al guardar el acuse xml.", e);
+			throw new PortalException("No se pudo actualizar el Documento en la base de datos, ocurrió un error al guardar el acuse xml.", e);
 		}
 	}
 }
