@@ -25,7 +25,7 @@ import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
-import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
+import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 
@@ -49,7 +49,7 @@ public class PortalController {
 	private ClienteService clienteService;
 	
 	@Autowired
-	private DocumentoService documentoService;
+	private ComprobanteService comprobanteService;
 	
 	@RequestMapping("/menu")
 	public String menu() {
@@ -107,7 +107,7 @@ public class PortalController {
 	@RequestMapping("/datosFacturacion/{idDomicilio}")
 	public String datosFacturacion(@ModelAttribute Establecimiento establecimiento, @ModelAttribute Cliente cliente, 
 			@ModelAttribute Ticket ticket, @PathVariable Integer idDomicilio, ModelMap model) {
-		Comprobante comprobante = documentoService.obtenerComprobantePor(cliente, ticket, idDomicilio, establecimiento, TipoDocumento.FACTURA);
+		Comprobante comprobante = comprobanteService.obtenerComprobantePor(cliente, ticket, idDomicilio, establecimiento, TipoDocumento.FACTURA);
 		DocumentoPortal documento = new DocumentoPortal();
 		documento.setCliente(cliente);
 		documento.setTicket(ticket);

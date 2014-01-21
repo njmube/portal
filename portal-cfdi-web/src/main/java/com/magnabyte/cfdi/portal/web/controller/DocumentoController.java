@@ -63,11 +63,10 @@ public class DocumentoController {
 	private CfdiService cfdiService;
 	
 	@RequestMapping(value = {"/generarDocumento", "/portal/cfdi/generarDocumento"}, method = RequestMethod.POST)
-	public String generarDocumento(@ModelAttribute Documento documento,
-			ModelMap model, HttpServletRequest request) {
+	public String generarDocumento(@ModelAttribute Documento documento, ModelMap model) {
 		logger.debug("generando documento");
 
-		cfdiService.generarDocumento(documento, request);
+		cfdiService.generarDocumento(documento);
 		model.put("documento", documento);
 		
 		if (documento instanceof DocumentoPortal) {
@@ -119,7 +118,6 @@ public class DocumentoController {
 		return "reporte";
 	}
 
-	//FIXME Exception io
 	@RequestMapping(value = {"/documentoXml", "/portal/cfdi/documentoXml"})
 	public void documentoXml(@ModelAttribute Documento documento,
 			HttpServletResponse response) {
@@ -127,27 +125,23 @@ public class DocumentoController {
 			String filename = documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".xml";
 			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
 			OutputStream out = response.getOutputStream();
-			//FIXME metodo
 			out.write(documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante(), PortalUtils.encodingUTF8));
 			out.flush();
 			out.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.debug("Ocurrió un error al descargar el XML.", e);
+			throw new PortalException("Ocurrió un error al descargar el XML.", e);
 		}
 	}
 	
-	//FIXME Exception io
-//	@RequestMapping(value = {"/documentoDownload/{idEstab}/{fileName}/{extension}"
-//			, "/portal/cfdi/documentoDownload/{idEstab}/{fileName}/{extension}"})
-	@RequestMapping(value = {"/documentoDownloadXml/{idDoc}/{fileName}"
-			, "/portal/cfdi/documentoDownloadXml/{idDoc}/{fileName}"})
+	@RequestMapping(value = {"/documentoDownloadXml/{idDocumento}/{fileName}"
+			, "/portal/cfdi/documentoDownloadXml/{idDocumento}/{fileName}"})
 	public void documentoDownloadXml(@PathVariable Integer idDocumento, 
 			@PathVariable String fileName, HttpServletResponse response) {
 		try {						
 			Documento documento = new Documento();
 			documento.setId(idDocumento);
 			documento = documentoService.read(documento);
-//			byte [] doc = documentoService.recuperarDocumentoArchivo(fileName, idEstab, extension);
 			byte [] doc = documentoService.recuperarDocumentoXml(documento);
 			
 			response.setHeader("Content-Disposition", "attachment; filename=" + fileName + ".xml");
@@ -156,17 +150,18 @@ public class DocumentoController {
 			out.flush();
 			out.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.debug("Ocurrió un error al descargar el XML.", e);
+			throw new PortalException("Ocurrió un error al descargar el XML.", e);
 		}
 	}
 	
-	@RequestMapping(value = {"/documentoDownloadPdf/{idDoc}/{fileName}/{origin}"
-			, "/portal/cfdi/documentoDownloadPdf/{idDoc}/{fileName}/{origin}"})
-	public String documentoDownloadPdf (@PathVariable Integer idDoc, 
+	@RequestMapping(value = {"/documentoDownloadPdf/{idDocumento}/{fileName}/{origin}"
+			, "/portal/cfdi/documentoDownloadPdf/{idDocumento}/{fileName}/{origin}"})
+	public String documentoDownloadPdf (@PathVariable Integer idDocumento, 
 			@PathVariable String fileName, @PathVariable String origin, ModelMap model) {
 		
 		Documento documento = new Documento();
-		documento.setId(idDoc);
+		documento.setId(idDocumento);
 		model.put("documento", documentoService.findById(documento));
 		
 		if (origin.equals("in")) {

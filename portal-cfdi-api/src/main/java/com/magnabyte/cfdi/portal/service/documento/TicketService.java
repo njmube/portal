@@ -41,4 +41,6 @@ public interface TicketService {
 	
 	String hola();
 
+	Ticket readByDocumento(Documento documento);
+
 }

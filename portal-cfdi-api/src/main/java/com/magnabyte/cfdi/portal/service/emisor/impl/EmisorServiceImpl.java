@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
@@ -28,6 +29,7 @@ public class EmisorServiceImpl implements EmisorService {
 	@Autowired
 	private EmisorDao emisorDao;
 	
+	@Transactional(readOnly = true)
 	@Override
 	public Cliente readClienteVentasMostrador(Establecimiento establecimiento) {
 		logger.debug("readClienteVentasMostrador...");
@@ -60,6 +62,7 @@ public class EmisorServiceImpl implements EmisorService {
 		return clienteVentasMostrador;
 	}
 	
+	@Transactional(readOnly = true)
 	@Override
 	public Emisor getEmisorPorEstablecimiento(Establecimiento establecimiento) {
 		EmpresaEmisor empresaEmisor = emisorDao.read(establecimiento.getEmpresaEmisor());

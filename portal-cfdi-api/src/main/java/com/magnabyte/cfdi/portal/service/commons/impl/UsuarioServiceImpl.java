@@ -68,7 +68,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 		}
 	}
 	
-	public boolean exist(Usuario usuario) {
+	private boolean exist(Usuario usuario) {
 		Usuario usu = usuarioDao.getUsuarioByEstablecimiento(usuario);
 		
 		if (usuario.getId() != null) {

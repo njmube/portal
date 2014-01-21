@@ -4,8 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
 
 import org.slf4j.Logger;
@@ -58,18 +56,18 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	private String passwordWs;
 	
 	@Override
-	public boolean timbrarDocumento(Documento documento, HttpServletRequest request, int idServicio) {
+	public boolean timbrarDocumento(Documento documento, int idServicio) {
 		TimbreFiscalDigital timbre = null;
 		logger.debug("en timbrar Documento");
 		WsResponseBO response = new WsResponseBO();
 		
 		try {
-			response = wsEmisionTimbrado.emitirTimbrar(userWs, passwordWs, idServicio, 
-				documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante(), PortalUtils.encodingUTF8));
 			//FIXME Quitar para produccion solo es para pruebas
 //			if(documento != null) {
 //				throw new Exception("Sin servicio web service.");
 //			}
+			response = wsEmisionTimbrado.emitirTimbrar(userWs, passwordWs, idServicio, 
+				documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante(), PortalUtils.encodingUTF8));
 		} catch(Exception ex) {
 			documentoService.insertDocumentoPendiente(documento, TipoEstadoDocumentoPendiente.TIMBRE_PENDIENTE);
 			logger.debug("Ocurrío un error al realizar la conexión", ex);
@@ -89,16 +87,13 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			documento.setXmlCfdi(documentoXmlService
 					.convierteComprobanteAByteArray(documento.getComprobante(), PortalUtils.encodingUTF16));
 
-			//FIXME Verificar si se quita funcionalidad de guardado en disco
+			//FIXME Verificar si se quita funcionalidad de guardado en disco y movimiento de xml procesado para corporativo
 //			if (documento instanceof DocumentoCorporativo) {
 //				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
 //			}
-//			sambaService.writeProcessedCfdiXmlFile(response.getXML(), documento);
-//			if(request != null) {
-//				sambaService.writePdfFile(documento, request);
-//			}
 			return true;
 		} else {
+			documentoService.insertDocumentoPendiente(documento, TipoEstadoDocumentoPendiente.TIMBRE_PENDIENTE);
 			logger.debug("El Web Service devolvió un error: {}", response.getMessage());
 			throw new PortalException(response.getMessage());
 		}
@@ -133,16 +128,14 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	
 		if (response.getAcuse() != null) {
 			logger.debug("llamada a samba");
-			//FIXME Validar en donde se guardara el acuse
-//			sambaService.writeAcuseCfdiXmlFile(response.getAcuse(), documento);
 			//FIXME solo para pruebas
 			String acuse = "<acuse>Aqui va el acuse</acuse>";
 			try {
 				response.setAcuse(acuse.getBytes(PortalUtils.encodingUTF16));
 			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			//
 			documento.setXmlCfdiAcuse(response.getAcuse());
 			documentoService.saveAcuseCfdiXmlFile(documento);
 			documentoService.deleteFromAcusePendiente(documento);

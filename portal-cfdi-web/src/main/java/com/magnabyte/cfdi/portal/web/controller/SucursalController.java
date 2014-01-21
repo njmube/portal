@@ -1,6 +1,5 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import mx.gob.sat.cfd._3.Comprobante;
@@ -31,7 +30,7 @@ import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
-import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
+import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.establecimiento.AutorizacionCierreService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
@@ -52,7 +51,7 @@ public class SucursalController {
 	private SambaService sambaService;
 	
 	@Autowired
-	private DocumentoService documentoService;
+	private ComprobanteService comprobanteService;
 	
 	@Autowired
 	private CfdiService cfdiService;
@@ -115,7 +114,7 @@ public class SucursalController {
 	@RequestMapping("/datosFacturacion/{idDomicilio}")
 	public String datosFacturacion(@ModelAttribute Establecimiento establecimiento, @ModelAttribute Cliente cliente, 
 			@ModelAttribute Ticket ticket, @PathVariable Integer idDomicilio, ModelMap model) {
-		Comprobante comprobante = documentoService.obtenerComprobantePor(cliente, ticket, idDomicilio, establecimiento, TipoDocumento.FACTURA);
+		Comprobante comprobante = comprobanteService.obtenerComprobantePor(cliente, ticket, idDomicilio, establecimiento, TipoDocumento.FACTURA);
 		DocumentoSucursal documento = new DocumentoSucursal();
 		documento.setCliente(cliente);
 		documento.setTicket(ticket);
@@ -146,8 +145,7 @@ public class SucursalController {
 	
 	@RequestMapping(value="/cierre", method = RequestMethod.POST)
 	public String cierre(@RequestParam String fechaCierre, @ModelAttribute Usuario usuario,
-			@ModelAttribute Establecimiento establecimiento, 
-			ModelMap model, HttpServletRequest request) {		
+			@ModelAttribute Establecimiento establecimiento, ModelMap model) {		
 		
 		usuario.setEstablecimiento(establecimiento);
 		
@@ -155,7 +153,7 @@ public class SucursalController {
 		
 		try {
 			autCierreService.autorizar(usuario);
-			cfdiService.closeOfDay(fechaCierre, establecimiento, request);
+			cfdiService.closeOfDay(fechaCierre, establecimiento);
 		} catch (PortalException ex) {
 			model.put("error", true);
 			model.put("messageError", ex.getMessage());
