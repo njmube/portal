@@ -155,13 +155,13 @@ public class DocumentoController {
 		}
 	}
 	
-	@RequestMapping(value = {"/documentoDownloadPdf/{idDoc}/{fileName}/{origin}"
-			, "/portal/cfdi/documentoDownloadPdf/{idDoc}/{fileName}/{origin}"})
-	public String documentoDownloadPdf (@PathVariable Integer idDoc, 
+	@RequestMapping(value = {"/documentoDownloadPdf/{idDocumento}/{fileName}/{origin}"
+			, "/portal/cfdi/documentoDownloadPdf/{idDocumento}/{fileName}/{origin}"})
+	public String documentoDownloadPdf (@PathVariable Integer idDocumento, 
 			@PathVariable String fileName, @PathVariable String origin, ModelMap model) {
 		
 		Documento documento = new Documento();
-		documento.setId(idDoc);
+		documento.setId(idDocumento);
 		model.put("documento", documentoService.findById(documento));
 		
 		if (origin.equals("in")) {
