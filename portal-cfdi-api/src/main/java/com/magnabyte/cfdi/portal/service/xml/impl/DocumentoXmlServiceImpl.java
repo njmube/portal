@@ -99,7 +99,6 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	            oos.flush();
 	            oos.close();
 				comprobante = convierteByteArrayAComprobante(baos.toByteArray());
-				logger.debug("XML valido: " + validaComprobanteXml(comprobante));
 			}
 		} catch (IOException e) {
 			logger.error("Error al convertir el archivo SAP a CFDI: ", e);
@@ -143,7 +142,8 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 		return element;
 	}
 
-	public boolean validaComprobanteXml(Comprobante comprobante) {
+	@Override
+	public boolean isValidComprobanteXml(Comprobante comprobante) {
 		try {
 			InputStream comprobanteStream = convierteComprobanteAStream(comprobante);
 			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -152,8 +152,8 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 			validator.validate(new StreamSource(comprobanteStream));
 			return true;
 		} catch (Exception e) {
-			logger.error("Error al validar el documento: {}", e.getMessage());
-			return false;
+			logger.error("Error al validar el Comprobante: ", e);
+			throw new PortalException("Error al validar el Comprobante: " + e.getMessage());
 		}
 	}
 	
@@ -176,7 +176,6 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 		try {
 			oos = new OutputStreamWriter(baos, encoding);
 			marshaller.marshal(comprobante, new StreamResult(oos));
-//			marshaller.marshal(comprobante, new StreamResult(System.out));
 	        oos.flush();
 	        oos.close();
 		} catch (UnsupportedEncodingException e) {

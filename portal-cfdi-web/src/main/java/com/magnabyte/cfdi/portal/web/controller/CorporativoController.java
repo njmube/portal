@@ -19,7 +19,7 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
-import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
+import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 
@@ -36,7 +36,7 @@ public class CorporativoController {
 	private DocumentoXmlService documentoXmlService;
 	
 	@Autowired
-	private DocumentoService documentoService;
+	private ComprobanteService comprobanteService;
 	
 	@RequestMapping("/facturaCorp")
 	public String facturaCorp(@ModelAttribute Establecimiento establecimiento, ModelMap model) {
@@ -56,7 +56,7 @@ public class CorporativoController {
 		NtlmPasswordAuthentication authentication = sambaService.getAuthentication(establecimiento);
 		Comprobante comprobante = documentoXmlService.convertXmlSapToCfdi(sambaService.getFileStream(urlSapFiles, fileName, authentication));
 		DocumentoCorporativo documento = new DocumentoCorporativo();
-		documento.setCliente(documentoService.obtenerClienteDeComprobante(comprobante));
+		documento.setCliente(comprobanteService.obtenerClienteDeComprobante(comprobante));
 		TipoDocumento tipoDocumento = comprobante.getTipoDeComprobante().equalsIgnoreCase("ingreso") 
 				? TipoDocumento.FACTURA : TipoDocumento.NOTA_CREDITO;
 		documento.setTipoDocumento(tipoDocumento);

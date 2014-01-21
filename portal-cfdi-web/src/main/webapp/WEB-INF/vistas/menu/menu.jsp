@@ -65,43 +65,6 @@
 			</div>
 		</div>
 	</div>
-	<script type="text/javascript">
-			$(document).ready(function() {
-				$("#autorizacionForm").validationEngine();				
-				
-				$("#cierre").click(function() {
-					$.ajax({
-						url: contextPath + "/fechaCierre?ajax=true",
-						type: "POST",
-						dataType: "json",
-						success : function(response) {
-							if(response.fecha != null && response.fecha !== "" ) {
-								$("#fechaCierre").val(response.fecha);
-							} else  {								
-								$("#fechaCierre").val("");
-							}
-						},
-						error : function() {
-							$("#fechaCierre").val("");
-						}
-					});
-				});
-				
-				$(document.body).on("click", "#closeAut", function() {
-					$("#usuario").val("");
-					$("#password").val("");
-				});
-				
-				$('[data-toggle="confirmation"]').confirmation({onConfirm: function(){
-					if($("#autorizacionForm").validationEngine("validate")) {
-						$("#page_loader").show();
-						$(".page_loader_content").show();
-						
-						$("#autorizacionForm").submit();
-					}
-				}});
-			});
-	</script>
 	<div class="modal fade" id="autCierre" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
@@ -146,6 +109,41 @@
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->
 	</div>
-
+	<script type="text/javascript">
+			$(document).ready(function() {
+				$("#autorizacionForm").validationEngine();				
+				
+				$("#cierre").click(function() {
+					$.ajax({
+						url: contextPath + "/fechaCierre?ajax=true",
+						type: "POST",
+						dataType: "json",
+						success : function(response) {
+							if(response.fecha != null && response.fecha !== "" ) {
+								$("#fechaCierre").val(response.fecha);
+							} else  {								
+								$("#fechaCierre").val("");
+							}
+						},
+						error : function() {
+							$("#fechaCierre").val("");
+						}
+					});
+				});
+				
+				$(document.body).on("click", "#closeAut", function() {
+					$("#usuario").val("");
+					$("#password").val("");
+				});
+				
+				$('[data-toggle="confirmation"]').confirmation({onConfirm: function(){
+					if($("#autorizacionForm").validationEngine("validate")) {
+						$("#autorizacionForm").submit();
+						$(".page_loader").show();
+						$("#page_loader_factura_content").show();
+					}
+				}});
+			});
+	</script>
 </body>
 </html>

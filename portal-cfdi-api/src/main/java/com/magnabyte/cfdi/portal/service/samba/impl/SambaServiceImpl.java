@@ -169,7 +169,6 @@ public class SambaServiceImpl implements SambaService {
 	@Override
 	public void writeProcessedCfdiXmlFile(byte[] xmlCfdi, Documento documento) {
 		logger.debug("Escribir archivo XML CFDI, writeProcessedCfdiFile");
-		//FIXME validar ruta out corporativo y sucursal
 		String rutaXmlCfdiDestino = documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() +
 				documento.getEstablecimiento().getRutaRepositorio().getRutaRepoOut();
 		logger.debug("Ruta: {}", rutaXmlCfdiDestino);
@@ -180,7 +179,6 @@ public class SambaServiceImpl implements SambaService {
 	@Override
 	public void writeAcuseCfdiXmlFile(byte[] acuseCfdi, Documento documento) {
 		logger.debug("Escribir archivo ACUSE XML CFDI, writeAcuseCfdiXmlFile");
-		//FIXME validar ruta out para sucursal y corporativo
 		String rutaAcuseXmlCfdiDestino = documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() +
 				documento.getEstablecimiento().getRutaRepositorio().getRutaRepoOut();
 		logger.debug("Ruta: {}", rutaAcuseXmlCfdiDestino);
@@ -255,7 +253,6 @@ public class SambaServiceImpl implements SambaService {
 		try {
 			reporteCompleto = JasperFillManager.fillReport(reporteCompilado, map, dataSource);
 			byte[] bytesReport = JasperExportManager.exportReportToPdf(reporteCompleto);
-			//FIXME validar ruta out sucursal y corporativo
 			SmbFile filePdf = new SmbFile(documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() 
 					+ documento.getEstablecimiento().getRutaRepositorio().getRutaRepoOut(), 
 					documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".pdf");

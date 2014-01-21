@@ -33,8 +33,9 @@ import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
-import com.magnabyte.cfdi.portal.model.documento.EstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
+import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumento;
+import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
@@ -67,7 +68,9 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	public void updateDocumentoXmlCfdi(Documento documento) {
 		try {
 			int rowsAffected = getJdbcTemplate().update(DocumentoSql.UPDATE_DOC_XML_FILE, 
-					new String(documento.getXmlCfdi(), PortalUtils.encodingUTF16), documento.getId());
+					new String(documento.getXmlCfdi(), PortalUtils.encodingUTF16),
+					TipoEstadoDocumento.FACTURADO.getId(),
+					documento.getId());
 			logger.debug("archivos afectados {}", rowsAffected);
 		} catch (DataAccessException e) {
 			logger.debug("No se pudo actualizar el Documento en la base de datos.", e);
@@ -94,11 +97,12 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		params.addValue(DocumentoSql.SUBTOTAL, documento.getComprobante().getSubTotal());
 		params.addValue(DocumentoSql.IVA, documento.getComprobante().getImpuestos().getTotalImpuestosTrasladados());
 		params.addValue(DocumentoSql.TOTAL, documento.getComprobante().getTotal());
-		params.addValue(DocumentoSql.STATUS, true);
+		params.addValue(DocumentoSql.ID_STATUS, TipoEstadoDocumento.PENDIENTE.getId());
 		try {
-			params.addValue(DocumentoSql.XML_FILE, new String(documento.getXmlCfdi(), "UTF-16"));
+			params.addValue(DocumentoSql.XML_FILE, new String(documento.getXmlCfdi(), PortalUtils.encodingUTF16));
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			logger.debug("No se pudo registrar el Documento en la base de datos, ocurrió un error al guardar el xml.", e);
+			throw new PortalException("No se pudo registrar el Documento en la base de datos, ocurrió un error al guardar el xml.", e);
 		}
 		return params;
 	}
@@ -138,13 +142,13 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	}
 	
 	@Override
-	public void insertDocumentoPendiente(Documento documento, EstadoDocumentoPendiente estadoDocumento) {
+	public void insertDocumentoPendiente(Documento documento, TipoEstadoDocumentoPendiente estadoDocumento) {
 		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(getJdbcTemplate());
 		simpleJdbcInsert.setTableName(DocumentoSql.TABLE_DOC_PEND);
 		simpleJdbcInsert.execute(getParametersDocumentoPendiente(documento, estadoDocumento));
 	}
 
-	private MapSqlParameterSource getParametersDocumentoPendiente(Documento documento, EstadoDocumentoPendiente estadoDocumento) {
+	private MapSqlParameterSource getParametersDocumentoPendiente(Documento documento, TipoEstadoDocumentoPendiente estadoDocumento) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue(DocumentoSql.ID_DOCUMENTO, documento.getId());
 		params.addValue(DocumentoSql.SERIE, documento.getComprobante().getSerie());
@@ -156,8 +160,25 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	}
 	
 	@Override
+	public Documento readDocumentoPendiente(Documento documento, TipoEstadoDocumentoPendiente estadoDocumento) {
+		try {
+			return getJdbcTemplate().queryForObject(DocumentoSql.READ_DOC_BY_ID_AND_ESTADO, new RowMapper<Documento>() {
+				@Override
+				public Documento mapRow(ResultSet rs, int rowNum)
+						throws SQLException {
+					Documento documento = new Documento();
+					documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
+					return documento;
+				}
+			}, documento.getId(), estadoDocumento.getId());
+		} catch (EmptyResultDataAccessException ex) {
+			return null;
+		}
+	}
+	
+	@Override
 	public void deleteFromAcusePendiente(Documento documento) {
-		getJdbcTemplate().update("delete from t_documento_pendiente where id_documento = ?", documento.getId());
+		getJdbcTemplate().update(DocumentoSql.DELETE_DOCUMENTO_PENDIENTE, documento.getId());
 	}
 	
 	@Override
@@ -182,7 +203,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 					documento.setEstablecimiento(establecimiento);
 					return documento;
 				}
-			}, EstadoDocumentoPendiente.ACUSE_PENDIENTE.getId());
+			}, TipoEstadoDocumentoPendiente.ACUSE_PENDIENTE.getId());
 		} catch (EmptyResultDataAccessException ex) {
 			logger.debug("No hay acuses pendientes");
 			return null;
@@ -208,7 +229,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 					documento.setEstablecimiento(establecimiento);
 					return documento;
 				}
-			}, EstadoDocumentoPendiente.TIMBRE_PENDIENTE.getId());
+			}, TipoEstadoDocumentoPendiente.TIMBRE_PENDIENTE.getId());
 		} catch (EmptyResultDataAccessException ex) {
 			logger.debug("No hay acuses pendientes");
 			return null;
@@ -276,7 +297,12 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			documento.setComprobante(comprobante);
 			SQLXML xmlFile =rs.getSQLXML(DocumentoSql.XML_FILE);
 			if (xmlFile != null) {
-				documento.setXmlCfdi(xmlFile.getString().getBytes());
+				try {
+					documento.setXmlCfdi(xmlFile.getString().getBytes(PortalUtils.encodingUTF16));
+				} catch (UnsupportedEncodingException e) {
+					logger.debug("Ocurrió un error al leer el acuse xml.", e);
+					throw new PortalException("Ocurrió un error al leer el acuse xml.", e);
+				}
 			}
 			return documento;
 		}
@@ -308,7 +334,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	@Override
 	public Documento readDocumentoFolio(Documento documento) {
 		try {
-			return getJdbcTemplate().queryForObject(DocumentoSql.READ_DOC_BY_SERIE_FOLIO, new RowMapper<Documento>() {
+			return getJdbcTemplate().queryForObject(DocumentoSql.READ_DOCFOLIO_BY_SERIE_FOLIO, new RowMapper<Documento>() {
 				@Override
 				public Documento mapRow(ResultSet rs, int rowNum)
 						throws SQLException {
@@ -318,6 +344,28 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 					return documento;
 				}
 			}, documento.getComprobante().getSerie(), documento.getComprobante().getFolio());
+		} catch (EmptyResultDataAccessException ex) {
+			return null;
+		}
+	}
+	
+	@Override
+	public Documento readDocumentoFolioById(Documento documento) {
+		try {
+			return getJdbcTemplate().queryForObject(DocumentoSql.READ_DOCFOLIO_BY_ID, new RowMapper<Documento>() {
+				@Override
+				public Documento mapRow(ResultSet rs, int rowNum)
+						throws SQLException {
+					Documento documento = new Documento();
+					Comprobante comprobante = new Comprobante();
+					documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
+					comprobante.setSerie(rs.getString(DocumentoSql.SERIE));
+					comprobante.setFolio(rs.getString(DocumentoSql.FOLIO));
+					documento.setTipoDocumento(TipoDocumento.getById(rs.getInt(DocumentoSql.ID_TIPO_DOCUMENTO)));
+					documento.setComprobante(comprobante);
+					return documento;
+				}
+			}, documento.getId());
 		} catch (EmptyResultDataAccessException ex) {
 			return null;
 		}
@@ -358,5 +406,17 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	@Override
 	public void deletedDocumentoPendiente(Documento documento) {		
 		getJdbcTemplate().update(DocumentoSql.DELETE_DOCUMENTO_PENDIENTE, documento.getId());
+	}
+	
+	@Override
+	public void saveAcuseCfdiXmlFile(Documento documento) {
+		try {
+			getJdbcTemplate().update(DocumentoSql.SAVE_ACUSE, 
+					new String(documento.getXmlCfdiAcuse(), PortalUtils.encodingUTF16), 
+					documento.getId());
+		} catch (UnsupportedEncodingException e) {
+			logger.debug("No se pudo actualizar el Documento en la base de datos, ocurrió un error al guardar el acuse xml.", e);
+			throw new PortalException("No se pudo actualizar el Documento en la base de datos, ocurrió un error al guardar el acuse xml.", e);
+		}
 	}
 }

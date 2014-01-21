@@ -20,7 +20,7 @@ public interface TicketDao {
 
 	List<String> readArticulosSinPrecio();
 
-//	Integer readIdDocFromTicketGuardado(DocumentoSucursal documento);
+	Integer readIdDocFromTicketFacturado(DocumentoSucursal documento);
 
 	List<String> readAllByDate(String fecha);
 
@@ -28,5 +28,7 @@ public interface TicketDao {
 
 	int readProcesado(String archivoOrigen, TipoEstadoTicket facturado,
 			TipoEstadoTicket facturadoMostrador);
+
+	Ticket readByDocumento(Documento documento);
 
 }

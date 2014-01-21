@@ -231,6 +231,7 @@
 			</div>
 			<p class="text-center">
 				<button id="generaFactura" type="button" class="btn btn-primary btn-lg"><small>Generar ${tipoComprobante}</small> <i class="fa fa-list-alt"></i></button>
+				<a id="goback" href="<c:url value="/portal/cfdi/buscaRfc"/>" class="btn btn-warning btn-lg"><small>Regresar</small> <i class="fa fa-arrow-left"></i></a>
 				<a id="cancel" href="<c:url value="/portal/cfdi/buscaTicket" />" class="btn btn-danger btn-lg"><small>Cancelar</small> <i class="fa fa-times"></i></a>
 			</p>
 		</div>
@@ -255,6 +256,7 @@
 				$("#page_loader").show();
 				$("#page_loader_factura_content").show();
 				$(this).attr("disabled", "disabled");
+				$("#goback").attr("disabled", "disabled");
 				$("#cancel").attr("disabled", "disabled");
 				$("#formPdf").submit();
 			});

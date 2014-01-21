@@ -24,6 +24,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
+import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 
 @Service("CodigoQRService")
@@ -37,7 +38,7 @@ public class CodigoQRServiceImpl implements CodigoQRService {
 		InputStream stream = null;
 		try {
 
-			Charset charset = Charset.forName("UTF-8");
+			Charset charset = Charset.forName(PortalUtils.encodingUTF8);
 			CharsetEncoder encoder = charset.newEncoder();
 			byte[] b = null;
 			StringBuilder message = new StringBuilder();
@@ -51,7 +52,7 @@ public class CodigoQRServiceImpl implements CodigoQRService {
 			logger.debug("Mensajee" + message);
 
 			b = bbuf.array();
-			String data = new String(b, "UTF-8");
+			String data = new String(b, PortalUtils.encodingUTF8);
 
 			BitMatrix matrix = null;
 

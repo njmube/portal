@@ -5,28 +5,15 @@ import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import mx.gob.sat.cfd._3.Comprobante;
-
-import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
-import com.magnabyte.cfdi.portal.model.documento.EstadoDocumentoPendiente;
-import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
-import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
-import com.magnabyte.cfdi.portal.model.ticket.Ticket;
+import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 
 public interface DocumentoService {
-
-	boolean sellarComprobante(Comprobante comprobante, CertificadoDigital certificado);
-	
-	Comprobante obtenerComprobantePor(Cliente cliente, Ticket ticket, 
-			Integer domicilioFiscal, Establecimiento establecimiento, TipoDocumento tipoDocumento);
 	
 	void insertDocumentoCfdi(Documento documento);
 
-	Cliente obtenerClienteDeComprobante(Comprobante comprobante);
-
-	void insertDocumentoPendiente(Documento documento, EstadoDocumentoPendiente estadoDocumento);
+	void insertDocumentoPendiente(Documento documento, TipoEstadoDocumentoPendiente estadoDocumento);
 
 	void guardarDocumento(Documento documento);
 
@@ -60,5 +47,7 @@ public interface DocumentoService {
 			Integer idDocumento, HttpServletRequest request);
 
 	byte[] recuperarDocumentoPdf(Documento documento, ServletContext context);
+
+	void saveAcuseCfdiXmlFile(Documento documento);
 
 }
