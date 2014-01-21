@@ -5,6 +5,7 @@ import java.util.List;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.ticket.ListaTickets;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 
 public interface TicketService {
@@ -35,5 +36,9 @@ public interface TicketService {
 	boolean isTicketProcesado(String archivoOrigen);
 
 	void updateEstadoNcr(DocumentoSucursal documento);
+	
+	String recibeTicketsWsdl(ListaTickets tickets);
+	
+	String hola();
 
 }
