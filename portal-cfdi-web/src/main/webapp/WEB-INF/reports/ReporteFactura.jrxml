@@ -402,9 +402,11 @@
 					</textElement>
 					<textFieldExpression><![CDATA[($F{receptor.domicilio.colonia} !=null ? $F{receptor.domicilio.colonia} : "")+
 ($F{receptor.domicilio.localidad} !=null ? ", "+$F{receptor.domicilio.localidad} : "")+
-($F{receptor.domicilio.municipio} !=null ? ", "+$F{receptor.domicilio.municipio} : "")+
+($F{receptor.domicilio.municipio} !=null ? " "+$F{receptor.domicilio.municipio} : "")+
+($F{receptor.domicilio.estado} !=null ?  ", "+$F{receptor.domicilio.estado} : "")+
 ($F{receptor.domicilio.pais} !=null ? ", "+$F{receptor.domicilio.pais} :"")+
-($F{receptor.domicilio.codigoPostal} !=null ? ", C.P. "+$F{receptor.domicilio.codigoPostal} : "")]]></textFieldExpression>
+($F{receptor.domicilio.codigoPostal} !=null ? ", C.P. "+$F{receptor.domicilio.codigoPostal} : "")
+]]></textFieldExpression>
 				</textField>
 			</frame>
 			<frame>
