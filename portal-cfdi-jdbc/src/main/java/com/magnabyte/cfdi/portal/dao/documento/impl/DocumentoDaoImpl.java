@@ -297,12 +297,11 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			documento.setComprobante(comprobante);
 			SQLXML xmlFile =rs.getSQLXML(DocumentoSql.XML_FILE);
 			if (xmlFile != null) {
-				//FIXME exception
 				try {
 					documento.setXmlCfdi(xmlFile.getString().getBytes(PortalUtils.encodingUTF16));
 				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.debug("Ocurrió un error al leer el acuse xml.", e);
+					throw new PortalException("Ocurrió un error al leer el acuse xml.", e);
 				}
 			}
 			return documento;
