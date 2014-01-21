@@ -297,7 +297,13 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			documento.setComprobante(comprobante);
 			SQLXML xmlFile =rs.getSQLXML(DocumentoSql.XML_FILE);
 			if (xmlFile != null) {
-				documento.setXmlCfdi(xmlFile.getString().getBytes());
+				//FIXME exception
+				try {
+					documento.setXmlCfdi(xmlFile.getString().getBytes(PortalUtils.encodingUTF16));
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			return documento;
 		}

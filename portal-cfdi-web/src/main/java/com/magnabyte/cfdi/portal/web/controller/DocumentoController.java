@@ -134,8 +134,8 @@ public class DocumentoController {
 		}
 	}
 	
-	@RequestMapping(value = {"/documentoDownloadXml/{idDoc}/{fileName}"
-			, "/portal/cfdi/documentoDownloadXml/{idDoc}/{fileName}"})
+	@RequestMapping(value = {"/documentoDownloadXml/{idDocumento}/{fileName}"
+			, "/portal/cfdi/documentoDownloadXml/{idDocumento}/{fileName}"})
 	public void documentoDownloadXml(@PathVariable Integer idDocumento, 
 			@PathVariable String fileName, HttpServletResponse response) {
 		try {						

@@ -100,7 +100,7 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<finalName>portal-cfdi</finalName>
+		<finalName>portal-cfdi-dev</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
