@@ -243,7 +243,7 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 	private void createFechaDocumento(Comprobante comprobante) {
 		Calendar dateNow = Calendar.getInstance();
 		//FIXME verificar hora servidor
-		dateNow.add(Calendar.MINUTE, -1);
+		dateNow.add(Calendar.HOUR, -1);
 		try {
 			XMLGregorianCalendar fechaComprobante = DatatypeFactory.newInstance().newXMLGregorianCalendar(dateNow.get(Calendar.YEAR), 
 					dateNow.get(Calendar.MONTH) + 1, dateNow.get(Calendar.DAY_OF_MONTH), 

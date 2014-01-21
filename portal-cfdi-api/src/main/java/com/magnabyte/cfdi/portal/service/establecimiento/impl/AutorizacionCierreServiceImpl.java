@@ -28,6 +28,7 @@ public class AutorizacionCierreServiceImpl implements AutorizacionCierreService 
 		
 		Usuario usrBd = usuarioService.getUsuarioByEstablecimiento(usuario);
 		
+		//FIXME nullpointer
 		if(usrBd.getEstatus().getId() != EstatusUsuario.INACTIVO.getId()) {
 			if(usuario.getUsuario().equals(usrBd.getUsuario()) && 
 					!usuario.getPassword().equals(usrBd.getPassword())) {
