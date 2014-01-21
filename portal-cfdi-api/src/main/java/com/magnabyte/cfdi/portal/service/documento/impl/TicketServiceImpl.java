@@ -292,16 +292,21 @@ public class TicketServiceImpl implements TicketService {
 	@Override
 	public boolean isTicketFacturado(Ticket ticket, Establecimiento establecimiento) {
 		Ticket ticketDB = ticketDao.readByStatus(ticket, establecimiento, TipoEstadoTicket.FACTURADO);
-		if (ticketDB != null) {
-			return true;
-		}
-		return false;
+		return ticketDB != null;
 	}
 	
 	@Transactional(readOnly = true)
 	@Override
-	public boolean isTicketProcesado(String archivoOrigen) {
-		return ticketDao.readProcesado(archivoOrigen, TipoEstadoTicket.FACTURADO, TipoEstadoTicket.FACTURADO_MOSTRADOR) > 0;
+	public boolean isTicketFacturado(String archivoOrigen) {
+		Ticket ticketDB = ticketDao.readByStatus(archivoOrigen, TipoEstadoTicket.FACTURADO);
+		return ticketDB != null;
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public boolean isTicketFacturadoMostrador(String archivoOrigen) {
+		Ticket ticketDB = ticketDao.readByStatus(archivoOrigen, TipoEstadoTicket.FACTURADO_MOSTRADOR);
+		return ticketDB != null;
 	}
 	
 	@Transactional(readOnly = true)

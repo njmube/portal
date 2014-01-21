@@ -212,8 +212,11 @@ public class CfdiServiceImpl implements CfdiService {
 		logger.debug(archivosOrigenDevolucion.toString());
 		
 		for (Iterator<String> it = archivosOrigenDevolucion.iterator(); it.hasNext(); ){
-			if(ticketService.isTicketProcesado(it.next())){
-				//TODO Desarrollar generacion de ncr
+			String archivo = it.next();
+			if(ticketService.isTicketFacturado(archivo)){
+				
+			} else if (ticketService.isTicketFacturadoMostrador(archivo)) {
+				
 			}
 		}
 	}	

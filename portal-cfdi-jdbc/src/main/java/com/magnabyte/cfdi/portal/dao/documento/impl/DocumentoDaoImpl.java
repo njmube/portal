@@ -314,9 +314,9 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			Documento documento = new Documento();
 			Establecimiento establecimiento = new Establecimiento();
 			
-			establecimiento.setId(rs.getInt("id_establecimiento"));
+			establecimiento.setId(rs.getInt(DocumentoSql.ID_ESTABLECIMIENTO));
 			documento.setEstablecimiento(establecimiento);
-			documento.setId(rs.getInt("id_documento"));
+			documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
 			return documento;
 		}
 	};
