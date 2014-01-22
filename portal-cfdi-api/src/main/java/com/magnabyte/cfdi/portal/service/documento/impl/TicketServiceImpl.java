@@ -33,6 +33,7 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
+import com.magnabyte.cfdi.portal.model.ticket.ListaTickets;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago;
@@ -377,5 +378,15 @@ public class TicketServiceImpl implements TicketService {
 		ticketVentasMostrador.getTransaccion().getPartidasDescuentos().add(descuento);
 		
 		return ticketVentasMostrador;
+	}
+
+	@Override
+	public String recibeTicketsWsdl(ListaTickets tickets) {
+		return "Respuesta success: " + tickets.getTickets().size();
+	}
+
+	@Override
+	public String hola() {
+		return "Hola";
 	}
 }
