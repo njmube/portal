@@ -50,7 +50,7 @@ public class CorporativoController {
 		return "corporativo/facturaCorp";
 	}
 	
-	@RequestMapping("/facturaCorp/validate/{fileName:.+\\.[a-z]+}")
+	@RequestMapping("/facturaCorp/validate/{fileName:.+\\.xml$}")
 	public String validarFactura(@ModelAttribute Establecimiento establecimiento, @PathVariable String fileName, ModelMap model) {
 		logger.debug("valida factura");
 		String urlSapFiles = establecimiento.getRutaRepositorio().getRutaRepositorio() + establecimiento.getRutaRepositorio().getRutaRepoIn();

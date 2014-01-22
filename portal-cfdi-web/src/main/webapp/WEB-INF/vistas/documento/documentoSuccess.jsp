@@ -8,13 +8,14 @@
 <title>Factura Generada</title>
 </head>
 <body>
+	<c:set var="filename" value="FACTURA_${documento.comprobante.serie}_${documento.comprobante.folio}" />
 	<sec:authorize access="hasAnyRole('ROLE_CORP', 'ROLE_SUC')">
-		<c:url var="urlReportePDF" value="/reporte" />
+		<c:url var="urlReportePDF" value="/reporte/${filename}" />
 		<c:url var="urlReporteXML" value="/documentoXml" />
 		<c:url var="urlMenu" value="/menuPage" />
 	</sec:authorize>
 	<sec:authorize access="isAnonymous()">
-		<c:url var="urlReportePDF" value="/portal/cfdi/reporte" />
+		<c:url var="urlReportePDF" value="/portal/cfdi/reporte/${filename}" />
 		<c:url var="urlReporteXML" value="/portal/cfdi/documentoXml" />
 		<c:url var="urlMenu" value="/portal/cfdi/menu" />
 	</sec:authorize>
