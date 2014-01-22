@@ -112,7 +112,10 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 	private String formaPago;
 	
 	@Value("${ticket.categoria.sinprecio}")
-	private String categoriaSinPrecio; 
+	private String categoriaSinPrecio;
+	
+	@Value("${ticket.unidad.default}")
+	private String unidadDefault;
 	
 	@Transactional(readOnly = true)
 	@Override
@@ -215,9 +218,14 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 				Concepto concepto = new Concepto();
 				concepto.setCantidad(partida.getCantidad());
 				concepto.setDescripcion(partida.getArticulo().getDescripcion());
-				concepto.setUnidad(partida.getArticulo().getUnidad());
 				concepto.setImporte(partida.getPrecioTotal().divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
 				concepto.setValorUnitario(partida.getPrecioUnitario().divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
+				if (partida.getArticulo().getUnidad() != null) {
+					concepto.setUnidad(partida.getArticulo().getUnidad());
+				} else {
+					concepto.setUnidad(unidadDefault);
+					subTotal = subTotal.add(concepto.getImporte());
+				}
 				if (partida.getArticulo().getTipoCategoria() != null && !partida.getArticulo().getTipoCategoria().equals(categoriaSinPrecio)) {
 					subTotal = subTotal.add(concepto.getImporte());
 				}

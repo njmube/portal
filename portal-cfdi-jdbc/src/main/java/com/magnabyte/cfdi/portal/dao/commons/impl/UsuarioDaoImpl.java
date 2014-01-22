@@ -55,6 +55,7 @@ public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 
 	@Override
 	public Usuario getUsuarioByEstablecimiento(Usuario usuario) {
+		logger.debug("sql usuario :  "+UsuarioSql.GET_BY_ESTABLECIMIENTO);
 		String qry = UsuarioSql.GET_BY_ESTABLECIMIENTO;
 		Usuario object = null;
 		try {

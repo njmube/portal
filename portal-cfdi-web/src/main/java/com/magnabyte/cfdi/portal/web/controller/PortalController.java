@@ -22,12 +22,14 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoPortal;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
+import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 
 @Controller
 @SessionAttributes({"ticket", "cliente", "establecimiento", "documento"})
@@ -50,6 +52,9 @@ public class PortalController {
 	
 	@Autowired
 	private ComprobanteService comprobanteService;
+	
+	@Autowired
+	private DocumentoXmlService documentoXmlService;
 	
 	@RequestMapping("/menu")
 	public String menu() {
@@ -121,7 +126,12 @@ public class PortalController {
 	
 	@RequestMapping("/confirmarDatosFacturacion")
 	public String confirmarDatosFacturacion(@ModelAttribute Documento documento, ModelMap model) {
-		model.put("comprobante", documento.getComprobante());
-		return "portal/facturaValidate";
+		if(documentoXmlService.isValidComprobanteXml(documento.getComprobante())) {
+			model.put("comprobante", documento.getComprobante());
+			return "portal/facturaValidate";
+		} else {
+			logger.error("Error al validar el Comprobante.");
+			throw new PortalException("Error al validar el Comprobante.");
+		}
 	}
 }

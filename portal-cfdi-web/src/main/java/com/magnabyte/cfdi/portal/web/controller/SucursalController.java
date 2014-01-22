@@ -35,6 +35,7 @@ import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.establecimiento.AutorizacionCierreService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
+import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.web.cfdi.CfdiService;
 
 @Controller
@@ -49,6 +50,9 @@ public class SucursalController {
 	
 	@Autowired
 	private SambaService sambaService;
+	
+	@Autowired
+	private DocumentoXmlService documentoXmlService;
 	
 	@Autowired
 	private ComprobanteService comprobanteService;
@@ -128,8 +132,13 @@ public class SucursalController {
 	
 	@RequestMapping("/confirmarDatosFacturacion")
 	public String confirmarDatosFacturacion(@ModelAttribute Documento documento, ModelMap model) {
-		model.put("comprobante", documento.getComprobante());
-		return "sucursal/facturaValidate";
+		if(documentoXmlService.isValidComprobanteXml(documento.getComprobante())) {
+			model.put("comprobante", documento.getComprobante());
+			return "sucursal/facturaValidate";
+		} else {
+			logger.error("Error al validar el Comprobante.");
+			throw new PortalException("Error al validar el Comprobante.");
+		}
 	}
 	
 	@RequestMapping(value="/fechaCierre", method = RequestMethod.POST)

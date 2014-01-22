@@ -21,6 +21,8 @@ public interface TicketService {
 	Ticket read(Ticket ticket, Establecimiento establecimiento);
 
 	boolean isTicketFacturado(Ticket ticket, Establecimiento establecimiento);
+	
+	boolean isTicketFacturado(String archivoOrigen);
 
 	List<String> readArticulosSinPrecio();
 
@@ -33,7 +35,7 @@ public interface TicketService {
 
 	void guardarTicketsCierreDia(Documento documento);
 
-	boolean isTicketProcesado(String archivoOrigen);
+	boolean isTicketFacturadoMostrador(String archivoOrigen);
 
 	void updateEstadoNcr(DocumentoSucursal documento);
 	

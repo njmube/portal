@@ -121,7 +121,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			if(documento instanceof DocumentoSucursal) {
 				Ticket ticketDB = null;
 				if(((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket() != null 
-						&& ((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket().equals(TipoEstadoTicket.GUARDADO_NCR)) {
+						&& ((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket().equals(TipoEstadoTicket.NCR_GENERADA)) {
 					ticketDB = null;
 				} else {
 					ticketDB = ticketService.read(((DocumentoSucursal) documento).getTicket(), documento.getEstablecimiento());

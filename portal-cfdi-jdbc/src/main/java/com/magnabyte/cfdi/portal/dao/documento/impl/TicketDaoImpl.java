@@ -136,9 +136,21 @@ public class TicketDaoImpl extends GenericJdbcDao
 	}
 	
 	@Override
+	public Ticket readByStatus(String archivoOrigen, TipoEstadoTicket estadoTicket) {
+		try {
+			return getJdbcTemplate().queryForObject(TicketSql.READ_BY_STATUS_FILENAME, MAPPER_TICKET, 
+					archivoOrigen,
+					estadoTicket.getId());
+		} catch (EmptyResultDataAccessException ex) {
+			logger.debug("El ticket no se ha encontrado");
+			return null;
+		}
+	}
+	
+	@Override
 	public int readProcesado(String archivoOrigen,
 			TipoEstadoTicket facturado, TipoEstadoTicket facturadoMostrador) {
-		return getJdbcTemplate().queryForObject(TicketSql.READ_PROCESADO, 
+		return getJdbcTemplate().queryForObject(TicketSql.READ_BY_STATUS_FILENAME, 
 				Integer.class, archivoOrigen, facturado.getId(), facturadoMostrador.getId());
 	}
 	

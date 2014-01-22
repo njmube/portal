@@ -89,9 +89,9 @@ public class DocumentoController {
 		return "redirect:/menu";
 	}
 
-	@RequestMapping(value = {"/reporte", "/portal/cfdi/reporte"})
-	public String reporte(@ModelAttribute Documento documento, ModelMap model,
-			HttpServletRequest request) {
+	@RequestMapping(value = {"/reporte/{filename}", "/portal/cfdi/reporte/{filename}"})
+	public String reporte(@ModelAttribute Documento documento, @PathVariable String filename, 
+			ModelMap model, HttpServletRequest request) {
 		logger.debug("Creando reporte");
 		Locale locale = new Locale("es", "MX");
 		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
@@ -115,7 +115,7 @@ public class DocumentoController {
 		model.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
 		model.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
 		model.put("objetoKey", comprobantes);
-		return "reporte";
+		return ("reporte");
 	}
 
 	@RequestMapping(value = {"/documentoXml", "/portal/cfdi/documentoXml"})
@@ -165,9 +165,9 @@ public class DocumentoController {
 		model.put("documento", documentoService.findById(documento));
 		
 		if (origin.equals("in")) {
-			return "redirect:/reporte";
+			return "redirect:/reporte/" + fileName;
 		} else {
-			return "redirect:/portal/cfdi/reporte";
+			return "redirect:/portal/cfdi/reporte/" + fileName;
 		}
 	}
 
