@@ -95,15 +95,13 @@ public class CfdiServiceImpl implements CfdiService {
 				documentoService.updateDocumentoXmlCfdi(documento);
 				documentoService.insertDocumentoCfdi(documento);
 				documentoService.insertDocumentoPendiente(documento, TipoEstadoDocumentoPendiente.ACUSE_PENDIENTE);
-				//FIXME separar logica
 				if(documento instanceof DocumentoSucursal) {
 //					ticketService.updateEstadoFacturado((DocumentoSucursal) documento);
 					if (((DocumentoSucursal) documento).isRequiereNotaCredito()) {
 						try {
 							generarDocumentoNcr(documento, idServicio);
 						} catch(PortalException ex) {
-							//FIXME validar continuidad
-							logger.debug("Ocurrio un error al generar la nota de credito");
+							logger.info("Ocurrio un error al generar la nota de credito {}", documento.getId());
 						}
 					}
 				}
@@ -127,8 +125,8 @@ public class CfdiServiceImpl implements CfdiService {
 					logger.debug("Sello y timbre obtenidos correctamente");
 					documentoService.deleteDocumentoPendiente(documentoPendiente);
 				} catch(PortalException ex) {
-					//FIXME validar continuidad
-					logger.debug("Se continua el proceso");
+					logger.info("Ocurrió un error al obtener el timbre pendiente del documento {}, se continua con el proceso."
+							, documentoPendiente.getId());
 				}
 			}
 		}
@@ -137,7 +135,7 @@ public class CfdiServiceImpl implements CfdiService {
 	private void generarDocumentoNcr(Documento documento, int idServicio) {
 		DocumentoSucursal documentoNcr = new DocumentoSucursal();
 		documentoNcr.setTicket(((DocumentoSucursal) documento).getTicket());
-		documentoNcr.getTicket().setTipoEstadoTicket(TipoEstadoTicket.GUARDADO_NCR);
+		documentoNcr.getTicket().setTipoEstadoTicket(TipoEstadoTicket.NCR_GENERADA);
 		
 		Cliente cliente = emisorService.readClienteVentasMostrador(documento.getEstablecimiento());
 		cliente.setRfc(rfcVentasMostrador);
@@ -157,10 +155,9 @@ public class CfdiServiceImpl implements CfdiService {
 			if (documentoWebService.timbrarDocumento(documentoNcr, idServicio)) {
 				documentoService.insertDocumentoCfdi(documentoNcr);
 				documentoService.insertDocumentoPendiente(documentoNcr, TipoEstadoDocumentoPendiente.ACUSE_PENDIENTE);
-				//FIXME validar estado ncr
-				if(documentoNcr instanceof DocumentoSucursal) {
-					ticketService.updateEstadoNcr((DocumentoSucursal) documentoNcr);
-				}
+//				if(documentoNcr instanceof DocumentoSucursal) {
+//					ticketService.updateEstadoNcr((DocumentoSucursal) documentoNcr);
+//				}
 			}
 		}
 	}
