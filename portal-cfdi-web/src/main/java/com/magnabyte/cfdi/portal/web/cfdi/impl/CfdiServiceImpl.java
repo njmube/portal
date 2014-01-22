@@ -75,17 +75,16 @@ public class CfdiServiceImpl implements CfdiService {
 	@Override
 	public void generarDocumento(Documento documento) {
 		logger.debug("cfdiService...");
-		if(documentoXmlService.isValidComprobanteXml(documento.getComprobante())) {
-			int idServicio = documentoWebService.obtenerIdServicio();
-			CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
-			Calendar fechaFacturacion = Calendar.getInstance();
-			documento.setFechaFacturacion(fechaFacturacion.getTime());
-			documentoService.guardarDocumento(documento);
-			if(documento.isVentasMostrador()) {
-				ticketService.guardarTicketsCierreDia(documento);
-			}
-			sellarYTimbrarComprobante(documento, idServicio, certificado);
+		
+		int idServicio = documentoWebService.obtenerIdServicio();
+		CertificadoDigital certificado = certificadoService.readVigente(documento.getComprobante());
+		Calendar fechaFacturacion = Calendar.getInstance();
+		documento.setFechaFacturacion(fechaFacturacion.getTime());
+		documentoService.guardarDocumento(documento);
+		if(documento.isVentasMostrador()) {
+			ticketService.guardarTicketsCierreDia(documento);
 		}
+		sellarYTimbrarComprobante(documento, idServicio, certificado);
 	}
 
 	@Override
@@ -96,10 +95,16 @@ public class CfdiServiceImpl implements CfdiService {
 				documentoService.updateDocumentoXmlCfdi(documento);
 				documentoService.insertDocumentoCfdi(documento);
 				documentoService.insertDocumentoPendiente(documento, TipoEstadoDocumentoPendiente.ACUSE_PENDIENTE);
+				//FIXME separar logica
 				if(documento instanceof DocumentoSucursal) {
 //					ticketService.updateEstadoFacturado((DocumentoSucursal) documento);
 					if (((DocumentoSucursal) documento).isRequiereNotaCredito()) {
-						generarDocumentoNcr(documento, idServicio);
+						try {
+							generarDocumentoNcr(documento, idServicio);
+						} catch(PortalException ex) {
+							//FIXME validar continuidad
+							logger.debug("Ocurrio un error al generar la nota de credito");
+						}
 					}
 				}
 			}
@@ -115,11 +120,16 @@ public class CfdiServiceImpl implements CfdiService {
 			int idServicio = documentoWebService.obtenerIdServicio();
 			
 			for(Documento documentoPendiente : documentosTimbrePendientes) {
-				documentoPendiente = documentoService.findById(documentoPendiente);
-				CertificadoDigital certificado = certificadoService.readVigente(documentoPendiente.getComprobante());
-				sellarYTimbrarComprobante(documentoPendiente, idServicio, certificado);
-				logger.debug("Sello y timbre obtenidos correctamente");
-				documentoService.deleteDocumentoPendiente(documentoPendiente);
+				try {
+					documentoPendiente = documentoService.findById(documentoPendiente);
+					CertificadoDigital certificado = certificadoService.readVigente(documentoPendiente.getComprobante());
+					sellarYTimbrarComprobante(documentoPendiente, idServicio, certificado);
+					logger.debug("Sello y timbre obtenidos correctamente");
+					documentoService.deleteDocumentoPendiente(documentoPendiente);
+				} catch(PortalException ex) {
+					//FIXME validar continuidad
+					logger.debug("Se continua el proceso");
+				}
 			}
 		}
 	}
@@ -147,6 +157,7 @@ public class CfdiServiceImpl implements CfdiService {
 			if (documentoWebService.timbrarDocumento(documentoNcr, idServicio)) {
 				documentoService.insertDocumentoCfdi(documentoNcr);
 				documentoService.insertDocumentoPendiente(documentoNcr, TipoEstadoDocumentoPendiente.ACUSE_PENDIENTE);
+				//FIXME validar estado ncr
 				if(documentoNcr instanceof DocumentoSucursal) {
 					ticketService.updateEstadoNcr((DocumentoSucursal) documentoNcr);
 				}
@@ -165,6 +176,8 @@ public class CfdiServiceImpl implements CfdiService {
 		
 		if (hora > horaCierre) {
 			
+			List<Documento> documentosAProcesar = new ArrayList<Documento>(); 
+			
 			ticketService.closeOfDay(establecimiento, 
 					FechasUtils.specificStringFormatDate(fechaCierre, FechasUtils.formatddMMyyyyHyphen, 
 					FechasUtils.formatyyyyMMdd), 
@@ -174,7 +187,7 @@ public class CfdiServiceImpl implements CfdiService {
 			
 			logger.debug("Antes " + ventas.size());
 			
-			prepararDocumentoNcr(devoluciones);
+			List<Documento> listaNotasDeCredito = prepararDocumentosNcr(devoluciones, establecimiento);
 			
 			filtraDevolucionesVentas(ventas, devoluciones, ventasDevueltas);
 			
@@ -186,15 +199,20 @@ public class CfdiServiceImpl implements CfdiService {
 			cliente.setRfc(rfcVentasMostrador);
 			int domicilioFiscal = cliente.getDomicilios().get(0).getId();
 			Comprobante comprobante = comprobanteService.obtenerComprobantePor(cliente, ticketVentasMostrador, domicilioFiscal, establecimiento, TipoDocumento.FACTURA);
-			Documento documento = new Documento();
-			documento.setEstablecimiento(establecimiento);
-			documento.setCliente(cliente);
-			documento.setComprobante(comprobante);
-			documento.setTipoDocumento(TipoDocumento.FACTURA);
-			documento.setVentas(ventas);
-			documento.setVentasMostrador(true);
+			Documento documentoVentasMostardor = new Documento();
+			documentoVentasMostardor.setEstablecimiento(establecimiento);
+			documentoVentasMostardor.setCliente(cliente);
+			documentoVentasMostardor.setComprobante(comprobante);
+			documentoVentasMostardor.setTipoDocumento(TipoDocumento.FACTURA);
+			documentoVentasMostardor.setVentas(ventas);
+			documentoVentasMostardor.setVentasMostrador(true);
 			
-			generarDocumento(documento);
+			documentosAProcesar.add(documentoVentasMostardor);
+			documentosAProcesar.addAll(listaNotasDeCredito);
+			
+			for(Documento documento : documentosAProcesar) {
+				generarDocumento(documento);
+			}
 			
 		} else {
 			logger.error("El cierre del dia actual es posible realizarlo hasta despues del cierre de la tienda");
@@ -202,7 +220,8 @@ public class CfdiServiceImpl implements CfdiService {
 		}
 	}
 	
-	private void prepararDocumentoNcr(List<Ticket> devoluciones) {
+	private List<Documento> prepararDocumentosNcr(List<Ticket> devoluciones, Establecimiento establecimiento) {
+		List<Documento> listaNotasDeCredito = new ArrayList<Documento>();
 		Set<String> archivosOrigenDevolucion = new HashSet<String>();
 		
 		for(Ticket devolucion : devoluciones) {
@@ -214,12 +233,29 @@ public class CfdiServiceImpl implements CfdiService {
 		for (Iterator<String> it = archivosOrigenDevolucion.iterator(); it.hasNext(); ){
 			String archivo = it.next();
 			if(ticketService.isTicketFacturado(archivo)){
-				
+				listaNotasDeCredito.add(obtenerDocumentoNcr(devoluciones, archivo, establecimiento, TipoEstadoTicket.FACTURADO));
 			} else if (ticketService.isTicketFacturadoMostrador(archivo)) {
-				
+				listaNotasDeCredito.add(obtenerDocumentoNcr(devoluciones, archivo, establecimiento, TipoEstadoTicket.FACTURADO_MOSTRADOR));
 			}
 		}
+		
+		return listaNotasDeCredito;
 	}	
+
+	private Documento obtenerDocumentoNcr(List<Ticket> devoluciones, 
+			String archivo, Establecimiento establecimiento, TipoEstadoTicket estadoTicket) {
+		//FIXME desarrollar ncr
+		Ticket ticketDevuelto = ticketService.crearTicketVentasMostrador(devoluciones, establecimiento);
+		Cliente cliente = emisorService.readClienteVentasMostrador(establecimiento);
+		int domicilioFiscal = cliente.getDomicilios().get(0).getId();
+		Comprobante comprobante = comprobanteService.obtenerComprobantePor(cliente, ticketDevuelto, domicilioFiscal, establecimiento, TipoDocumento.NOTA_CREDITO);
+		Documento documentoNcr = new Documento();
+		documentoNcr.setEstablecimiento(establecimiento);
+		documentoNcr.setCliente(cliente);
+		documentoNcr.setComprobante(comprobante);
+		documentoNcr.setTipoDocumento(TipoDocumento.NOTA_CREDITO);
+		return documentoNcr;
+	}
 
 	private void filtraDevolucionesVentas(List<Ticket> ventas,
 			List<Ticket> devoluciones, List<Ticket> ventasDevueltas) {

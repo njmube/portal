@@ -19,6 +19,7 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
@@ -71,8 +72,13 @@ public class CorporativoController {
 	
 	@RequestMapping("/facturaCorp/confirmarDatosFacturacion")
 	public String confirmarDatosFacturacion(@ModelAttribute Documento documento, ModelMap model) {
-		model.put("comprobante", documento.getComprobante());
-		return "corporativo/facturaValidate";
+		if(documentoXmlService.isValidComprobanteXml(documento.getComprobante())) {
+			model.put("comprobante", documento.getComprobante());
+			return "corporativo/facturaValidate";
+		} else {
+			logger.error("Error al validar el Comprobante.");
+			throw new PortalException("Error al validar el Comprobante.");
+		}
 	}
 	
 }
