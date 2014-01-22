@@ -28,23 +28,26 @@ public class AutorizacionCierreServiceImpl implements AutorizacionCierreService 
 		
 		Usuario usrBd = usuarioService.getUsuarioByEstablecimiento(usuario);
 		
-		//FIXME nullpointer
-		if(usrBd.getEstatus().getId() != EstatusUsuario.INACTIVO.getId()) {
-			if(usuario.getUsuario().equals(usrBd.getUsuario()) && 
-					!usuario.getPassword().equals(usrBd.getPassword())) {
-				throw new PortalException("El password proporcionado es incorrecto.");
-			} else if (!usuario.getUsuario().equals(usrBd.getUsuario()) && 
-					usuario.getPassword().equals(usrBd.getPassword())) {
-				throw new PortalException("El usuario proporcionado es incorrecto.");			
-			} else if (!usuario.getUsuario().equals(usrBd.getUsuario()) &&
-					!usuario.getPassword().equals(usrBd.getPassword())) {
-				throw new PortalException("El usuario y password proporcionado son incorrectos.");
-			} else {
-				return true;
+		if (usrBd != null) {
+			if(usrBd.getEstatus().getId() != EstatusUsuario.INACTIVO.getId()) {
+				if(usuario.getUsuario().equals(usrBd.getUsuario()) && 
+						!usuario.getPassword().equals(usrBd.getPassword())) {
+					throw new PortalException("El password proporcionado es incorrecto.");
+				} else if (!usuario.getUsuario().equals(usrBd.getUsuario()) && 
+						usuario.getPassword().equals(usrBd.getPassword())) {
+					throw new PortalException("El usuario proporcionado es incorrecto.");			
+				} else if (!usuario.getUsuario().equals(usrBd.getUsuario()) &&
+						!usuario.getPassword().equals(usrBd.getPassword())) {
+					throw new PortalException("El usuario y password proporcionado son incorrectos.");
+				} else {
+					return true;
+					}
+				} else {
+				throw new PortalException("No se pudo autorizar el cierre,"
+						+ " el usuario esta inactivo.");
 			}
 		} else {
-			throw new PortalException("No se pudo autorizar el cierre,"
-					+ " el usuario esta inactivo.");
+			throw new PortalException("No existe el usuario en la sucursal");
 		}
 	}
 
