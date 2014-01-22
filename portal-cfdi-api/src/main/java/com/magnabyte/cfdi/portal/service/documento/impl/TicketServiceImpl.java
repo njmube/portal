@@ -382,7 +382,7 @@ public class TicketServiceImpl implements TicketService {
 
 	@Override
 	public String recibeTicketsWsdl(ListaTickets tickets) {
-		return "Respuesta success: " + tickets.getTickets().size();
+		return "Respuesta success: " + tickets.getVentas().size();
 	}
 
 	@Override

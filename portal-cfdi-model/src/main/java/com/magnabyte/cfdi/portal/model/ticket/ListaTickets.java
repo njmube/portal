@@ -13,23 +13,30 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "ticketList")
 public class ListaTickets {
 
-	private List<Ticket> tickets;
+	private List<Ticket> ventas;
 	
-	public ListaTickets(List<Ticket> tickets) {
-		this.tickets = tickets;
-	}
+	private List<Ticket> devoluciones;
 	
 	public ListaTickets() {
 		
 	}
 
-	@XmlElement(name = "ticket")
-	public List<Ticket> getTickets() {
-		return tickets;
+	@XmlElement(name = "ventas")
+	public List<Ticket> getVentas() {
+		return ventas;
 	}
 
-	public void setTickets(List<Ticket> tickets) {
-		this.tickets = tickets;
+	public void setVentas(List<Ticket> ventas) {
+		this.ventas = ventas;
+	}
+
+	@XmlElement(name = "devoluciones")
+	public List<Ticket> getDevoluciones() {
+		return devoluciones;
+	}
+
+	public void setDevoluciones(List<Ticket> devoluciones) {
+		this.devoluciones = devoluciones;
 	}
 	
 	
