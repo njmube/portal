@@ -28,6 +28,7 @@ import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.ListaTickets;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
+import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.service.certificado.CertificadoService;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
@@ -177,15 +178,15 @@ public class CfdiServiceImpl implements CfdiService {
 		int hora = calendar.get(Calendar.HOUR_OF_DAY);
 		
 		if (hora > horaCierre) {
-			
+			String fechaCierre = "20131207";
 			List<Documento> documentosAProcesar = new ArrayList<Documento>(); 
 			
 			establecimiento = establecimientoService.readByClave(establecimiento);
 			
-//			ticketService.closeOfDay(establecimiento, 
-//					FechasUtils.specificStringFormatDate(fechaCierre, FechasUtils.formatddMMyyyyHyphen, 
-//					FechasUtils.formatyyyyMMdd), 
-//					ventas, devoluciones);
+			ticketService.closeOfDay(establecimiento, 
+					FechasUtils.specificStringFormatDate(fechaCierre, FechasUtils.formatddMMyyyyHyphen, 
+					FechasUtils.formatyyyyMMdd), 
+					ventas, devoluciones);
 			
 			ventas = tickets.getVentas();
 			devoluciones = tickets.getDevoluciones();
@@ -194,7 +195,7 @@ public class CfdiServiceImpl implements CfdiService {
 			
 			logger.debug("Antes " + ventas.size());
 			
-//			List<Documento> listaNotasDeCredito = prepararDocumentosNcr(devoluciones, establecimiento);
+			List<Documento> listaNotasDeCredito = prepararDocumentosNcr(devoluciones, establecimiento);
 			
 			filtraDevolucionesVentas(ventas, devoluciones, ventasDevueltas);
 			
@@ -215,7 +216,7 @@ public class CfdiServiceImpl implements CfdiService {
 			documentoVentasMostardor.setVentasMostrador(true);
 			
 			documentosAProcesar.add(documentoVentasMostardor);
-//			documentosAProcesar.addAll(listaNotasDeCredito);
+			documentosAProcesar.addAll(listaNotasDeCredito);
 			
 			for(Documento documento : documentosAProcesar) {
 				generarDocumento(documento);

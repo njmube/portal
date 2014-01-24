@@ -118,7 +118,8 @@ public class SucursalController {
 	@RequestMapping("/datosFacturacion/{idDomicilio}")
 	public String datosFacturacion(@ModelAttribute Establecimiento establecimiento, @ModelAttribute Cliente cliente, 
 			@ModelAttribute Ticket ticket, @PathVariable Integer idDomicilio, ModelMap model) {
-		Comprobante comprobante = comprobanteService.obtenerComprobantePor(cliente, ticket, idDomicilio, establecimiento, TipoDocumento.FACTURA);
+		Comprobante comprobante = comprobanteService
+				.obtenerComprobantePor(cliente, ticket, idDomicilio, establecimiento, TipoDocumento.FACTURA);
 		DocumentoSucursal documento = new DocumentoSucursal();
 		documento.setCliente(cliente);
 		documento.setTicket(ticket);
