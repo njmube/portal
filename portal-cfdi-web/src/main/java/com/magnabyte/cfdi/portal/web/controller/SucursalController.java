@@ -152,6 +152,7 @@ public class SucursalController {
 		return json.toString();
 	}
 	
+	//FIXME Validar si se quita
 	@RequestMapping(value="/cierre", method = RequestMethod.POST)
 	public String cierre(@RequestParam String fechaCierre, @ModelAttribute Usuario usuario,
 			@ModelAttribute Establecimiento establecimiento, ModelMap model) {		
@@ -162,7 +163,6 @@ public class SucursalController {
 		
 		try {
 			autCierreService.autorizar(usuario);
-			//FIXME Validar si se quita
 			cfdiService.closeOfDay(establecimiento, null);
 		} catch (PortalException ex) {
 			model.put("error", true);
