@@ -4,13 +4,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.magnabyte.cfdi.portal.model.establecimiento.factory.EstablecimientoFactory;
 import com.magnabyte.cfdi.portal.model.ticket.ListaTickets;
+import com.magnabyte.cfdi.portal.model.utils.StringUtils;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
+import com.magnabyte.cfdi.portal.web.cfdi.CfdiService;
 
 @Controller
 public class TicketController {
@@ -20,19 +24,29 @@ public class TicketController {
 	    
 	@Autowired
     private TicketService ticketService;
+	
+	@Autowired
+	private CfdiService cfdiService;
 	 
 	@RequestMapping(value = "/portal/cfdi/tickets", method = RequestMethod.POST)
 	@ResponseBody
-	//FIXME Cambiar a regresar un List<Ticket>
 	public String listaTickets(@RequestBody ListaTickets tickets) {
-		logger.debug("Entrando al metodo que recibe los tickets");
+		logger.debug("Entrando al metodo que recibe los tickets.");
+		
+		cfdiService.closeOfDay(EstablecimientoFactory
+				.newInstanceClave(StringUtils.formatTicketClaveSucursal(
+						tickets.getClaveEstablecimiento())), tickets);
 		
 		return ticketService.recibeTicketsWsdl(tickets); 
 	}
 	
-	@RequestMapping(value = "/portal/cfdi/hola", method = RequestMethod.POST)
+	@RequestMapping(value = "/portal/cfdi/fechaCierre/{noEstablecimiento}")
 	@ResponseBody
-	public String saludo() {
-		return ticketService.hola();
+	public String fechaCierre(@PathVariable String noEstablecimiento) {
+		
+		logger.debug("Entrando al metodo que recibe el no. de establecimiento.");
+		logger.debug("Recibiendo establecimiento: {}", noEstablecimiento);
+		
+		return ticketService.fechaCierre(noEstablecimiento);
 	}
 }

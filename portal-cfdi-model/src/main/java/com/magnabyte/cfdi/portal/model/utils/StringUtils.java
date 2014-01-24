@@ -1,11 +1,15 @@
 package com.magnabyte.cfdi.portal.model.utils;
 
 import java.io.File;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 
 /**
  * Clase que representa las utilerias para formato de cadenas
@@ -112,5 +116,16 @@ public class StringUtils {
 		String path = formatter.format(date);
 		
         return path;
+	}
+	
+	public static String formatTicketClaveSucursal(String string) {
+		NumberFormat nf = new DecimalFormat("000");
+		Integer numeroSucursal = 0;
+		try {
+			numeroSucursal = Integer.valueOf(string);
+		} catch (NumberFormatException nfe) {
+			logger.error("El numero de sucursal es invalido:", nfe);
+		}
+		return nf.format(numeroSucursal);
 	}
 }

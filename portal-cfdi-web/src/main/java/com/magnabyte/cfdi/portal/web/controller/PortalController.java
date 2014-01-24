@@ -24,6 +24,7 @@ import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
+import com.magnabyte.cfdi.portal.model.utils.StringUtils;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
@@ -76,7 +77,8 @@ public class PortalController {
 			return "portal/buscaTicket";
 		}
 		logger.debug("controller portal cliente--{}", ticket);
-		establecimiento.setClave(ticketService.formatTicketClave(ticket));
+		establecimiento.setClave(StringUtils.formatTicketClaveSucursal(
+				ticket.getTransaccion().getTransaccionHeader().getIdSucursal()));
 		establecimiento = establecimientoService.readByClave(establecimiento);
 		logger.debug("establecimiento {}", establecimiento);
 		if (ticketService.ticketExists(ticket, establecimiento)) {

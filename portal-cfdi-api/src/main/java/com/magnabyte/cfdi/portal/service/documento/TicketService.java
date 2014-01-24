@@ -14,7 +14,7 @@ public interface TicketService {
 	
 	boolean ticketExists(Ticket ticket, Establecimiento establecimiento);
 
-	String formatTicketClave(Ticket ticket);
+//	String formatTicketClaveSucursal(Ticket ticket);
 
 	void updateEstadoFacturado(DocumentoSucursal documento);
 
@@ -37,7 +37,7 @@ public interface TicketService {
 	
 	String recibeTicketsWsdl(ListaTickets tickets);
 	
-	String hola();
+	String fechaCierre(String noEstablecimiento);
 
 	Ticket readByDocumento(Documento documento);
 

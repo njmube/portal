@@ -162,7 +162,8 @@ public class SucursalController {
 		
 		try {
 			autCierreService.autorizar(usuario);
-			cfdiService.closeOfDay(fechaCierre, establecimiento);
+			//FIXME Validar si se quita
+			cfdiService.closeOfDay(establecimiento, null);
 		} catch (PortalException ex) {
 			model.put("error", true);
 			model.put("messageError", ex.getMessage());
