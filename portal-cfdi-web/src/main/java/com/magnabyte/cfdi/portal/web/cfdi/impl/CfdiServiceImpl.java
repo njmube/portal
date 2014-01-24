@@ -185,7 +185,7 @@ public class CfdiServiceImpl implements CfdiService {
 			
 			logger.debug("Antes " + ventas.size());
 			
-			List<Documento> listaNotasDeCredito = prepararDocumentosNcr(devoluciones, establecimiento);
+//			List<Documento> listaNotasDeCredito = prepararDocumentosNcr(devoluciones, establecimiento);
 			
 			filtraDevolucionesVentas(ventas, devoluciones, ventasDevueltas);
 			
@@ -206,7 +206,7 @@ public class CfdiServiceImpl implements CfdiService {
 			documentoVentasMostardor.setVentasMostrador(true);
 			
 			documentosAProcesar.add(documentoVentasMostardor);
-			documentosAProcesar.addAll(listaNotasDeCredito);
+//			documentosAProcesar.addAll(listaNotasDeCredito);
 			
 			for(Documento documento : documentosAProcesar) {
 				generarDocumento(documento);
