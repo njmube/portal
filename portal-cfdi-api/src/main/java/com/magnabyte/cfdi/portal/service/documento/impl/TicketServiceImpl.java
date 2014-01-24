@@ -3,8 +3,6 @@ package com.magnabyte.cfdi.portal.service.documento.impl;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +30,7 @@ import com.magnabyte.cfdi.portal.dao.documento.TicketDao;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.establecimiento.factory.EstablecimientoFactory;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.ListaTickets;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
@@ -44,8 +43,10 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDescuent
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.TransaccionHeader;
 import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
 import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
+import com.magnabyte.cfdi.portal.model.utils.StringUtils;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
+import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 
 @Service("ticketService")
@@ -59,6 +60,9 @@ public class TicketServiceImpl implements TicketService {
 	
 	@Autowired
 	private DocumentoService documentoService;
+	
+	@Autowired
+	private EstablecimientoService establecimientoService;
 	
 	@Autowired
 	private Unmarshaller unmarshaller;
@@ -318,17 +322,17 @@ public class TicketServiceImpl implements TicketService {
 		return ticketDao.readArticulosSinPrecio();
 	}
 
-	@Override
-	public String formatTicketClave(Ticket ticket) {
-		NumberFormat nf = new DecimalFormat("000");
-		Integer numeroSucursal = 0;
-		try {
-			numeroSucursal = Integer.valueOf(ticket.getTransaccion().getTransaccionHeader().getIdSucursal());
-		} catch (NumberFormatException nfe) {
-			logger.error("El numero de sucursal es invalido:", nfe);
-		}
-		return nf.format(numeroSucursal);
-	}
+//	@Override
+//	public String formatTicketClaveSucursal(Ticket ticket) {
+//		NumberFormat nf = new DecimalFormat("000");
+//		Integer numeroSucursal = 0;
+//		try {
+//			numeroSucursal = Integer.valueOf(ticket.getTransaccion().getTransaccionHeader().getIdSucursal());
+//		} catch (NumberFormatException nfe) {
+//			logger.error("El numero de sucursal es invalido:", nfe);
+//		}
+//		return nf.format(numeroSucursal);
+//	}
 	
 	@Override
 	public Ticket crearTicketVentasMostrador(List<Ticket> ventas,
@@ -387,11 +391,19 @@ public class TicketServiceImpl implements TicketService {
 
 	@Override
 	public String recibeTicketsWsdl(ListaTickets tickets) {
+		
 		return "Respuesta success: " + tickets.getVentas().size();
 	}
 
 	@Override
-	public String hola() {
-		return "Hola";
+	public String fechaCierre(String noEstablecimiento) {
+		Establecimiento establecimiento =  
+				EstablecimientoFactory.newInstanceClave(StringUtils.
+						formatTicketClaveSucursal(noEstablecimiento));
+		
+		establecimiento = establecimientoService.readByClave(establecimiento);
+		String fechaCierre = establecimientoService.readFechaCierreById(establecimiento);
+		
+		return fechaCierre;
 	}
 }

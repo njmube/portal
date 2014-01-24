@@ -25,14 +25,15 @@ import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
+import com.magnabyte.cfdi.portal.model.ticket.ListaTickets;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
-import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.service.certificado.CertificadoService;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.emisor.EmisorService;
+import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.web.cfdi.CfdiService;
 import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
@@ -62,6 +63,9 @@ public class CfdiServiceImpl implements CfdiService {
 	
 	@Autowired
 	private DocumentoXmlService documentoXmlService;
+	
+	@Autowired
+	private EstablecimientoService establecimientoService;
 	
 	@Value("${hora.inicio}")
 	private int horaInicio;
@@ -164,7 +168,7 @@ public class CfdiServiceImpl implements CfdiService {
 
 	@Transactional
 	@Override
-	public void closeOfDay(String fechaCierre, Establecimiento establecimiento) {
+	public void closeOfDay(Establecimiento establecimiento, ListaTickets tickets) {
 		List<Ticket> ventas = new ArrayList<Ticket>();
 		List<Ticket> ventasDevueltas = new ArrayList<Ticket>();
 		List<Ticket> devoluciones = new ArrayList<Ticket>();
@@ -175,10 +179,15 @@ public class CfdiServiceImpl implements CfdiService {
 			
 			List<Documento> documentosAProcesar = new ArrayList<Documento>(); 
 			
-			ticketService.closeOfDay(establecimiento, 
-					FechasUtils.specificStringFormatDate(fechaCierre, FechasUtils.formatddMMyyyyHyphen, 
-					FechasUtils.formatyyyyMMdd), 
-					ventas, devoluciones);
+			establecimiento = establecimientoService.readByClave(establecimiento);
+			
+//			ticketService.closeOfDay(establecimiento, 
+//					FechasUtils.specificStringFormatDate(fechaCierre, FechasUtils.formatddMMyyyyHyphen, 
+//					FechasUtils.formatyyyyMMdd), 
+//					ventas, devoluciones);
+			
+			ventas = tickets.getVentas();
+			devoluciones = tickets.getDevoluciones();
 			
 			logger.debug("devoluciones {}", devoluciones.size());
 			

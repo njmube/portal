@@ -14,6 +14,12 @@ public class EstablecimientoFactory {
 		return establecimiento;
 	}
 	
+	public static Establecimiento newInstanceClave(String clave) {
+		Establecimiento establecimiento = newInstance();
+		establecimiento.setClave(clave);
+		return establecimiento;
+	}
+	
 	public static Establecimiento newInstance (String id) {
 		return newInstance(Integer.parseInt(id));
 	}

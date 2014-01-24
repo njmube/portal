@@ -29,7 +29,7 @@ public class Ticket {
         @XmlTransient
         protected TipoEstadoTicket tipoEstadoTicket;
         
-        @XmlTransient
+        @XmlElement(name = "fileName")
         protected String nombreArchivo;
         
         public Integer getId() {

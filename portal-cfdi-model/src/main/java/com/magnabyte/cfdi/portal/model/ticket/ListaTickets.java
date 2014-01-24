@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "ticketList")
 public class ListaTickets {
 
+	private String claveEstablecimiento;
+	
 	private List<Ticket> ventas;
 	
 	private List<Ticket> devoluciones;
@@ -37,6 +39,15 @@ public class ListaTickets {
 
 	public void setDevoluciones(List<Ticket> devoluciones) {
 		this.devoluciones = devoluciones;
+	}
+
+	@XmlElement(name = "establecimiento")
+	public String getClaveEstablecimiento() {
+		return claveEstablecimiento;
+	}
+
+	public void setClaveEstablecimiento(String claveEstablecimiento) {
+		this.claveEstablecimiento = claveEstablecimiento;
 	}
 	
 	
