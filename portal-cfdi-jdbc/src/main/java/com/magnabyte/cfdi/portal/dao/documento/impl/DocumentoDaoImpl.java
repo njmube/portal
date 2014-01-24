@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLXML;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -26,10 +27,12 @@ import org.springframework.stereotype.Repository;
 
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
 import com.magnabyte.cfdi.portal.dao.cliente.sql.ClienteSql;
+import com.magnabyte.cfdi.portal.dao.cliente.sql.DomicilioSql;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
+import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
@@ -160,6 +163,31 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	}
 	
 	@Override
+	public Cliente readClienteFromDocumento(Documento documentoOrigen) {
+		try {
+			return getJdbcTemplate().queryForObject(DocumentoSql.READ_CLIENTE_FROM_DOC, new RowMapper<Cliente>() {
+				@Override
+				public Cliente mapRow(ResultSet rs, int rowNum)
+						throws SQLException {
+					Cliente cliente = new Cliente();
+					DomicilioCliente domicilioCliente = new DomicilioCliente();
+					List<DomicilioCliente> domicilios = new ArrayList<DomicilioCliente>();
+					
+					cliente.setId(rs.getInt(ClienteSql.ID_CLIENTE));
+					cliente.setRfc(rs.getString(ClienteSql.RFC));
+					cliente.setNombre(rs.getString(ClienteSql.NOMBRE));
+					domicilioCliente.setId(rs.getInt(ClienteSql.ID_DOM_CLIENTE));
+					domicilios.add(domicilioCliente);
+					cliente.setDomicilios(domicilios);
+					return cliente;
+				}
+			}, documentoOrigen.getId());
+		} catch (EmptyResultDataAccessException ex) {
+			return null;
+		}
+	}
+	
+	@Override
 	public Documento readDocumentoPendiente(Documento documento, TipoEstadoDocumentoPendiente estadoDocumento) {
 		try {
 			return getJdbcTemplate().queryForObject(DocumentoSql.READ_DOC_BY_ID_AND_ESTADO, new RowMapper<Documento>() {
@@ -174,11 +202,6 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		} catch (EmptyResultDataAccessException ex) {
 			return null;
 		}
-	}
-	
-	@Override
-	public void deleteFromAcusePendiente(Documento documento) {
-		getJdbcTemplate().update(DocumentoSql.DELETE_DOCUMENTO_PENDIENTE, documento.getId());
 	}
 	
 	@Override
@@ -404,8 +427,10 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	}
 	
 	@Override
-	public void deletedDocumentoPendiente(Documento documento) {		
-		getJdbcTemplate().update(DocumentoSql.DELETE_DOCUMENTO_PENDIENTE, documento.getId());
+	public void deletedDocumentoPendiente(Documento documento, 
+			TipoEstadoDocumentoPendiente estadoDocumentoPendiente) {		
+		getJdbcTemplate().update(DocumentoSql.DELETE_DOCUMENTO_PENDIENTE_BY_STATUS, 
+				documento.getId(), estadoDocumentoPendiente.getId());
 	}
 	
 	@Override

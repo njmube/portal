@@ -300,18 +300,18 @@ public class TicketServiceImpl implements TicketService {
 		return ticketDB != null;
 	}
 	
-	@Transactional(readOnly = true)
 	@Override
-	public boolean isTicketFacturado(String archivoOrigen) {
-		Ticket ticketDB = ticketDao.readByStatus(archivoOrigen, TipoEstadoTicket.FACTURADO);
-		return ticketDB != null;
-	}
-	
-	@Transactional(readOnly = true)
-	@Override
-	public boolean isTicketFacturadoMostrador(String archivoOrigen) {
-		Ticket ticketDB = ticketDao.readByStatus(archivoOrigen, TipoEstadoTicket.FACTURADO_MOSTRADOR);
-		return ticketDB != null;
+	public DocumentoSucursal readDocFromTicket(String archivoOrigen) {
+		DocumentoSucursal documentoOrigen = null;
+		documentoOrigen = ticketDao.readDocByStatus(archivoOrigen, TipoEstadoTicket.FACTURADO);
+		if (documentoOrigen != null) {
+			return documentoOrigen;
+		}
+		documentoOrigen = ticketDao.readDocByStatus(archivoOrigen, TipoEstadoTicket.FACTURADO_MOSTRADOR);
+		if (documentoOrigen != null) {
+			return documentoOrigen;
+		}
+		return documentoOrigen;
 	}
 	
 	@Transactional(readOnly = true)
@@ -387,6 +387,12 @@ public class TicketServiceImpl implements TicketService {
 		ticketVentasMostrador.getTransaccion().getPartidasDescuentos().add(descuento);
 		
 		return ticketVentasMostrador;
+	}
+	
+	@Override
+	public Ticket crearTicketDevolucion(Documento documentoOrigen,
+			List<Ticket> devoluciones, Establecimiento establecimiento) {
+		return null;
 	}
 
 	@Override

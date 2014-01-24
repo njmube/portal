@@ -22,8 +22,6 @@ public interface TicketService {
 
 	boolean isTicketFacturado(Ticket ticket, Establecimiento establecimiento);
 	
-	boolean isTicketFacturado(String archivoOrigen);
-
 	List<String> readArticulosSinPrecio();
 
 	void closeOfDay(Establecimiento establecimiento, String fechaCierre, List<Ticket> ventas, List<Ticket> devoluciones);
@@ -35,8 +33,6 @@ public interface TicketService {
 
 	void guardarTicketsCierreDia(Documento documento);
 
-	boolean isTicketFacturadoMostrador(String archivoOrigen);
-
 	void updateEstadoNcr(DocumentoSucursal documento);
 	
 	String recibeTicketsWsdl(ListaTickets tickets);
@@ -44,5 +40,10 @@ public interface TicketService {
 	String fechaCierre(String noEstablecimiento);
 
 	Ticket readByDocumento(Documento documento);
+
+	DocumentoSucursal readDocFromTicket(String archivoOrigen);
+
+	Ticket crearTicketDevolucion(Documento documentoOrigen,
+			List<Ticket> devoluciones, Establecimiento establecimiento);
 
 }

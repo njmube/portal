@@ -23,15 +23,13 @@ public interface DocumentoDao {
 	
 	List<Documento> getDocumentoByCliente(Cliente cliente);
 
-	void deleteFromAcusePendiente(Documento documento);
-
 	void updateDocumentoCliente(DocumentoSucursal documento);
 
 	List<Documento> obtenerDocumentosTimbrePendientes();
 
 	Documento read(Documento documento);
 
-	void deletedDocumentoPendiente(Documento documento);
+	void deletedDocumentoPendiente(Documento documento, TipoEstadoDocumentoPendiente estadoDocumentoPendiente);
 
 	Documento readDocumentoFolio(Documento documento);
 
@@ -44,5 +42,7 @@ public interface DocumentoDao {
 	Documento readDocumentoPendiente(Documento documento, TipoEstadoDocumentoPendiente estadoDocumento);
 
 	Documento readDocumentoFolioById(Documento documento);
+
+	Cliente readClienteFromDocumento(Documento documentoOrigen);
 
 }

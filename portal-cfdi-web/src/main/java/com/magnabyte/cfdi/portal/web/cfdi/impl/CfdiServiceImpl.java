@@ -115,6 +115,7 @@ public class CfdiServiceImpl implements CfdiService {
 	
 	@Override
 	public void recuperarTimbreDocumentosPendientes() {
+		logger.debug("iniciando proceso recuperacion de timbre");
 		List<Documento> documentosTimbrePendientes = new ArrayList<Documento>();
 		documentosTimbrePendientes = documentoService.obtenerDocumentosTimbrePendientes();		
 		
@@ -127,7 +128,7 @@ public class CfdiServiceImpl implements CfdiService {
 					CertificadoDigital certificado = certificadoService.readVigente(documentoPendiente.getComprobante());
 					sellarYTimbrarComprobante(documentoPendiente, idServicio, certificado);
 					logger.debug("Sello y timbre obtenidos correctamente");
-					documentoService.deleteDocumentoPendiente(documentoPendiente);
+					documentoService.deleteDocumentoPendiente(documentoPendiente, TipoEstadoDocumentoPendiente.TIMBRE_PENDIENTE);
 				} catch(PortalException ex) {
 					logger.info("Ocurrió un error al obtener el timbre pendiente del documento {}, se continua con el proceso."
 							, documentoPendiente.getId());
@@ -193,7 +194,7 @@ public class CfdiServiceImpl implements CfdiService {
 			
 			logger.debug("Antes " + ventas.size());
 			
-			List<Documento> listaNotasDeCredito = prepararDocumentosNcr(devoluciones, establecimiento);
+//			List<Documento> listaNotasDeCredito = prepararDocumentosNcr(devoluciones, establecimiento);
 			
 			filtraDevolucionesVentas(ventas, devoluciones, ventasDevueltas);
 			
@@ -214,7 +215,7 @@ public class CfdiServiceImpl implements CfdiService {
 			documentoVentasMostardor.setVentasMostrador(true);
 			
 			documentosAProcesar.add(documentoVentasMostardor);
-			documentosAProcesar.addAll(listaNotasDeCredito);
+//			documentosAProcesar.addAll(listaNotasDeCredito);
 			
 			for(Documento documento : documentosAProcesar) {
 				generarDocumento(documento);
@@ -237,31 +238,16 @@ public class CfdiServiceImpl implements CfdiService {
 		logger.debug(archivosOrigenDevolucion.toString());
 		
 		for (Iterator<String> it = archivosOrigenDevolucion.iterator(); it.hasNext(); ){
-			String archivo = it.next();
-			if(ticketService.isTicketFacturado(archivo)){
-				listaNotasDeCredito.add(obtenerDocumentoNcr(devoluciones, archivo, establecimiento, TipoEstadoTicket.FACTURADO));
-			} else if (ticketService.isTicketFacturadoMostrador(archivo)) {
-				listaNotasDeCredito.add(obtenerDocumentoNcr(devoluciones, archivo, establecimiento, TipoEstadoTicket.FACTURADO_MOSTRADOR));
+			String archivoOrigen = it.next();
+			Documento documentoNcr = documentoService.findByEstadoTicket(archivoOrigen, establecimiento, devoluciones);
+			
+			if (documentoNcr != null) {
+				listaNotasDeCredito.add(documentoNcr);
 			}
 		}
 		
 		return listaNotasDeCredito;
 	}	
-
-	private Documento obtenerDocumentoNcr(List<Ticket> devoluciones, 
-			String archivo, Establecimiento establecimiento, TipoEstadoTicket estadoTicket) {
-		//FIXME desarrollar ncr
-		Ticket ticketDevuelto = ticketService.crearTicketVentasMostrador(devoluciones, establecimiento);
-		Cliente cliente = emisorService.readClienteVentasMostrador(establecimiento);
-		int domicilioFiscal = cliente.getDomicilios().get(0).getId();
-		Comprobante comprobante = comprobanteService.obtenerComprobantePor(cliente, ticketDevuelto, domicilioFiscal, establecimiento, TipoDocumento.NOTA_CREDITO);
-		Documento documentoNcr = new Documento();
-		documentoNcr.setEstablecimiento(establecimiento);
-		documentoNcr.setCliente(cliente);
-		documentoNcr.setComprobante(comprobante);
-		documentoNcr.setTipoDocumento(TipoDocumento.NOTA_CREDITO);
-		return documentoNcr;
-	}
 
 	private void filtraDevolucionesVentas(List<Ticket> ventas,
 			List<Ticket> devoluciones, List<Ticket> ventasDevueltas) {

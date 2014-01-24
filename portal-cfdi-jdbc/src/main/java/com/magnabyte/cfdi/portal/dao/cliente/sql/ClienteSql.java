@@ -11,6 +11,7 @@ public class ClienteSql extends GenericSql {
 	public static String NOMBRE = "nombre";
 	public static String ID_CLIENTE = "id_cliente";
 	public static String TIPO = "tipo_persona";
+	public static String ID_DOM_CLIENTE = "id_domicilio_cliente";
 	
 	public static final String GET_ALL;
 	public static final String FIND_BY_ID;
