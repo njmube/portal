@@ -138,7 +138,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			//
 			documento.setXmlCfdiAcuse(response.getAcuse());
 			documentoService.saveAcuseCfdiXmlFile(documento);
-			documentoService.deleteFromAcusePendiente(documento);
+			documentoService.deleteDocumentoPendiente(documento, TipoEstadoDocumentoPendiente.ACUSE_PENDIENTE);
 		} else {
 			logger.debug("El webservice no devolvio el acuse");
 			logger.debug(response.getMessage());

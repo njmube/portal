@@ -16,8 +16,6 @@ public interface TicketDao {
 
 	Ticket readByStatus(Ticket ticket, Establecimiento establecimiento, TipoEstadoTicket estadoTicket);
 	
-	Ticket readByStatus(String archivoOrigen, TipoEstadoTicket estadoTicket);
-	
 	Ticket read(Ticket ticket, Establecimiento establecimiento);
 
 	List<String> readArticulosSinPrecio();
@@ -32,5 +30,8 @@ public interface TicketDao {
 			TipoEstadoTicket facturadoMostrador);
 
 	Ticket readByDocumento(Documento documento);
+
+	DocumentoSucursal readDocByStatus(String archivoOrigen,
+			TipoEstadoTicket estadoTicket);
 
 }

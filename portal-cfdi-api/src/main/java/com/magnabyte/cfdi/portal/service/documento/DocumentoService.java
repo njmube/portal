@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
+import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 
 public interface DocumentoService {
 	
@@ -19,8 +21,6 @@ public interface DocumentoService {
 
 	List<Documento> obtenerAcusesPendientes();
 
-	void deleteFromAcusePendiente(Documento documento);
-	
 	List<Documento> getDocumentos(Cliente cliente);
 
 	byte[] recuperarDocumentoArchivo(String fileName, Integer idEstablecimiento,
@@ -35,7 +35,7 @@ public interface DocumentoService {
 
 	Documento read(Documento documento);
 
-	void deleteDocumentoPendiente(Documento documento);
+	void deleteDocumentoPendiente(Documento documento, TipoEstadoDocumentoPendiente estadoDocumentoPendiente);
 
 	void updateDocumentoXmlCfdi(Documento documento);
 
@@ -49,5 +49,8 @@ public interface DocumentoService {
 	byte[] recuperarDocumentoPdf(Documento documento, ServletContext context);
 
 	void saveAcuseCfdiXmlFile(Documento documento);
+
+	Documento findByEstadoTicket(String archivoOrigen, Establecimiento establecimiento, 
+			List<Ticket> devoluciones);
 
 }

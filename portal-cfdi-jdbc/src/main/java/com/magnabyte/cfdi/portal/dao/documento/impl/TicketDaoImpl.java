@@ -136,9 +136,10 @@ public class TicketDaoImpl extends GenericJdbcDao
 	}
 	
 	@Override
-	public Ticket readByStatus(String archivoOrigen, TipoEstadoTicket estadoTicket) {
+	public DocumentoSucursal readDocByStatus(String archivoOrigen,
+			TipoEstadoTicket estadoTicket) {
 		try {
-			return getJdbcTemplate().queryForObject(TicketSql.READ_BY_STATUS_FILENAME, MAPPER_TICKET, 
+			return getJdbcTemplate().queryForObject(TicketSql.READ_BY_STATUS_FILENAME, MAPPER_DOC_TICKET, 
 					archivoOrigen,
 					estadoTicket.getId());
 		} catch (EmptyResultDataAccessException ex) {
@@ -153,6 +154,22 @@ public class TicketDaoImpl extends GenericJdbcDao
 		return getJdbcTemplate().queryForObject(TicketSql.READ_BY_STATUS_FILENAME, 
 				Integer.class, archivoOrigen, facturado.getId(), facturadoMostrador.getId());
 	}
+	
+	private static final RowMapper<DocumentoSucursal> MAPPER_DOC_TICKET = new RowMapper<DocumentoSucursal>() {
+		
+		@Override
+		public DocumentoSucursal mapRow(ResultSet rs, int rowNum)
+				throws SQLException {
+			DocumentoSucursal documento = new DocumentoSucursal();
+			Ticket ticket = new Ticket();
+			documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
+			ticket.setId(rs.getInt(TicketSql.ID_TICKET));
+			ticket.setTipoEstadoTicket(TipoEstadoTicket.getById(rs.getInt(TicketSql.ID_STATUS)));
+			ticket.setNombreArchivo(rs.getString(TicketSql.FILENAME));
+			documento.setTicket(ticket);
+			return documento;
+		}
+	};
 	
 	private static final RowMapper<Ticket> MAPPER_TICKET = new RowMapper<Ticket>() {
 		

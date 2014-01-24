@@ -40,6 +40,7 @@ import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
+import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.factory.EstablecimientoFactory;
@@ -49,9 +50,11 @@ import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.commons.EmailService;
+import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoDetalleService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
+import com.magnabyte.cfdi.portal.service.emisor.EmisorService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
@@ -75,6 +78,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	private DocumentoSerieDao documentoSerieDao;
 	
 	@Autowired
+	private ComprobanteService comprobanteService;
+	
+	@Autowired
 	private DocumentoDetalleService documentoDetalleService;
 	
 	@Autowired
@@ -88,6 +94,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private EmisorService emisorService;
 
 	private ResourceLoader resourceLoader;
 	
@@ -237,12 +246,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public List<Documento> obtenerAcusesPendientes() {
 		return documentoDao.obtenerAcusesPendientes();
-	}
-	
-	@Transactional
-	@Override
-	public void deleteFromAcusePendiente(Documento documento) {
-		documentoDao.deleteFromAcusePendiente(documento);
 	}
 	
 	@Transactional(readOnly = true)
@@ -497,12 +500,49 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 		return documentoBD;
 	}
+	
+	@Override
+	public Documento findByEstadoTicket(String archivoOrigen, 
+			Establecimiento establecimiento, List<Ticket> devoluciones) {
+		DocumentoSucursal documentoTicketOrigen = ticketService.readDocFromTicket(archivoOrigen);
+		if (documentoTicketOrigen != null) {
+			switch (documentoTicketOrigen.getTicket().getTipoEstadoTicket()) {
+			case FACTURADO:
+				return obtenerDocumentoNcr(devoluciones, documentoTicketOrigen, establecimiento);
+			case FACTURADO_MOSTRADOR:
+				return obtenerDocumentoNcr(devoluciones, documentoTicketOrigen, establecimiento);
+			default:
+				return null;
+			}
+		} else {
+			return null;
+		}
+	}
+	
+	private Documento obtenerDocumentoNcr(List<Ticket> devoluciones, 
+			Documento documentoOrigen, Establecimiento establecimiento) {
+		//FIXME terminar ticket
+		Ticket ticketDevuelto = ticketService.crearTicketDevolucion(documentoOrigen, devoluciones, establecimiento);
+		Cliente cliente = documentoDao.readClienteFromDocumento(documentoOrigen);
+		if (cliente == null) {
+			cliente = emisorService.readClienteVentasMostrador(establecimiento);
+		}
+		int domicilioFiscal = cliente.getDomicilios().get(0).getId();
+		//FIXME validar armado de comprobante
+		Comprobante comprobante = comprobanteService.obtenerComprobantePor(cliente, ticketDevuelto, domicilioFiscal, establecimiento, TipoDocumento.NOTA_CREDITO);
+		Documento documentoNcr = new Documento();
+		documentoNcr.setEstablecimiento(establecimiento);
+		documentoNcr.setCliente(cliente);
+		documentoNcr.setComprobante(comprobante);
+		documentoNcr.setTipoDocumento(TipoDocumento.NOTA_CREDITO);
+		return documentoNcr;
+	}
 
 	@Transactional
 	@Override
-	public void deleteDocumentoPendiente(Documento documento) {
-		documentoDao.deletedDocumentoPendiente(documento);
-		
+	public void deleteDocumentoPendiente(Documento documento, 
+			TipoEstadoDocumentoPendiente estadoDocumentoPendiente) {
+		documentoDao.deletedDocumentoPendiente(documento, estadoDocumentoPendiente);
 	}
 	
 	@Transactional

@@ -18,7 +18,7 @@
 			<hr>
 			<div class="well col-md-6 col-md-offset-3">
 				<p><strong>Mensaje: </strong></p>
-				<p class="text-danger">${errMsg}</p>
+				<p class="text-danger wrapword">${errMsg}</p>
 				<hr>
 				<p class="text-center">
 					<a href="${urlMenu}" class="btn btn-warning btn-lg" role="button">Regresar

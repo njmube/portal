@@ -45,13 +45,14 @@ public class DocumentoSql extends GenericSql {
 	public static final String READ_ACUSE_PEND;
 	public static final String UPDATE_DOC_CTE;
 	public static final String READ_SERIE_FOLIO_DOC;
-	public static final String DELETE_DOCUMENTO_PENDIENTE;
+	public static final String DELETE_DOCUMENTO_PENDIENTE_BY_STATUS;
 	public static final String READ_DOCFOLIO_BY_SERIE_FOLIO;
 	public static final String UPDATE_DOC_XML_FILE;
 	public static final String READ_DOC_CFDI;
 	public static final String SAVE_ACUSE;
 	public static final String READ_DOC_BY_ID_AND_ESTADO;
 	public static final String READ_DOCFOLIO_BY_ID;
+	public static final String READ_CLIENTE_FROM_DOC;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -133,8 +134,10 @@ public class DocumentoSql extends GenericSql {
 		qryBuilder.append(DELETE).append(" " + FROM).append(EOL);
 		qryBuilder.append(TABLE_DOC_PEND).append(EOL).append(WHERE);
 		qryBuilder.append(EOL).append(TAB).append(ID_DOCUMENTO).append(SET_PARAM);
+		qryBuilder.append(EOL).append(TAB).append(AND).append(EOL);
+		qryBuilder.append(EOL).append(TAB).append(ID_ESTADO_DOC).append(SET_PARAM);
 		
-		DELETE_DOCUMENTO_PENDIENTE = qryBuilder.toString();
+		DELETE_DOCUMENTO_PENDIENTE_BY_STATUS = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append("select doc.id_documento, docfolio.id_tipo_documento "); 
@@ -182,7 +185,14 @@ public class DocumentoSql extends GenericSql {
 		qryBuilder.append("where doc.id_documento = ?");
 		
 		READ_DOCFOLIO_BY_ID = qryBuilder.toString();
-
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("select cte.id_cliente, dbo.TRIM(cte.rfc) as rfc, dbo.TRIM(cte.nombre) as nombre, doc.id_domicilio_cliente").append(EOL);
+		qryBuilder.append("from t_documento as doc").append(EOL);
+		qryBuilder.append("inner join t_cliente as cte on doc.id_cliente = cte.id_cliente").append(EOL);
+		qryBuilder.append("where doc.id_documento = ?").append(EOL);
+		
+		READ_CLIENTE_FROM_DOC = qryBuilder.toString();
 	}
 	
 }
