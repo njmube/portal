@@ -116,11 +116,11 @@ public class CfdiServiceImpl implements CfdiService {
 	
 	@Override
 	public void recuperarTimbreDocumentosPendientes() {
-		logger.debug("iniciando proceso recuperacion de timbre");
 		List<Documento> documentosTimbrePendientes = new ArrayList<Documento>();
 		documentosTimbrePendientes = documentoService.obtenerDocumentosTimbrePendientes();		
 		
 		if(!documentosTimbrePendientes.isEmpty()) {
+			logger.debug("iniciando proceso recuperacion de timbre");
 			int idServicio = documentoWebService.obtenerIdServicio();
 			
 			for(Documento documentoPendiente : documentosTimbrePendientes) {
@@ -178,7 +178,8 @@ public class CfdiServiceImpl implements CfdiService {
 		int hora = calendar.get(Calendar.HOUR_OF_DAY);
 		
 		if (hora > horaCierre) {
-			String fechaCierre = "20131207";
+			//FIXME quitar fecha dura 
+			String fechaCierre = "07-12-2013";
 			List<Documento> documentosAProcesar = new ArrayList<Documento>(); 
 			
 			establecimiento = establecimientoService.readByClave(establecimiento);
@@ -188,8 +189,9 @@ public class CfdiServiceImpl implements CfdiService {
 					FechasUtils.formatyyyyMMdd), 
 					ventas, devoluciones);
 			
-			ventas = tickets.getVentas();
-			devoluciones = tickets.getDevoluciones();
+			//FIXME Logica para web service
+//			ventas = tickets.getVentas();
+//			devoluciones = tickets.getDevoluciones();
 			
 			logger.debug("devoluciones {}", devoluciones.size());
 			
@@ -221,7 +223,7 @@ public class CfdiServiceImpl implements CfdiService {
 			for(Documento documento : documentosAProcesar) {
 				generarDocumento(documento);
 			}
-			
+			//FIXME desarrollar-cambiar fecha cierre
 		} else {
 			logger.error("El cierre del dia actual es posible realizarlo hasta despues del cierre de la tienda");
 			throw new PortalException("El cierre del dia actual es posible realizarlo hasta despues del cierre de la tienda");

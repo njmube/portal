@@ -25,5 +25,7 @@ public interface DomicilioClienteDao {
 
 	Pais readPais(Pais pais);
 
+	DomicilioCliente readById(DomicilioCliente domicilioCliente);
+
 
 }

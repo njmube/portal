@@ -15,6 +15,7 @@ import jcifs.Config;
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import mx.gob.sat.cfd._3.Comprobante;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,14 +41,17 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida.Articulo;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDescuento;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDevolucion;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.TransaccionHeader;
 import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
 import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.model.utils.StringUtils;
+import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
+import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 
 @Service("ticketService")
 public class TicketServiceImpl implements TicketService {
@@ -59,7 +63,13 @@ public class TicketServiceImpl implements TicketService {
 	private TicketDao ticketDao;
 	
 	@Autowired
+	private ComprobanteService comprobanteService;
+	
+	@Autowired
 	private DocumentoService documentoService;
+	
+	@Autowired
+	private DocumentoXmlService documentoXmlService;
 	
 	@Autowired
 	private EstablecimientoService establecimientoService;
@@ -390,9 +400,62 @@ public class TicketServiceImpl implements TicketService {
 	}
 	
 	@Override
-	public Ticket crearTicketDevolucion(Documento documentoOrigen,
+	public Ticket crearTicketDevolucion(DocumentoSucursal documentoOrigen,
 			List<Ticket> devoluciones, Establecimiento establecimiento) {
-		return null;
+		
+		Comprobante comprobante = documentoService.findById(documentoOrigen).getComprobante();
+		Ticket ticketDevolucion = new Ticket();
+		Transaccion transaccion = new Transaccion();
+		TransaccionHeader header = new TransaccionHeader();
+		InformacionPago infoPago = new InformacionPago();
+		Pago pago = new Pago();
+		BigDecimal precioTotal = new BigDecimal(0);
+		BigDecimal descuentoTotal = new BigDecimal(0);
+		
+		pago.setMetodoPago(comprobante.getMetodoDePago());
+		pago.setMoneda(comprobante.getMoneda());
+		
+		infoPago.setNumeroCuenta(comprobante.getNumCtaPago());
+		infoPago.setPago(pago);
+		
+		transaccion.setTransaccionHeader(header);
+		transaccion.getInformacionPago().add(infoPago);
+		ticketDevolucion.setTransaccion(transaccion);
+		header.setIdTicket(ticketGenerico);
+		header.setIdCaja(cajaGenerica);
+		header.setIdSucursal(establecimiento.getClave());
+		header.setFechaHora(FechasUtils.parseDateToString(new Date(), FechasUtils.formatddMMyyyyHHmmssSlash));
+		
+		for (Ticket ticket : devoluciones) {
+			if (ticket.getTransaccion().getPartidasDevolucion().get(0).getTicketFileOrigen()
+					.equals(documentoOrigen.getTicket().getNombreArchivo())) {
+				for (PartidaDevolucion partidaDevolucion : ticket.getTransaccion().getPartidasDevolucion()) {
+					if (!documentoService.isArticuloSinPrecio(partidaDevolucion.getArticulo().getId())) {
+						if (partidaDevolucion.getArticulo().getTipoCategoria() != null && !partidaDevolucion.getArticulo().getTipoCategoria().equals(categoriaSinPrecio)) {
+							Partida partida = new Partida();
+							Articulo articulo = new Articulo();
+							articulo.setId(partidaDevolucion.getArticulo().getId());
+							articulo.setDescripcion(partidaDevolucion.getArticulo().getDescripcion());
+							articulo.setUnidad(partidaDevolucion.getArticulo().getUnidad());
+							articulo.setTipoCategoria(partidaDevolucion.getArticulo().getTipoCategoria());
+							partida.setCantidad(partidaDevolucion.getCantidad().negate());
+							partida.setPrecioUnitario(partidaDevolucion.getPrecioUnitario());
+							partida.setPrecioTotal(partidaDevolucion.getPrecioTotal().negate());
+							partida.setArticulo(articulo);
+							ticketDevolucion.getTransaccion().getPartidas().add(partida);
+							precioTotal = precioTotal.add((partidaDevolucion.getPrecioTotal()));
+						}
+					}
+				}
+				
+				for (PartidaDescuento partidaDescuento : ticket.getTransaccion().getPartidasDescuentos()) {
+					partidaDescuento.setDescuentoTotal(partidaDescuento.getDescuentoTotal().negate());
+					ticketDevolucion.getTransaccion().getPartidasDescuentos().add(partidaDescuento);
+					descuentoTotal = descuentoTotal.add(partidaDescuento.getDescuentoTotal());
+				}
+			}
+		}
+		return ticketDevolucion;
 	}
 
 	@Override

@@ -238,7 +238,7 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 			descuentoTotal = descuentoTotal.add(descuento.getDescuentoTotal());
 		}
 		
-		descuentoTotal = descuentoTotal.multiply(new BigDecimal(-1));
+		descuentoTotal = descuentoTotal.negate();
 		comprobante.setDescuento(descuentoTotal.divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
 
 		comprobante.setSubTotal(subTotal.setScale(2, BigDecimal.ROUND_HALF_UP));
