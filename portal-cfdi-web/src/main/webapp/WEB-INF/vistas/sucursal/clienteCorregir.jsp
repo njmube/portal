@@ -118,14 +118,15 @@
 						<table class="table table-hover" id="tblDireccion">
 							<thead>
 								<tr>
-									<th><small>Calle</small></th>
-									<th><small>No. Ext.</small></th>
+									<th><small>* Calle</small></th>
+									<th><small>* No. Ext.</small></th>
 									<th><small>No. Int.</small></th>								
-									<th><small>País</small></th>
-									<th><small>Estado</small></th>
-									<th><small>Municipio</small></th>
-									<th><small>Colonia</small></th>
-									<th><small>C.P.</small></th>
+									<th><small>* País</small></th>
+									<th><small>* Estado</small></th>
+									<th><small>* Municipio</small></th>
+									<th><small>* Colonia</small></th>
+									<th><small>* C.P.</small></th>
+									<th><small>Estatus</small></th>
 <!-- 									<th><small>Referencia</small></th> -->
 <!-- 									<th><small>Localidad</small></th> -->
 									<th><small></small></th>
@@ -136,6 +137,7 @@
 									<c:when test="${not empty clienteCorregir.domicilios}">
 										<c:forEach items="${clienteCorregir.domicilios}" var="domicilio" varStatus="theCount">
 											<tr>
+												<form:hidden path="domicilios[${theCount.index}].id" id="id${theCount.index}"/>
 												<td width="200px"><form:input path="domicilios[${theCount.index}].calle" id="calle${theCount.index}" cssClass="form-control input-xsm validate[required] calle"/></td>
 												<td width="65px"><form:input path="domicilios[${theCount.index}].noExterior" id="noExterior${theCount.index}" cssClass="form-control input-xsm validate[required, integer, minSize[1]] noExterior"/></td>
 												<td width="65px"><form:input path="domicilios[${theCount.index}].noInterior" id="noInteriorr${theCount.index}" cssClass="form-control input-xsm validate[integer] noInterior"/></td>
@@ -161,11 +163,36 @@
 												<td width="200px"><form:input  path="domicilios[${theCount.index}].colonia" id="colonia${theCount.index}" cssClass="form-control input-xsm validate[required] colonia"/></td>
 												<td width="70px"><form:input  path="domicilios[${theCount.index}].codigoPostal" id="codigoPostal${theCount.index}" 
 													cssClass="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5] codigoPostal"/></td>
-<%-- 												<td><form:input path="domicilios[${theCount.index}].referencia" id="referencia" cssClass="form-control input-xsm "/></td> --%>
-<%-- 												<td><form:input path="domicilios[${theCount.index}].localidad" id="localidad" cssClass="form-control input-xsm"/></td> --%>
-												<c:if test="${theCount.index > 0}">
-													<td><button id='deleteCorregir' type='button' class='btn btn-danger btn-xs'><i class="fa fa-trash-o"></i></button></td>
-												</c:if>
+												<c:choose>
+													<c:when test="${theCount.index > 0 }">
+														<c:if test="${domicilio.estatus.id eq 1}">														
+															<td align="center">
+																<input type="hidden" value="${domicilio.estatus.nombre}" name="domicilios[${theCount.index}].estatus" id="hdn_estatus"/>
+																<input type="checkbox" id="estatus${theCount.index}" class="checkbox estatus" checked="true"/>
+															</td>
+														</c:if>
+														<c:if test="${domicilio.estatus.id eq 2}">
+															<td align="center">
+																<input type="hidden" value="${domicilio.estatus.nombre}" name="domicilios[${theCount.index}].estatus" id="hdn_estatus"/>
+																<input type="checkbox" id="estatus${theCount.index}" class="checkbox estatus"/>
+															</td>
+														</c:if>
+													</c:when>
+													<c:otherwise>
+														<c:if test="${domicilio.estatus.id eq 1}">
+															<td align="center">
+																<input type="hidden" value="${domicilio.estatus.nombre}" name="domicilios[${theCount.index}].estatus" id="hdn_estatus"/>																
+																<i class="fa fa-check-square-o"></i>
+															</td>
+														</c:if>
+														<c:if test="${domicilio.estatus.id eq 2}">
+															<td align="center">
+																<input type="hidden" value="${domicilio.estatus.nombre}" name="domicilios[${theCount.index}].estatus" id="hdn_estatus"/>																
+																<i class="fa fa-times"></i>															
+															</td>
+														</c:if>
+													</c:otherwise>
+												</c:choose>
 											</tr>
 											</c:forEach>
 										</c:when>
@@ -191,6 +218,7 @@
 												<td width="200px"><input type="text" name="domicilios[0].colonia0" id="colonia" class="form-control input-xsm validate[required] colonia"/></td>
 												<td width="70px"><input type="text" name="domicilios[0].codigoPostal0" id="codigoPostal" 
 													class="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]] codigoPostal"/></td>
+												<td align="center"><form:checkbox value="1" path="domicilios[0].estatus" id="estatus" cssClass="checkbox estatus" checked="true"/></td>
 <!-- 												<td><input type="text" name="domicilios[0].referencia" id="referencia" class="form-control input-xsm"/></td> -->
 <!-- 												<td><input type="text" name="domicilios[0].localidad" id="localidad" class="form-control input-xsm"/></td> -->
 											</tr>

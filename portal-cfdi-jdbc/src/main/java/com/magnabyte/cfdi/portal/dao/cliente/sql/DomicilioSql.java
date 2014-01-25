@@ -26,6 +26,7 @@ public class DomicilioSql extends GenericSql {
 	public static final String MUNICIPIO = "municipio";
 	public static final String COLONIA = "colonia";
 	public static final String CODIGO_POSTAL = "codigo_postal";
+	public static final String ID_ESTATUS = "id_estatus";
 	public static final String REFERENCIA = "referencia";
 	public static final String LOCALIDAD = "localidad";
 	
@@ -55,6 +56,7 @@ public class DomicilioSql extends GenericSql {
 		qryBuilder.append(PARENTESIS_FIN).append(AS).append(MUNICIPIO).append(EOL_);
 		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(CODIGO_POSTAL);
 		qryBuilder.append(PARENTESIS_FIN).append(AS).append(CODIGO_POSTAL).append(EOL_);
+		qryBuilder.append(TAB).append(TABLE_ALIAS).append(DOT).append(ID_ESTATUS).append(EOL_);
 //		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(REFERENCIA);
 //		qryBuilder.append(PARENTESIS_FIN).append(AS).append(REFERENCIA).append(EOL_);
 //		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(LOCALIDAD);
@@ -138,9 +140,10 @@ public class DomicilioSql extends GenericSql {
 		qryBuilder.append(TAB).append(NO_INTERIOR).append(SET_PARAM).append(EOL_);
 		qryBuilder.append(TAB).append(MUNICIPIO).append(SET_PARAM).append(EOL_);
 		qryBuilder.append(TAB).append(COLONIA).append(SET_PARAM).append(EOL_);
-		qryBuilder.append(TAB).append(CODIGO_POSTAL).append(SET_PARAM).append(EOL);
+		qryBuilder.append(TAB).append(CODIGO_POSTAL).append(SET_PARAM).append(EOL_);
+		qryBuilder.append(TAB).append(ID_ESTATUS).append(SET_PARAM).append(EOL);
 //		qryBuilder.append(TAB).append(REFERENCIA).append(SET_PARAM).append(EOL_);
-//		qryBuilder.append(TAB).append(LOCALIDAD).append(SET_PARAM).append(EOL);
+//		qryBuilder.append(TAB).append(LOCALIDAD).append(POSTALSET_PARAM).append(EOL);
 		
 		qryBuilder.append(WHERE).append(EOL).append(TAB);
 		qryBuilder.append(ID_DOMICILIO).append(SET_PARAM);

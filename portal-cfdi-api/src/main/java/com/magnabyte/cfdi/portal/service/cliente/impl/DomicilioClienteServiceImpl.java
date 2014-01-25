@@ -12,6 +12,7 @@ import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.commons.Estado;
 import com.magnabyte.cfdi.portal.model.commons.Pais;
+import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusDomiciolioCliente;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 
@@ -69,21 +70,15 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 		List<DomicilioCliente> domNuevos = cliente.getDomicilios();		
 		List<DomicilioCliente> domAnteriores = getByCliente(cliente);
 		
-		if(cliente.getDomicilios() != null) {
+		if(domNuevos != null && !domNuevos.isEmpty()) {
 			for (DomicilioCliente domicilio : domNuevos) {
 				if(domicilio.getCliente() == null) {
 					domicilio.setCliente(cliente);
 				}
 				if (domAnteriores.contains(domicilio)) {
 					domicilioClienteDao.update(domicilio);
-				} if (!domAnteriores.contains(domicilio)) {
+				} else if (!domAnteriores.contains(domicilio)) {
 					domicilioClienteDao.save(domicilio);
-				}
-			}
-			
-			for (DomicilioCliente domicilio : domAnteriores) {
-				if (!domNuevos.contains(domicilio)) {
-					domicilioClienteDao.delete(domicilio);
 				}
 			}
 			

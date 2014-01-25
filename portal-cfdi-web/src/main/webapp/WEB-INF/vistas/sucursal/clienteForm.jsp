@@ -14,7 +14,7 @@ $(document).ready(function() {
 	var rfcExtranjeros = "${rfcExtranjeros}";
 	
 	$(document.body).on('change',"#pais",function() {
-		if($("option:selected", this).val() > 1){
+		if($("option:selected", this).val() > 1) {
 			if($("#personaFisica").is(":checked", true)) {
 				$("#rfc").removeClass("validate[required, custom[rfcFisica]]");
 				$("#rfc").addClass("validate[required, custom[rfc]]");
@@ -108,6 +108,7 @@ $(document).ready(function() {
 									<th><small>* Municipio</small></th>
 									<th><small>* Colonia</small></th>
 									<th><small>* C.P.</small></th>
+									<th><small>	Estatus</small></th>
 <!-- 									<th><small>Referencia</small></th> -->
 <!-- 									<th><small>Localidad</small></th> -->
 									<th><small></small></th>
@@ -136,6 +137,10 @@ $(document).ready(function() {
 									<td width="200px"><form:input path="domicilios[0].colonia" id="colonia" cssClass="form-control input-xsm validate[required]" /></td>
 									<td width="70px"><form:input path="domicilios[0].codigoPostal" id="codigoPostal" 
 										cssClass="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]]"/></td>
+									<td align="center">
+										<form:hidden value="ACTIVO" path="domicilios[0].estatus" id="estatus"/>
+										<i class="fa fa-check-square-o"></i>
+									</td>
 <%-- 									<td><form:input path="domicilios[0].referencia" id="referencia" cssClass="form-control input-xsm" /></td> --%>
 <%-- 									<td><form:input path="domicilios[0].localidad" id="localidad" cssClass="form-control input-xsm" /></td> --%>
 								</tr>

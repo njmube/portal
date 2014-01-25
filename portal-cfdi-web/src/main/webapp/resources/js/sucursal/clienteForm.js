@@ -80,6 +80,9 @@ $(document).ready(function() {
 			
 			$(this).find(".codigoPostal").attr("name", "domicilios["+ index +"].codigoPostal");
 			$(this).find(".codigoPostal").attr("id", "codigoPostal"+ index);
+			
+			$(this).find(".codigoPostal").attr("name", "domicilios["+ index +"].estatus");
+			$(this).find(".codigoPostal").attr("id", "estatus"+ index);
 		});
 		
 		if(trSize == 1) {
@@ -97,6 +100,20 @@ $(document).ready(function() {
 			$("#pais").removeAttr("disabled");
 		}
 		aux --;		
+	});
+	
+	$(document.body).on("click", ".estatus", function() {
+		
+		tr = $(this).parent().parent();
+		
+		var chkHidden = "hdn_estatus";
+		
+		if($(this).is(":checked")) {
+			$(tr).find('input:hidden[id='+ chkHidden + ']').val("ACTIVO");			
+		} else {
+			$(tr).find('input:hidden[id='+ chkHidden + ']').val("INACTIVO");
+			$(this).removeAttr("checked");
+		}
 	});
 	
 	$("#agregar").click(function() {
@@ -132,6 +149,10 @@ $(document).ready(function() {
 			+ "<td width=\'70px\'><input id=\'codigoPostal"+ aux +"\' name=\'domicilios["+ aux +"].codigoPostal\' class=\'form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]]\' type=\'text\'></td>"
 	//		+ "<td><input id=\'referencia" + aux +"\' name=\'domicilios["+ aux +"].referencia\' class=\'form-control input-xsm\' type=\'text\'></td>"
 	//		+ "<td><input id=\'localidad" + aux +"\' name=\'domicilios["+ aux +"].localidad\' class=\'form-control input-xsm\' type=\'text\'></td>"				
+			+ "<td align=\'center\'>"
+			+ "<input type=\'hidden\' value=\'ACTIVO\' name=\'domicilios[" + aux + "].estatus\' id=\'hdn_estatus\'/>"
+			+ "<input type=\'checkbox\' id=\'estatus"+ aux +"\' class=\'checkbox estatus\' checked=\'true\'/>" 
+			+ "</td>"
 			+ "<td><button id=\'delete\' type=\'button\' class=\'btn btn-danger btn-xs\'><i class=\'fa fa-trash-o\'></i></button></td>"
 			+ "</tr>";
 			
@@ -183,8 +204,12 @@ $("#agregarCorregir").click(function() {
 			+ "<td width=\'200px\'><input id=\'colonia"+ aux +"\' name=\'domicilios["+ aux +"].colonia\' class=\'form-control input-xsm validate[required] colonia\' type=\'text\'></td>"
 			+ "<td width=\'70px\'><input id=\'codigoPostal"+ aux +"\' name=\'domicilios["+ aux +"].codigoPostal\' class=\'form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]] codigoPostal\' type=\'text\'></td>"
 	//		+ "<td><input id=\'referencia\' name=\'domicilios["+ aux +"].referencia\' class=\'form-control input-xsm\' type=\'text\'></td>"
-	//		+ "<td><i/resources/js/sucursal/clienteForm.jsnput id=\'localidad\' name=\'domicilios["+ aux +"].localidad\' class=\'form-control input-xsm\' type=\'text\'></td>"				
-			+ "<td><button id=\'deleteCorregir\' type=\'button\' class=\'btn btn-danger btn-xs\'><i class=\'fa fa-trash-o\'></i></button></td>"
+	//		+ "<td><i/resources/js/sucursal/clienteForm.jsnput id=\'localidad\' name=\'domicilios["+ aux +"].localidad\' class=\'form-control input-xsm\' type=\'text\'></td>"
+			+ "<td align=\'center\'>"
+			+ "<input type=\'hidden\' value=\'ACTIVO\' name=\'domicilios[" + aux + "].estatus\' id=\'hdn_estatus\'/>"
+			+ "<input type=\'checkbox\' id=\'estatus"+ aux +"\' class=\'checkbox estatus\' checked=\'true\'/>" 
+			+ "</td>"
+	//		+ "<td><button id=\'deleteCorregir\' type=\'button\' class=\'btn btn-danger btn-xs\'><i class=\'fa fa-trash-o\'></i></button></td>"
 			+ "</tr>";
 			
 			$("#tblDireccion tbody").append(tr);
