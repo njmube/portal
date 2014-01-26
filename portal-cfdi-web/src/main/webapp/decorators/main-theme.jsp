@@ -53,9 +53,15 @@
 			alert.fadeOut("slow");
 		}, delay);
 	}	
+	
 	$(function() {
 		$.prettyLoader();
 		autoClosingAlert("div.auto-close", 3500);
+		
+		$("a[href='#top']").click(function() {
+			  $("html, body").animate({ scrollTop: 0 }, "slow");
+			  return false;
+		});
 	});
 </script>
 
@@ -171,8 +177,11 @@
 					Modatelas S.A.P.I de C.V.</strong>
 			</p>
 			<p class="credit">
-				<a href="#"><strong> Ir arriba </strong>
+				<a href="#top"><strong> Ir arriba </strong>
 					<i class="fa fa-arrow-circle-o-up"></i></a>
+			</p>
+			<p class="credit">
+				<small><strong>Powered by <em>Magnabyte</em></strong></small>
 			</p>
 		</div>
 	</div>
