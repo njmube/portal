@@ -110,6 +110,7 @@ public class DomicilioSql extends GenericSql {
 		qryBuilder.append(PARENTESIS_FIN).append(AS).append(MUNICIPIO).append(EOL_);
 		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(CODIGO_POSTAL);
 		qryBuilder.append(PARENTESIS_FIN).append(AS).append(CODIGO_POSTAL).append(EOL_);
+		qryBuilder.append(TAB).append(TABLE_ALIAS).append(DOT).append(ID_ESTATUS).append(EOL_);
 //		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(REFERENCIA);
 //		qryBuilder.append(PARENTESIS_FIN).append(AS).append(REFERENCIA).append(EOL_);
 //		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(LOCALIDAD);

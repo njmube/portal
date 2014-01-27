@@ -36,6 +36,11 @@ public class ListaTickets {
 	private List<Ticket> devoluciones;
 	
 	/**
+	 * Fecha cierre
+	 */
+	private String fechaCierre;
+	
+	/**
 	 * Constructor por default
 	 */
 	public ListaTickets() {		
@@ -90,6 +95,23 @@ public class ListaTickets {
 	 */
 	public void setClaveEstablecimiento(String claveEstablecimiento) {
 		this.claveEstablecimiento = claveEstablecimiento;
+	}
+
+	/**
+	 * Devuelve la fecha de cierre
+	 * @return fechaCierre
+	 */
+	@XmlElement(name = "fechaCierre")
+	public String getFechaCierre() {
+		return fechaCierre;
+	}
+
+	/**
+	 * Asigna la fecha de cierre
+	 * @param fechaCierre
+	 */
+	public void setFechaCierre(String fechaCierre) {
+		this.fechaCierre = fechaCierre;
 	}
 	
 	
