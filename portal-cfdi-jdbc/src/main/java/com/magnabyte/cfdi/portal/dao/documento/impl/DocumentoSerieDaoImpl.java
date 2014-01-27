@@ -11,11 +11,19 @@ import com.magnabyte.cfdi.portal.dao.documento.DocumentoSerieDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa el acceso a datos de documento serie
+ */
 @Repository("documentoSerieDao")
 public class DocumentoSerieDaoImpl extends GenericJdbcDao implements
 		DocumentoSerieDao {
 
-	private static final Logger logger = LoggerFactory.getLogger(DocumentoSerieDaoImpl.class);
+	private static final Logger logger = 
+			LoggerFactory.getLogger(DocumentoSerieDaoImpl.class);
 	
 	@Override
 	public Map<String, Object> readSerieAndFolio(Documento documento) {

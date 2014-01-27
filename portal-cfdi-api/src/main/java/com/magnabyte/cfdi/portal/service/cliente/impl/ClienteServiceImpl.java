@@ -20,6 +20,13 @@ import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa el servicio de cliente
+ */
 @Service("clienteService")
 public class ClienteServiceImpl implements ClienteService {
 	

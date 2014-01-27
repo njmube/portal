@@ -5,6 +5,13 @@ import java.util.List;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Intefáz que representa el servicio de domicilio de cliente
+ */
 public interface ClienteService {
 	
 	Cliente read(Cliente cliente);

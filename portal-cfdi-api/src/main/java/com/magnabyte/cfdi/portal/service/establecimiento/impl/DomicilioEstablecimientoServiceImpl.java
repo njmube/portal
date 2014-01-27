@@ -12,6 +12,13 @@ import com.magnabyte.cfdi.portal.model.establecimiento.DomicilioEstablecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.establecimiento.DomicilioEstablecimientoService;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa el servicio de domicilio de establecimiento
+ */
 @Service("domicilioEstablecimientoService")
 public class DomicilioEstablecimientoServiceImpl implements
 		DomicilioEstablecimientoService {

@@ -22,6 +22,13 @@ import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusUsuario;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa el acceso a datos de usuario
+ */
 @Repository("usuarioDao")
 public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 

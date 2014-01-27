@@ -3,6 +3,14 @@ package com.magnabyte.cfdi.portal.dao.establecimiento.sql;
 import com.magnabyte.cfdi.portal.dao.GenericSql;
 import com.magnabyte.cfdi.portal.dao.cliente.sql.DomicilioSql;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa las variables con las consultas de acceso a datos
+ * de establecimiento
+ */
 public class EstablecimientoSql extends GenericSql {
 	
 	public static final String TABLE_NAME = "t_establecimiento";

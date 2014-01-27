@@ -1,10 +1,11 @@
 package com.magnabyte.cfdi.portal.model.cliente.enumeration;
 
 /**
- * Clase que representa la enumeracion de TipoCliente
  * 
- * @author Edgar Pérez
- *
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa la enummeracion de tipo cliente
  */
 public class TipoPersona {
 	

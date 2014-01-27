@@ -20,6 +20,13 @@ import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoDetalleSql;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa el acceso a datos de detalle de documento
+ */
 @Repository("documentoDetalleDao")
 public class DocumentoDetalleDaoImpl extends GenericJdbcDao
 	implements DocumentoDetalleDao {

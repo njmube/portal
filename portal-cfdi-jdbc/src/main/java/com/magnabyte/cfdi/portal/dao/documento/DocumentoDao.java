@@ -7,6 +7,13 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Interfáz que representa el acceso a datos de documento
+ */
 public interface DocumentoDao {
 	
 	void save(Documento documento);

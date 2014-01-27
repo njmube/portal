@@ -5,6 +5,13 @@ import mx.gob.sat.cfd._3.TUbicacion;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Interfáz que representa el acceso a datos de emisor
+ */
 public interface EmisorDao {
 
 	EmpresaEmisor read(EmpresaEmisor empresa);

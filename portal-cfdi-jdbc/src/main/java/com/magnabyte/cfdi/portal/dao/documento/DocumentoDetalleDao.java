@@ -4,6 +4,13 @@ import mx.gob.sat.cfd._3.Comprobante.Conceptos;
 
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Interfáz que representa el acceso a datos de detalle de documento
+ */
 public interface DocumentoDetalleDao {
 	void save(Documento documento);
 

@@ -19,6 +19,13 @@ import com.magnabyte.cfdi.portal.model.commons.Estado;
 import com.magnabyte.cfdi.portal.model.commons.Pais;
 import com.magnabyte.cfdi.portal.model.establecimiento.DomicilioEstablecimiento;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa el acceso a datos de domicilio de establecimiento
+ */
 @Repository("domicilioEstablecimientoDao")
 public class DomicilioEstablecimientoDaoImpl extends GenericJdbcDao implements
 		DomicilioEstablecimientoDao {

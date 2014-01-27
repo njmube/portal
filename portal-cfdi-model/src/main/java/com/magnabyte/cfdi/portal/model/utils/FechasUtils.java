@@ -10,10 +10,11 @@ import org.slf4j.LoggerFactory;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
 /**
- * Clase que representa las utilerias para formato de fechas
  * 
- * @author Edgar Pérez
- *
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa las utilerias para formato de fechas
  */
 public class FechasUtils {
 

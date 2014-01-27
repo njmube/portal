@@ -9,13 +9,12 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.magnabyte.cfdi.portal.model.ticket.Ticket;
-
 /**
- * Clase que representa las utilerias para formato de cadenas
  * 
- * @author Edgar Pérez
- *
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa las utilerias para formato de cadenas
  */
 public class StringUtils {
 

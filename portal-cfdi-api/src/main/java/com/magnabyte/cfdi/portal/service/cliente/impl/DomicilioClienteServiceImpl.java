@@ -12,10 +12,16 @@ import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.commons.Estado;
 import com.magnabyte.cfdi.portal.model.commons.Pais;
-import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusDomiciolioCliente;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa el servicio de domicilio de cliente
+ */
 @Service("domicilioClienteService")
 public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 
