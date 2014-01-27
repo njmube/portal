@@ -37,6 +37,7 @@ import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoSerieDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
+import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
@@ -48,6 +49,7 @@ import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
+import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.commons.EmailService;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
@@ -91,6 +93,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Autowired
 	private SambaService sambaService;
+	
+	@Autowired
+	private DomicilioClienteService domicilioClienteService;
 	
 	@Autowired
 	private EmailService emailService;
@@ -520,15 +525,13 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	}
 	
 	private Documento obtenerDocumentoNcr(List<Ticket> devoluciones, 
-			Documento documentoOrigen, Establecimiento establecimiento) {
-		//FIXME terminar ticket
+			DocumentoSucursal documentoOrigen, Establecimiento establecimiento) {
 		Ticket ticketDevuelto = ticketService.crearTicketDevolucion(documentoOrigen, devoluciones, establecimiento);
-		Cliente cliente = documentoDao.readClienteFromDocumento(documentoOrigen);
+		Cliente cliente = readClienteFromDocumento(documentoOrigen);
 		if (cliente == null) {
 			cliente = emisorService.readClienteVentasMostrador(establecimiento);
 		}
 		int domicilioFiscal = cliente.getDomicilios().get(0).getId();
-		//FIXME validar armado de comprobante
 		Comprobante comprobante = comprobanteService.obtenerComprobantePor(cliente, ticketDevuelto, domicilioFiscal, establecimiento, TipoDocumento.NOTA_CREDITO);
 		Documento documentoNcr = new Documento();
 		documentoNcr.setEstablecimiento(establecimiento);
@@ -536,6 +539,22 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		documentoNcr.setComprobante(comprobante);
 		documentoNcr.setTipoDocumento(TipoDocumento.NOTA_CREDITO);
 		return documentoNcr;
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public Cliente readClienteFromDocumento(Documento documento) {
+		Cliente cliente = documentoDao.readClienteFromDocumento(documento);
+		
+		if (cliente != null) {
+			List<DomicilioCliente> domicilios = new ArrayList<DomicilioCliente>();
+			DomicilioCliente domicilioCliente = domicilioClienteService
+					.readById(cliente.getDomicilios().get(0));
+			domicilios.add(domicilioCliente);
+			cliente.setDomicilios(domicilios);
+		}
+		
+		return cliente;
 	}
 
 	@Transactional

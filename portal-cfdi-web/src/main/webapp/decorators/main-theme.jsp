@@ -53,9 +53,39 @@
 			alert.fadeOut("slow");
 		}, delay);
 	}	
+	
 	$(function() {
 		$.prettyLoader();
 		autoClosingAlert("div.auto-close", 3500);
+		
+		$("a[href='#top']").click(function() {
+			  $("html, body").animate({ scrollTop: 0 }, "slow");
+			  return false;
+		});
+	});
+	
+	$(document).ready(function(){
+		// hide #back-top first
+		$("#back-top").hide();
+		
+		// fade in #back-top
+		$(function () {
+			$(window).scroll(function () {
+				if ($(this).scrollTop() > 100) {
+					$('#back-top').fadeIn();
+				} else {
+					$('#back-top').fadeOut();
+				}
+			});
+	
+			// scroll body to 0px on click
+			$('#back-top a').click(function () {
+				$('body,html').animate({
+					scrollTop: 0
+				}, 800);
+				return false;
+			});
+		});
 	});
 </script>
 
@@ -171,11 +201,17 @@
 					Modatelas S.A.P.I de C.V.</strong>
 			</p>
 			<p class="credit">
-				<a href="#"><strong> Ir arriba </strong>
+				<a href="#top"><strong> Ir arriba </strong>
 					<i class="fa fa-arrow-circle-o-up"></i></a>
+			</p>
+			<p class="credit">
+				<small><strong>Powered by <em>Magnabyte</em></strong></small>
 			</p>
 		</div>
 	</div>
+	<p id="back-top">
+		<a href="#top"><span></span>Ir arriba</a>
+	</p>
 	<div id="page_loader" class="page_loader">
 	</div>
 	<div id="page_loader_factura_content" class="page_loader_content text-center">

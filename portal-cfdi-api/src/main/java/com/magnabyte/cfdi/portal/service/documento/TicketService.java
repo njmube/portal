@@ -43,7 +43,7 @@ public interface TicketService {
 
 	DocumentoSucursal readDocFromTicket(String archivoOrigen);
 
-	Ticket crearTicketDevolucion(Documento documentoOrigen,
+	Ticket crearTicketDevolucion(DocumentoSucursal documentoOrigen,
 			List<Ticket> devoluciones, Establecimiento establecimiento);
 
 }

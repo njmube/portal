@@ -27,8 +27,10 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.establecimiento.factory.EstablecimientoFactory;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
+import com.magnabyte.cfdi.portal.model.utils.StringUtils;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
@@ -118,7 +120,8 @@ public class SucursalController {
 	@RequestMapping("/datosFacturacion/{idDomicilio}")
 	public String datosFacturacion(@ModelAttribute Establecimiento establecimiento, @ModelAttribute Cliente cliente, 
 			@ModelAttribute Ticket ticket, @PathVariable Integer idDomicilio, ModelMap model) {
-		Comprobante comprobante = comprobanteService.obtenerComprobantePor(cliente, ticket, idDomicilio, establecimiento, TipoDocumento.FACTURA);
+		Comprobante comprobante = comprobanteService
+				.obtenerComprobantePor(cliente, ticket, idDomicilio, establecimiento, TipoDocumento.FACTURA);
 		DocumentoSucursal documento = new DocumentoSucursal();
 		documento.setCliente(cliente);
 		documento.setTicket(ticket);
@@ -163,7 +166,8 @@ public class SucursalController {
 		
 		try {
 			autCierreService.autorizar(usuario);
-			cfdiService.closeOfDay(establecimiento, null);
+			cfdiService.closeOfDay(EstablecimientoFactory
+					.newInstanceClave(StringUtils.formatTicketClaveSucursal(establecimiento.getClave())), null);
 		} catch (PortalException ex) {
 			model.put("error", true);
 			model.put("messageError", ex.getMessage());

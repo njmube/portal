@@ -145,13 +145,14 @@ public class SambaServiceImpl implements SambaService {
 	public void moveProcessedSapFile(DocumentoCorporativo documento) {
 		logger.debug("en moveProcessedSapFile");
 		try {
+			NtlmPasswordAuthentication authentication = getAuthentication(documento.getEstablecimiento());
 			String rutaXmlPrevio = documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() +
 					documento.getEstablecimiento().getRutaRepositorio().getRutaRepoIn();
 			String rutaXmlProcesado = documento.getEstablecimiento().getRutaRepositorio().getRutaRepositorio() +
 					documento.getEstablecimiento().getRutaRepositorio().getRutaRepoInProc();
-			SmbFile sapFile = new SmbFile(rutaXmlPrevio, documento.getNombreXmlPrevio());
+			SmbFile sapFile = new SmbFile(rutaXmlPrevio, documento.getNombreXmlPrevio(), authentication);
 			if (sapFile.exists()) {
-				SmbFile smbFileProc = new SmbFile(rutaXmlProcesado, sapFile.getName());
+				SmbFile smbFileProc = new SmbFile(rutaXmlProcesado, sapFile.getName(), authentication);
 				sapFile.renameTo(smbFileProc);
 				if (smbFileProc.exists()) {
 					logger.debug("El archivo se procesó y se movió con éxito");
@@ -173,7 +174,7 @@ public class SambaServiceImpl implements SambaService {
 				documento.getEstablecimiento().getRutaRepositorio().getRutaRepoOut();
 		logger.debug("Ruta: {}", rutaXmlCfdiDestino);
 		String nombreXmlCfdiDestino = documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + ".xml";
-		writeFile(xmlCfdi, rutaXmlCfdiDestino, nombreXmlCfdiDestino);
+		writeFile(xmlCfdi, rutaXmlCfdiDestino, nombreXmlCfdiDestino, getAuthentication(documento.getEstablecimiento()));
 	}
 	
 	@Override
@@ -183,13 +184,13 @@ public class SambaServiceImpl implements SambaService {
 				documento.getEstablecimiento().getRutaRepositorio().getRutaRepoOut();
 		logger.debug("Ruta: {}", rutaAcuseXmlCfdiDestino);
 		String nombreAcuseXmlCfdiDestino = documento.getTipoDocumento() + "_" + documento.getComprobante().getSerie() + "_" + documento.getComprobante().getFolio() + "_acuse" + ".xml";
-		writeFile(acuseCfdi, rutaAcuseXmlCfdiDestino, nombreAcuseXmlCfdiDestino);
+		writeFile(acuseCfdi, rutaAcuseXmlCfdiDestino, nombreAcuseXmlCfdiDestino, getAuthentication(documento.getEstablecimiento()));
 		
 	}
 	
-	public void writeFile(byte[] file, String destino, String nombreFile) {
+	public void writeFile(byte[] file, String destino, String nombreFile, NtlmPasswordAuthentication authentication) {
 		try {
-			SmbFile xmlDirectory = new SmbFile(destino);
+			SmbFile xmlDirectory = new SmbFile(destino, authentication);
 			SmbFile xmlFile = new SmbFile(xmlDirectory, nombreFile);
 			if (!xmlDirectory.exists()) {
 				xmlDirectory.mkdir();

@@ -33,6 +33,12 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 	
 	@Transactional(readOnly = true)
 	@Override
+	public DomicilioCliente readById(DomicilioCliente domicilioCliente) {
+		return domicilioClienteDao.readById(domicilioCliente);
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
 	public List<DomicilioCliente> getByCliente(Cliente cliente) {
 		List<DomicilioCliente> domiciliosBD = null;
 		if(cliente != null) {

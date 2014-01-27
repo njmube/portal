@@ -29,5 +29,7 @@ public interface DomicilioClienteService {
 	Estado readEstado(Estado estado);
 
 	Pais readPais(Pais pais);
+
+	DomicilioCliente readById(DomicilioCliente domicilioCliente);
 	
 }

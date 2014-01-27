@@ -47,6 +47,11 @@ public class DomicilioClienteDaoImpl extends GenericJdbcDao implements
 			logger.debug("No se pudo registrar el DomicilioCliente en la base de datos.",ex);
 		}
 	}
+	
+	@Override
+	public DomicilioCliente readById(DomicilioCliente domicilioCliente) {
+		return getJdbcTemplate().queryForObject(DomicilioSql.FIND_BY_ID, DOMICILIO_MAPPER, domicilioCliente.getId());
+	}
 
 	@Override
 	public List<DomicilioCliente> readByCliente(Cliente cliente) {

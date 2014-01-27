@@ -43,6 +43,7 @@ public class DomicilioSql extends GenericSql {
 	public static final String DELETE_DOMICILIO_CTE;
 	public static final String READ_EDO_PAIS;
 	public static final String READ_PAIS;
+	public static final String FIND_BY_ID;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -68,7 +69,7 @@ public class DomicilioSql extends GenericSql {
 //		qryBuilder.append(PARENTESIS_FIN).append(AS).append(REFERENCIA).append(EOL_);
 //		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(LOCALIDAD);
 //		qryBuilder.append(PARENTESIS_FIN).append(AS).append(LOCALIDAD).append(EOL_);
-		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_ESTADO).append(DOT).append(NOMBRE);
+		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(ALIAS_ESTADO).append(DOT).append(NOMBRE);
 		qryBuilder.append(PARENTESIS_FIN).append(AS).append(AS_ESTADO).append(EOL_).append(TAB);
 		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_PAIS).append(DOT).append(NOMBRE);
 		qryBuilder.append(PARENTESIS_FIN).append(AS).append(AS_PAIS).append(EOL);
@@ -90,6 +91,51 @@ public class DomicilioSql extends GenericSql {
 		qryBuilder.append(EOL).append(ORDER).append(ID_DOMICILIO);
 		
 		FIND_DOM_BY_CLIENTE = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append(SELECT).append(EOL);
+		qryBuilder.append(TAB).append(TABLE_ALIAS).append(DOT).append(ID_DOMICILIO).append(EOL_);
+		qryBuilder.append(TAB).append(TABLE_ALIAS).append(DOT).append(ID_CLIENTE).append(EOL_);
+		qryBuilder.append(TAB).append(ALIAS_ESTADO).append(DOT).append(ID_ESTADO).append(EOL_);
+		qryBuilder.append(TAB).append(ALIAS_PAIS).append(DOT).append(ID_PAIS).append(EOL_);
+		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(CALLE);
+		qryBuilder.append(PARENTESIS_FIN).append(AS).append(CALLE).append(EOL_);
+		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(NO_EXTERIOR);
+		qryBuilder.append(PARENTESIS_FIN).append(AS).append(NO_EXTERIOR).append(EOL_);
+		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(NO_INTERIOR);
+		qryBuilder.append(PARENTESIS_FIN).append(AS).append(NO_INTERIOR).append(EOL_);
+		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(COLONIA);
+		qryBuilder.append(PARENTESIS_FIN).append(AS).append(COLONIA).append(EOL_);
+		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(MUNICIPIO);
+		qryBuilder.append(PARENTESIS_FIN).append(AS).append(MUNICIPIO).append(EOL_);
+		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(CODIGO_POSTAL);
+		qryBuilder.append(PARENTESIS_FIN).append(AS).append(CODIGO_POSTAL).append(EOL_);
+//		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(REFERENCIA);
+//		qryBuilder.append(PARENTESIS_FIN).append(AS).append(REFERENCIA).append(EOL_);
+//		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(LOCALIDAD);
+//		qryBuilder.append(PARENTESIS_FIN).append(AS).append(LOCALIDAD).append(EOL_);
+		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(ALIAS_ESTADO).append(DOT).append(NOMBRE);
+		qryBuilder.append(PARENTESIS_FIN).append(AS).append(AS_ESTADO).append(EOL_).append(TAB);
+		qryBuilder.append(TRIM).append(PARENTESIS_INIT).append(ALIAS_PAIS).append(DOT).append(NOMBRE);
+		qryBuilder.append(PARENTESIS_FIN).append(AS).append(AS_PAIS).append(EOL);
+		
+		qryBuilder.append(FROM).append(EOL).append(TAB);		
+		qryBuilder.append(TABLE_NAME).append(AS).append(TABLE_ALIAS);
+		qryBuilder.append(INNER).append(TABLE_ESTADO).append(AS);
+		qryBuilder.append(ALIAS_ESTADO).append(ON).append(ALIAS_ESTADO);
+		qryBuilder.append(DOT).append(ID_ESTADO).append(EQ).append(TABLE_ALIAS);
+		qryBuilder.append(DOT).append(ID_ESTADO).append(EOL).append(TAB);
+		
+		qryBuilder.append(INNER).append(TABLE_PAIS).append(AS);
+		qryBuilder.append(ALIAS_PAIS).append(ON).append(ALIAS_PAIS);
+		qryBuilder.append(DOT).append(ID_PAIS).append(EQ).append(ALIAS_ESTADO);
+		qryBuilder.append(DOT).append(ID_PAIS).append(EOL);
+		
+		qryBuilder.append(WHERE).append(EOL).append(TAB);
+		qryBuilder.append(TABLE_ALIAS).append(DOT).append(ID_DOMICILIO).append(SET_PARAM);
+		qryBuilder.append(EOL).append(ORDER).append(ID_DOMICILIO);
+		
+		FIND_BY_ID = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append(UPDATE).append(EOL).append(TAB).append(TABLE_NAME);

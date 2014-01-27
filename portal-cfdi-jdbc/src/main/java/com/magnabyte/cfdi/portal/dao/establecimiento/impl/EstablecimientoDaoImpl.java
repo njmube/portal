@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.dao.establecimiento.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -107,14 +108,19 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 	@Override
 	public void update (Establecimiento establecimiento) {
 		logger.debug("consulta --- "+EstablecimientoSql.UPDATE_ESTABLECIMIENTO);
-		getJdbcTemplate().update(EstablecimientoSql.UPDATE_ESTABLECIMIENTO, new Object[] {
-			
-				establecimiento.getClave(),
-				establecimiento.getNombre(),
-				establecimiento.getPassword(),
-				establecimiento.getId()
-		});
+		getJdbcTemplate().update(EstablecimientoSql.UPDATE_ESTABLECIMIENTO, 
+				establecimiento.getClave(), establecimiento.getNombre(),
+				establecimiento.getPassword(), establecimiento.getId()
+		);
 	}
+	
+	@Override
+	public void updateFechaCierre(Establecimiento establecimiento, Date fechaUltimoCierre,
+			Date fechaCierreSiguiente) {
+		getJdbcTemplate().update(EstablecimientoSql.UPDATE_FECHA_CIERRE, 
+				fechaUltimoCierre, fechaCierreSiguiente, establecimiento.getId());
+	}
+	
 	@Override
 	public void save(Establecimiento establecimiento) {
 		try {
@@ -137,8 +143,8 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 	
 	@Override
 	public Establecimiento findbyName(Establecimiento establecimiento) {
-		logger.debug("findByName...------ "+ EstablecimientoSql.FIND_by_NAME);
-		String qry = EstablecimientoSql.FIND_by_NAME;
+		logger.debug("findByName...------ "+ EstablecimientoSql.FIND_BY_NAME);
+		String qry = EstablecimientoSql.FIND_BY_NAME;
 		Establecimiento object = null;
 		try {
 			object = getJdbcTemplate().queryForObject(qry, MAPPER_ESTABLECIMIENTO, 
@@ -255,7 +261,7 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 			Establecimiento establecimiento = new Establecimiento();
 			
 			establecimiento.setId(rs.getInt(EstablecimientoSql.ID_ESTABLECIMIENTO));
-			establecimiento.setSiguienteCierre(rs.getDate(EstablecimientoSql.SIGIENTE_CIERRE));
+			establecimiento.setSiguienteCierre(rs.getDate(EstablecimientoSql.SIGUIENTE_CIERRE));
 			establecimiento.setUltimoCierre(rs.getDate(EstablecimientoSql.ULTIMO_CIERRE));
 
 			return establecimiento;

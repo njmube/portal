@@ -53,4 +53,6 @@ public interface DocumentoService {
 	Documento findByEstadoTicket(String archivoOrigen, Establecimiento establecimiento, 
 			List<Ticket> devoluciones);
 
+	Cliente readClienteFromDocumento(Documento documento);
+
 }

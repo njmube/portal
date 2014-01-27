@@ -1,5 +1,7 @@
 package com.magnabyte.cfdi.portal.service.establecimiento.impl;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +69,17 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 		establecimientoDao.update(establecimiento);
 	}
 	
+	@Override
+	public void updateFechaCierre(Establecimiento establecimiento, String fechaCierre) {
+		Date fechaUltimoCierre = FechasUtils
+				.parseStringToDate(fechaCierre, FechasUtils.formatddMMyyyyHyphen);
+		Calendar fechaCierreTemp = Calendar.getInstance();
+		fechaCierreTemp.setTime(fechaUltimoCierre);
+		fechaCierreTemp.add(Calendar.DAY_OF_MONTH, 1);
+		Date fechaCierreSiguiente = fechaCierreTemp.getTime();
+		establecimientoDao.updateFechaCierre(establecimiento, fechaUltimoCierre, fechaCierreSiguiente);
+	}
+	
 	@Transactional(readOnly = true)
 	@Override
 	public void save (Establecimiento establecimiento) {
@@ -76,17 +89,17 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 	@Transactional(readOnly = true)
 	@Override
 	public boolean exist(Establecimiento establecimiento) {
-		Establecimiento esta = establecimientoDao.findbyName(establecimiento);
+		Establecimiento establecimientoBD = establecimientoDao.findbyName(establecimiento);
 		
 		if (establecimiento.getId() != null) {
-			if (esta != null) {
-				if(establecimiento.getId().equals(esta.getId())){
+			if (establecimientoBD != null) {
+				if(establecimiento.getId().equals(establecimientoBD.getId())){
 					return false;
 				}
 				return true;
 			}
 		} else {
-			if (esta != null) {
+			if (establecimientoBD != null) {
 				return true;
 			}
 		}
@@ -96,15 +109,16 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 	@Transactional(readOnly = true)
 	@Override
 	public String readFechaCierreById(Establecimiento establecimiento) {
-		Establecimiento estab = establecimientoDao
+		Establecimiento establecimientoBD = establecimientoDao
 				.readFechaCierreById(establecimiento);
 		
-		if (estab.getSiguienteCierre() != null) {
+		if (establecimientoBD.getSiguienteCierre() != null) {
 			String fechaCierreSig = FechasUtils.parseDateToString(
-					estab.getSiguienteCierre(), FechasUtils.formatddMMyyyyHyphen);
+					establecimientoBD.getSiguienteCierre(), FechasUtils.formatddMMyyyyHyphen);
 			return fechaCierreSig;
 		}
 		
 		return null;
 	}
+	
 }
