@@ -39,7 +39,7 @@ public class EstablecimientoSql extends GenericSql {
 	public static final String RUTA_REPOSITORIO = "ruta_repo";
 	public static final String ID_RUTA_ESTAB = "id_ruta_establecimiento";
 	
-	public static final String SIGIENTE_CIERRE = "siguiente_cierre";
+	public static final String SIGUIENTE_CIERRE = "siguiente_cierre";
 	public static final String ULTIMO_CIERRE = "ultimo_cierre";
 	
 	public static final String GET_ROLES;
@@ -52,7 +52,8 @@ public class EstablecimientoSql extends GenericSql {
 	public static final String UPDATE_ESTABLECIMIENTO;
 	public static final String READ_RUTA_BY_ID;
 	public static final String READ_FECHA_CIERRE_BY_ID;
-	public static final String FIND_by_NAME;
+	public static final String FIND_BY_NAME;
+	public static final String UPDATE_FECHA_CIERRE;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -338,8 +339,12 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(OR).append(EOL).append(TAB);
 		qryBuilder.append(NOMBRE).append(SET_PARAM);
 		
-		FIND_by_NAME = qryBuilder.toString();
+		FIND_BY_NAME = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		
+		qryBuilder.append("update t_establecimiento_cierre set ultimo_cierre = ?, siguiente_cierre = ?").append(EOL);
+		qryBuilder.append("where id_establecimiento = ?").append(EOL);
+		
+		UPDATE_FECHA_CIERRE = qryBuilder.toString();
 	}	
 }

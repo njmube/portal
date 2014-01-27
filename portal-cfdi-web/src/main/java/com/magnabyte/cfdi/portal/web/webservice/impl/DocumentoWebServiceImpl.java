@@ -22,7 +22,6 @@ import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
-import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
 
@@ -42,9 +41,6 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	
 	@Autowired
 	private DocumentoService documentoService;
-	
-	@Autowired
-	private SambaService sambaService;
 	
 	@Autowired
 	private EstablecimientoService establecimientoService;
@@ -87,10 +83,6 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			documento.setXmlCfdi(documentoXmlService
 					.convierteComprobanteAByteArray(documento.getComprobante(), PortalUtils.encodingUTF16));
 
-			//FIXME Verificar si se quita funcionalidad de guardado en disco y movimiento de xml procesado para corporativo
-//			if (documento instanceof DocumentoCorporativo) {
-//				sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
-//			}
 			return true;
 		} else {
 			documentoService.insertDocumentoPendiente(documento, TipoEstadoDocumentoPendiente.TIMBRE_PENDIENTE);

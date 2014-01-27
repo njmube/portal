@@ -26,5 +26,7 @@ public interface EstablecimientoService {
 	Establecimiento read(Establecimiento establecimiento);
 
 	boolean exist(Establecimiento establecimiento);
+
+	void updateFechaCierre(Establecimiento establecimiento, String fechaCierre);
 	
 }

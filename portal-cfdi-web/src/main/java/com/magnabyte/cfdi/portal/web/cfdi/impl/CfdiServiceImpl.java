@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
+import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
@@ -29,12 +30,14 @@ import com.magnabyte.cfdi.portal.model.ticket.ListaTickets;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
 import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
+import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.certificado.CertificadoService;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.emisor.EmisorService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
+import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.web.cfdi.CfdiService;
 import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
@@ -58,6 +61,9 @@ public class CfdiServiceImpl implements CfdiService {
 	
 	@Autowired
 	private CertificadoService certificadoService;
+	
+	@Autowired
+	private SambaService sambaService;
 	
 	@Autowired
 	private EmisorService emisorService;
@@ -90,6 +96,12 @@ public class CfdiServiceImpl implements CfdiService {
 			ticketService.guardarTicketsCierreDia(documento);
 		}
 		sellarYTimbrarComprobante(documento, idServicio, certificado);
+		if (documento instanceof DocumentoCorporativo) {
+			sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
+			sambaService.writeProcessedCfdiXmlFile(documentoXmlService
+					.convierteComprobanteAByteArray(documento.getComprobante(), 
+							PortalUtils.encodingUTF8), documento);
+		}
 	}
 
 	@Override
@@ -223,7 +235,8 @@ public class CfdiServiceImpl implements CfdiService {
 			for(Documento documento : documentosAProcesar) {
 				generarDocumento(documento);
 			}
-			//FIXME desarrollar-cambiar fecha cierre
+			//FIXME Validar actualizacion de fecha cierre
+//			establecimientoService.updateFechaCierre(establecimiento, fechaCierre);
 		} else {
 			logger.error("El cierre del dia actual es posible realizarlo hasta despues del cierre de la tienda");
 			throw new PortalException("El cierre del dia actual es posible realizarlo hasta despues del cierre de la tienda");
