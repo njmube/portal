@@ -20,6 +20,13 @@ import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.enumeration.TipoPersona;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa el acceso a datos de cliente
+ */
 @Repository("clienteDao")
 public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 

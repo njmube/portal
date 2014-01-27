@@ -16,6 +16,13 @@ import com.magnabyte.cfdi.portal.dao.commons.OpcionDeCatalogoDao;
 import com.magnabyte.cfdi.portal.model.commons.OpcionDeCatalogo;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa el acceso a datos para opción de catálogo 
+ */
 @Repository("opcionDeCatalogoDao")
 public class OpcionDeCatalogoDaoImpl extends GenericJdbcDao 
 	implements OpcionDeCatalogoDao {

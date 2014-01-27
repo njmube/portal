@@ -25,6 +25,13 @@ import com.magnabyte.cfdi.portal.model.establecimiento.TipoEstablecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.factory.EstablecimientoFactory;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa el acceso a datos de establecimiento
+ */
 @Repository("establecimientoDao")
 public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 		EstablecimientoDao {

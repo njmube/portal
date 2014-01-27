@@ -8,6 +8,13 @@ import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.commons.Estado;
 import com.magnabyte.cfdi.portal.model.commons.Pais;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa el dommy de un cliente para puebas
+ */
 public class ClienteDummy {
 
 	public static Cliente generateCliente() {

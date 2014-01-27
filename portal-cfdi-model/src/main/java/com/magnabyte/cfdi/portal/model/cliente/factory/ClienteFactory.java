@@ -2,6 +2,13 @@ package com.magnabyte.cfdi.portal.model.cliente.factory;
 
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa la factorya de cliente
+ */
 public class ClienteFactory {
 
 	/**

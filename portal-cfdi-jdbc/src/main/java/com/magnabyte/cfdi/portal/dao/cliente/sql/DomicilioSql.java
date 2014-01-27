@@ -2,6 +2,14 @@ package com.magnabyte.cfdi.portal.dao.cliente.sql;
 
 import com.magnabyte.cfdi.portal.dao.GenericSql;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa las variables estáticas de las consultas para el acceso
+ * de datos de domicilio cliente
+ */
 public class DomicilioSql extends GenericSql {
 
 	public static final String TABLE_NAME = "t_domicilio_cliente";
@@ -102,6 +110,7 @@ public class DomicilioSql extends GenericSql {
 		qryBuilder.append(PARENTESIS_FIN).append(AS).append(MUNICIPIO).append(EOL_);
 		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(CODIGO_POSTAL);
 		qryBuilder.append(PARENTESIS_FIN).append(AS).append(CODIGO_POSTAL).append(EOL_);
+		qryBuilder.append(TAB).append(TABLE_ALIAS).append(DOT).append(ID_ESTATUS).append(EOL_);
 //		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(REFERENCIA);
 //		qryBuilder.append(PARENTESIS_FIN).append(AS).append(REFERENCIA).append(EOL_);
 //		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(TABLE_ALIAS).append(DOT).append(LOCALIDAD);

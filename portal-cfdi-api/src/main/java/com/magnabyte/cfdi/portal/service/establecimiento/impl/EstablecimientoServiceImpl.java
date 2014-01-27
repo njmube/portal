@@ -13,6 +13,13 @@ import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa el servicio de establecimiento
+ */
 @Service("establecimientoService")
 public class EstablecimientoServiceImpl implements EstablecimientoService {
 

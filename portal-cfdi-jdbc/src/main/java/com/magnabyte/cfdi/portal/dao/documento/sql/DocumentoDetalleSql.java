@@ -2,6 +2,14 @@ package com.magnabyte.cfdi.portal.dao.documento.sql;
 
 import com.magnabyte.cfdi.portal.dao.GenericSql;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa las variables con las consultas de acceso a datos
+ * de documento detalle
+ */
 public class DocumentoDetalleSql extends GenericSql {
 
 public static final String TABLE_NAME = "t_documento_detalle";

@@ -21,7 +21,14 @@ import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 
-@Repository
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa el acceso a datos de emisor
+ */
+@Repository("emisorDao")
 public class EmisorDaoImpl extends GenericJdbcDao implements EmisorDao{
 
 	private static final Logger logger = LoggerFactory.getLogger(EmisorDaoImpl.class);

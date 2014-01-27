@@ -1,5 +1,13 @@
 package com.magnabyte.cfdi.portal.dao;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa el SQL genérico con las constantes necesarias para
+ * la construcción de consultas con acceso a la base de datos.
+ */
 public class GenericSql {
 	
 	public static final String SELECT = "SELECT";

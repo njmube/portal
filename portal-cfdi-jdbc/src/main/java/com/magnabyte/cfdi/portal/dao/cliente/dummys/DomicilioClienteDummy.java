@@ -4,6 +4,13 @@ import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.commons.Estado;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa el domicilio de cliente dommy para pruebas
+ */
 public class DomicilioClienteDummy {
 
 	public static DomicilioCliente generateDomicilioCliente() {

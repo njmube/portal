@@ -5,7 +5,13 @@ import java.util.List;
 
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 
-
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Interfáz que representa el acceso a datos de establecimiento
+ */
 public interface EstablecimientoDao {
 
 	Establecimiento findByClave(Establecimiento establecimiento);

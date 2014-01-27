@@ -4,6 +4,13 @@ import java.util.Collection;
 
 import com.magnabyte.cfdi.portal.model.commons.OpcionDeCatalogo;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Interfáz que representa el acceso a datos para opción de catálogo
+ */
 public interface OpcionDeCatalogoDao {
 
 	Collection<OpcionDeCatalogo> getCatalogo(String catalogo, String orderBy);

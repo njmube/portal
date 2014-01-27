@@ -4,10 +4,11 @@ import com.magnabyte.cfdi.portal.model.commons.Domicilio;
 import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusDomiciolioCliente;
 
 /**
- * Clase que representa el domicilio de cliente
  * 
- * @author Edgar Pérez
- *
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa el domicilio de cliente
  */
 public class DomicilioCliente extends Domicilio {
 

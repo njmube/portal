@@ -27,7 +27,6 @@ import org.springframework.stereotype.Repository;
 
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
 import com.magnabyte.cfdi.portal.dao.cliente.sql.ClienteSql;
-import com.magnabyte.cfdi.portal.dao.cliente.sql.DomicilioSql;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
@@ -43,6 +42,13 @@ import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa el acceso a datos de documento
+ */
 @Repository("documentoDao")
 public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 

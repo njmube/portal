@@ -11,6 +11,13 @@ import com.magnabyte.cfdi.portal.model.establecimiento.RutaRepositorio;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.establecimiento.RutaEstablecimientoService;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa el servicio de ruta de establecimiento
+ */
 @Service("RutaEstablecimiento")
 public class RutaEstablecimientoServiceImpl implements RutaEstablecimientoService {
 	

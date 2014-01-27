@@ -7,6 +7,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase generia que permite la inyección del data source para establecer
+ * la conexión de la aplicación con la base de datos
+ */
 public class GenericJdbcDao extends JdbcDaoSupport {
 
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;

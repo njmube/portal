@@ -2,6 +2,14 @@ package com.magnabyte.cfdi.portal.dao.cliente.sql;
 
 import com.magnabyte.cfdi.portal.dao.GenericSql;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que representa las variables estáticas de las consultas para el acceso
+ * de datos de cliente
+ */
 public class ClienteSql extends GenericSql {
 	
 	public static final String TABLE_NAME = "t_cliente";
