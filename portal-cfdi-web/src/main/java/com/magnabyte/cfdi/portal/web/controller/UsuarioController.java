@@ -17,6 +17,13 @@ import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.commons.UsuarioService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que represente el controlador de usuario
+ */
 @Controller
 public class UsuarioController {
 

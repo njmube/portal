@@ -16,6 +16,13 @@ import com.magnabyte.cfdi.portal.model.utils.StringUtils;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.web.cfdi.CfdiService;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que represente el controlador de ticket
+ */
 @Controller
 public class TicketController {
 

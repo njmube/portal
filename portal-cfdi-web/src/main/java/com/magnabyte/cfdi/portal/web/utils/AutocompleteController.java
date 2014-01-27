@@ -14,6 +14,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.magnabyte.cfdi.portal.model.commons.OpcionDeCatalogo;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que represente el controlador de autocompletado
+ */
 @Controller
 public class AutocompleteController {
 

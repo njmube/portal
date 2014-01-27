@@ -13,6 +13,13 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que represente el controlador de menú
+ */
 @Controller
 @SessionAttributes("establecimiento")
 public class MenuController {
