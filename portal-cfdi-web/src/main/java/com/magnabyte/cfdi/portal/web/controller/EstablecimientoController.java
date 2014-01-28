@@ -24,7 +24,13 @@ import com.magnabyte.cfdi.portal.service.establecimiento.DomicilioEstablecimient
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.establecimiento.RutaEstablecimientoService;
 
-
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que represente el controlador de establecimiento
+ */
 @Controller
 public class EstablecimientoController {
 	

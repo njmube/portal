@@ -32,6 +32,13 @@ import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:27/01/2014
+ * Clase que represente el controlador de portal
+ */
 @Controller
 @SessionAttributes({"ticket", "cliente", "establecimiento", "documento"})
 @RequestMapping("/portal/cfdi")
