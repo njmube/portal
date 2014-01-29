@@ -3,9 +3,6 @@ package com.magnabyte.cfdi.portal.service.emisor.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import mx.gob.sat.cfd._3.Comprobante.Emisor;
-import mx.gob.sat.cfd._3.TUbicacion;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Emisor;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.TUbicacion;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.commons.Estado;

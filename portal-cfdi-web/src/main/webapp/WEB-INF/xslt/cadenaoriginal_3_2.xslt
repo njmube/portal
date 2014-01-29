@@ -45,23 +45,6 @@
     <xsl:include href="WEB-INF/xslt/leyendasFisc.xslt"/>
     <xsl:include href="WEB-INF/xslt/spei.xslt"/>
     <xsl:include href="WEB-INF/xslt/nomina.xslt"/>
-    <!--
-    <xsl:include href="src/main/resources/ecc.xslt"/>
-    <xsl:include href="src/main/resources/psgecfd.xslt"/>
-    <xsl:include href="src/main/resources/donat11.xslt"/>
-    <xsl:include href="src/main/resources/divisas.xslt"/>
-    <xsl:include href="src/main/resources/ecb.xslt"/>
-    <xsl:include href="src/main/resources/detallista.xslt"/>
-    <xsl:include href="src/main/resources/implocal.xslt"/>
-    <xsl:include href="src/main/resources/terceros11.xslt"/>
-    <xsl:include href="src/main/resources/iedu.xslt"/>
-    <xsl:include href="src/main/resources/ventavehiculos.xslt"/>
-    <xsl:include href="src/main/resources/pfic.xslt"/>
-    <xsl:include href="src/main/resources/TuristaPasajeroExtranjero.xslt"/>
-    <xsl:include href="src/main/resources/leyendasFisc.xslt"/>
-    <xsl:include href="src/main/resources/spei.xslt"/>
-    <xsl:include href="src/main/resources/nomina.xslt"/>
-    -->
 
 	<!-- Aquí iniciamos el procesamiento de la cadena original con su | inicial y el terminador || -->
 	<xsl:template match="/">|<xsl:apply-templates select="/cfdi:Comprobante"/>||</xsl:template>

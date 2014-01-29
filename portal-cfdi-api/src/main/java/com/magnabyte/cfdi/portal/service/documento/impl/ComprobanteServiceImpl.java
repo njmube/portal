@@ -33,13 +33,6 @@ import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import mx.gob.sat.cfd._3.Comprobante;
-import mx.gob.sat.cfd._3.Comprobante.Conceptos;
-import mx.gob.sat.cfd._3.Comprobante.Conceptos.Concepto;
-import mx.gob.sat.cfd._3.Comprobante.Impuestos;
-import mx.gob.sat.cfd._3.Comprobante.Receptor;
-import mx.gob.sat.cfd._3.TUbicacion;
-
 import org.apache.commons.ssl.PKCS8Key;
 import org.bouncycastle.util.encoders.Base64;
 import org.slf4j.Logger;
@@ -52,6 +45,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Conceptos;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Conceptos.Concepto;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Impuestos;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Receptor;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.TUbicacion;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.commons.Estado;

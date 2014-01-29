@@ -13,7 +13,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import jcifs.smb.NtlmPasswordAuthentication;
-import mx.gob.sat.cfd._3.Comprobante;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -36,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoDao;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoSerieDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;

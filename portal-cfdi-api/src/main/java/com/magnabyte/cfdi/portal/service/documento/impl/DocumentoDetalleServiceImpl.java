@@ -1,7 +1,5 @@
 package com.magnabyte.cfdi.portal.service.documento.impl;
 
-import mx.gob.sat.cfd._3.Comprobante.Conceptos;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoDetalleDao;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Conceptos;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoDetalleService;

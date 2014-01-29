@@ -3,6 +3,7 @@ package com.magnabyte.cfdi.portal.service.establecimiento;
 import com.magnabyte.cfdi.portal.model.commons.Estado;
 import com.magnabyte.cfdi.portal.model.establecimiento.DomicilioEstablecimiento;
 
+
 /**
  * 
  * @author Magnabyte, S.A. de C.V

@@ -2,7 +2,7 @@ package com.magnabyte.cfdi.portal.service.xml;
 
 import java.io.InputStream;
 
-import mx.gob.sat.cfd._3.Comprobante;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
 
 public interface DocumentoXmlService {
 

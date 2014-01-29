@@ -4,8 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import mx.gob.sat.timbrefiscaldigital.TimbreFiscalDigital;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,7 @@ import com.certus.facturehoy.ws2.cfdi.WsEmisionTimbrado;
 import com.certus.facturehoy.ws2.cfdi.WsResponseBO;
 import com.certus.facturehoy.ws2.cfdi.WsServicioBO;
 import com.certus.facturehoy.ws2.cfdi.WsServicios;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.TimbreFiscalDigital;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
