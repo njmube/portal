@@ -146,7 +146,7 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	public boolean isValidComprobanteXml(Comprobante comprobante) {
 		try {
 			InputStream comprobanteStream = convierteComprobanteAStream(comprobante);
-			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.ACCESS_EXTERNAL_SCHEMA);
+			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			Schema schema = sf.newSchema(new StreamSource(resourceLoader.getResource("classpath:/cfdv32.xsd").getInputStream()));
 			Validator validator = schema.newValidator();
 			validator.validate(new StreamSource(comprobanteStream));
