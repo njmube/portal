@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.model.emisor;
 
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Emisor;
 
+
 /**
  * 
  * @author Magnabyte, S.A. de C.V

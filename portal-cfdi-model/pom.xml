@@ -37,8 +37,6 @@
 				<configuration>
 					<packageName>com.magnabyte.cfdi.portal.model.cfdi.v32</packageName>
 					<schemaDirectory>src/main/resources/xsd</schemaDirectory>
-					<outputDirectory>src/main/java</outputDirectory>
-					<clearOutputDir>false</clearOutputDir>
 				</configuration>
 			</plugin>
 		</plugins>
