@@ -49,13 +49,13 @@
 							</div>
 							<div class="form-group">
 								<label for="moneda" class="col-lg-4 control-label"><small>Moneda: </small></label>
-								<div class="col-lg-3">
+								<div class="col-lg-4">
 									<input id="moneda" class="form-control input-sm" value="${comprobante.moneda}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="tcambio" class="col-lg-4 control-label"><small>Tipo de Cambio: </small></label>
-								<div class="col-lg-3">
+								<div class="col-lg-4">
 									<input id="tcambio" class="form-control input-sm" value="${comprobante.tipoCambio}" readonly="readonly"/>
 								</div>
 							</div>

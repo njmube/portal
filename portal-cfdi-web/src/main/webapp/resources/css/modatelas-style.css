@@ -166,6 +166,7 @@ hr {
 }
 
 #back-top {
+	display: none;
 	position: fixed;
 	bottom: 30px;
 	margin-left: 15px;
@@ -176,6 +177,7 @@ hr {
 	display: block;
 	text-align: center;
 	font: 9px/100% Arial, Helvetica, sans-serif;
+	font-weight: bold;
 	text-transform: uppercase;
 	text-decoration: none;
 	color: #bbb;
