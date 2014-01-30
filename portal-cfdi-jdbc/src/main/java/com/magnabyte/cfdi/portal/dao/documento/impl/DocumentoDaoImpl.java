@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLXML;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -39,6 +40,7 @@ import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumento;
 import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
+import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 
 /**
@@ -350,8 +352,15 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	};
 
 	@Override
-	public List<Documento> getDocumentoByCliente(Cliente cliente) {		
-		return getJdbcTemplate().query(DocumentoSql.READ_DOCUMENTO_RUTA, DOCUMENTO_RUTA_MAPPER, cliente.getRfc());
+	public List<Documento> getDocumentoByCliente(Cliente cliente, String fechaInicial, String fechaFinal) {
+		String fechaIni = FechasUtils.specificStringFormatDate(fechaInicial, 
+				FechasUtils.formatddMMyyyyHyphen, FechasUtils.formatyyyyMMddHyphen);
+		
+		String fechaFin = FechasUtils.specificStringFormatDate(fechaFinal, 
+				FechasUtils.formatddMMyyyyHyphen, FechasUtils.formatyyyyMMddHyphen);
+		
+		return getJdbcTemplate().query(DocumentoSql.READ_DOCUMENTO_RUTA, 
+				DOCUMENTO_RUTA_MAPPER,cliente.getRfc(), fechaIni, fechaFin);
 	}
 
 	@Override

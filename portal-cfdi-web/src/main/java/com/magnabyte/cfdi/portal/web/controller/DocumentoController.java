@@ -232,9 +232,10 @@ public class DocumentoController {
 	}
 	
 	@RequestMapping("/portal/cfdi/listaDocumentos")
-	public String listaDocumentos(ModelMap model, @ModelAttribute Cliente cliente) {
+	public String listaDocumentos(ModelMap model, @ModelAttribute Cliente cliente, 
+			@RequestParam String fechaInicial, @RequestParam String fechaFinal) {
 		logger.debug("Obteniendo la lista de documentos");
-		List<Documento> documentos = documentoService.getDocumentos(cliente);
+		List<Documento> documentos = documentoService.getDocumentos(cliente, fechaInicial, fechaFinal);
 		if(documentos != null && !documentos.isEmpty()) {
 			model.put("emptyList", false);
 		}
