@@ -68,9 +68,6 @@ public class SucursalController {
 	private CfdiService cfdiService;
 	
 	@Autowired
-	private TaskExecutor executor;
-	
-	@Autowired
 	private AutorizacionCierreService autCierreService;
 	
 	@Autowired
