@@ -30,6 +30,12 @@
 							<h5 class="text-primary">Datos Ticket</h5>
 							<hr>
 							<div class="form-group">
+								<label for="noSucursal" class="col-lg-4 control-label"><small>No. Sucursal: </small></label>
+								<div class="col-lg-8">
+									<input id="noSucursal" class="form-control input-sm" value="${ticket.transaccion.transaccionHeader.idSucursal}" readonly="readonly"/>
+								</div>
+							</div>
+							<div class="form-group">
 								<label for="noTicket" class="col-lg-4 control-label"><small>No. de Ticket: </small></label>
 								<div class="col-lg-8">
 									<input id="noTicket" class="form-control input-sm" value="${ticket.transaccion.transaccionHeader.idTicket}" readonly="readonly"/>

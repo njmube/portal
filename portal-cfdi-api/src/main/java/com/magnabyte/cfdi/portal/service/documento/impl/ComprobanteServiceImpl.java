@@ -55,6 +55,7 @@ import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.commons.Estado;
 import com.magnabyte.cfdi.portal.model.commons.Pais;
+import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusDomicilioCliente;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
@@ -427,6 +428,7 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 //		domicilio.setLocalidad(comprobante.getReceptor().getDomicilio().getLocalidad());
 //		domicilio.setReferencia(comprobante.getReceptor().getDomicilio().getReferencia());
 		domicilio.setCodigoPostal(comprobante.getReceptor().getDomicilio().getCodigoPostal());
+		domicilio.setEstatus(EstatusDomicilioCliente.ACTIVO);
 		domicilios.add(domicilio);
 		cliente.setDomicilios(domicilios);
 		

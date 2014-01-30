@@ -20,7 +20,7 @@ import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.commons.Estado;
 import com.magnabyte.cfdi.portal.model.commons.Pais;
-import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusDomiciolioCliente;
+import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusDomicilioCliente;
 
 /**
  * 
@@ -195,7 +195,7 @@ public class DomicilioClienteDaoImpl extends GenericJdbcDao implements
 			domicilio.setMunicipio(rs.getString(DomicilioSql.MUNICIPIO));
 			domicilio.setColonia(rs.getString(DomicilioSql.COLONIA));
 			domicilio.setCodigoPostal(rs.getString(DomicilioSql.CODIGO_POSTAL));
-			domicilio.setEstatus(EstatusDomiciolioCliente.getById(
+			domicilio.setEstatus(EstatusDomicilioCliente.getById(
 					rs.getInt(DomicilioSql.ID_ESTATUS)));
 //			domicilio.setLocalidad(rs.getString(DomicilioSql.LOCALIDAD));
 //			domicilio.setReferencia(rs.getString(DomicilioSql.REFERENCIA));

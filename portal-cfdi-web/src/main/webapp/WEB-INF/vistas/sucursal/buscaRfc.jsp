@@ -39,7 +39,7 @@
 						</div>
 					</div>
 				</form:form>
-				<div id="listClientesPage" class="container">
+				<div id="listClientesPage">
 					<jsp:include page="listaClientes.jsp"/>
 				</div>
 			</div>

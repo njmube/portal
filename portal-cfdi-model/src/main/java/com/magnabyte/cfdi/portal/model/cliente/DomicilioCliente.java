@@ -1,7 +1,7 @@
 package com.magnabyte.cfdi.portal.model.cliente;
 
 import com.magnabyte.cfdi.portal.model.commons.Domicilio;
-import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusDomiciolioCliente;
+import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusDomicilioCliente;
 
 /**
  * 
@@ -20,7 +20,7 @@ public class DomicilioCliente extends Domicilio {
 	/**
 	 * Estatus del domicilio
 	 */
-	private EstatusDomiciolioCliente estatus;
+	private EstatusDomicilioCliente estatus;
 	
 	/**
 	 * Constructor por default
@@ -48,7 +48,7 @@ public class DomicilioCliente extends Domicilio {
 	 * Obtiene el estatus del domicilio
 	 * @return estatus
 	 */
-	public EstatusDomiciolioCliente getEstatus() {
+	public EstatusDomicilioCliente getEstatus() {
 		return estatus;
 	}
 
@@ -56,7 +56,7 @@ public class DomicilioCliente extends Domicilio {
 	 * Asigna el estatus del domicilio
 	 * @param estatus
 	 */
-	public void setEstatus(EstatusDomiciolioCliente estatus) {
+	public void setEstatus(EstatusDomicilioCliente estatus) {
 		this.estatus = estatus;
 	}
 }
