@@ -1,5 +1,7 @@
 package com.magnabyte.cfdi.portal.web.cfdi;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
@@ -21,6 +23,9 @@ public interface CfdiService {
 	void sellarYTimbrarComprobante(Documento documento, int idServicio, CertificadoDigital certificado);
 
 	void recuperarTimbreDocumentosPendientes();
+
+	void envioDocumentosFacturacion(String email, String fileName,
+			Integer idDocumento);
 	
 	void recuperaTicketsRest(Establecimiento establecimiento, String fechaCierre);
 	

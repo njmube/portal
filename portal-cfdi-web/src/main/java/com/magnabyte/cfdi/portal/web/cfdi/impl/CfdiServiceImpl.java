@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -94,6 +95,7 @@ public class CfdiServiceImpl implements CfdiService {
 	@Value("${generic.rfc.ventas.mostrador}")
 	private String rfcVentasMostrador;
 
+	@Async
 	@Override
 	public void generarDocumento(Documento documento) {
 		logger.debug("cfdiService...");
@@ -101,12 +103,6 @@ public class CfdiServiceImpl implements CfdiService {
 		int idServicio = documentoWebService.obtenerIdServicio();
 		CertificadoDigital certificado = certificadoService
 				.readVigente(documento.getComprobante());
-		Calendar fechaFacturacion = Calendar.getInstance();
-		documento.setFechaFacturacion(fechaFacturacion.getTime());
-		documentoService.guardarDocumento(documento);
-		if (documento.isVentasMostrador()) {
-			ticketService.guardarTicketsCierreDia(documento);
-		}
 		sellarYTimbrarComprobante(documento, idServicio, certificado);
 		if (documento instanceof DocumentoCorporativo) {
 			sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
@@ -282,6 +278,13 @@ public class CfdiServiceImpl implements CfdiService {
 					"El cierre del dia actual es posible realizarlo hasta despues del cierre de la tienda");
 		}
 	}
+	
+	@Async
+	@Override
+	public void envioDocumentosFacturacion(String email, String fileName,
+			Integer idDocumento) {
+		documentoService.envioDocumentosFacturacionPorXml(email, fileName, idDocumento);
+	}
 
 	private List<Documento> prepararDocumentosNcr(List<Ticket> devoluciones,
 			Establecimiento establecimiento) {
@@ -330,6 +333,7 @@ public class CfdiServiceImpl implements CfdiService {
 		}
 	}
 	
+	@Async
 	@Override
 	public void recuperaTicketsRest(Establecimiento establecimiento, String fechaCierre) {
 		

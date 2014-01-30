@@ -2,9 +2,6 @@ package com.magnabyte.cfdi.portal.service.documento;
 
 import java.util.List;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
@@ -44,9 +41,9 @@ public interface DocumentoService {
 	Documento findById(Documento documento);
 
 	void envioDocumentosFacturacionPorXml(String para, String fileName,
-			Integer idDocumento, HttpServletRequest request);
+			Integer idDocumento);
 
-	byte[] recuperarDocumentoPdf(Documento documento, ServletContext context);
+	byte[] recuperarDocumentoPdf(Documento documento);
 
 	void saveAcuseCfdiXmlFile(Documento documento);
 

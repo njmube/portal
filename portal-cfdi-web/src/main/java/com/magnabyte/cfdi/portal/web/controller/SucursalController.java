@@ -6,7 +6,6 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -67,9 +66,6 @@ public class SucursalController {
 	
 	@Autowired
 	private CfdiService cfdiService;
-	
-	@Autowired
-	private TaskExecutor executor;
 	
 	@Autowired
 	private AutorizacionCierreService autCierreService;
