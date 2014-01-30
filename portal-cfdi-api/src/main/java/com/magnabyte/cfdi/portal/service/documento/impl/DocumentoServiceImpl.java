@@ -263,8 +263,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Transactional(readOnly = true)
 	@Override
-	public List<Documento> getDocumentos(Cliente cliente) {
-		List<Documento> listaDocumentos = documentoDao.getDocumentoByCliente(cliente);
+	public List<Documento> getDocumentos(Cliente cliente, String fechaInicial, String fechaFinal) {
+		List<Documento> listaDocumentos = documentoDao
+				.getDocumentoByCliente(cliente, fechaInicial, fechaFinal);
 		List<Integer> idDocumentos = new ArrayList<Integer>();
 		List<Documento> documentosPorId = null;
 		
