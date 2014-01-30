@@ -3,12 +3,10 @@ package com.magnabyte.cfdi.portal.web.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.magnabyte.cfdi.portal.model.establecimiento.factory.EstablecimientoFactory;
 import com.magnabyte.cfdi.portal.model.ticket.ListaTickets;
@@ -23,7 +21,7 @@ import com.magnabyte.cfdi.portal.web.cfdi.CfdiService;
  * Fecha:27/01/2014
  * Clase que represente el controlador de ticket
  */
-@Controller
+@RestController
 public class TicketController {
 
 	private static final Logger logger = 
@@ -36,7 +34,6 @@ public class TicketController {
 	private CfdiService cfdiService;
 	 
 	@RequestMapping(value = "/portal/cfdi/tickets", method = RequestMethod.POST)
-	@ResponseBody
 	public String listaTickets(@RequestBody ListaTickets tickets) {
 		logger.debug("Entrando al metodo que recibe los tickets.");
 		
@@ -45,15 +42,5 @@ public class TicketController {
 						tickets.getClaveEstablecimiento())), tickets);
 		
 		return ticketService.recibeTicketsWsdl(tickets); 
-	}
-	
-	@RequestMapping(value = "/portal/cfdi/fechaCierre/{noEstablecimiento}")
-	@ResponseBody
-	public String fechaCierre(@PathVariable String noEstablecimiento) {
-		
-		logger.debug("Entrando al metodo que recibe el no. de establecimiento.");
-		logger.debug("Recibiendo establecimiento: {}", noEstablecimiento);
-		
-		return ticketService.fechaCierre(noEstablecimiento);
 	}
 }

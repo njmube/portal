@@ -3,9 +3,11 @@ package com.magnabyte.cfdi.portal.web.cfdi.impl;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import mx.gob.sat.cfd._3.Comprobante;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
@@ -53,6 +56,8 @@ public class CfdiServiceImpl implements CfdiService {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(CfdiServiceImpl.class);
+	
+	private RestTemplate restTemplate;
 
 	@Autowired
 	private DocumentoWebService documentoWebService;
@@ -324,5 +329,24 @@ public class CfdiServiceImpl implements CfdiService {
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void recuperaTicketsRest(Establecimiento establecimiento, String fechaCierre) {
+		
+		restTemplate = new RestTemplate();
+		
+		String rutaIpLocal = establecimiento.getRutaRepositorio()
+				.getRutaRepositorio().replace("smb://", "http://") + ":8080/" ;
+		
+		Map<String, String> parametros = new HashMap<String, String>();
+		
+		parametros.put("fechaCierre", fechaCierre);
+		parametros.put("claveEstablecimiento", establecimiento.getClave());
+		parametros.put("rutaRepoIn", establecimiento.getRutaRepositorio().getRutaRepoIn());
+		
+		String resp = restTemplate.postForObject(rutaIpLocal + "obtenerTickets", parametros, String.class);
+		
+		logger.debug(resp);
 	}
 }

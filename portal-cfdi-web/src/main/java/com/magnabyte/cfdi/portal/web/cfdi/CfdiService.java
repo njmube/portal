@@ -22,4 +22,6 @@ public interface CfdiService {
 
 	void recuperarTimbreDocumentosPendientes();
 	
+	void recuperaTicketsRest(Establecimiento establecimiento, String fechaCierre);
+	
 }

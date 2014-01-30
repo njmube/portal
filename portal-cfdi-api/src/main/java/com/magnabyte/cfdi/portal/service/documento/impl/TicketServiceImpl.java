@@ -431,7 +431,8 @@ public class TicketServiceImpl implements TicketService {
 					.equals(documentoOrigen.getTicket().getNombreArchivo())) {
 				for (PartidaDevolucion partidaDevolucion : ticket.getTransaccion().getPartidasDevolucion()) {
 					if (!documentoService.isArticuloSinPrecio(partidaDevolucion.getArticulo().getId())) {
-						if (partidaDevolucion.getArticulo().getTipoCategoria() != null && !partidaDevolucion.getArticulo().getTipoCategoria().equals(categoriaSinPrecio)) {
+						if (partidaDevolucion.getArticulo().getTipoCategoria() != null && !partidaDevolucion
+								.getArticulo().getTipoCategoria().equals(categoriaSinPrecio)) {
 							Partida partida = new Partida();
 							Articulo articulo = new Articulo();
 							articulo.setId(partidaDevolucion.getArticulo().getId());
