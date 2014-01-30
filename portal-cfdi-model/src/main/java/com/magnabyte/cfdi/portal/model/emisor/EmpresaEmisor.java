@@ -1,6 +1,7 @@
 package com.magnabyte.cfdi.portal.model.emisor;
 
-import mx.gob.sat.cfd._3.Comprobante.Emisor;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Emisor;
+
 
 /**
  * 

@@ -3,11 +3,6 @@ package com.magnabyte.cfdi.portal.dao.emisor.impl;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import mx.gob.sat.cfd._3.Comprobante.Emisor;
-import mx.gob.sat.cfd._3.Comprobante.Emisor.RegimenFiscal;
-import mx.gob.sat.cfd._3.TUbicacion;
-import mx.gob.sat.cfd._3.TUbicacionFiscal;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
@@ -18,6 +13,10 @@ import com.magnabyte.cfdi.portal.dao.cliente.sql.DomicilioSql;
 import com.magnabyte.cfdi.portal.dao.emisor.EmisorDao;
 import com.magnabyte.cfdi.portal.dao.emisor.sql.EmisorSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Emisor;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Emisor.RegimenFiscal;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.TUbicacion;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.TUbicacionFiscal;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 

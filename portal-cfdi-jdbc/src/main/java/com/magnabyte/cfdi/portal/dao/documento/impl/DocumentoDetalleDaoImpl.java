@@ -4,9 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import mx.gob.sat.cfd._3.Comprobante.Conceptos;
-import mx.gob.sat.cfd._3.Comprobante.Conceptos.Concepto;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -17,6 +14,8 @@ import org.springframework.stereotype.Repository;
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
 import com.magnabyte.cfdi.portal.dao.documento.DocumentoDetalleDao;
 import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoDetalleSql;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Conceptos;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Conceptos.Concepto;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 

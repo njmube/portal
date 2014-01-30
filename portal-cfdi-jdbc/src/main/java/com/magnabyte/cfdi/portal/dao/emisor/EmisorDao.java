@@ -1,7 +1,6 @@
 package com.magnabyte.cfdi.portal.dao.emisor;
 
-import mx.gob.sat.cfd._3.TUbicacion;
-
+import com.magnabyte.cfdi.portal.model.cfdi.v32.TUbicacion;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 

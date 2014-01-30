@@ -15,7 +15,7 @@
 	<context:component-scan base-package="com.magnabyte.cfdi.portal.service" />
 	
 	<oxm:jaxb2-marshaller id="jaxb2Marshaller">
-		<oxm:class-to-be-bound name="mx.gob.sat.cfd._3.Comprobante"/>
+		<oxm:class-to-be-bound name="com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante"/>
 		<oxm:class-to-be-bound name="com.magnabyte.cfdi.portal.model.ticket.Ticket"/>
 	</oxm:jaxb2-marshaller>
 	

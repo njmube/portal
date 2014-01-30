@@ -1,8 +1,7 @@
 package com.magnabyte.cfdi.portal.service.documento;
 
-import mx.gob.sat.cfd._3.Comprobante;
-
 import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
