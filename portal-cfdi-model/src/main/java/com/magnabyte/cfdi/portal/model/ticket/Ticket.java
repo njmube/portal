@@ -1,5 +1,6 @@
 package com.magnabyte.cfdi.portal.model.ticket;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +18,13 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "TAS")
-public class Ticket {
+public class Ticket implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2624393092615817805L;
+
 		@XmlTransient
 		protected Integer id;
 		

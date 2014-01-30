@@ -1,7 +1,11 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
+import java.util.Date;
+
 import javax.validation.Valid;
 
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.JsonObject;
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
@@ -29,6 +32,7 @@ import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
+import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
@@ -72,8 +76,6 @@ public class SucursalController {
 	
 	@Autowired
 	private EstablecimientoService establecimientoService;
-	
-	private RestTemplate restTemplate;
 	
 	private static final Logger logger = LoggerFactory.getLogger(SucursalController.class);
 	
@@ -163,20 +165,29 @@ public class SucursalController {
 	@RequestMapping(value="/cierre", method = RequestMethod.POST)
 	public String cierre(@RequestParam String fechaCierre, @ModelAttribute Usuario usuario,
 			@ModelAttribute Establecimiento establecimiento, ModelMap model) {		
-		restTemplate = new RestTemplate();
+		
 		usuario.setEstablecimiento(establecimiento);
 		
-		logger.debug("Llegue a cierre");
+		DateTime today = new DateTime();
+		DateTime nowHere = DateTime.now();			
+		
+		long closeDate = FechasUtils.parseStringToDate(fechaCierre,
+				FechasUtils.formatddMMyyyyHyphen).getTime();
 		
 		try {
-			autCierreService.autorizar(usuario);
 			
-			String resp = restTemplate.postForObject("http://localhost:8080/" + "pruebaRest", "Hello", String.class);
-			
-			logger.debug(resp);
-			
-//			cfdiService.closeOfDay(EstablecimientoFactory
-//					.newInstanceClave(StringUtils.formatTicketClaveSucursal(establecimiento.getClave())), null);
+			if(nowHere.getHourOfDay() > 12) {
+				if(today.isEqual(closeDate)) {
+					autCierreService.autorizar(usuario);
+					cfdiService.recuperaTicketsRest(establecimiento, fechaCierre);
+					//			cfdiService.closeOfDay(EstablecimientoFactory
+					//					.newInstanceClave(StringUtils.formatTicketClaveSucursal(establecimiento.getClave())), null);
+				} else if(today.isBefore(closeDate)) {
+					model.put("error", true);
+					model.put("messageError", "Ya se ha realizado el cierre del día.");
+					return "menu/menu";
+				}
+			}
 			
 		} catch (PortalException ex) {
 			model.put("error", true);

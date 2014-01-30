@@ -1,5 +1,6 @@
 package com.magnabyte.cfdi.portal.model.ticket;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -18,7 +19,12 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name = "ticketListType")
 @XmlRootElement(name = "ticketList")
-public class ListaTickets {
+public class ListaTickets implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1238334195201308119L;
 
 	/**
 	 * Clave de establecimiento

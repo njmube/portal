@@ -27,4 +27,6 @@ public interface CfdiService {
 	void envioDocumentosFacturacion(String email, String fileName,
 			Integer idDocumento, HttpServletRequest request);
 	
+	void recuperaTicketsRest(Establecimiento establecimiento, String fechaCierre);
+	
 }
