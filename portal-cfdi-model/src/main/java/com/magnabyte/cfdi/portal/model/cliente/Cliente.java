@@ -49,6 +49,11 @@ public class Cliente {
 	private TipoPersona tipoPersona;
 	
 	/**
+	 * Email de cliente
+	 */
+	private String email;
+	
+	/**
 	 * Constructos por default
 	 */
 	public Cliente() {
@@ -129,6 +134,22 @@ public class Cliente {
 	 */
 	public TipoPersona getTipoPersona() {
 		return tipoPersona;
+	}
+
+	/**
+	 * Devuelve el email de cliente
+	 * @return email
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * Asigna el email de cliente
+	 * @param email
+	 */
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	/**

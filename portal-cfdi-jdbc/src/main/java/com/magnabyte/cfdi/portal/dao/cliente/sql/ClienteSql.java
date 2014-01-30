@@ -19,6 +19,7 @@ public class ClienteSql extends GenericSql {
 	public static String NOMBRE = "nombre";
 	public static String ID_CLIENTE = "id_cliente";
 	public static String TIPO = "tipo_persona";
+	public static String EMAIL = "email";
 	public static String ID_DOM_CLIENTE = "id_domicilio_cliente";
 	
 	public static final String GET_ALL;
@@ -65,7 +66,9 @@ public class ClienteSql extends GenericSql {
 		qryBuilder.append(PARENTESIS_FIN).append(AS).append(NOMBRE).append(EOL_);
 		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(RFC);
 		qryBuilder.append(PARENTESIS_FIN).append(AS).append(RFC).append(EOL_);
-		qryBuilder.append(TAB).append(TIPO).append(EOL);
+		qryBuilder.append(TAB).append(TIPO).append(EOL_);
+		qryBuilder.append(TAB).append(TRIM).append(PARENTESIS_INIT).append(EMAIL);
+		qryBuilder.append(PARENTESIS_FIN).append(AS).append(EMAIL).append(EOL);
 		qryBuilder.append(FROM).append(EOL);
 		qryBuilder.append(TAB).append(TABLE_NAME).append(EOL);
 		qryBuilder.append(WHERE).append(EOL).append(TAB);
@@ -80,7 +83,8 @@ public class ClienteSql extends GenericSql {
 				
 		qryBuilder.append(TAB).append(NOMBRE).append(SET_PARAM).append(EOL_);
 		qryBuilder.append(TAB).append(RFC).append(SET_PARAM).append(EOL_);
-		qryBuilder.append(TAB).append(TIPO).append(SET_PARAM).append(EOL);
+		qryBuilder.append(TAB).append(TIPO).append(SET_PARAM).append(EOL_);
+		qryBuilder.append(TAB).append(EMAIL).append(SET_PARAM).append(EOL);
 		
 		qryBuilder.append(WHERE).append(EOL).append(TAB);
 		qryBuilder.append(ID_CLIENTE).append(SET_PARAM);

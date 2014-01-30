@@ -91,6 +91,7 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 			cliente.getNombre(),
 			cliente.getRfc(),
 			cliente.getTipoPersona().getId(),
+			cliente.getEmail(),
 			cliente.getId()
 		});
 	}
@@ -100,6 +101,7 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 		params.addValue(ClienteSql.NOMBRE, cliente.getNombre());
 		params.addValue(ClienteSql.RFC, cliente.getRfc());
 		params.addValue(ClienteSql.TIPO, cliente.getTipoPersona().getId());
+		params.addValue(ClienteSql.EMAIL, cliente.getEmail());
 
 		return params;
 	}
@@ -120,6 +122,7 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 				tipoPersona = new TipoPersona(TipoPersona.PERSONA_MORAL);				
 			}
 			cliente.setTipoPersona(tipoPersona);
+			cliente.setEmail(rs.getString(ClienteSql.EMAIL));
 			return cliente;
 		}
 	};

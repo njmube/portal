@@ -18,8 +18,12 @@
 					<input id="rfc" class="form-control input-sm" value="${cliente.rfc}" disabled="disabled"/>
 				</div>
 				<label class="control-label col-lg-1">Nombre: </label>
-				<div class="col-lg-3">
+				<div class="col-lg-4">
 					<input id="nombre" class="form-control input-sm" value="${cliente.nombre}" disabled="disabled"/>
+				</div>
+				<label class="control-label col-lg-1">Email: </label>
+				<div class="col-lg-3">
+					<input id="email" class="form-control input-sm" value="${cliente.email}" disabled="disabled"/>
 				</div>
 			</div>
 			<br/>

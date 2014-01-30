@@ -1,11 +1,8 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
-import java.util.Date;
-
 import javax.validation.Valid;
 
 import org.joda.time.DateTime;
-import org.joda.time.Interval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,13 +180,17 @@ public class SucursalController {
 				if(today.isEqual(closeDate)) {
 					autCierreService.autorizar(usuario);
 					cfdiService.recuperaTicketsRest(establecimiento, fechaCierre);
-					//			cfdiService.closeOfDay(EstablecimientoFactory
-					//					.newInstanceClave(StringUtils.formatTicketClaveSucursal(establecimiento.getClave())), null);
+	//				cfdiService.closeOfDay(EstablecimientoFactory
+	//						.newInstanceClave(StringUtils.formatTicketClaveSucursal(establecimiento.getClave())), null);
 				} else if(today.isBefore(closeDate)) {
 					model.put("error", true);
 					model.put("messageError", "Ya se ha realizado el cierre del día.");
 					return "menu/menu";
 				}
+			} else {
+				model.put("error", true);
+				model.put("messageError", "El cierre solo es permitido a partir de las 20:00 hrs.");
+				return "menu/menu";
 			}
 			
 		} catch (PortalException ex) {

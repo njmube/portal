@@ -92,6 +92,12 @@ $(document).ready(function() {
 						<div class="col-lg-6">
 							<form:input path="nombre" id="nombre" cssClass="form-control input-sm validate[required]"/>
 						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-lg-1">Email: </label>
+						<div class="col-lg-3">
+							<form:input path="email" id="email" cssClass="form-control input-sm validate[custom[email]] noUpper"/>
+						</div>
 					</div>					
 					<p class="text-center">
 						<button id="agregar" type="button" class="btn btn-xs btn-warning">Agregar Dirección <i class="fa fa-plus"></i> </button>
