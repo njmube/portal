@@ -110,6 +110,13 @@ public class CfdiServiceImpl implements CfdiService {
 					.convierteComprobanteAByteArray(documento.getComprobante(),
 							PortalUtils.encodingUTF8), documento);
 		}
+		if (documento.getCliente().getEmail() != null && !documento.getCliente().getEmail().isEmpty()) {
+			logger.debug("Se enviara el email con los archivos del documento");
+			String fileName = documento.getTipoDocumento().getNombre() 
+					+ "_" + documento.getComprobante().getSerie() 
+					+ "_" + documento.getComprobante().getFolio();
+			envioDocumentosFacturacion(documento.getCliente().getEmail(), fileName, documento.getId());
+		}
 	}
 
 	@Override

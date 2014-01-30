@@ -165,6 +165,10 @@ hr {
 	z-index: 9;
 }
 
+div[class^="bg-"], div[class*=" bg-"] {
+	padding: 15px;
+}
+
 #back-top {
 	display: none;
 	position: fixed;

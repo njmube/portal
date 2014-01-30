@@ -10,9 +10,13 @@
 <body>
 	<c:set var="filename" value="FACTURA_${documento.comprobante.serie}_${documento.comprobante.folio}" />
 	<sec:authorize access="hasAnyRole('ROLE_CORP', 'ROLE_SUC')">
+		<c:url var="urlReportePDF" value="/reporte/${filename}" />
+		<c:url var="urlReporteXML" value="/documentoXml" />
 		<c:url var="urlMenu" value="/menuPage" />
 	</sec:authorize>
 	<sec:authorize access="isAnonymous()">
+		<c:url var="urlReportePDF" value="/portal/cfdi/reporte/${filename}" />
+		<c:url var="urlReporteXML" value="/portal/cfdi/documentoXml" />
 		<c:url var="urlMenu" value="/portal/cfdi/menu" />
 	</sec:authorize>
 	<div class="container main-content">
@@ -29,25 +33,30 @@
 				<span class="label label-primary">@</span>
 			</h2>
 			<hr>
-			<div class="white-panel col-md-offset-2 col-md-8">
-				<h2 class="text-primary">Solicitud de Factura recibida con éxito!</h2>
-				<hr>
-				<div class="bg-info">
-					<p><strong>En unos minutos recibirá la factura electrónica 
-					<span class="label label-warning">${documento.comprobante.serie}-${documento.comprobante.folio}</span> 
-					en el correo proporcionado. Así mismo ponemos a su disposición la descarga de la misma a través de la 
-					opción de consulta.</strong>
+			<div class="well col-md-offset-2 col-md-8">
+				<div class="row">		
+					<div class="text-center col-md-6 col-md-offset-3">
+						<h4 class="alert alert-success">
+							<strong>Factura generada con éxito.</strong>
+						</h4>
+					</div>
+				</div>
+				<div class="text-center row">
+					<p>
+						<a href="${urlReportePDF}" target="_blank" class="btn btn-primary btn-lg">Ver PDF<img id="pdfImg"
+							src="<c:url value="/resources/img/pdf.png" />"
+							alt="PDF"></a>
 					</p>
 					<p>
-					<strong>
-					Para futuras aclaraciones, le pedimos que conserve su ticket de venta.
-					</strong>
+						<a href="${urlReporteXML}" target="_blank" class="btn btn-primary btn-lg">Ver XML<img id="xmlImg"
+							src="<c:url value="/resources/img/xml.png" />"
+							alt="XML"></a>
 					</p>
 				</div>
 				<hr>
-				<p class="text-center">
+				<div class="text-center row">
 					<a href="${urlMenu}" class="btn btn-danger btn-lg">Terminar</a>
-				</p>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -5,8 +5,10 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jasperreports.engine.JRParameter;
@@ -14,6 +16,9 @@ import net.sf.jasperreports.engine.JRParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,7 +28,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.DefaultSessionAttributeStore;
+import org.springframework.web.bind.support.SessionAttributeStore;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
@@ -73,12 +83,12 @@ public class DocumentoController {
 	private CfdiService cfdiService;
 	
 	@RequestMapping(value = {"/generarDocumento", "/portal/cfdi/generarDocumento"}, method = RequestMethod.POST)
-	public String generarDocumento(@ModelAttribute Documento documento, ModelMap model) {
+	public String generarDocumento(@ModelAttribute Documento documento, ModelMap model, final RedirectAttributes redirectAttributes) {
 		logger.debug("generando documento");
 
 		documentoService.guardarDocumento(documento);
 		cfdiService.generarDocumento(documento);
-		model.put("documento", documento);
+		redirectAttributes.addFlashAttribute("documento", documento);
 		
 		if (documento instanceof DocumentoPortal) {
 			return "redirect:/portal/cfdi/imprimirFactura";
@@ -88,16 +98,36 @@ public class DocumentoController {
 	}
 
 	@RequestMapping(value = {"/imprimirFactura", "/portal/cfdi/imprimirFactura"})
-	public String imprimirFactura() {
+	public String imprimirFactura(@ModelAttribute Documento documento, HttpServletRequest request, 
+			DefaultSessionAttributeStore store, WebRequest webRequest, ModelMap model) {
+		Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
+		if (inputFlashMap == null) {
+			model.remove("documento");
+			store.cleanupAttribute(webRequest, "documento");
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			if(authentication instanceof AnonymousAuthenticationToken) {
+				return "redirect:/portal/cfdi/menu";
+			} else {
+				return "redirect:/menuPage";
+			}
+		}
 		logger.debug("Factura generada...");
-		return "documento/documentoSuccess";
+		if (documento instanceof DocumentoCorporativo) {
+			return "documento/documentoSuccessCorp";
+		} else {
+			return "documento/documentoSuccess";
+		}
 	}
 	
-	//FIXME verificar limpieza de session
 	@RequestMapping("/restartFlow")
 	public String restarFlow(SessionStatus status) {
 		logger.debug("reiniciando flujo");
-		return "redirect:/menu";
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if(authentication instanceof AnonymousAuthenticationToken) {
+			return "redirect:/portal/cfdi/menu";
+		} else {
+			return "redirect:/menuPage";
+		}
 	}
 
 	@RequestMapping(value = {"/reporte/{filename}", "/portal/cfdi/reporte/{filename}"})
