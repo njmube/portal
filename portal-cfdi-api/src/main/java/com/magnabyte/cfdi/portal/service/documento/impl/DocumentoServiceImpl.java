@@ -11,7 +11,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 import jcifs.smb.NtlmPasswordAuthentication;
 import net.sf.jasperreports.engine.JRException;
@@ -30,7 +29,6 @@ import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -121,6 +119,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Value("${email.plantilla.plaintexterror}")
 	private String namePlainTextError;
+	
+	@Autowired
+	private ServletContext context;
 	
 	@Transactional
 	@Override
@@ -324,7 +325,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	}
 	
 	@Override
-	public byte[] recuperarDocumentoPdf(Documento documento, ServletContext context) {
+	public byte[] recuperarDocumentoPdf(Documento documento) {
 		logger.debug("Creando reporte");
 		JasperPrint reporteCompleto = null;
 		byte[] bytesReport = null;
@@ -421,8 +422,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Override
 	public void envioDocumentosFacturacionPorXml(String para, String fileName,
-		Integer idDocumento, HttpServletRequest request) {
-		ServletContext context = request.getSession().getServletContext();
+		Integer idDocumento) {
 		Documento documento = new Documento();
 		documento.setId(idDocumento);
 		documento = findById(documento);
@@ -442,7 +442,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			textoPlanoPlantillaError = IOUtils.toString(plainTextResourceError.getInputStream(), PortalUtils.encodingUTF8);
 			
 			final Map<String, ByteArrayResource> attach = new HashMap<String, ByteArrayResource>();
-			attach.put(fileName + ".pdf", new ByteArrayResource(recuperarDocumentoPdf(documento, context)));
+			attach.put(fileName + ".pdf", new ByteArrayResource(recuperarDocumentoPdf(documento)));
 			attach.put(fileName + ".xml", new ByteArrayResource(recuperarDocumentoXml(documento)));
 			
 			htmlPlantilla = IOUtils.toString(htmlResource.getInputStream(), PortalUtils.encodingUTF8);

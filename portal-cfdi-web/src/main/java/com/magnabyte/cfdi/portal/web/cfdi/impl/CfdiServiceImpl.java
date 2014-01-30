@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -284,8 +282,8 @@ public class CfdiServiceImpl implements CfdiService {
 	@Async
 	@Override
 	public void envioDocumentosFacturacion(String email, String fileName,
-			Integer idDocumento, HttpServletRequest request) {
-		documentoService.envioDocumentosFacturacionPorXml(email, fileName, idDocumento, request);
+			Integer idDocumento) {
+		documentoService.envioDocumentosFacturacionPorXml(email, fileName, idDocumento);
 	}
 
 	private List<Documento> prepararDocumentosNcr(List<Ticket> devoluciones,
@@ -335,6 +333,7 @@ public class CfdiServiceImpl implements CfdiService {
 		}
 	}
 	
+	@Async
 	@Override
 	public void recuperaTicketsRest(Establecimiento establecimiento, String fechaCierre) {
 		

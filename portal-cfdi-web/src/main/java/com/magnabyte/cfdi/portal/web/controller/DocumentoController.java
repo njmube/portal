@@ -3,11 +3,10 @@ package com.magnabyte.cfdi.portal.web.controller;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jasperreports.engine.JRParameter;
@@ -67,6 +66,9 @@ public class DocumentoController {
 	@Autowired
 	private DocumentoWebService documentoWebService;
 	
+	@Autowired 
+	private ServletContext servletContext;
+	
 	@Autowired
 	private CfdiService cfdiService;
 	
@@ -100,12 +102,12 @@ public class DocumentoController {
 
 	@RequestMapping(value = {"/reporte/{filename}", "/portal/cfdi/reporte/{filename}"})
 	public String reporte(@ModelAttribute Documento documento, @PathVariable String filename, 
-			ModelMap model, HttpServletRequest request) {
+			ModelMap model) {
 		logger.debug("Creando reporte");
 		Locale locale = new Locale("es", "MX");
 		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
 		comprobantes.add(documento.getComprobante());
-		String pathImages = request.getSession().getServletContext().getRealPath("resources/img");
+		String pathImages = servletContext.getRealPath("resources/img");
 		if (documento instanceof DocumentoCorporativo) {
 			model.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
 		} else if (documento instanceof DocumentoSucursal) {
@@ -183,9 +185,9 @@ public class DocumentoController {
 	
 	@RequestMapping("/portal/cfdi/documentoEnvio") 
 	public @ResponseBody Boolean documentoEnvio(@RequestParam Integer idDocumento, 
-			@RequestParam String fileName, @RequestParam String email, HttpServletRequest request) {
+			@RequestParam String fileName, @RequestParam String email) {
 		try {
-			cfdiService.envioDocumentosFacturacion(email, fileName, idDocumento, request);
+			cfdiService.envioDocumentosFacturacion(email, fileName, idDocumento);
 		} catch (PortalException ex) {
 			return false;
 		}
@@ -201,7 +203,7 @@ public class DocumentoController {
 	
 	@RequestMapping("/portal/cfdi/listaDocumentos")
 	public String listaDocumentos(ModelMap model, @ModelAttribute Cliente cliente) {
-		logger.debug("Opteniendo la lista de documentos");
+		logger.debug("Obteniendo la lista de documentos");
 		List<Documento> documentos = documentoService.getDocumentos(cliente);
 		if(documentos != null && !documentos.isEmpty()) {
 			model.put("emptyList", false);

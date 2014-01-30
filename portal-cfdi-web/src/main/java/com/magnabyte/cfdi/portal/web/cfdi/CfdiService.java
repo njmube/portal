@@ -25,7 +25,7 @@ public interface CfdiService {
 	void recuperarTimbreDocumentosPendientes();
 
 	void envioDocumentosFacturacion(String email, String fileName,
-			Integer idDocumento, HttpServletRequest request);
+			Integer idDocumento);
 	
 	void recuperaTicketsRest(Establecimiento establecimiento, String fechaCierre);
 	
