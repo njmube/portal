@@ -3,6 +3,7 @@ package com.magnabyte.cfdi.portal.web.controller;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -73,6 +74,7 @@ public class DocumentoController {
 	public String generarDocumento(@ModelAttribute Documento documento, ModelMap model) {
 		logger.debug("generando documento");
 
+		documentoService.guardarDocumento(documento);
 		cfdiService.generarDocumento(documento);
 		model.put("documento", documento);
 		
@@ -183,7 +185,7 @@ public class DocumentoController {
 	public @ResponseBody Boolean documentoEnvio(@RequestParam Integer idDocumento, 
 			@RequestParam String fileName, @RequestParam String email, HttpServletRequest request) {
 		try {
-			documentoService.envioDocumentosFacturacionPorXml(email, fileName, idDocumento, request);
+			cfdiService.envioDocumentosFacturacion(email, fileName, idDocumento, request);
 		} catch (PortalException ex) {
 			return false;
 		}

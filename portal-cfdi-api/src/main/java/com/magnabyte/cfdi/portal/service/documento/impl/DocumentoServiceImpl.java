@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -29,6 +30,7 @@ import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -130,6 +132,11 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public void guardarDocumento(Documento documento) {
 		if(documento != null) {
+			Calendar fechaFacturacion = Calendar.getInstance();
+			documento.setFechaFacturacion(fechaFacturacion.getTime());
+			if (documento.isVentasMostrador()) {
+				ticketService.guardarTicketsCierreDia(documento);
+			}
 			documento.setXmlCfdi(documentoXmlService
 					.convierteComprobanteAByteArray(documento.getComprobante(), PortalUtils.encodingUTF16));
 			if(documento instanceof DocumentoSucursal) {
@@ -413,49 +420,43 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	}
 	
 	@Override
-	public void envioDocumentosFacturacionPorXml(final String para, final String fileName,
-		final Integer idDocumento, final HttpServletRequest request) {
-		final ServletContext context = request.getSession().getServletContext();
-		new Thread(new Runnable() {
+	public void envioDocumentosFacturacionPorXml(String para, String fileName,
+		Integer idDocumento, HttpServletRequest request) {
+		ServletContext context = request.getSession().getServletContext();
+		Documento documento = new Documento();
+		documento.setId(idDocumento);
+		documento = findById(documento);
+		String asunto = subject + fileName;
+		String htmlPlantilla = null;
+		String textoPlanoPlantilla = null;
+		String htmlPlantillaError = null;
+		String textoPlanoPlantillaError = null;
+		
+		Resource htmlResource = resourceLoader.getResource("classpath:/" + nameHtmlText);
+		Resource plainTextResource = resourceLoader.getResource("classpath:/" + namePlainText);
+		Resource htmlResourceError = resourceLoader.getResource("classpath:/" + nameHtmlTextError);
+		Resource plainTextResourceError = resourceLoader.getResource("classpath:/" + namePlainTextError);
+		
+		try {
+			htmlPlantillaError = IOUtils.toString(htmlResourceError.getInputStream(), PortalUtils.encodingUTF8);
+			textoPlanoPlantillaError = IOUtils.toString(plainTextResourceError.getInputStream(), PortalUtils.encodingUTF8);
 			
-			@Override
-			public void run() {
-				Documento documento = new Documento();
-				documento.setId(idDocumento);
-				documento = findById(documento);
-				String asunto = subject + fileName;
-				String htmlPlantilla = null;
-				String textoPlanoPlantilla = null;
-				String htmlPlantillaError = null;
-				String textoPlanoPlantillaError = null;
-				
-				Resource htmlResource = resourceLoader.getResource("classpath:/" + nameHtmlText);
-				Resource plainTextResource = resourceLoader.getResource("classpath:/" + namePlainText);
-				Resource htmlResourceError = resourceLoader.getResource("classpath:/" + nameHtmlTextError);
-				Resource plainTextResourceError = resourceLoader.getResource("classpath:/" + namePlainTextError);
-				
-				try {
-					htmlPlantillaError = IOUtils.toString(htmlResourceError.getInputStream(), PortalUtils.encodingUTF8);
-					textoPlanoPlantillaError = IOUtils.toString(plainTextResourceError.getInputStream(), PortalUtils.encodingUTF8);
-					
-					final Map<String, ByteArrayResource> attach = new HashMap<String, ByteArrayResource>();
-					attach.put(fileName + ".pdf", new ByteArrayResource(recuperarDocumentoPdf(documento, context)));
-					attach.put(fileName + ".xml", new ByteArrayResource(recuperarDocumentoXml(documento)));
-					
-					htmlPlantilla = IOUtils.toString(htmlResource.getInputStream(), PortalUtils.encodingUTF8);
-					textoPlanoPlantilla = IOUtils.toString(plainTextResource.getInputStream(), PortalUtils.encodingUTF8);
-					//FIXME Cambiar configuracion mail
-					emailService.sendMailWithAttach(textoPlanoPlantilla,htmlPlantilla, asunto, attach, para);
-					
-				} catch (PortalException ex) {
-					logger.error("Error al leer los archivos adjuntos.", ex);
-					emailService.sendMimeMail(textoPlanoPlantillaError, htmlPlantillaError ,asunto, para);
-				} catch (IOException ex) {
-					logger.error("Error al leer los archivos adjuntos.", ex);
-					emailService.sendMimeMail(textoPlanoPlantillaError, htmlPlantillaError ,asunto, para);
-				}
-			}
-		}).start();
+			final Map<String, ByteArrayResource> attach = new HashMap<String, ByteArrayResource>();
+			attach.put(fileName + ".pdf", new ByteArrayResource(recuperarDocumentoPdf(documento, context)));
+			attach.put(fileName + ".xml", new ByteArrayResource(recuperarDocumentoXml(documento)));
+			
+			htmlPlantilla = IOUtils.toString(htmlResource.getInputStream(), PortalUtils.encodingUTF8);
+			textoPlanoPlantilla = IOUtils.toString(plainTextResource.getInputStream(), PortalUtils.encodingUTF8);
+			//FIXME Cambiar configuracion mail
+			emailService.sendMailWithAttach(textoPlanoPlantilla,htmlPlantilla, asunto, attach, para);
+			
+		} catch (PortalException ex) {
+			logger.error("Error al leer los archivos adjuntos.", ex);
+			emailService.sendMimeMail(textoPlanoPlantillaError, htmlPlantillaError ,asunto, para);
+		} catch (IOException ex) {
+			logger.error("Error al leer los archivos adjuntos.", ex);
+			emailService.sendMimeMail(textoPlanoPlantillaError, htmlPlantillaError ,asunto, para);
+		}
 	}
 
 	@Transactional(readOnly = true)
