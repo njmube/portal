@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.DefaultSessionAttributeStore;
-import org.springframework.web.bind.support.SessionAttributeStore;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -88,6 +87,9 @@ public class DocumentoController {
 
 		documentoService.guardarDocumento(documento);
 		cfdiService.generarDocumento(documento);
+		if (documento instanceof DocumentoCorporativo) {
+			cfdiService.generarDocumentoCorp(documento);
+		}
 		redirectAttributes.addFlashAttribute("documento", documento);
 		
 		if (documento instanceof DocumentoPortal) {

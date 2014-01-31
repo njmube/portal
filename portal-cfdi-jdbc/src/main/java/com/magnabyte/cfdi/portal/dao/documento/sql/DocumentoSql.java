@@ -115,8 +115,8 @@ public class DocumentoSql extends GenericSql {
 		qryBuilder.append(FROM).append(EOL).append("t_documento_cfdi as cfdi").append(EOL).append(TAB);
 		qryBuilder.append(INNER).append(EOL).append(TAB).append("t_documento as doc on doc.id_documento = cfdi.id_documento").append(EOL).append(TAB);
 		qryBuilder.append(INNER).append(EOL).append(TAB).append("t_documento_folio as folio on cfdi.id_documento = folio.id_documento").append(EOL);
-		qryBuilder.append(WHERE).append(EOL).append(TAB).append("cfdi.id_documento in (:idDocumentos)");
-		
+		qryBuilder.append(WHERE).append(EOL).append(TAB).append("cfdi.id_documento in (:idDocumentos)").append(EOL);
+		qryBuilder.append("order by folio.id_documento");
 		READ_DOCUMENTOS_FACTURADOS = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		

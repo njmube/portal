@@ -64,9 +64,6 @@ public class TicketDaoImpl extends GenericJdbcDao
 				ps.setInt(1, Integer.parseInt(documento.getVentas().get(i).getTransaccion().getTransaccionHeader().getIdTicket()));
 				ps.setInt(2, documento.getEstablecimiento().getId());
 				ps.setInt(3, Integer.parseInt(documento.getVentas().get(i).getTransaccion().getTransaccionHeader().getIdCaja()));
-//				ps.setString(4, FechasUtils.specificStringFormatDate(documento.getVentas().get(i).
-//						getTransaccion().getTransaccionHeader().getFechaHora(), 
-//						FechasUtils.formatyyyyMMddHHmmss, FechasUtils.formatddMMyyyyHHmmssSlash));
 				ps.setDate(4, new java.sql.Date(FechasUtils.parseStringToDate(documento.getVentas().get(i).
 						getTransaccion().getTransaccionHeader().getFechaHora(), FechasUtils.formatyyyyMMddHHmmss).getTime()));
 				ps.setInt(5, estadoTicket.getId());

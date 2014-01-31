@@ -22,7 +22,7 @@
 			<hr>
 			<c:if test="${invalidTicket}">
 				<div class="col-md-offset-2 col-md-8">
-					<div class="alert alert-danger alert-dismissable auto-close">
+					<div class="alert alert-danger alert-dismissable">
 						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 						<spring:message code="messages.ticket.failed"/>
 						<br><br> <strong><spring:message code="messages.ticket.invalid.cause" /></strong> 
@@ -103,8 +103,6 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$("#ticketForm").validationEngine();
-			
-			$("#fecha").val(formatDateToString(new Date()));
 			
 			$("#divFecha").datepicker({
 				language: "es",

@@ -1,7 +1,5 @@
 package com.magnabyte.cfdi.portal.web.cfdi;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
@@ -28,5 +26,7 @@ public interface CfdiService {
 			Integer idDocumento);
 	
 	void recuperaTicketsRest(Establecimiento establecimiento, String fechaCierre);
+
+	void generarDocumentoCorp(Documento documento);
 	
 }

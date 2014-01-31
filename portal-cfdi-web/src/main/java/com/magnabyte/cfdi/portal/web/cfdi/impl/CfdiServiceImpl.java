@@ -118,6 +118,11 @@ public class CfdiServiceImpl implements CfdiService {
 			envioDocumentosFacturacion(documento.getCliente().getEmail(), fileName, documento.getId());
 		}
 	}
+	
+	@Override
+	public void generarDocumentoCorp(Documento documento) {
+		generarDocumento(documento);
+	}
 
 	@Override
 	public void sellarYTimbrarComprobante(Documento documento, int idServicio,
