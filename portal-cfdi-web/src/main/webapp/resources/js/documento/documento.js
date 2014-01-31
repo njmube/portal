@@ -2,10 +2,11 @@ $(document).ready(function() {
 	
 	$("#documentoForm").validationEngine();
 	
-	var today = new Date(); 
 	var beforTreeMonts = GetNewDate(new Date(), 4, false);
 	var fechaFin = $("#divFechaFin");
-	
+	var today = new Date(); 
+	$("#fechaInit").val(formatDateToString(today));
+	$("#fechaFin").val(formatDateToString(today));
 	$("#divFechaInit").datepicker({
 		startDate: beforTreeMonts, 
 		endDate: today,
@@ -13,29 +14,16 @@ $(document).ready(function() {
 		todayHighlight: true,
 		autoclose: true
 	}).on('changeDate', function(ev){
-		
 		$("#fechaFin").val("");
 		fechaFin.datepicker('remove');
-		
 		fechaFin.datepicker({
 			startDate: new Date(ev.date.valueOf()), 
-			endDate: '-0m',
+			endDate: today,
 			language: "es",
 			todayHighlight: true,
 			autoclose: true 
 			});
-		});			
-	
-//	$("#fechaInit").datepicker({startDate: beforTreeMonts, endDate: today})
-//		.on('changeDate', function(ev){
-//			$("#fechaFin").val("");
-//			$("#fechaFin").datepicker('remove');
-//			$("#fechaFin").datepicker({
-//				startDate: new Date(ev.date.valueOf()),
-//				endDate: '-0m'}).on('changeDate', function(ev){
-//				$("#fechaFin").datepicker('hide');
-//			});			
-//    });
+		});		
 	
 	$("#buscarDocumento").click(function() {
 		if($("#documentoForm").validationEngine('validate')) {

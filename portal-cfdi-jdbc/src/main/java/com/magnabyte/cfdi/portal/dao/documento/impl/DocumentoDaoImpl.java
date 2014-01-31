@@ -353,14 +353,10 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 
 	@Override
 	public List<Documento> getDocumentoByCliente(Cliente cliente, String fechaInicial, String fechaFinal) {
-		String fechaIni = FechasUtils.specificStringFormatDate(fechaInicial, 
-				FechasUtils.formatddMMyyyyHyphen, FechasUtils.formatyyyyMMddHyphen);
-		
-		String fechaFin = FechasUtils.specificStringFormatDate(fechaFinal, 
-				FechasUtils.formatddMMyyyyHyphen, FechasUtils.formatyyyyMMddHyphen);
-		
 		return getJdbcTemplate().query(DocumentoSql.READ_DOCUMENTO_RUTA, 
-				DOCUMENTO_RUTA_MAPPER,cliente.getRfc(), fechaIni, fechaFin);
+				DOCUMENTO_RUTA_MAPPER,cliente.getRfc(), 
+				new java.sql.Date(FechasUtils.parseStringToDate(fechaInicial, FechasUtils.formatddMMyyyyHyphen).getTime()),
+				new java.sql.Date(FechasUtils.parseStringToDate(fechaFinal, FechasUtils.formatddMMyyyyHyphen).getTime()));
 	}
 
 	@Override

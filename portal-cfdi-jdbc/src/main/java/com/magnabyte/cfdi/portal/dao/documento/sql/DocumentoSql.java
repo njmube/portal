@@ -104,8 +104,9 @@ public class DocumentoSql extends GenericSql {
 		qryBuilder.append(FROM).append(EOL).append("t_documento as doc").append(EOL).append(TAB);		
 		qryBuilder.append(INNER).append("t_cliente as cte on doc.id_cliente = cte.id_cliente").append(EOL).append(TAB);
 		qryBuilder.append(INNER).append("t_establecimiento as estab on doc.id_establecimiento = estab.id_establecimiento").append(EOL).append(TAB);
-		qryBuilder.append(WHERE).append(EOL).append(TAB).append("cte.rfc like ? and fecha_doc between ? and ?");
-		
+		qryBuilder.append(WHERE).append(EOL).append(TAB).append("cte.rfc like ?").append(EOL).append(TAB);
+		qryBuilder.append("and convert(varchar(10), fecha_doc, 120) >= ?").append(EOL).append(TAB);
+		qryBuilder.append("and convert(varchar(10), fecha_doc, 120) <= ?").append(EOL).append(TAB);
 		
 		READ_DOCUMENTO_RUTA = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
@@ -202,5 +203,4 @@ public class DocumentoSql extends GenericSql {
 		
 		READ_CLIENTE_FROM_DOC = qryBuilder.toString();
 	}
-	
 }

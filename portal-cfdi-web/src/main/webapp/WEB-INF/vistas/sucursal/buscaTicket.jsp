@@ -7,19 +7,6 @@
 <html>
 <head>
 <title>Buscar Ticket</title>
-<script type="text/javascript">
-	$(document).ready(function() {
-		$("#ticketForm").validationEngine();
-		
-		$("#divFecha").datepicker({
-			language: "es",
-			todayHighlight: true,
-			autoclose: true
-		});
-		
-// 		autoClosingAlert(".errorForm", 3500);
-	}); 
-</script>
 </head>
 <body>
 	<div class="container main-content">
@@ -95,6 +82,16 @@
 	</div>
 	<script type="text/javascript">
 		$(document).ready(function() {
+			$("#ticketForm").validationEngine();
+
+			$("#fecha").val(formatDateToString(new Date()));
+			
+			$("#divFecha").datepicker({
+				language: "es",
+				todayHighlight: true,
+				autoclose: true
+			});
+			
 			$("#buscarCliente").click(function() {
 				if($("#ticketForm").validationEngine("validate")) {
 					$("#page_loader").show();

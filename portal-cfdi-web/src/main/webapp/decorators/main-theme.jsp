@@ -47,12 +47,22 @@
 <script type="text/javascript">
 	var contextPath = "${pageContext.request.contextPath}";
 
+	function formatDateToString(dateToFormat) {
+		var today = dateToFormat; 
+	    var curr_date = today.getDate();
+	    var curr_month = today.getMonth() + 1;
+	    var curr_year = today.getFullYear();
+	    if(curr_date < 10){curr_date = '0' + curr_date} 
+	    if(curr_month < 10){curr_month = '0' + curr_month}
+		return curr_date + '-' + curr_month + '-' + curr_year;
+	}
+	
 	function autoClosingAlert(selector, delay) {
 		var alert = $(selector).alert();
 		window.setTimeout(function() {
 			alert.fadeOut("slow");
 		}, delay);
-	}	
+	}
 	
 	$(function() {
 		$.prettyLoader();
