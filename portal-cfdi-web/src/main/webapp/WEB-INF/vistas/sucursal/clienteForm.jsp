@@ -84,21 +84,19 @@ $(document).ready(function() {
     					</div>
 					</div>
 					<div class="form-group">
-						<label class="control-label col-lg-1">* RFC: </label>
+						<label class="control-label col-lg-1">*RFC: </label>
 						<div class="col-lg-2">
 							<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfcFisica]]"/>
 						</div>
-						<label class="control-label col-lg-2">* Nombre: </label>
-						<div class="col-lg-6">
+						<label class="control-label col-lg-1">*Nombre: </label>
+						<div class="col-lg-4">
 							<form:input path="nombre" id="nombre" cssClass="form-control input-sm validate[required]"/>
 						</div>
-					</div>
-					<div class="form-group">
 						<label class="control-label col-lg-1">Email: </label>
 						<div class="col-lg-3">
 							<form:input path="email" id="email" cssClass="form-control input-sm validate[custom[email]] noUpper"/>
 						</div>
-					</div>					
+					</div>
 					<p class="text-center">
 						<button id="agregar" type="button" class="btn btn-xs btn-warning">Agregar Dirección <i class="fa fa-plus"></i> </button>
 					</p>
@@ -122,12 +120,12 @@ $(document).ready(function() {
 							</thead>
 							<tbody>
 								<tr>
-									<td width="200px"><form:input path="domicilios[0].calle" id="calle" 
-										cssClass="form-control input-xsm validate[required]"/></td>
-									<td width="68px"><form:input path="domicilios[0].noExterior" id="noExterior" cssClass="form-control input-xsm validate[required, integer, minSize[1]]"/></td>
-									<td width="68px"><form:input path="domicilios[0].noInterior" id="noInteriorr" cssClass="form-control input-xsm validate[integer]" /></td>
+									<td width="200px"><form:input path="domicilios[0].calle" id="calle0" 
+										cssClass="form-control input-xsm validate[required] calle"/></td>
+									<td width="68px"><form:input path="domicilios[0].noExterior" id="noExterior0" cssClass="form-control input-xsm validate[required, integer, minSize[1]] noExterior"/></td>
+									<td width="68px"><form:input path="domicilios[0].noInterior" id="noInterior0" cssClass="form-control input-xsm validate[integer] noInterior" /></td>
 									<td width="100px">
-									  	<select class="validate[required] form-control-xsm pais" id="pais" name="domicilios[0].estado.pais.id">
+									  	<select class="validate[required] form-control-xsm pais" id="pais0" name="domicilios[0].estado.pais.id">
 									  		<option value="">- Seleccione una opción -</option>
 									  		<c:forEach items="${listaPaises}" var="pais">
 									    		<option value="${pais.id}">${pais.nombre}</option>
@@ -135,16 +133,17 @@ $(document).ready(function() {
   										</select>
 									</td>
 									<td width="100px">
-										<select class="validate[required] form-control-xsm" id="estado" name="domicilios[0].estado.id">
+<%-- 										<form:hidden path="domicilios[0].estado.id" id="estadoOculto"/> --%>
+										<select class="validate[required] form-control-xsm estado" id="estado0" name="domicilios[0].estado.id">
 									  		<option value="">- Seleccione una opción -</option>									  		
   										</select>
 									</td>
-									<td><form:input path="domicilios[0].municipio" id="municipio" cssClass="form-control input-xsm validate[required]" /></td>
-									<td width="200px"><form:input path="domicilios[0].colonia" id="colonia" cssClass="form-control input-xsm validate[required]" /></td>
-									<td width="70px"><form:input path="domicilios[0].codigoPostal" id="codigoPostal" 
-										cssClass="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]]"/></td>
+									<td><form:input path="domicilios[0].municipio" id="municipio0" cssClass="form-control input-xsm validate[required] municipio" /></td>
+									<td width="200px"><form:input path="domicilios[0].colonia" id="colonia0" cssClass="form-control input-xsm validate[required] colonia" /></td>
+									<td width="70px"><form:input path="domicilios[0].codigoPostal" id="codigoPostal0" 
+										cssClass="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]] codigoPostal"/></td>
 									<td align="center">
-										<form:hidden value="ACTIVO" path="domicilios[0].estatus" id="estatus"/>
+										<form:hidden value="ACTIVO" path="domicilios[0].estatus" id="estatus0"/>
 										<i class="fa fa-check-square-o"></i>
 									</td>
 <%-- 									<td><form:input path="domicilios[0].referencia" id="referencia" cssClass="form-control input-xsm" /></td> --%>
