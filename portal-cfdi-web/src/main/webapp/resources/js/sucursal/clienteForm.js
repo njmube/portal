@@ -64,9 +64,9 @@ $(document).ready(function() {
 			$(this).find(".noInterior").attr("name", "domicilios["+ index +"].noInterior");
 			$(this).find(".noInterior").attr("id", "noInterior"+ index);
 			
-			$(this).find(".pais").attr("name", "domicilios["+ index +"].pais");
+			$(this).find(".pais").attr("name", "domicilios["+ index +"].estado.pais.id");
 			$(this).find(".pais").attr("id", "pais"+ index);
-			$(this).find("#paisOculto").attr("name", "domicilios["+ index +"].pais.id");
+			$(this).find("#paisOculto").attr("name", "domicilios["+ index +"].estado.pais.id");
 			
 			$(this).find(".estado").attr("name", "domicilios["+ index +"].estado.id");
 			$(this).find(".estado").attr("id", "estado"+ index);
@@ -100,16 +100,15 @@ $(document).ready(function() {
 			$(this).find("#id").attr("name", "domicilios["+ index +"].id");
 			$(this).find(".calle").attr("name", "domicilios["+ index +"].calle");
 			$(this).find(".calle").attr("id", "calle"+ index);
-			alert($(this).find(".calle").attr("name"));
 			$(this).find(".noExterior").attr("name", "domicilios["+ index +"].noExterior");
 			$(this).find(".noExterior").attr("id", "noExterior"+ index);
 			
 			$(this).find(".noInterior").attr("name", "domicilios["+ index +"].noInterior");
 			$(this).find(".noInterior").attr("id", "noInterior"+ index);
 			
-			$(this).find(".pais").attr("name", "domicilios["+ index +"].pais");
+			$(this).find(".pais").attr("name", "domicilios["+ index +"].estado.pais.id");
 			$(this).find(".pais").attr("id", "pais"+ index);
-			$(this).find("#paisOculto").attr("name", "domicilios["+ index +"].pais.id");
+			$(this).find("#paisOculto").attr("name", "domicilios["+ index +"].estado.pais.id");
 			
 			$(this).find(".estado").attr("name", "domicilios["+ index +"].estado.id");
 			$(this).find(".estado").attr("id", "estado"+ index);
@@ -242,7 +241,7 @@ $("#agregarCorregir").click(function() {
 			+ "<input type=\'hidden\' value=\'ACTIVO\' name=\'domicilios[" + aux + "].estatus\' id=\'hdn_estatus\' class=\'estatus\'/>"
 			+ "<input type=\'checkbox\' id=\'estatus"+ aux +"\' class=\'checkbox estatus\' checked=\'true\'/>" 
 			+ "</td>"
-	//		+ "<td><button id=\'deleteCorregir\' type=\'button\' class=\'btn btn-danger btn-xs\'><i class=\'fa fa-trash-o\'></i></button></td>"
+			+ "<td><button id=\'deleteCorregir\' type=\'button\' class=\'btn btn-danger btn-xs\'><i class=\'fa fa-trash-o\'></i></button></td>"
 			+ "</tr>";
 			
 			$("#tblDireccion tbody").append(tr);

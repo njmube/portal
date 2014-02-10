@@ -33,26 +33,26 @@
 					<display:table htmlId="domicilios" id="domicilio" name="${cliente.domicilios}"
 						class="table table-hover table-striped table-condensed"
 						requestURI="/confirmarDatos">
-								<display:column title="#" property="id" headerClass="text-primary small"></display:column>
-								<display:column title="Calle" property="calle" headerClass="text-primary small"></display:column>
-								<display:column title="No. Ext." property="noExterior" headerClass="text-primary small" />
+								<display:column title="#" property="id" headerClass="text-primary small" class="small"></display:column>
+								<display:column title="Calle" property="calle" headerClass="text-primary small" class="small"></display:column>
+								<display:column title="No. Ext." property="noExterior" headerClass="text-primary small" class="small"/>
 								<c:choose>
 									<c:when test="${empty domicilio.noInterior}">
-										<display:column title="No. Int." value="S/N" headerClass="text-primary small" />
+										<display:column title="No. Int." value="S/N" headerClass="text-primary small" class="small"/>
 									</c:when>
 									<c:otherwise>
-										<display:column title="No. Int." property="noInterior" headerClass="text-primary small" />
+										<display:column title="No. Int." property="noInterior" headerClass="text-primary small" class="small"/>
 									</c:otherwise>
 								</c:choose>
-								<display:column title="País"  property="estado.pais.nombre" headerClass="text-primary small" />
-								<display:column title="Estado"  property="estado.nombre" headerClass="text-primary small" />
-								<display:column title="Municipio"  property="municipio" headerClass="text-primary small" />
-								<display:column title="Colonia" property="colonia" headerClass="text-primary small" />
-								<display:column title="Código Postal"  property="codigoPostal" headerClass="text-primary small" />
-								<display:column title="Estatus" headerClass="text-primary small">
+								<display:column title="País"  property="estado.pais.nombre" headerClass="text-primary small" class="small"/>
+								<display:column title="Estado"  property="estado.nombre" headerClass="text-primary small" class="small"/>
+								<display:column title="Delegación/Municipio"  property="municipio" headerClass="text-primary small" class="small"/>
+								<display:column title="Colonia" property="colonia" headerClass="text-primary small" class="small"/>
+								<display:column title="Código Postal"  property="codigoPostal" headerClass="text-primary small" class="small"/>
+								<display:column title="Estatus" headerClass="text-primary small" class="small">
 									<span id="estatus" class="${domicilio.estatus.id}">${domicilio.estatus.nombre}</span>
 								</display:column>
-								<display:column title="" headerClass="text-primary text-center small">
+								<display:column title="" headerClass="text-primary text-center small" class="small">
 								<c:choose>
 									<c:when test="${domicilio.estatus.id eq 1}">
 										<input type="radio" id="domFiscal" name="domFiscal" value="${domicilio.id}">

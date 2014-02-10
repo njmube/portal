@@ -157,6 +157,7 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 			comprobante.setNumCtaPago(infoPago.getNumeroCuenta());
 			comprobante.setMetodoDePago(infoPago.getPago().getMetodoPago().toUpperCase());
 			comprobante.setMoneda(infoPago.getPago().getMoneda());
+			break;
 		}
 	}
 	
