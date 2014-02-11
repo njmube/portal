@@ -2,7 +2,6 @@ package com.magnabyte.cfdi.portal.service.documento.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -315,14 +314,14 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Override
 	public byte[] recuperarDocumentoXml(Documento documento) {
-		try {
-			logger.debug(new String(documento.getXmlCfdi(), PortalUtils.encodingUTF8));
+//		try {
+//			logger.debug(new String(documento.getXmlCfdi(), PortalUtils.encodingUTF16));
 			Comprobante comprobante = documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi());
 			return documentoXmlService.convierteComprobanteAByteArray(comprobante, PortalUtils.encodingUTF8);
-		} catch (UnsupportedEncodingException ex) {
-			logger.error("Error al convertir el documento a bytes");
-			throw new PortalException("Error al convertir el documento a bytes");
-		}
+//		} catch (UnsupportedEncodingException ex) {
+//			logger.error("Error al convertir el documento a bytes");
+//			throw new PortalException("Error al convertir el documento a bytes");
+//		}
 	}
 	
 	@Override

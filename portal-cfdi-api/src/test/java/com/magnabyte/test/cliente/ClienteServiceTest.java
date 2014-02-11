@@ -1,6 +1,8 @@
 package com.magnabyte.test.cliente;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -26,30 +28,31 @@ import com.magnabyte.cfdi.portal.service.cliente.impl.ClienteServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/jdbcApplicationContext.xml",
-		"classpath:/serviceApplicationContext.xml" })
+		"classpath:/serviceApplicationContextTest.xml" })
 public class ClienteServiceTest {
 
 	private static final Logger logger = Logger.getLogger(ClienteServiceTest.class);
 	
-	@Mock
+//	@Mock
 	ClienteDao clienteDaoMock;
 	
-	@Mock
+//	@Mock
 	DomicilioClienteService domicilioServiceMock;
 	
-	@InjectMocks
+//	@InjectMocks
 	ClienteService clienteService = new ClienteServiceImpl();
 	
 	
-	@Autowired
+//	@Autowired
 	ComparadorRfc comparadorRfc;
 	
-	@Autowired
+//	@Autowired
 	ComparadorNombre comparadorNombre;
 	
 	public static Cliente CLIENTE = null;
 	public static Cliente CLIENTE_DIF = null;
 	public static Cliente CLIENTE_NO_EXISTE = null;
+	public static final String REGEX_RFC = "[A-Z,Ñ,&amp;]{3,4}[0-9]{2}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])[A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?";
 	
 	static {
 		CLIENTE = ClienteDummy.generateCliente();
@@ -59,7 +62,7 @@ public class ClienteServiceTest {
 	
 	@Before
 	public void setUp() {
-		MockitoAnnotations.initMocks(this);
+//		MockitoAnnotations.initMocks(this);
 	}
 	
 //	@Test
@@ -105,7 +108,7 @@ public class ClienteServiceTest {
 		Assert.assertNotNull(clientes);		
 	}
 	
-	@Test
+//	@Test
 	public void comparadorNombre() {
 		Cliente cliente1 = CLIENTE;
 		Cliente cliente2 = CLIENTE;
@@ -116,7 +119,7 @@ public class ClienteServiceTest {
 				comparadorNombre.compare(cliente1, cliente2));
 	}
 	
-	@Test
+//	@Test
 	public void comparadorRfc() {
 		Cliente cliente1 = CLIENTE;
 		Cliente cliente2 = CLIENTE;
@@ -127,7 +130,7 @@ public class ClienteServiceTest {
 				comparadorRfc.compare(cliente1, cliente2));
 	}
 	
-	@Test
+//	@Test
 	public void comparadorNombreDif() {
 		Cliente cliente1 = CLIENTE;
 		Cliente cliente2 = CLIENTE_DIF;
@@ -138,7 +141,7 @@ public class ClienteServiceTest {
 				comparadorNombre.compare(cliente1, cliente2));
 	}
 	
-	@Test
+//	@Test
 	public void comparadorRfcDif() {
 		Cliente cliente1 = CLIENTE;
 		Cliente cliente2 = CLIENTE_DIF;
@@ -147,5 +150,27 @@ public class ClienteServiceTest {
 		
 		Assert.assertNotEquals(0, 
 				comparadorRfc.compare(cliente1, cliente2));
+	}
+	
+	@Test
+	public void validadorRfc() {
+		
+		String [] rfcs = {
+				"VEPO8408291T5", 
+				"ROM650212123", 
+				"FGOP540330KL5", 
+				"DSAC180226FG5", 
+				"FRWS541031GH2"
+				};
+		
+		Pattern pattern = Pattern.compile(REGEX_RFC);
+		
+		int i = 0;
+		Assert.assertTrue(pattern.matcher(rfcs[i++]).matches());
+		Assert.assertTrue(pattern.matcher(rfcs[i++]).matches());
+		Assert.assertTrue(pattern.matcher(rfcs[i++]).matches());
+		Assert.assertTrue(pattern.matcher(rfcs[i++]).matches());
+		Assert.assertTrue(pattern.matcher(rfcs[i++]).matches());
+		
 	}
 }

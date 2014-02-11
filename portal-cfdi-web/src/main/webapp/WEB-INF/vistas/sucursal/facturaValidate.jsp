@@ -146,7 +146,7 @@
 				<div class="col-md-12 text-center">
 					<p>
 						<button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#articulos">
-						  Mostrar Artículos
+						  Mostrar Artículos <i class="fa fa-sort"></i>
 						</button>
 					</p>
 				</div>
@@ -170,10 +170,10 @@
 									<small>${concepto.descripcion}</small>
 								</display:column>
 								<display:column title="Precio Unitario" headerClass="text-primary">
-									<small><fmt:formatNumber value="${concepto.valorUnitario}" type="currency"/></small>
+									<small><fmt:formatNumber value="${concepto.valorUnitario}" type="currency" maxFractionDigits="4"/></small>
 								</display:column>
 								<display:column title="Importe" headerClass="text-primary">
-									<small><fmt:formatNumber value="${concepto.importe}" type="currency"/></small>
+									<small><fmt:formatNumber value="${concepto.importe}" type="currency" maxFractionDigits="4"/></small>
 								</display:column>
 							</display:table>
 						</fieldset>
@@ -192,7 +192,7 @@
 								</div>
 								<label for="descuento" class="col-lg-5 control-label"><small>Descuento: </small></label>
 								<div class="col-lg-2">
-									<input id="descuento" class="form-control input-sm" value="<fmt:formatNumber value="${comprobante.descuento}" type="currency"/>" readonly="readonly"/>
+									<input id="descuento" class="form-control input-sm" value="<fmt:formatNumber value="${comprobante.descuento}" type="currency" maxFractionDigits="4"/>" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
@@ -202,7 +202,7 @@
 								</div>
 								<label for="subtotal" class="col-lg-5 control-label"><small>Subtotal: </small></label>
 								<div class="col-lg-2">
-									<input id="subtotal" class="form-control input-sm" value="<fmt:formatNumber value="${comprobante.subTotal}" type="currency"/>" readonly="readonly"/>
+									<input id="subtotal" class="form-control input-sm" value="<fmt:formatNumber value="${comprobante.subTotal}" type="currency" maxFractionDigits="4"/>" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
@@ -212,7 +212,7 @@
 								</div>
 								<label for="iva" class="col-lg-5 control-label"><small>IVA: </small></label>
 								<div class="col-lg-2">
-									<input id="iva" class="form-control input-sm" value="<fmt:formatNumber value="${comprobante.impuestos.totalImpuestosTrasladados}" type="currency"/>" readonly="readonly"/>
+									<input id="iva" class="form-control input-sm" value="<fmt:formatNumber value="${comprobante.impuestos.totalImpuestosTrasladados}" type="currency" maxFractionDigits="4"/>" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">

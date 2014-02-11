@@ -135,7 +135,8 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 			comprobante.setReceptor(createReceptor(cliente, idDomicilioFiscal));
 			getDetalleFromTicket(ticket, comprobante);
 			createFechaDocumento(comprobante);
-			comprobante.setLugarExpedicion(comprobante.getEmisor().getExpedidoEn().getLocalidad());
+			comprobante.setLugarExpedicion(comprobante.getEmisor().getExpedidoEn().getLocalidad() 
+					+ ", " + comprobante.getEmisor().getExpedidoEn().getEstado());
 			
 			comprobante.setTipoDeComprobante(tipoDocumento.getNombreComprobante());
 			comprobante.setTipoCambio(tipoCambio);
@@ -211,16 +212,16 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 	}
 	
 	private void getDetalleFromTicket(Ticket ticket, Comprobante comprobante) {
-		BigDecimal IVA = new BigDecimal(1.16);
+		BigDecimal IVA = new BigDecimal(1.16).setScale(4, BigDecimal.ROUND_HALF_UP);
 		Conceptos conceptos = new Conceptos();
 		BigDecimal subTotal = new BigDecimal(0);
 		for(Partida partida : ticket.getTransaccion().getPartidas()) {
 			if (!documentoService.isArticuloSinPrecio(partida.getArticulo().getId())) {
 				Concepto concepto = new Concepto();
 				concepto.setCantidad(partida.getCantidad());
-				concepto.setDescripcion(partida.getArticulo().getDescripcion());
-				concepto.setImporte(partida.getPrecioTotal().divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
-				concepto.setValorUnitario(partida.getPrecioUnitario().divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
+				concepto.setDescripcion(partida.getArticulo().getId() + " " + partida.getArticulo().getDescripcion());
+				concepto.setImporte(partida.getPrecioTotal().divide(IVA, 4, BigDecimal.ROUND_HALF_UP));
+				concepto.setValorUnitario(partida.getPrecioUnitario().divide(IVA, 4, BigDecimal.ROUND_HALF_UP));
 				if (partida.getArticulo().getUnidad() != null) {
 					concepto.setUnidad(partida.getArticulo().getUnidad());
 				} else {
@@ -240,13 +241,14 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 		}
 		
 		descuentoTotal = descuentoTotal.negate();
-		comprobante.setDescuento(descuentoTotal.divide(IVA, 2, BigDecimal.ROUND_HALF_UP));
+		comprobante.setDescuento(descuentoTotal.divide(IVA, 4, BigDecimal.ROUND_HALF_UP));
 
-		comprobante.setSubTotal(subTotal.setScale(2, BigDecimal.ROUND_HALF_UP));
+		comprobante.setSubTotal(subTotal.setScale(4, BigDecimal.ROUND_HALF_UP));
 		Impuestos impuesto = new Impuestos();
-		impuesto.setTotalImpuestosTrasladados((comprobante.getSubTotal().subtract(comprobante.getDescuento())).multiply(IVA.subtract(new BigDecimal(1)).setScale(2, BigDecimal.ROUND_HALF_UP)));
+		impuesto.setTotalImpuestosTrasladados((comprobante.getSubTotal().subtract(comprobante.getDescuento()))
+				.multiply(IVA.subtract(new BigDecimal(1)).setScale(4, BigDecimal.ROUND_HALF_UP)).setScale(4, BigDecimal.ROUND_HALF_UP));
 		comprobante.setImpuestos(impuesto);
-		comprobante.setTotal(comprobante.getSubTotal().subtract(comprobante.getDescuento()).add(comprobante.getImpuestos().getTotalImpuestosTrasladados()).setScale(2, BigDecimal.ROUND_UP));
+		comprobante.setTotal(comprobante.getSubTotal().subtract(comprobante.getDescuento()).add(comprobante.getImpuestos().getTotalImpuestosTrasladados()).setScale(4, BigDecimal.ROUND_UP));
 	}
 	
 	private void createFechaDocumento(Comprobante comprobante) {
