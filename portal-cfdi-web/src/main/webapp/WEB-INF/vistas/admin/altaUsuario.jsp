@@ -45,26 +45,26 @@
 						<fieldset>
 							<div class="form-group">
 							<form:hidden path="id"/>
-								<label for="txtNombre" class="col-lg-5 control-label">Usuario:</label>
-								<div class="col-lg-5">
+								<label for="txtNombre" class="col-lg-5 col-md-5 control-label">Usuario:</label>
+								<div class="col-lg-5 col-md-5">
 									<form:input path="usuario" cssClass="form-control input-sm validate[required] noUpper" id="txtNombre" />
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="txtPassword" class="col-lg-5 control-label">Password:</label>
-								<div class="col-lg-5">
+								<label for="txtPassword" class="col-lg-5 col-md-5 control-label">Password:</label>
+								<div class="col-lg-5 col-md-5">
 									<form:password  path="password" cssClass="form-control input-sm validate[required] noUpper" id="txtPassword" />
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="txtConfirmarPassword" class="col-lg-5 control-label">Confirmar password: </label>
-								<div class="col-lg-5">
+								<label for="txtConfirmarPassword" class="col-lg-5 col-md-5 control-label">Confirmar password: </label>
+								<div class="col-lg-5 col-md-5">
 									<form:password  path="" cssClass="form-control input-sm validate[required, equals[txtPassword]] noUpper" id="txtConfirmarPassword" />
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="txtSucursal" class="col-lg-5 control-label">Sucursal: </label>
-								<div class="col-lg-5">
+								<label for="txtSucursal" class="col-lg-5 col-md-5 control-label">Sucursal: </label>
+								<div class="col-lg-5 col-md-5">
 								<form:select  path="establecimiento.id" id="establecimiento" class="form-control input-sm validate[required]">
 									<form:option value="">- Seleccione una opción -</form:option>
 									<c:forEach items="${listaEstablecimientos}" var="establecimiento">
@@ -75,8 +75,8 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="txtEstatus" class="col-lg-5 control-label">Estatus: </label>
-								<div class="col-lg-5">
+								<label for="txtEstatus" class="col-lg-5 col-md-5 control-label">Estatus: </label>
+								<div class="col-lg-5 col-md-5">
 									<form:select  path="estatus" id="estatus" class="form-control input-sm validate[required]">
 									<form:option value="">- Seleccione una opción -</form:option>
 									<form:option value="ACTIVO">ACTIVO</form:option>

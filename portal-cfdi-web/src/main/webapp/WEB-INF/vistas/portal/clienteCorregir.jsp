@@ -95,8 +95,8 @@
 					</div>
 					<div class="form-group">
 						<form:hidden path="id" id="idCliente"/>
-						<label class="control-label col-lg-1">RFC: </label>
-						<div class="col-lg-2">
+						<label class="control-label col-lg-1 col-md-1">RFC: </label>
+						<div class="col-lg-2 col-md-2">
 							<c:choose>
 								<c:when test="${clienteCorregir.tipoPersona.id eq 1}">
 									<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfcFisica]]"/>
@@ -106,12 +106,12 @@
 								</c:when>
 							</c:choose>
 						</div>
-						<label class="control-label col-lg-1">Nombre: </label>
-						<div class="col-lg-4">
+						<label class="control-label col-lg-1 col-md-1">Nombre: </label>
+						<div class="col-lg-4 col-md-4">
 							<form:input path="nombre" id="nombre" cssClass="form-control input-sm validate[required]"/>
 						</div>
-						<label class="control-label col-lg-1">Email: </label>
-						<div class="col-lg-3">
+						<label class="control-label col-lg-1 col-md-1">Email: </label>
+						<div class="col-lg-3 col-md-3">
 							<form:input path="email" id="email" cssClass="form-control input-sm validate[custom[email]] noUpper"/>
 						</div>
 					</div>

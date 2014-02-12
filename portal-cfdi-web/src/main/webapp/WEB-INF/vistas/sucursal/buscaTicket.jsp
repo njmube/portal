@@ -39,22 +39,22 @@
 				<c:url var="urlTicket" value="/validaTicket"/>
 				<form:form id="ticketForm" action="${urlTicket}" method="post" modelAttribute="ticket" cssClass="form-horizontal" role="form">
 					<div class="form-group">
-						<label for="noTicket" class="col-lg-5 control-label">No. de Ticket: </label>
-						<div class="col-lg-3">
+						<label for="noTicket" class="col-lg-5 col-md-5 control-label">No. de Ticket: </label>
+						<div class="col-lg-3 col-md-4">
 							<form:input path="transaccion.transaccionHeader.idTicket" id="noTicket" cssClass="form-control input-sm validate[required]" />
 						</div>
 						<small class="errorForm"><strong><form:errors path="transaccion.transaccionHeader.idTicket" cssClass="text-danger"/></strong></small>
 					</div>
 					<div class="form-group">
-						<label for="caja" class="col-lg-5 control-label">Caja: </label>
-						<div class="col-lg-3">
+						<label for="caja" class="col-lg-5 col-md-5 control-label">Caja: </label>
+						<div class="col-lg-3 col-md-4">
 							<form:input path="transaccion.transaccionHeader.idCaja" id="caja" cssClass="form-control input-sm validate[required]" />
 						</div>
 						<small class="errorForm"><strong><form:errors path="transaccion.transaccionHeader.idCaja" cssClass="text-danger"/></strong></small>
 					</div>
 					<div class="form-group">
-						<label for="fecha" class="col-lg-5 control-label">Fecha: </label>
-						<div class="col-lg-3">
+						<label for="fecha" class="col-lg-5 col-md-5 control-label">Fecha: </label>
+						<div class="col-lg-3 col-md-4">
 							<div class="input-group date" id="divFecha" data-date="" data-date-format="dd-mm-yyyy">
 								<form:input path="transaccion.transaccionHeader.fecha" id="fecha" cssClass="form-control input-sm validate[required] datepicker" readonly="true"/>
 							    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -63,8 +63,8 @@
 				    	<small class="errorForm"><strong><form:errors path="transaccion.transaccionHeader.fecha" cssClass="text-danger"/></strong></small>
 					</div>
 					<div class="form-group">
-						<label for="hora" class="col-lg-5 control-label">Importe: </label>
-						<div class="col-lg-2">
+						<label for="hora" class="col-lg-5 col-md-5 control-label">Importe: </label>
+						<div class="col-lg-2 col-md-3">
 							<form:input path="transaccion.transaccionTotal.totalVenta" id="hora" cssClass="form-control input-sm validate[required]"/>
 						</div>
 						<small class="errorForm"><strong><form:errors path="transaccion.transaccionTotal.totalVenta" cssClass="text-danger"/></strong></small>

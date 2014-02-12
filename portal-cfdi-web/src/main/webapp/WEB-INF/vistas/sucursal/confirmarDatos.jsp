@@ -13,16 +13,16 @@
 			<hr>
 			<c:url var="altaUrl" value="/clienteForm"/>
 			<div class="form-group">
-				<label class="control-label col-lg-1">Rfc: </label>
-				<div class="col-lg-2">
+				<label class="control-label col-lg-1 col-md-1">Rfc: </label>
+				<div class="col-lg-2 col-md-2">
 					<input id="rfc" class="form-control input-sm" value="${cliente.rfc}" disabled="disabled"/>
 				</div>
-				<label class="control-label col-lg-1">Nombre: </label>
-				<div class="col-lg-4">
+				<label class="control-label col-lg-1 col-md-1">Nombre: </label>
+				<div class="col-lg-4 col-md-4">
 					<input id="nombre" class="form-control input-sm" value="${cliente.nombre}" disabled="disabled"/>
 				</div>
-				<label class="control-label col-lg-1">Email: </label>
-				<div class="col-lg-3">
+				<label class="control-label col-lg-1 col-md-1">Email: </label>
+				<div class="col-lg-3 col-md-3">
 					<input id="email" class="form-control input-sm" value="${cliente.email}" disabled="disabled"/>
 				</div>
 			</div>
