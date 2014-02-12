@@ -161,6 +161,7 @@ public class DocumentoController {
 		model.put("QRCODE", codigoQRService.generaCodigoQR(documento));
 		model.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
 		model.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
+		model.put("IVA", documento.getComprobante().getImpuestos().getTraslados().getTraslado().get(0).getTasa());
 		model.put("objetoKey", comprobantes);
 		return ("reporte");
 	}

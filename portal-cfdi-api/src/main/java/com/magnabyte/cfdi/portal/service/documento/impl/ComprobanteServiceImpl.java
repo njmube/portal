@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
@@ -49,6 +50,8 @@ import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Conceptos;
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Conceptos.Concepto;
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Impuestos;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Impuestos.Traslados;
+import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Impuestos.Traslados.Traslado;
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Receptor;
 import com.magnabyte.cfdi.portal.model.cfdi.v32.TUbicacion;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
@@ -116,6 +119,28 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 	
 	@Value("${ticket.unidad.default}")
 	private String unidadDefault;
+	
+	@Value("${cfdi.comprobante.tasa.iva}")
+	private String ivaTasa;
+	
+	@Value("${cfdi.comprobante.descripcion.iva}")
+	private String ivaDescripcion;
+	
+	private BigDecimal IVA;
+	
+	private BigDecimal IVA_DIVISION;
+	
+	private BigDecimal IVA_MULTIPLICACION;
+	
+	@PostConstruct
+	public void init() {
+		IVA = new BigDecimal(ivaTasa);
+		
+		IVA_DIVISION = IVA
+			.divide(new BigDecimal(100)).add(new BigDecimal(1)).setScale(4, BigDecimal.ROUND_HALF_UP);
+		IVA_MULTIPLICACION = IVA_DIVISION
+			.subtract(new BigDecimal(1)).setScale(4, BigDecimal.ROUND_HALF_UP);
+	}
 	
 	@Transactional(readOnly = true)
 	@Override
@@ -212,7 +237,6 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 	}
 	
 	private void getDetalleFromTicket(Ticket ticket, Comprobante comprobante) {
-		BigDecimal IVA = new BigDecimal(1.16).setScale(4, BigDecimal.ROUND_HALF_UP);
 		Conceptos conceptos = new Conceptos();
 		BigDecimal subTotal = new BigDecimal(0);
 		for(Partida partida : ticket.getTransaccion().getPartidas()) {
@@ -220,8 +244,8 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 				Concepto concepto = new Concepto();
 				concepto.setCantidad(partida.getCantidad());
 				concepto.setDescripcion(partida.getArticulo().getId() + " " + partida.getArticulo().getDescripcion());
-				concepto.setImporte(partida.getPrecioTotal().divide(IVA, 4, BigDecimal.ROUND_HALF_UP));
-				concepto.setValorUnitario(partida.getPrecioUnitario().divide(IVA, 4, BigDecimal.ROUND_HALF_UP));
+				concepto.setImporte(partida.getPrecioTotal().divide(IVA_DIVISION, 4, BigDecimal.ROUND_HALF_UP));
+				concepto.setValorUnitario(partida.getPrecioUnitario().divide(IVA_DIVISION, 4, BigDecimal.ROUND_HALF_UP));
 				if (partida.getArticulo().getUnidad() != null) {
 					concepto.setUnidad(partida.getArticulo().getUnidad());
 				} else {
@@ -241,12 +265,20 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 		}
 		
 		descuentoTotal = descuentoTotal.negate();
-		comprobante.setDescuento(descuentoTotal.divide(IVA, 4, BigDecimal.ROUND_HALF_UP));
+		comprobante.setDescuento(descuentoTotal.divide(IVA_DIVISION, 4, BigDecimal.ROUND_HALF_UP));
 
 		comprobante.setSubTotal(subTotal.setScale(4, BigDecimal.ROUND_HALF_UP));
 		Impuestos impuesto = new Impuestos();
-		impuesto.setTotalImpuestosTrasladados((comprobante.getSubTotal().subtract(comprobante.getDescuento()))
-				.multiply(IVA.subtract(new BigDecimal(1)).setScale(4, BigDecimal.ROUND_HALF_UP)).setScale(4, BigDecimal.ROUND_HALF_UP));
+		BigDecimal importeImpuesto = (comprobante.getSubTotal().subtract(comprobante.getDescuento()))
+				.multiply(IVA_MULTIPLICACION).setScale(4, BigDecimal.ROUND_HALF_UP);
+		impuesto.setTotalImpuestosTrasladados(importeImpuesto);
+		Traslados traslados = new Traslados();
+		Traslado traslado = new Traslado();
+		traslado.setImporte(importeImpuesto);
+		traslado.setImpuesto(ivaDescripcion);
+		traslado.setTasa(IVA.setScale(2, BigDecimal.ROUND_HALF_UP));
+		traslados.getTraslado().add(traslado);
+		impuesto.setTraslados(traslados);
 		comprobante.setImpuestos(impuesto);
 		comprobante.setTotal(comprobante.getSubTotal().subtract(comprobante.getDescuento()).add(comprobante.getImpuestos().getTotalImpuestosTrasladados()).setScale(4, BigDecimal.ROUND_UP));
 	}

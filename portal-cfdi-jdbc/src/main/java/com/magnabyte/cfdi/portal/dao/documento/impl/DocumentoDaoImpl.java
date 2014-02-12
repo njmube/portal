@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLXML;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -29,7 +28,6 @@ import com.magnabyte.cfdi.portal.dao.documento.sql.DocumentoSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Impuestos;
-import com.magnabyte.cfdi.portal.model.cfdi.v32.TimbreFiscalDigital;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
@@ -40,6 +38,7 @@ import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumento;
 import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
+import com.magnabyte.cfdi.portal.model.tfd.v32.TimbreFiscalDigital;
 import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 
