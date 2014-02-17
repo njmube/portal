@@ -31,7 +31,7 @@ import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
  * Clase que representa el controlador de cliente
  */ 
 @Controller
-@SessionAttributes({"cliente", "ticket"})
+@SessionAttributes({"cliente"})
 public class ClienteController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ClienteController.class);

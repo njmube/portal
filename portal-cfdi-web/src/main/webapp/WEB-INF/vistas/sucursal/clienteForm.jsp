@@ -104,14 +104,14 @@ $(document).ready(function() {
 						<table class="table table-hover" id="tblDireccion">
 							<thead>
 								<tr>
-									<th><small>* Calle</small></th>
-									<th><small>* No. Ext.</small></th>
+									<th><small>*Calle</small></th>
+									<th><small>*No. Ext.</small></th>
 									<th><small>No. Int.</small></th>								
-									<th><small>* País</small></th>
-									<th><small>* Estado</small></th>
-									<th><small>* Municipio</small></th>
-									<th><small>* Colonia</small></th>
-									<th><small>* C.P.</small></th>
+									<th><small>*País</small></th>
+									<th><small>*Estado</small></th>
+									<th><small>*Municipio/Delegación</small></th>
+									<th><small>*Colonia</small></th>
+									<th><small>*C.P.</small></th>
 									<th><small>	Estatus</small></th>
 <!-- 									<th><small>Referencia</small></th> -->
 <!-- 									<th><small>Localidad</small></th> -->

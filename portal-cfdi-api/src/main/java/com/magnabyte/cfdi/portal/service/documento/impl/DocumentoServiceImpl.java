@@ -447,7 +447,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			
 			htmlPlantilla = IOUtils.toString(htmlResource.getInputStream(), PortalUtils.encodingUTF8);
 			textoPlanoPlantilla = IOUtils.toString(plainTextResource.getInputStream(), PortalUtils.encodingUTF8);
-			//FIXME Cambiar configuracion mail
 			emailService.sendMailWithAttach(textoPlanoPlantilla,htmlPlantilla, asunto, attach, para);
 			
 		} catch (PortalException ex) {
