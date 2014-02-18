@@ -171,7 +171,7 @@
                     "alertText": "* El valor max es "
                 },
                 "cantidad" : {
-                	"regex": "none",
+                	"regex": /^[\-\+]?(([0-9]+)([\.,]([0-9]+))?|([\.,]([0-9]+))?)$/,
                 	"alertText": "* Cantidad inválida"
                 },
                 "descuento" : {

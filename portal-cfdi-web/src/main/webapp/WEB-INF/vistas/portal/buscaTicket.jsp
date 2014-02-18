@@ -25,16 +25,16 @@
 					<div class="alert alert-danger alert-dismissable">
 						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 						<spring:message code="messages.ticket.failed"/>
-						<br><br> <strong><spring:message code="messages.ticket.invalid.cause" /></strong> 
+						<br><br> <strong><i class="fa fa-ban"></i> <spring:message code="messages.ticket.invalid.cause" /></strong> 
 					</div>
 				</div>
 			</c:if>
 			<c:if test="${ticketProcessed}">
 				<div class="col-md-offset-2 col-md-8">
-					<div class="alert alert-danger alert-dismissable auto-close">
+					<div class="alert alert-danger alert-dismissable">
 						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 						Ticket Facturado
-						<br><br> <strong><spring:message code="messages.ticket.processed" /></strong> 
+						<br><br> <strong><i class="fa fa-ban"></i> <spring:message code="messages.ticket.processed" /></strong> 
 					</div>
 				</div>
 			</c:if>
@@ -82,7 +82,7 @@
 					<div class="form-group">
 						<label for="hora" class="col-lg-5 col-md-5 control-label">Importe: </label>
 						<div class="col-lg-3 col-md-3">
-							<form:input path="transaccion.transaccionTotal.totalVenta" id="hora" cssClass="form-control input-sm validate[required]"/>
+							<form:input path="transaccion.transaccionTotal.totalVenta" id="hora" cssClass="form-control input-sm validate[required, custom[cantidad]]"/>
 						</div>
 						<small class="errorForm"><strong><form:errors path="transaccion.transaccionTotal.totalVenta" cssClass="text-danger"/></strong></small>
 					</div>

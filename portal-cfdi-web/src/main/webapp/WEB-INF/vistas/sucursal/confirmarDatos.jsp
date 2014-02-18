@@ -14,7 +14,7 @@
 				<h2 class="text-primary">Confirmación Datos Facturación</h2>
 			</sec:authorize>
 			<sec:authorize access="hasRole('ROLE_ADMIN')">
-				<h2 class="text-primary">El cliente se ha actualizado con éxito</h2>
+				<h2 class="text-primary">Actualización de datos</h2>
 			</sec:authorize>
 			<hr>
 			<div class="form-group">
@@ -75,7 +75,9 @@
 				</div>
 			</div>
 				<p class="text-center"> 
-					<a id="continue" href="#" class="btn btn-success"><span>Continuar</span> <i class="fa fa-arrow-right"></i></a>
+					<sec:authorize access="hasRole('ROLE_SUC')">
+						<a id="continue" href="#" class="btn btn-success"><span>Continuar</span> <i class="fa fa-arrow-right"></i></a>
+					</sec:authorize>
 					<a href="<c:url value="/clienteCorregir/${cliente.id}"/>" class="btn btn-warning"><span>Modificar</span> <i class="fa fa-pencil-square-o"></i></a>
 					<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger"><span>Cancelar</span> <i class="fa fa-times"></i></a>
 				</p>
@@ -91,14 +93,14 @@
 			});
 			
 			<sec:authorize access="hasRole('ROLE_SUC')">
-				var urlContinue = contextPath + "/datosFacturacion/" + idDom;
+				var urlContinue = contextPath + "/datosFacturacion/";
 			</sec:authorize>
 			<sec:authorize access="hasRole('ROLE_ADMIN')">
 				var urlContinue = contextPath + "/buscaRfc";
 			</sec:authorize>
 				$("#continue").click(function () {
 					var idDom = $("input[id=domFiscal]:checked").val();
-					location.href = urlContinue;
+					location.href = urlContinue + idDom;
 				});
 		});
 	</script>

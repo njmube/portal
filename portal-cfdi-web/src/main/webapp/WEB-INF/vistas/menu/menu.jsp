@@ -128,8 +128,8 @@
 	        </form>
 	      </div>
 	      <div class="modal-footer">
-	        <button type="button" id="autorizar" class="btn btn-primary" data-toggle="confirmation" data-original-title="" title="">Autorizar</button>
 	        <button type="button" id="closeAut" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+	        <button type="button" id="autorizar" class="btn btn-primary" data-toggle="confirmation" data-original-title="" title="">Autorizar</button>
 	      </div>
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->
