@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="display" uri="http://displaytag.sf.net"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
 <title>Confirmar Datos</title>
@@ -9,9 +10,13 @@
 <body>
 	<div class="container main-content">
 		<div class="white-panel row">
-			<h2 class="text-primary">Confirmación Datos Facturación</h2>
+			<sec:authorize access="hasRole('ROLE_SUC')">
+				<h2 class="text-primary">Confirmación Datos Facturación</h2>
+			</sec:authorize>
+			<sec:authorize access="hasRole('ROLE_ADMIN')">
+				<h2 class="text-primary">El cliente se ha actualizado con éxito</h2>
+			</sec:authorize>
 			<hr>
-			<c:url var="altaUrl" value="/clienteForm"/>
 			<div class="form-group">
 				<label class="control-label col-lg-1 col-md-1">Rfc: </label>
 				<div class="col-lg-2 col-md-2">
@@ -52,18 +57,20 @@
 								<display:column title="Estatus" headerClass="text-primary small" class="small">
 									<span id="estatus" class="${domicilio.estatus.id}">${domicilio.estatus.nombre}</span>
 								</display:column>
-								<display:column title="" headerClass="text-primary text-center small" class="small">
-								<c:choose>
-									<c:when test="${domicilio.estatus.id eq 1}">
-										<input type="radio" id="domFiscal" name="domFiscal" value="${domicilio.id}">
-									</c:when>
-								</c:choose>											
-<%-- 								<c:choose> --%>
-<%-- 									<c:otherwise> --%>
-<!-- 										No existen direcciones activas para el cliente. -->
-<%-- 									</c:otherwise> --%>
-<%-- 								</c:choose> --%>
+								<sec:authorize access="hasRole('ROLE_SUC')">
+									<display:column title="" headerClass="text-primary text-center small" class="small">
+										<c:choose>
+											<c:when test="${domicilio.estatus.id eq 1}">
+												<input type="radio" id="domFiscal" name="domFiscal" value="${domicilio.id}">
+											</c:when>
+										</c:choose>											
+	<%-- 								<c:choose> --%>
+	<%-- 									<c:otherwise> --%>
+	<!-- 										No existen direcciones activas para el cliente. -->
+	<%-- 									</c:otherwise> --%>
+	<%-- 								</c:choose> --%>
 								</display:column>
+								</sec:authorize>
 					</display:table>
 				</div>
 			</div>
@@ -76,7 +83,6 @@
 	</div>
 	<script type="text/javascript">
 		$(document).ready(function () {
-			
 			$("#domicilios > tbody > tr").each(function() {
 				if($(this).find("#estatus").hasClass("1")) {
 					$(this).find("#domFiscal").attr("checked", true);
@@ -84,10 +90,16 @@
 				}
 			});
 			
-			$("#continue").click(function () {
-				var idDom = $("input[id=domFiscal]:checked").val();
-				location.href = contextPath + "/datosFacturacion/" + idDom;
-			});
+			<sec:authorize access="hasRole('ROLE_SUC')">
+				var urlContinue = contextPath + "/datosFacturacion/" + idDom;
+			</sec:authorize>
+			<sec:authorize access="hasRole('ROLE_ADMIN')">
+				var urlContinue = contextPath + "/buscaRfc";
+			</sec:authorize>
+				$("#continue").click(function () {
+					var idDom = $("input[id=domFiscal]:checked").val();
+					location.href = urlContinue;
+				});
 		});
 	</script>
 </body>

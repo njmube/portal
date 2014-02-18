@@ -34,8 +34,7 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 	
 	@Override
 	public List<Cliente> getAll() {
-		String qry = ClienteSql.GET_ALL;
-		return getJdbcTemplate().query(qry, CLIENTE_MAPPER);
+		return getJdbcTemplate().query(ClienteSql.GET_ALL, CLIENTE_MAPPER);
 	}
 	
 	@Override

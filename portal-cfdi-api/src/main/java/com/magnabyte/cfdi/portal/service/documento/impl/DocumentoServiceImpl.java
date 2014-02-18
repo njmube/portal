@@ -170,13 +170,14 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 						Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolioDocumento(documento);
 						documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
 						documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO));
-						String msg = "El ticket ya fue facturado con anterioridad, puede consultar " 
-								+ "la " + documento.getTipoDocumento().getNombre() 
-								+ " " + documento.getComprobante().getSerie() 
-								+ "-" + documento.getComprobante().getFolio() 
-								+ " por medio de su RFC.";
-						logger.debug(msg);
-						throw new PortalException(msg);
+						StringBuilder builder = new StringBuilder();
+						builder.append("El ticket ya fue facturado con anterioridad, puede consultar la ");
+						builder.append(documento.getTipoDocumento().getNombre());
+						builder.append(" ").append(documento.getComprobante().getSerie());
+						builder.append("-").append(documento.getComprobante().getFolio());
+						builder.append(" por medio de su RFC.");
+						logger.debug(builder.toString());
+						throw new PortalException(builder.toString());
 					default:
 						break;
 					}
@@ -188,12 +189,13 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			} else if (documento instanceof DocumentoCorporativo) {
 				Documento documentoDB = documentoDao.readDocumentoFolio(documento);
 				if (documentoDB != null) {
-					String msg = "La factura " + documento.getTipoDocumento().getNombre() 
-							+ " " + documento.getComprobante().getSerie() 
-							+ "-" + documento.getComprobante().getFolio() 
-							+ " ya fue procesada con anterioridad.";
-					logger.debug(msg);
-					throw new PortalException(msg);
+					StringBuilder builder = new StringBuilder();
+					builder.append("La factura ").append(documento.getTipoDocumento().getNombre());
+					builder.append(" ").append(documento.getComprobante().getSerie());
+					builder.append("-").append(documento.getComprobante().getFolio());
+					builder.append(" ya fue procesada con anterioridad.");
+					logger.debug(builder.toString());
+					throw new PortalException(builder.toString());
 				} else {
 					saveDocumentAndDetail(documento);
 					documentoDao.insertDocumentoFolio(documento);

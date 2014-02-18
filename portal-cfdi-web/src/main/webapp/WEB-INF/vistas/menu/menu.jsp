@@ -70,13 +70,19 @@
 				</sec:authorize>
 				<sec:authorize access="hasRole('ROLE_ADMIN')">
 					<p>
-						<a href="<c:url value="/catalogoUsuarios"/>" class="btn btn-success btn-lg" role="button">Usuarios <i class="fa fa-users"></i>
+						<a href="<c:url value="/catalogoUsuarios"/>" class="btn btn-primary btn-lg" role="button">Usuarios <i class="fa fa-user"></i>
 						</a>
 					</p>
 					<hr>
 					<p>
 						<a href="<c:url value="/catalogoEstablecimiento"/>" class="btn btn-warning btn-lg" role="button">Sucursales
 							<i class="fa fa-dot-circle-o"></i>
+						</a>
+					</p>
+					<hr>
+					<p>
+						<a href="<c:url value="/buscaRfc"/>" class="btn btn-success btn-lg" role="button">Clientes
+							<i class="fa fa-users"></i>
 						</a>
 					</p>
 					<hr>

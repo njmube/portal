@@ -18,8 +18,8 @@
 	href="<c:url value="/resources/css/font-awesome/css/font-awesome.min.css" />" />
 <link rel="stylesheet" type="text/css"
 	href="<c:url value="/resources/css/bootstrap.min.css" />" />
-<link rel="stylesheet" type="text/css"
-	href="<c:url value="/resources/css/bootstrap-theme.min.css" />" />
+<!-- <link rel="stylesheet" type="text/css" -->
+<%-- 	href="<c:url value="/resources/css/bootstrap-theme.min.css" />" /> --%>
 <link rel="stylesheet" type="text/css"
 	href="<c:url value="/resources/css/modatelas-style.css" />" />
 <link rel="stylesheet" type="text/css"
@@ -117,6 +117,7 @@
 				<c:url var="logoutUrl" value="/perform_logout" />
 				<c:url var="catalogoEstablecimiento" value="/catalogoEstablecimiento" />
 				<c:url var="catalogoUsuarios" value="/catalogoUsuarios"></c:url>
+				<c:url var="catalogoClientes" value="/buscaRfc"></c:url>
 				
 				<div class="collapse navbar-collapse pull-right">
 					<sec:authorize access="isAnonymous()">
@@ -138,8 +139,9 @@
 							<sec:authorize access="hasAnyRole('ROLE_ADMIN')">
 								<a href="" class="dropdown-toggle" data-toggle="dropdown" >Administración <i class="fa fa-cog"></i> <b class="caret"></b></a>
 								<ul class="dropdown-menu">
-									<li><a href="${catalogoUsuarios}"><i class="fa fa-users"></i> Usuarios</a></li>
+									<li><a href="${catalogoUsuarios}"><i class="fa fa-user"></i> Usuarios</a></li>
 									<li><a href="${catalogoEstablecimiento}"><i class="fa fa-dot-circle-o"></i> Sucursales</a></li>
+									<li><a href="${catalogoClientes}"><i class="fa fa-users"></i> Clientes</a></li>
 								</ul>
 							</sec:authorize>
 						</li>

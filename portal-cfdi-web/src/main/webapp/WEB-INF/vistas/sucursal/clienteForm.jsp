@@ -50,7 +50,7 @@ $(document).ready(function() {
 			</blockquote>
 			<hr>
 			<div class="well">
-				<sec:authorize access="hasAnyRole('ROLE_SUC')">
+				<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_ADMIN')">
 					<c:url var="altaUrl" value="/confirmarDatos/clienteForm"/>
 				</sec:authorize>
 				<sec:authorize access="isAnonymous()">
@@ -155,7 +155,7 @@ $(document).ready(function() {
 					<hr>
 					<p class="text-center" id="botones1">
 						<button id="continuar" type="button" class="btn btn-success">Continuar <i class="fa fa-arrow-right"></i></button>
-						<sec:authorize access="hasAnyRole('ROLE_SUC')">
+						<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_ADMIN')">
 							<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger">Cancelar <i class="fa fa-times"></i></a>
 						</sec:authorize>
 						<sec:authorize access="isAnonymous()">
@@ -165,7 +165,7 @@ $(document).ready(function() {
 					<p class="text-center" id="botones2" style="display:none">
 						<button id="guardar" type="submit" class="btn btn-primary">Guardar <i class="fa fa-floppy-o"></i></button>
 						<button id="corregir" type="button" class="btn btn-warning">Modificar <i class="fa fa-arrow-left"></i></button>
-						<sec:authorize access="hasAnyRole('ROLE_SUC')">
+						<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_ADMIN')">
 							<a href="<c:url value="/buscaRfc"/>" class="btn btn-danger">Cancelar <i class="fa fa-times"></i></a>
 						</sec:authorize>
 						<sec:authorize access="isAnonymous()">

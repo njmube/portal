@@ -59,7 +59,7 @@
 <body>
 <div class="container main-content">
 		<div class="white-panel row">
-			<h2 class="text-primary">Registrar Cliente</h2>
+			<h2 class="text-primary">Datos de Cliente</h2>
 			<blockquote>
 				<p class="text-info">Ingresa la Información de Facturación.</p>
 			</blockquote>
