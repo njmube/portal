@@ -217,7 +217,7 @@
 									<input id="numCta" class="form-control input-sm" value="${comprobante.numCtaPago}" readonly="readonly"/>
 								</div>
 								<label for="total" class="col-lg-5 col-md-5 control-label"><small>Total: </small></label>
-								<div class="col-lg-2 col-md-2">
+								<div class="col-lg-2 col-md-2 has-error">
  									<input id="total" class="form-control input-sm" value="<fmt:formatNumber value="${comprobante.total}" type="currency"/>" readonly="readonly"/>
 								</div>
 							</div>

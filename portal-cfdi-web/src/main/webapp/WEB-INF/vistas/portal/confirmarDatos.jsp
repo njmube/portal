@@ -13,7 +13,7 @@
 			<hr>
 			<c:url var="altaUrl" value="/portal/cfdi/clienteForm"/>
 			<div class="form-group">
-				<label class="control-label col-lg-1 col-md-1">Rfc: </label>
+				<label class="control-label col-lg-1 col-md-1">RFC: </label>
 				<div class="col-lg-2 col-md-2">
 					<input id="rfc" class="form-control input-sm" value="${cliente.rfc}" disabled="disabled"/>
 				</div>

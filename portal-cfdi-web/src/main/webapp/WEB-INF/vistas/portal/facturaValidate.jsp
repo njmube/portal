@@ -222,7 +222,7 @@
 								</div>
 								<label for="total" class="col-lg-5 col-md-5 control-label"><small>Total: </small></label>
 								<div class="col-lg-2 col-md-2">
- 									<input id="total" class="form-control input-sm" value="<fmt:formatNumber value="${comprobante.total}" type="currency"/>" readonly="readonly"/>
+ 									<input id="total" class="form-control input-sm has-error" value="<fmt:formatNumber value="${comprobante.total}" type="currency"/>" readonly="readonly"/>
 								</div>
 							</div>
 						</fieldset>
