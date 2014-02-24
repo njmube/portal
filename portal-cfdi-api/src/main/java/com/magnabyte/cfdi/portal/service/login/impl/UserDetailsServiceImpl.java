@@ -16,7 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.dao.establecimiento.EstablecimientoDao;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
-
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:31/01/2014
+ *
+ * Clase que representa el servicio de login de usuario
+ */
 @Service("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {
 	

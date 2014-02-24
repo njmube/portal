@@ -53,6 +53,14 @@ import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:31/01/2014
+ *
+ * Clase que representa el servicio de ticket
+ */
 @Service("ticketService")
 public class TicketServiceImpl implements TicketService {
 

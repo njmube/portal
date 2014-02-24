@@ -12,6 +12,14 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoDetalleService;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:31/01/2014
+ *
+ * Clase que representa el servicio de detealle documento
+ */
 @Service("documentoDetalleService")
 public class DocumentoDetalleServiceImpl  implements DocumentoDetalleService {
 

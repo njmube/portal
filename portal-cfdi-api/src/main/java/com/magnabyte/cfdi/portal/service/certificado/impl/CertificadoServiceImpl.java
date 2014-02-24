@@ -12,6 +12,13 @@ import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
 import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.service.certificado.CertificadoService;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:31/01/2014
+ * Clase que representa el servicio de certificado
+ */
 @Service("certificadoService")
 public class CertificadoServiceImpl implements CertificadoService {
 

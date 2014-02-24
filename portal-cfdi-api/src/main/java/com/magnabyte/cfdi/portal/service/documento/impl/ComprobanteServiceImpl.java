@@ -74,6 +74,14 @@ import com.magnabyte.cfdi.portal.service.emisor.EmisorService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.service.xml.util.CfdiConfiguration;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:31/01/2014
+ * 
+ * Clase que representa el servicio de comprobante
+ */
 @Service("comprobanteService")
 public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoaderAware {
 
