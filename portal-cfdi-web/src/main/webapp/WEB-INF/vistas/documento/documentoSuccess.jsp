@@ -32,18 +32,29 @@
 			<div class="white-panel col-md-offset-2 col-md-8">
 				<h2 class="text-primary">Solicitud de Factura recibida con éxito!</h2>
 				<hr>
-				<div class="bg-info">
-					<p><strong>En unos minutos recibirá la factura electrónica 
-					<span class="label label-warning">${documento.comprobante.serie}-${documento.comprobante.folio}</span> 
-					en el correo proporcionado. Así mismo ponemos a su disposición la descarga de la misma a través de la 
-					opción de consulta.</strong>
-					</p>
-					<p>
-					<strong>
-					Para futuras aclaraciones, le pedimos que conserve su ticket de venta.
-					</strong>
-					</p>
-				</div>
+				<sec:authorize access="isAnonymous()">
+					<div class="bg-info">
+						<p><strong>En unos minutos recibirá la factura electrónica 
+						<span class="label label-warning">${documento.comprobante.serie}-${documento.comprobante.folio}</span> 
+						en el correo proporcionado. Así mismo ponemos a su disposición la descarga de la misma a través de la 
+						opción de consulta.</strong>
+						</p>
+						<p>
+						<strong>
+						Para futuras aclaraciones, le pedimos que conserve su ticket de venta.
+						</strong>
+						</p>
+					</div>
+				</sec:authorize>
+				<sec:authorize access="hasRole('ROLE_SUC')">
+					<div class="bg-info">
+						<p><strong>En unos minutos se enviará la factura electrónica 
+						<span class="label label-warning">${documento.comprobante.serie}-${documento.comprobante.folio}</span> 
+						al correo proporcionado. Para la impresión del PDF y XML proporcione el RFC en la 
+						opción de consulta.</strong>
+						</p>
+					</div>
+				</sec:authorize>
 				<hr>
 				<p class="text-center">
 					<a href="${urlMenu}" class="btn btn-danger btn-lg">Terminar</a>

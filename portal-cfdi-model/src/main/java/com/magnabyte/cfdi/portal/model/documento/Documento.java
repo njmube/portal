@@ -5,9 +5,9 @@ import java.util.Date;
 import java.util.List;
 
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
-import com.magnabyte.cfdi.portal.model.cfdi.v32.TimbreFiscalDigital;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.tfd.v32.TimbreFiscalDigital;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 
 public class Documento implements Serializable {

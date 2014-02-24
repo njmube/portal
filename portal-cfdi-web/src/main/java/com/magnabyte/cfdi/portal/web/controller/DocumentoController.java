@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -88,6 +90,8 @@ public class DocumentoController {
 		documentoService.guardarDocumento(documento);
 		cfdiService.generarDocumento(documento);
 		if (documento instanceof DocumentoCorporativo) {
+			//FIXME Quitar para produccion
+			documento.getComprobante().getEmisor().setRfc("AAA010101AAA");
 			cfdiService.generarDocumentoCorp(documento);
 		}
 		redirectAttributes.addFlashAttribute("documento", documento);
@@ -157,6 +161,7 @@ public class DocumentoController {
 		model.put("QRCODE", codigoQRService.generaCodigoQR(documento));
 		model.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
 		model.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
+		model.put("IVA", documento.getComprobante().getImpuestos().getTraslados().getTraslado().get(0).getTasa());
 		model.put("objetoKey", comprobantes);
 		return ("reporte");
 	}
@@ -244,6 +249,15 @@ public class DocumentoController {
 		model.put("documentos", documentos);
 		
 		return "documento/listaDocumentos";
+	}
+	public static void main(String[] args) { 
+		Pattern pattern = Pattern.compile("^[A-Z,Ñ,&amp;]{3,4}[0-9]{2}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])[A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?$");
+		Matcher matcher = pattern.matcher("LEVV610620B27");
+		if (matcher.matches()) {
+			System.out.println("valido");
+		} else {
+			System.out.println("invalido");
+		}
 	}
 	
 }

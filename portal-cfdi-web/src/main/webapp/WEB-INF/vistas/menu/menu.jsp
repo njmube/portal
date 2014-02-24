@@ -21,6 +21,10 @@
 					<span class="text-info"> - Corporativo</span> <span class="label label-primary">@</span>
 					<c:url var="urlPage" value="/facturaCorp"/>
 				</sec:authorize>
+				<sec:authorize access="hasRole('ROLE_ADMIN')">
+					<span class="text-info"> - Administración</span> <span class="label label-primary">@</span>
+					<c:url var="urlPage" value="/facturaCorp"/>
+				</sec:authorize>
 			</h2>
 			<blockquote>
 				<p class="text-info">Seleccione una opción.</p>
@@ -43,22 +47,43 @@
 			</c:if>
 			<div class="well col-md-6 col-md-offset-3 text-center">
 				<hr>
-				<p>
-					<a href="${urlPage}" class="btn btn-success btn-lg" role="button">Generar
-						Factura <i class="fa fa-arrow-right"></i>
-					</a>
-				</p>
-				<hr>
-				<p>
-					<a href="<c:url value="/buscarDocs"/>" class="btn btn-primary btn-lg" role="button">Consultar Facturas
-						<i class="fa fa-arrow-right"></i>
-					</a>
-				</p>
-				<hr>
-				<sec:authorize access="hasRole('ROLE_SUC')">
+				<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_CORP')">
 					<p>
-						<button type="button" id="cierre" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#autCierre">
-						Cierre <i class="fa fa-arrow-right"></i></button>
+						<a href="${urlPage}" class="btn btn-success btn-lg" role="button">Generar
+							Factura <i class="fa fa-arrow-right"></i>
+						</a>
+					</p>
+					<hr>
+					<p>
+						<a href="<c:url value="/buscarDocs"/>" class="btn btn-primary btn-lg" role="button">Consultar Facturas
+							<i class="fa fa-arrow-right"></i>
+						</a>
+					</p>
+					<hr>
+					<sec:authorize access="hasRole('ROLE_SUC')">
+						<p>
+							<button type="button" id="cierre" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#autCierre">
+							Cierre <i class="fa fa-arrow-right"></i></button>
+						</p>
+						<hr>
+					</sec:authorize>
+				</sec:authorize>
+				<sec:authorize access="hasRole('ROLE_ADMIN')">
+					<p>
+						<a href="<c:url value="/catalogoUsuarios"/>" class="btn btn-primary btn-lg" role="button">Usuarios <i class="fa fa-user"></i>
+						</a>
+					</p>
+					<hr>
+					<p>
+						<a href="<c:url value="/catalogoEstablecimiento"/>" class="btn btn-warning btn-lg" role="button">Sucursales
+							<i class="fa fa-dot-circle-o"></i>
+						</a>
+					</p>
+					<hr>
+					<p>
+						<a href="<c:url value="/buscaRfc"/>" class="btn btn-success btn-lg" role="button">Clientes
+							<i class="fa fa-users"></i>
+						</a>
 					</p>
 					<hr>
 				</sec:authorize>
@@ -103,8 +128,8 @@
 	        </form>
 	      </div>
 	      <div class="modal-footer">
-	        <button type="button" id="autorizar" class="btn btn-primary" data-toggle="confirmation" data-original-title="" title="">Autorizar</button>
 	        <button type="button" id="closeAut" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+	        <button type="button" id="autorizar" class="btn btn-primary" data-toggle="confirmation" data-original-title="" title="">Autorizar</button>
 	      </div>
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->

@@ -2,7 +2,6 @@ package com.magnabyte.cfdi.portal.service.documento.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -179,13 +178,14 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 						Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolioDocumento(documento);
 						documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
 						documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO));
-						String msg = "El ticket ya fue facturado con anterioridad, puede consultar " 
-								+ "la " + documento.getTipoDocumento().getNombre() 
-								+ " " + documento.getComprobante().getSerie() 
-								+ "-" + documento.getComprobante().getFolio() 
-								+ " por medio de su RFC.";
-						logger.debug(msg);
-						throw new PortalException(msg);
+						StringBuilder builder = new StringBuilder();
+						builder.append("El ticket ya fue facturado con anterioridad, puede consultar la ");
+						builder.append(documento.getTipoDocumento().getNombre());
+						builder.append(" ").append(documento.getComprobante().getSerie());
+						builder.append("-").append(documento.getComprobante().getFolio());
+						builder.append(" por medio de su RFC.");
+						logger.debug(builder.toString());
+						throw new PortalException(builder.toString());
 					default:
 						break;
 					}
@@ -197,12 +197,13 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			} else if (documento instanceof DocumentoCorporativo) {
 				Documento documentoDB = documentoDao.readDocumentoFolio(documento);
 				if (documentoDB != null) {
-					String msg = "La factura " + documento.getTipoDocumento().getNombre() 
-							+ " " + documento.getComprobante().getSerie() 
-							+ "-" + documento.getComprobante().getFolio() 
-							+ " ya fue procesada con anterioridad.";
-					logger.debug(msg);
-					throw new PortalException(msg);
+					StringBuilder builder = new StringBuilder();
+					builder.append("La factura ").append(documento.getTipoDocumento().getNombre());
+					builder.append(" ").append(documento.getComprobante().getSerie());
+					builder.append("-").append(documento.getComprobante().getFolio());
+					builder.append(" ya fue procesada con anterioridad.");
+					logger.debug(builder.toString());
+					throw new PortalException(builder.toString());
 				} else {
 					saveDocumentAndDetail(documento);
 					documentoDao.insertDocumentoFolio(documento);
@@ -323,14 +324,14 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Override
 	public byte[] recuperarDocumentoXml(Documento documento) {
-		try {
-			logger.debug(new String(documento.getXmlCfdi(), PortalUtils.encodingUTF8));
+//		try {
+//			logger.debug(new String(documento.getXmlCfdi(), PortalUtils.encodingUTF16));
 			Comprobante comprobante = documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi());
 			return documentoXmlService.convierteComprobanteAByteArray(comprobante, PortalUtils.encodingUTF8);
-		} catch (UnsupportedEncodingException ex) {
-			logger.error("Error al convertir el documento a bytes");
-			throw new PortalException("Error al convertir el documento a bytes");
-		}
+//		} catch (UnsupportedEncodingException ex) {
+//			logger.error("Error al convertir el documento a bytes");
+//			throw new PortalException("Error al convertir el documento a bytes");
+//		}
 	}
 	
 	@Override
@@ -456,7 +457,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			
 			htmlPlantilla = IOUtils.toString(htmlResource.getInputStream(), PortalUtils.encodingUTF8);
 			textoPlanoPlantilla = IOUtils.toString(plainTextResource.getInputStream(), PortalUtils.encodingUTF8);
-			//FIXME Cambiar configuracion mail
 			emailService.sendMailWithAttach(textoPlanoPlantilla,htmlPlantilla, asunto, attach, para);
 			
 		} catch (PortalException ex) {

@@ -28,16 +28,31 @@
 				<version>1.5</version>
 				<executions>
 					<execution>
-						<id>xjc</id>
+						<id>schema1-xjc</id>
 						<goals>
 							<goal>xjc</goal>
 						</goals>
+						<configuration>
+							<schemaFiles>cfdv32.xsd</schemaFiles>
+							<packageName>com.magnabyte.cfdi.portal.model.cfdi.v32</packageName>
+							<schemaDirectory>src/main/resources/xsd</schemaDirectory>
+							<staleFile>${project.build.directory}/generated-sources/xjc1/.staleFlag</staleFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>schema2-xjc</id>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+						<configuration>
+							<schemaFiles>tfdv32.xsd</schemaFiles>
+							<packageName>com.magnabyte.cfdi.portal.model.tfd.v32</packageName>
+							<schemaDirectory>src/main/resources/xsd</schemaDirectory>
+							<staleFile>${project.build.directory}/generated-sources/xjc2/.staleFlag</staleFile>
+							<clearOutputDir>false</clearOutputDir>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<packageName>com.magnabyte.cfdi.portal.model.cfdi.v32</packageName>
-					<schemaDirectory>src/main/resources/xsd</schemaDirectory>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

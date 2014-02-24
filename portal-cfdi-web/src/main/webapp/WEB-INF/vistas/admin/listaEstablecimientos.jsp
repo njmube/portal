@@ -16,7 +16,7 @@
 	<div class="container main-content">
 		<div class="white-panel row">
 			<h2>
-				Facturación Electrónica - <span class="text-info">ADMINISTRADOR</span> <span class="label label-primary">@</span>
+				Facturación Electrónica - <span class="text-info">Administrador</span> <span class="label label-primary">@</span>
 			</h2>
 			<hr>
 			<div class="text-center">
@@ -50,7 +50,7 @@
  						
 					</div>
 				</div>
-				</div>
+			</div>
 		</div>
 	</div>
 	<script src="<c:url value="/resources/js/corporativo/corporativo.js" />"></script>

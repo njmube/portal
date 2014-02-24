@@ -281,7 +281,7 @@ public class Ticket implements Serializable {
                         @XmlAccessorType(XmlAccessType.FIELD)
                         public static class Articulo {
                                 
-                                @XmlElement(name = "szPOSItemID")
+                                @XmlElement(name = "szItemID")
                                 protected String id;
                                 
                                 @XmlElement(name = "szDesc")

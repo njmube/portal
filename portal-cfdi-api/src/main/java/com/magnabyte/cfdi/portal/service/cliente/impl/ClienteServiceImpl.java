@@ -59,17 +59,17 @@ public class ClienteServiceImpl implements ClienteService {
 	public List<Cliente> findClientesByNameRfc(Cliente cliente) {
 		List<Cliente> clientes = null;
 		
-		if (cliente.getRfc() != null && !cliente.getRfc().equals("")) {
+		if (cliente.getRfc() != null && !cliente.getRfc().isEmpty()) {
 			cliente.setRfc("%" + cliente.getRfc() + "%");
 		}
 		
-		if (cliente.getNombre() != null && !cliente.getNombre().equals("")) {
+		if (cliente.getNombre() != null && !cliente.getNombre().isEmpty()) {
 			cliente.setNombre("%" + cliente.getNombre() + "%");
 		}
 		
-		if(cliente.getNombre().equals("") && cliente.getRfc().equals("")) {
+		if(cliente.getNombre().isEmpty() && cliente.getRfc().isEmpty()) {
 			clientes = clienteDao.getAll();
-		} else if(!cliente.getNombre().equals("") || !cliente.getRfc().equals("")) {			
+		} else if(!cliente.getNombre().isEmpty() || !cliente.getRfc().isEmpty()) {			
 			clientes = clienteDao.findClientesByNameRfc(cliente);
 		}
 		

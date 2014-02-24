@@ -27,17 +27,17 @@
 				<form id="loginForm" method="post" action="j_spring_security_check" role="form"
 					class="form-horizontal">
 					<div class="form-group">
-						<label for="j_username" class="col-lg-4 control-label">Sucursal:
+						<label for="j_username" class="col-lg-4 col-md-4 control-label">Sucursal:
 						</label>
-						<div class="col-lg-8">
+						<div class="col-lg-8 col-md-8">
 							<input id="j_username" name="j_username" type="text"
 								class="form-control input-sm" />
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="j_password" class="col-lg-4 control-label">Password:
+						<label for="j_password" class="col-lg-4 col-md-4 control-label">Password:
 						</label>
-						<div class="col-lg-8">
+						<div class="col-lg-8 col-md-8">
 							<input id="j_password" name="j_password" type="password"
 								class="form-control input-sm" />
 						</div>

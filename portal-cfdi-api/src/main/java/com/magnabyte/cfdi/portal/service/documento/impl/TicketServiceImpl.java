@@ -112,6 +112,9 @@ public class TicketServiceImpl implements TicketService {
 	@Value("${ticket.categoria.sinprecio}")
 	private String categoriaSinPrecio; 
 	
+	@Value("${ticket.numero.cuenta.default}")
+	private String numeroCuentaDefault;
+	
 	private static final String ticketGenerico = "0";
 	
 	private static final String cajaGenerica = "0";
@@ -239,6 +242,9 @@ public class TicketServiceImpl implements TicketService {
 								ticket.getTransaccion().getInformacionPago().get(0).getNumeroCuenta() != null) {
 							String numeroCuenta = ticket.getTransaccion().getInformacionPago().get(0).getNumeroCuenta();
 							ticket.getTransaccion().getInformacionPago().get(0).setNumeroCuenta(numeroCuenta.replaceAll("\\*", ""));
+							if (ticket.getTransaccion().getInformacionPago().get(0).getNumeroCuenta().isEmpty()) {
+								ticket.getTransaccion().getInformacionPago().get(0).setNumeroCuenta(numeroCuentaDefault);
+							}
 						}
 						ticket.setNombreArchivo(file.getName());
 						return true;

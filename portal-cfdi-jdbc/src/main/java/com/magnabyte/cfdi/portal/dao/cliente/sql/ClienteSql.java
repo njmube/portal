@@ -34,8 +34,8 @@ public class ClienteSql extends GenericSql {
 		StringBuilder qryBuilder = new StringBuilder();
 		
 		qryBuilder.append(SELECT).append(EOL).append(TAB).append(ALL).append(EOL);
-		qryBuilder.append(FROM).append(EOL).append(TAB).append(TABLE_NAME);
-		
+		qryBuilder.append(FROM).append(EOL).append(TAB).append(TABLE_NAME).append(EOL);
+		qryBuilder.append(ORDER).append(NOMBRE);
 		
 		GET_ALL = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);

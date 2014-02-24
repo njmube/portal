@@ -13,16 +13,16 @@
 			<hr>
 			<c:url var="altaUrl" value="/portal/cfdi/clienteForm"/>
 			<div class="form-group">
-				<label class="control-label col-lg-1">Rfc: </label>
-				<div class="col-lg-2">
+				<label class="control-label col-lg-1 col-md-1">RFC: </label>
+				<div class="col-lg-2 col-md-2">
 					<input id="rfc" class="form-control input-sm" value="${cliente.rfc}" disabled="disabled"/>
 				</div>
-				<label class="control-label col-lg-1">Nombre: </label>
-				<div class="col-lg-4">
+				<label class="control-label col-lg-1 col-md-1">Nombre: </label>
+				<div class="col-lg-4 col-md-4">
 					<input id="nombre" class="form-control input-sm" value="${cliente.nombre}" disabled="disabled"/>
 				</div>
-				<label class="control-label col-lg-1">Email: </label>
-				<div class="col-lg-3">
+				<label class="control-label col-lg-1 col-md-1">Email: </label>
+				<div class="col-lg-3 col-md-3">
 					<input id="email" class="form-control input-sm" value="${cliente.email}" disabled="disabled"/>
 				</div>
 			</div>
@@ -33,26 +33,26 @@
 					<display:table htmlId="domicilios" id="domicilio" name="${cliente.domicilios}"
 						class="table table-hover table-striped table-condensed"
 						requestURI="/confirmarDatos">
-								<display:column title="#" property="id" headerClass="text-primary small"></display:column>
-								<display:column title="Calle" property="calle" headerClass="text-primary small"></display:column>
-								<display:column title="No. Ext." property="noExterior" headerClass="text-primary small" />
+								<display:column title="#" property="id" headerClass="text-primary small" class="small"></display:column>
+								<display:column title="Calle" property="calle" headerClass="text-primary small" class="small"></display:column>
+								<display:column title="No. Ext." property="noExterior" headerClass="text-primary small" class="small"/>
 								<c:choose>
 									<c:when test="${empty domicilio.noInterior}">
-										<display:column title="No. Int." value="S/N" headerClass="text-primary small" />
+										<display:column title="No. Int." value="S/N" headerClass="text-primary small" class="small"/>
 									</c:when>
 									<c:otherwise>
-										<display:column title="No. Int." property="noInterior" headerClass="text-primary small" />
+										<display:column title="No. Int." property="noInterior" headerClass="text-primary small" class="small"/>
 									</c:otherwise>
 								</c:choose>
-								<display:column title="País"  property="estado.pais.nombre" headerClass="text-primary small" />
-								<display:column title="Estado"  property="estado.nombre" headerClass="text-primary small" />
-								<display:column title="Municipio"  property="municipio" headerClass="text-primary small" />
-								<display:column title="Colonia" property="colonia" headerClass="text-primary small" />
-								<display:column title="Código Postal"  property="codigoPostal" headerClass="text-primary small" />
-								<display:column title="Estatus" headerClass="text-primary small">
+								<display:column title="País"  property="estado.pais.nombre" headerClass="text-primary small" class="small"/>
+								<display:column title="Estado"  property="estado.nombre" headerClass="text-primary small" class="small"/>
+								<display:column title="Delegación/Municipio"  property="municipio" headerClass="text-primary small" class="small"/>
+								<display:column title="Colonia" property="colonia" headerClass="text-primary small" class="small"/>
+								<display:column title="Código Postal"  property="codigoPostal" headerClass="text-primary small" class="small"/>
+								<display:column title="Estatus" headerClass="text-primary small" class="small">
 									<span id="estatus" class="${domicilio.estatus.id}">${domicilio.estatus.nombre}</span>
 								</display:column>
-								<display:column title="" headerClass="text-primary text-center small">
+								<display:column title="" headerClass="text-primary text-center small" class="small">
 								<c:choose>
 									<c:when test="${domicilio.estatus.id eq 1}">
 										<input type="radio" id="domFiscal" name="domFiscal" value="${domicilio.id}">
@@ -68,9 +68,9 @@
 				</div>
 			</div>
 				<p class="text-center"> 
-					<a id="continue" href="#" class="btn btn-success"><span>Continuar</span></a>
-					<a href="<c:url value="/portal/cfdi/clienteCorregir/${cliente.id}"/>" class="btn btn-warning"><span>Modificar</span></a>
-					<a href="<c:url value="/portal/cfdi/buscaRfc"/>" class="btn btn-danger"><span>Cancelar</span></a>
+					<a id="continue" href="#" class="btn btn-success"><span>Continuar</span> <i class="fa fa-arrow-right"></i></a>
+					<a href="<c:url value="/portal/cfdi/clienteCorregir/${cliente.id}"/>" class="btn btn-warning"><span>Modificar</span> <i class="fa fa-pencil-square-o"></i></a>
+					<a href="<c:url value="/portal/cfdi/buscaRfc"/>" class="btn btn-danger"><span>Cancelar</span> <i class="fa fa-times"></i></a>
 				</p>
 		</div>				
 	</div>

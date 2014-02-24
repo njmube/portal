@@ -32,40 +32,40 @@
 							<h5 class="text-primary">Datos ${tipoComprobante}</h5>
 							<hr>
 							<div class="form-group">
-								<label for="folioSap" class="col-lg-4 control-label"><small>Folio SAP: </small></label>
-								<div class="col-lg-8">
+								<label for="folioSap" class="col-lg-4 col-md-4 control-label"><small>Folio SAP: </small></label>
+								<div class="col-lg-8 col-md-8">
 									<input id="folioSap" class="form-control input-sm" value="${documento.folioSap}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="factura" class="col-lg-4 control-label"><small>Factura: </small></label>
-								<div class="col-lg-8">
+								<label for="factura" class="col-lg-4 col-md-4 control-label"><small>Factura: </small></label>
+								<div class="col-lg-8 col-md-8">
 									<input id="factura" class="form-control input-sm" value="${comprobante.serie}${comprobante.folio}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="fechahora" class="col-lg-4 control-label"><small>Fecha y Hora: </small></label>
-								<div class="col-lg-8">
+								<label for="fechahora" class="col-lg-4 col-md-4 control-label"><small>Fecha y Hora: </small></label>
+								<div class="col-lg-8 col-md-8">
 									<input id="fechahora" class="form-control input-sm" value="${comprobante.fecha}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="moneda" class="col-lg-4 control-label"><small>Moneda: </small></label>
-								<div class="col-lg-4">
+								<label for="moneda" class="col-lg-4 col-md-4 control-label"><small>Moneda: </small></label>
+								<div class="col-lg-4 col-md-4">
 									<input id="moneda" class="form-control input-sm" value="${comprobante.moneda}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="tcambio" class="col-lg-4 control-label"><small>Tipo de Cambio: </small></label>
-								<div class="col-lg-4">
+								<label for="tcambio" class="col-lg-4 col-md-4 control-label"><small>Tipo de Cambio: </small></label>
+								<div class="col-lg-4 col-md-4">
 									<input id="tcambio" class="form-control input-sm" value="${comprobante.tipoCambio}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="expedicion" class="col-lg-5 control-label"><small>Lugar de Expedición: </small></label>
+								<label for="expedicion" class="col-lg-5 col-md-6 control-label"><small>Lugar de Expedición: </small></label>
 							</div>
 							<div class="form-group">
-								<div class="col-lg-12">
+								<div class="col-lg-12 col-md-12">
 									<textarea id="expedicion" class="form-control input-sm" rows="2" readonly="readonly">${comprobante.lugarExpedicion}</textarea>
 								</div>
 							</div>
@@ -78,14 +78,14 @@
 							<h5 class="text-primary">Datos del Cliente</h5>
 							<hr>
 							<div class="form-group">
-								<label for="rfc" class="col-lg-2 control-label"><small>RFC: </small></label>
-								<div class="col-lg-10">
+								<label for="rfc" class="col-lg-2 col-md-2 control-label"><small>RFC: </small></label>
+								<div class="col-lg-10 col-md-10">
 									<input id="rfc" class="form-control input-sm" value="${comprobante.receptor.rfc}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="nombre" class="col-lg-2 control-label"><small>Nombre: </small></label>
-								<div class="col-lg-10">
+								<label for="nombre" class="col-lg-2 col-md-2 control-label"><small>Nombre: </small></label>
+								<div class="col-lg-10 col-md-10">
 									<input id="nombre" class="form-control input-sm" value="${comprobante.receptor.nombre}" readonly="readonly"/>
 								</div>
 							</div>
@@ -93,44 +93,44 @@
 							<h5 class="text-primary">Datos del Domicilio Fiscal</h5>
 							<hr>
 							<div class="form-group">
-								<label for="calle" class="col-lg-2 control-label"><small>Calle: </small></label>
-								<div class="col-lg-10">
+								<label for="calle" class="col-lg-2 col-md-2 control-label"><small>Calle: </small></label>
+								<div class="col-lg-10 col-md-10">
 									<input id="calle" class="form-control input-sm" value="${comprobante.receptor.domicilio.calle}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="noExterior" class="col-lg-2 control-label"><small>No. Exterior: </small></label>
-								<div class="col-lg-2">
+								<label for="noExterior" class="col-lg-2 col-md-2 control-label"><small>No. Exterior: </small></label>
+								<div class="col-lg-2 col-md-2">
 									<input id="noExterior" class="form-control input-sm" value="${comprobante.receptor.domicilio.noExterior}" readonly="readonly"/>
 								</div>
-								<label for="noInterior" class="col-lg-2 control-label"><small>No. Interior: </small></label>
-								<div class="col-lg-2">
+								<label for="noInterior" class="col-lg-2 col-md-2 control-label"><small>No. Interior: </small></label>
+								<div class="col-lg-2 col-md-2">
 									<input id="noInterior" class="form-control input-sm" value="${comprobante.receptor.domicilio.noInterior}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="colonia" class="col-lg-2 control-label"><small>Colonia: </small></label>
-								<div class="col-lg-4">
+								<label for="colonia" class="col-lg-2 col-md-2 control-label"><small>Colonia: </small></label>
+								<div class="col-lg-4 col-md-4">
 									<input id="colonia" class="form-control input-sm" value="${comprobante.receptor.domicilio.colonia}" readonly="readonly"/>
 								</div>
-								<label for="delmun" class="col-lg-2 control-label"><small>Delegación/Municipio: </small></label>
-								<div class="col-lg-4">
+								<label for="delmun" class="col-lg-2 col-md-3 control-label"><small>Delegación/Municipio: </small></label>
+								<div class="col-lg-4 col-md-3">
 									<input id="delmun" class="form-control input-sm" value="${comprobante.receptor.domicilio.municipio}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="estado" class="col-lg-2 control-label"><small>Estado: </small></label>
-								<div class="col-lg-4">
+								<label for="estado" class="col-lg-2 col-md-2 control-label"><small>Estado: </small></label>
+								<div class="col-lg-4 col-md-4">
 									<input id="estado" class="form-control input-sm" value="${comprobante.receptor.domicilio.estado}" readonly="readonly"/>
 								</div>
-								<label for="pais" class="col-lg-2 control-label"><small>País: </small></label>
-								<div class="col-lg-4">
+								<label for="pais" class="col-lg-2 col-md-2 control-label"><small>País: </small></label>
+								<div class="col-lg-4 col-md-4">
 									<input id="pais" class="form-control input-sm" value="${comprobante.receptor.domicilio.pais}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="cp" class="col-lg-2 control-label"><small>Código Postal: </small></label>
-								<div class="col-lg-2">
+								<label for="cp" class="col-lg-2 col-md-2 control-label"><small>Código Postal: </small></label>
+								<div class="col-lg-2 col-md-2">
 									<input id="cp" class="form-control input-sm" value="${comprobante.receptor.domicilio.codigoPostal}" readonly="readonly"/>
 								</div>
 							</div>
@@ -142,7 +142,7 @@
 				<div class="col-md-12 text-center">
 					<p>
 						<button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#articulos">
-						  Mostrar Artículos
+						  Mostrar Artículos <i class="fa fa-sort"></i>
 						</button>
 					</p>
 				</div>
@@ -166,10 +166,10 @@
 									<small>${concepto.descripcion}</small>
 								</display:column>
 								<display:column title="Precio Unitario" headerClass="text-primary">
-									<small><fmt:formatNumber value="${concepto.valorUnitario}" type="currency"/></small>
+									<small><fmt:formatNumber value="${concepto.valorUnitario}" type="currency" maxFractionDigits="4"/></small>
 								</display:column>
 								<display:column title="Importe" headerClass="text-primary">
-									<small><fmt:formatNumber value="${concepto.importe}" type="currency"/></small>
+									<small><fmt:formatNumber value="${concepto.importe}" type="currency" maxFractionDigits="4"/></small>
 								</display:column>
 							</display:table>
 						</fieldset>
@@ -182,42 +182,42 @@
 						<fieldset>
 							<br>
 							<div class="form-group">
-								<label for="formaPago" class="col-lg-2 control-label"><small>Forma de Pago: </small></label>
-								<div class="col-lg-3">
+								<label for="formaPago" class="col-lg-2 col-md-2 control-label"><small>Forma de Pago: </small></label>
+								<div class="col-lg-3 col-md-3">
 									<input id="formaPago" class="form-control input-sm" value="${comprobante.formaDePago}" readonly="readonly"/>
 								</div>
-								<label for="descuento" class="col-lg-5 control-label"><small>Descuento: </small></label>
-								<div class="col-lg-2">
-									<input id="descuento" class="form-control input-sm" value="<fmt:formatNumber value="${comprobante.descuento}" type="currency"/>" readonly="readonly"/>
+								<label for="descuento" class="col-lg-5 col-md-5 control-label"><small>Descuento: </small></label>
+								<div class="col-lg-2 col-md-2">
+									<input id="descuento" class="form-control input-sm" value="<fmt:formatNumber value="${comprobante.descuento}" type="currency" maxFractionDigits="4"/>" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="condPago" class="col-lg-2 control-label"><small>Condiciones de Pago: </small></label>
-								<div class="col-lg-3">
+								<label for="condPago" class="col-lg-2 col-md-2 control-label"><small>Condiciones de Pago: </small></label>
+								<div class="col-lg-3 col-md-3">
 									<input id="condPago" class="form-control input-sm" value="${comprobante.condicionesDePago}" readonly="readonly"/>
 								</div>
-								<label for="subtotal" class="col-lg-5 control-label"><small>Subtotal: </small></label>
-								<div class="col-lg-2">
-									<input id="subtotal" class="form-control input-sm" value="<fmt:formatNumber value="${comprobante.subTotal}" type="currency"/>" readonly="readonly"/>
+								<label for="subtotal" class="col-lg-5 col-md-5 control-label"><small>Subtotal: </small></label>
+								<div class="col-lg-2 col-md-2">
+									<input id="subtotal" class="form-control input-sm" value="<fmt:formatNumber value="${comprobante.subTotal}" type="currency" maxFractionDigits="4"/>" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="metodoPago" class="col-lg-2 control-label"><small>Método de Pago: </small></label>
-								<div class="col-lg-3">
+								<label for="metodoPago" class="col-lg-2 col-md-2 control-label"><small>Método de Pago: </small></label>
+								<div class="col-lg-3 col-md-3">
 									<input id="metodoPago" class="form-control input-sm" value="${comprobante.metodoDePago}" readonly="readonly"/>
 								</div>
-								<label for="iva" class="col-lg-5 control-label"><small>IVA: </small></label>
-								<div class="col-lg-2">
-									<input id="iva" class="form-control input-sm" value="<fmt:formatNumber value="${comprobante.impuestos.totalImpuestosTrasladados}" type="currency"/>" readonly="readonly"/>
+								<label for="iva" class="col-lg-5 col-md-5 control-label"><small>IVA: </small></label>
+								<div class="col-lg-2 col-md-2">
+									<input id="iva" class="form-control input-sm" value="<fmt:formatNumber value="${comprobante.impuestos.totalImpuestosTrasladados}" type="currency" maxFractionDigits="4"/>" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="numCta" class="col-lg-2 control-label"><small>Número de Cuenta: </small></label>
-								<div class="col-lg-3">
+								<label for="numCta" class="col-lg-2 col-md-2 control-label"><small>Número de Cuenta: </small></label>
+								<div class="col-lg-3 col-md-3">
 									<input id="numCta" class="form-control input-sm" value="${comprobante.numCtaPago}" readonly="readonly"/>
 								</div>
-								<label for="total" class="col-lg-5 control-label"><small>Total: </small></label>
-								<div class="col-lg-2">
+								<label for="total" class="col-lg-5 col-md-5 control-label"><small>Total: </small></label>
+								<div class="col-lg-2 col-md-2 has-error">
  									<input id="total" class="form-control input-sm" value="<fmt:formatNumber value="${comprobante.total}" type="currency"/>" readonly="readonly"/>
 								</div>
 							</div>

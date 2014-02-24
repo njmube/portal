@@ -160,6 +160,11 @@ public class SambaServiceImpl implements SambaService {
 					documento.getEstablecimiento().getRutaRepositorio().getRutaRepoInProc();
 			SmbFile sapFile = new SmbFile(rutaXmlPrevio, documento.getNombreXmlPrevio(), authentication);
 			if (sapFile.exists()) {
+				SmbFile smbInProc = new SmbFile(rutaXmlProcesado, authentication);
+				if (!smbInProc.exists()) {
+					logger.debug("El directorio de procesados no existe y sera creado.");
+					smbInProc.mkdir();
+				}
 				SmbFile smbFileProc = new SmbFile(rutaXmlProcesado, sapFile.getName(), authentication);
 				sapFile.renameTo(smbFileProc);
 				if (smbFileProc.exists()) {
