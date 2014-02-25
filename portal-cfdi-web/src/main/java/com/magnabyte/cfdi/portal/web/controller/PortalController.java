@@ -135,7 +135,6 @@ public class PortalController {
 	@RequestMapping("/confirmarDatosFacturacion")
 	public String confirmarDatosFacturacion(@ModelAttribute Documento documento, ModelMap model) {
 		if(documentoXmlService.isValidComprobanteXml(documento.getComprobante())) {
-			model.put("comprobante", documento.getComprobante());
 			return "portal/facturaValidate";
 		} else {
 			logger.error("Error al validar el Comprobante.");

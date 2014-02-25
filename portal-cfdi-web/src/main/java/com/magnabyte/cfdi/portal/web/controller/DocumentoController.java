@@ -88,11 +88,12 @@ public class DocumentoController {
 		logger.debug("generando documento");
 
 		documentoService.guardarDocumento(documento);
-		cfdiService.generarDocumento(documento);
 		if (documento instanceof DocumentoCorporativo) {
 			//FIXME Quitar para produccion
 			documento.getComprobante().getEmisor().setRfc("AAA010101AAA");
 			cfdiService.generarDocumentoCorp(documento);
+		} else {
+			cfdiService.generarDocumento(documento);
 		}
 		redirectAttributes.addFlashAttribute("documento", documento);
 		

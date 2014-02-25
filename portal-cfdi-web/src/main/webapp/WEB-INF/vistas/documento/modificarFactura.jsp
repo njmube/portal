@@ -40,8 +40,8 @@
 							<div class="form-group">
 								<label for="noSucursal" class="col-lg-4 col-md-4 control-label"><small>No. Sucursal: </small></label>
 								<div class="col-lg-8 col-md-8">
-<%-- 									<input id="noSucursal" class="form-control input-sm" value="${ticket.transaccion.transaccionHeader.idSucursal}" readonly="readonly"/> --%>
-									<form:input path="comprobante.serie" cssClass="form-control input-sm"/>
+<%-- 									<input id="noSucursal" class="form-control input-sm" value="${documento.comprobante.serie}" readonly="readonly"/> --%>
+									<form:input path="comprobante.serie" cssClass="form-control input-sm" readonly="true"/>
 								</div>
 							</div>
 <!-- 							<div class="form-group"> -->
