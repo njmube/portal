@@ -250,14 +250,35 @@ public class DocumentoController {
 		
 		return "documento/listaDocumentos";
 	}
-	public static void main(String[] args) { 
-		Pattern pattern = Pattern.compile("^[A-Z,Ñ,&amp;]{3,4}[0-9]{2}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])[A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?$");
-		Matcher matcher = pattern.matcher("LEVV610620B27");
-		if (matcher.matches()) {
-			System.out.println("valido");
-		} else {
-			System.out.println("invalido");
+
+	@RequestMapping("/refacturarForm")
+	public String refacturar(ModelMap model) {
+		model.put("documento", new DocumentoSucursal());
+		return "documento/refacturarForm";
+	}
+	
+	@RequestMapping(value = "/validaSerieFolio", method = RequestMethod.POST)
+	public String validaSerieFolio(@ModelAttribute Documento documento, ModelMap model) {
+		logger.debug("validaSerieFolio");
+		try {
+			documentoService.findBySerieFolioImporte(documento);
+			return "redirect:/modificarFactura";
+		} catch (PortalException ex) {
+			model.put("error", true);
+			model.put("messageError", ex.getMessage());
+			return "documento/refacturarForm";
 		}
 	}
 	
+	@RequestMapping("/modificarFactura")
+	public String modificarFactura() {
+		logger.debug("modificarFactura");
+		return "documento/modificarFactura";
+	}
+	
+	@RequestMapping("/prueba")
+	public String prueba(@ModelAttribute Documento documento) {
+		logger.debug("prueba");
+		return "documento/modificarFactura";
+	}
 }

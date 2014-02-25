@@ -215,8 +215,33 @@ div[class^="bg-"], div[class*=" bg-"] {
 	-moz-transition: 1s;
 	transition: 1s;
 }
+
 #back-top a:hover span {
 	background-color: #777;
+}
+
+.btn-black {
+color: #fff;
+background-color: #424242;
+border-color: #1c1c1c;
+}
+
+.btn-black:hover {
+color: #fff;
+background-color: #2e2e2e;
+border-color: #1c1c1c;
+}
+
+.btn-grey {
+color: #fff;
+background-color: #a4a4a4;
+border-color: #848484;
+}
+
+.btn-grey:hover {
+color: #fff;
+background-color: #848484;
+border-color: #6e6e6e;
 }
 
 /* ===RESPONSIVE DESIGN=== */

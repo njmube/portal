@@ -590,6 +590,20 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		return false;
 	}
 	
+	@Transactional(readOnly = true)
+	@Override
+	public void findBySerieFolioImporte(Documento documento) {
+		documentoDao.findBySerie(documento);
+		if (!documento.getTipoDocumento().equals(TipoDocumento.FACTURA)) {
+			throw new PortalException("Solo es posible modificar documentos de tipo factura.");
+		}
+		
+		if (documento.getEstablecimiento().getTipoEstablecimiento().getRol().equalsIgnoreCase("ROLE_CORP")) {
+			throw new PortalException("Solo es posible modificar facturas expedidas en Sucursal.");
+		}
+		documentoDao.findBySerieFolioImporte(documento);
+	}
+	
 	@Override
 	public void setResourceLoader(ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;

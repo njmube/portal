@@ -37,6 +37,7 @@ import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumento;
 import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.establecimiento.TipoEstablecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.tfd.v32.TimbreFiscalDigital;
 import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
@@ -451,6 +452,49 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		} catch (UnsupportedEncodingException e) {
 			logger.debug("No se pudo actualizar el Documento en la base de datos, ocurrió un error al guardar el acuse xml.", e);
 			throw new PortalException("No se pudo actualizar el Documento en la base de datos, ocurrió un error al guardar el acuse xml.", e);
+		}
+	}
+	
+	@Override
+	public void findBySerie(final Documento documento) {
+		try {
+			getJdbcTemplate().queryForObject(DocumentoSql.READ_BY_SERIE, new RowMapper<Documento>() {
+				
+				@Override
+				public Documento mapRow(ResultSet rs, int rowNum)
+						throws SQLException {
+					Establecimiento establecimiento = new Establecimiento();
+					TipoEstablecimiento tipoEstablecimiento = new TipoEstablecimiento();
+					tipoEstablecimiento.setId(rs.getInt(EstablecimientoSql.ID_TIPO_ESTAB));
+					tipoEstablecimiento.setRol(rs.getString(EstablecimientoSql.ROL));
+					establecimiento.setTipoEstablecimiento(tipoEstablecimiento);
+					TipoDocumento tipoDocumento = TipoDocumento.getById(rs.getInt(DocumentoSql.ID_TIPO_DOCUMENTO));
+					documento.setTipoDocumento(tipoDocumento);
+					documento.setEstablecimiento(establecimiento);
+					return documento;
+				}
+				
+			}, documento.getComprobante().getSerie());
+		} catch (EmptyResultDataAccessException ex) {
+			throw new PortalException("El documento no existe.");
+		}
+	}
+	
+	@Override
+	public void findBySerieFolioImporte(final Documento documento) {
+		try {
+			getJdbcTemplate().queryForObject(DocumentoSql.READ_BY_SERIE_FOLIO_IMPORTE, new RowMapper<Documento>() {
+				
+				@Override
+				public Documento mapRow(ResultSet rs, int rowNum)
+						throws SQLException {
+					documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
+					return documento;
+				}
+				
+			}, documento.getComprobante().getSerie(), documento.getComprobante().getFolio(), documento.getComprobante().getTotal());
+		} catch (EmptyResultDataAccessException ex) {
+			throw new PortalException("El documento no existe.");
 		}
 	}
 }

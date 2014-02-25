@@ -60,4 +60,6 @@ public interface DocumentoService {
 
 	Cliente readClienteFromDocumento(Documento documento);
 
+	void findBySerieFolioImporte(Documento documento);
+
 }

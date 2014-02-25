@@ -49,13 +49,21 @@
 				<hr>
 				<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_CORP')">
 					<p>
-						<a href="${urlPage}" class="btn btn-success btn-lg" role="button">Generar
+						<a href="${urlPage}" class="btn btn-primary btn-lg" role="button">Generar
 							Factura <i class="fa fa-arrow-right"></i>
 						</a>
 					</p>
 					<hr>
+					<sec:authorize access="hasRole('ROLE_SUC')">
+						<p>
+							<a href="<c:url value="/refacturarForm"/>" class="btn btn-success btn-lg" role="button">Re-Facturar
+								<i class="fa fa-arrow-right"></i>
+							</a>
+						</p>
+						<hr>
+					</sec:authorize>
 					<p>
-						<a href="<c:url value="/buscarDocs"/>" class="btn btn-primary btn-lg" role="button">Consultar Facturas
+						<a href="<c:url value="/buscarDocs"/>" class="btn btn-info btn-lg" role="button">Consultar Facturas
 							<i class="fa fa-arrow-right"></i>
 						</a>
 					</p>
