@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -127,8 +125,10 @@ public class DocumentoController {
 	}
 	
 	@RequestMapping("/restartFlow")
-	public String restarFlow(SessionStatus status) {
+	public String restarFlow(SessionStatus status, DefaultSessionAttributeStore store, WebRequest webRequest, ModelMap model) {
 		logger.debug("reiniciando flujo");
+		model.remove("documento");
+		store.cleanupAttribute(webRequest, "documento");
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if(authentication instanceof AnonymousAuthenticationToken) {
 			return "redirect:/portal/cfdi/menu";
@@ -272,7 +272,7 @@ public class DocumentoController {
 	}
 	
 	@RequestMapping("/modificarFactura")
-	public String modificarFactura() {
+	public String modificarFactura(@ModelAttribute Documento documento) {
 		logger.debug("modificarFactura");
 		return "documento/modificarFactura";
 	}

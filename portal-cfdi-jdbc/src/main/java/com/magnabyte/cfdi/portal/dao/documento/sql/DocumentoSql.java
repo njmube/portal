@@ -218,7 +218,7 @@ public class DocumentoSql extends GenericSql {
 		
 		clearAndReuseStringBuilder(qryBuilder);
 		
-		qryBuilder.append("select td.id_documento").append(EOL);
+		qryBuilder.append("select td.id_documento, td.xml_file").append(EOL);
 		qryBuilder.append("from t_documento as td inner join t_documento_folio as tdf").append(EOL);
 		qryBuilder.append("on td.id_documento = tdf.id_documento").append(EOL);
 		qryBuilder.append("where tdf.serie = ?").append(EOL);

@@ -72,7 +72,7 @@
 								</div>
 								<div class="form-group">
 									<div class="col-lg-12 col-md-12">
-										<textarea id="expedicion" class="form-control input-sm" rows="2" readonly="readonly">${documento.establecimiento.domicilio.localidad}</textarea>
+										<textarea id="expedicion" class="form-control input-sm" rows="2" readonly="readonly">${documento.comprobante.lugarExpedicion}</textarea>
 									</div>
 								</div>
 							</fieldset>

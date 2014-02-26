@@ -325,7 +325,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			documento.setCliente(cliente);
 			documento.setEstablecimiento(establecimiento);
 			documento.setComprobante(comprobante);
-			SQLXML xmlFile =rs.getSQLXML(DocumentoSql.XML_FILE);
+			SQLXML xmlFile = rs.getSQLXML(DocumentoSql.XML_FILE);
 			if (xmlFile != null) {
 				try {
 					documento.setXmlCfdi(xmlFile.getString().getBytes(PortalUtils.encodingUTF16));
@@ -489,6 +489,15 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 				public Documento mapRow(ResultSet rs, int rowNum)
 						throws SQLException {
 					documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
+					SQLXML xmlFile = rs.getSQLXML(DocumentoSql.XML_FILE);
+					if (xmlFile != null) {
+						try {
+							documento.setXmlCfdi(xmlFile.getString().getBytes(PortalUtils.encodingUTF16));
+						} catch (UnsupportedEncodingException e) {
+							logger.debug("Ocurrió un error al leer el acuse xml.", e);
+							throw new PortalException("Ocurrió un error al leer el acuse xml.", e);
+						}
+					}
 					return documento;
 				}
 				

@@ -167,6 +167,7 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 			comprobante.setEmisor(emisorService.getEmisorPorEstablecimiento(establecimiento));
 			comprobante.setReceptor(createReceptor(cliente, idDomicilioFiscal));
 			getDetalleFromTicket(ticket, comprobante);
+			//FIXME validar que fecha utilizara el comprobante
 			createFechaDocumento(comprobante);
 			comprobante.setLugarExpedicion(comprobante.getEmisor().getExpedidoEn().getLocalidad() 
 					+ ", " + comprobante.getEmisor().getExpedidoEn().getEstado());

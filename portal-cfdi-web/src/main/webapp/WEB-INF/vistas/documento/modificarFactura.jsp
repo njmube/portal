@@ -26,125 +26,111 @@
 			<c:url value="/prueba" var="urlDocumento"/>
 			<form:form action="${urlDocumento}" id="formPdf" modelAttribute="documento">
 			<div class="row">
-				<div class="col-md-4">
+				<div class="col-md-12">
 					<div class="white-panel form-horizontal">
 						<fieldset>
 							<h5 class="text-primary">Datos Factura</h5>
 							<hr>
-							<div class="form-group">
-								<label for="factura" class="col-lg-4 col-md-4 control-label"><small>Factura: </small></label>
-								<div class="col-lg-8 col-md-8">
-									<input id="factura" class="form-control input-sm" value="${documento.comprobante.serie} - ${documento.comprobante.folio}" readonly="readonly"/>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="noSucursal" class="col-lg-4 col-md-4 control-label"><small>No. Sucursal: </small></label>
-								<div class="col-lg-8 col-md-8">
-<%-- 									<input id="noSucursal" class="form-control input-sm" value="${documento.comprobante.serie}" readonly="readonly"/> --%>
-									<form:input path="comprobante.serie" cssClass="form-control input-sm" readonly="true"/>
-								</div>
-							</div>
 <!-- 							<div class="form-group"> -->
-<!-- 								<label for="noTicket" class="col-lg-4 col-md-4 control-label"><small>No. de Ticket: </small></label> -->
+<!-- 								<label for="factura" class="col-lg-4 col-md-4 control-label"><small>Factura: </small></label> -->
 <!-- 								<div class="col-lg-8 col-md-8"> -->
-<%-- 									<input id="noTicket" class="form-control input-sm" value="${ticket.transaccion.transaccionHeader.idTicket}" readonly="readonly"/> --%>
-<!-- 								</div> -->
-<!-- 							</div> -->
-<!-- 							<div class="form-group"> -->
-<!-- 								<label for="noCaja" class="col-lg-4 col-md-4 control-label"><small>No. de Caja: </small></label> -->
-<!-- 								<div class="col-lg-8 col-md-8"> -->
-<%-- 									<input id="noCaja" class="form-control input-sm" value="${ticket.transaccion.transaccionHeader.idCaja}" readonly="readonly"/> --%>
-<!-- 								</div> -->
-<!-- 							</div> -->
-<!-- 							<div class="form-group"> -->
-<!-- 								<label for="fechahora" class="col-lg-4 col-md-4 control-label"><small>Fecha y Hora: </small></label> -->
-<!-- 								<div class="col-lg-8 col-md-8"> -->
-<%-- 									<input id="fechahora" class="form-control input-sm" value="${ticket.transaccion.transaccionHeader.fechaHora}" readonly="readonly"/> --%>
+<%-- 									<input id="factura" class="form-control input-sm" value="${documento.comprobante.serie} - ${documento.comprobante.folio}" readonly="readonly"/> --%>
 <!-- 								</div> -->
 <!-- 							</div> -->
 							<div class="form-group">
-								<label for="moneda" class="col-lg-4 col-md-4 control-label"><small>Moneda: </small></label>
-								<div class="col-lg-4 col-md-4">
+								<label for="moneda" class="col-lg-1 col-md-1 control-label"><small>Moneda: </small></label>
+								<div class="col-lg-1 col-md-1">
 									<input id="moneda" class="form-control input-sm" value="${documento.comprobante.moneda}" readonly="readonly"/>
 								</div>
-							</div>
-							<div class="form-group">
-								<label for="tcambio" class="col-lg-4 col-md-4 control-label"><small>Tipo de Cambio: </small></label>
-								<div class="col-lg-4 col-md-4">
+								<label for="tcambio" class="col-lg-2 col-md-2 control-label"><small>Tipo de Cambio: </small></label>
+								<div class="col-lg-2 col-md-2">
 									<input id="tcambio" class="form-control input-sm" value="${documento.comprobante.tipoCambio}" readonly="readonly"/>
 								</div>
-							</div>
-							<div class="form-group">
-								<label for="expedicion" class="col-lg-5 col-md-6 control-label"><small>Lugar de Expedición: </small></label>
-							</div>
-							<div class="form-group">
-								<div class="col-lg-12 col-md-12">
-									<textarea id="expedicion" class="form-control input-sm" rows="2" readonly="readonly">${documento.establecimiento.domicilio.localidad}</textarea>
+								<label for="expedicion" class="col-lg-2 col-md-2 control-label"><small>Lugar de Expedición: </small></label>
+								<div class="col-lg-4 col-md-4">
+									<textarea id="expedicion" class="form-control input-sm" rows="2" readonly="readonly">${documento.comprobante.lugarExpedicion}</textarea>
 								</div>
 							</div>
 						</fieldset>
 					</div>
 				</div>
-				<div class="col-md-8">
+			</div>
+			<div class="row">
+				<div class="col-md-12 text-center">
+					<p>
+						<button type="button" class="btn btn-primary">
+						  Cambiar Cliente <i class="fa fa-exchange"></i>
+						</button>
+					</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
 					<div class="white-panel form-horizontal">
 						<fieldset>
 							<h5 class="text-primary">Datos del Cliente</h5>
 							<hr>
 							<div class="form-group">
-								<label for="rfc" class="col-lg-2 col-md-2 control-label"><small>RFC: </small></label>
-								<div class="col-lg-10 col-md-10">
-									<input id="rfc" class="form-control input-sm" value="${documento.comprobante.receptor.rfc}" readonly="readonly"/>
+								<label for="rfc" class="col-lg-4 col-md-4 control-label"><small>RFC: </small></label>
+								<div class="col-lg-2 col-md-2">
+									<form:input id="rfc" path="comprobante.receptor.rfc" cssClass="form-control input-sm"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="nombre" class="col-lg-2 col-md-2 control-label"><small>Nombre: </small></label>
-								<div class="col-lg-10 col-md-10">
-									<input id="nombre" class="form-control input-sm" value="${documento.comprobante.receptor.nombre}" readonly="readonly"/>
+								<label for="nombre" class="col-lg-4 col-md-4 control-label"><small>Nombre: </small></label>
+								<div class="col-lg-6 col-md-6">
+									<form:input id="nombre" path="comprobante.receptor.nombre" cssClass="form-control input-sm"/>
 								</div>
 							</div>
 							<br>
 							<h5 class="text-primary">Datos del Domicilio Fiscal</h5>
 							<hr>
 							<div class="form-group">
-								<label for="calle" class="col-lg-2 col-md-2 control-label"><small>Calle: </small></label>
-								<div class="col-lg-10 col-md-10">
-									<input id="calle" class="form-control input-sm" value="${documento.comprobante.receptor.domicilio.calle}" readonly="readonly"/>
+								<label for="calle" class="col-lg-4 col-md-4 control-label"><small>Calle: </small></label>
+								<div class="col-lg-6 col-md-6">
+									<form:input id="calle" path="comprobante.receptor.domicilio.calle" cssClass="form-control input-sm"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="noExterior" class="col-lg-2 col-md-2 control-label"><small>No. Exterior: </small></label>
+								<label for="noExterior" class="col-lg-4 col-md-4 control-label"><small>No. Exterior: </small></label>
 								<div class="col-lg-2 col-md-2">
-									<input id="noExterior" class="form-control input-sm" value="${documento.comprobante.receptor.domicilio.noExterior}" readonly="readonly"/>
-								</div>
-								<label for="noInterior" class="col-lg-2 col-md-2 control-label"><small>No. Interior: </small></label>
-								<div class="col-lg-2 col-md-2">
-									<input id="noInterior" class="form-control input-sm" value="${documento.comprobante.receptor.domicilio.noInterior}" readonly="readonly"/>
+									<form:input id="noExterior" path="comprobante.receptor.domicilio.noExterior" cssClass="form-control input-sm"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="colonia" class="col-lg-2 col-md-2 control-label"><small>Colonia: </small></label>
+								<label for="noInterior" class="col-lg-4 col-md-4 control-label"><small>No. Interior: </small></label>
+								<div class="col-lg-2 col-md-2">
+									<form:input id="noInterior" path="comprobante.receptor.domicilio.noInterior" cssClass="form-control input-sm"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="colonia" class="col-lg-4 col-md-4 control-label"><small>Colonia: </small></label>
 								<div class="col-lg-4 col-md-4">
-									<input id="colonia" class="form-control input-sm" value="${documento.comprobante.receptor.domicilio.colonia}" readonly="readonly"/>
+									<form:input id="colonia" path="comprobante.receptor.domicilio.colonia" cssClass="form-control input-sm"/>
 								</div>
-								<label for="delmun" class="col-lg-2 col-md-3 control-label"><small>Delegación/Municipio: </small></label>
+							</div>
+							<div class="form-group">
+								<label for="delmun" class="col-lg-4 col-md-4 control-label"><small>Delegación/Municipio: </small></label>
 								<div class="col-lg-4 col-md-3">
-									<input id="delmun" class="form-control input-sm" value="${documento.comprobante.receptor.domicilio.municipio}" readonly="readonly"/>
+									<form:input id="delmun" path="comprobante.receptor.domicilio.municipio" cssClass="form-control input-sm"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="estado" class="col-lg-2 col-md-2 control-label"><small>Estado: </small></label>
+								<label for="estado" class="col-lg-4 col-md-4 control-label"><small>Estado: </small></label>
 								<div class="col-lg-4 col-md-4">
-									<input id="estado" class="form-control input-sm" value="${documento.comprobante.receptor.domicilio.estado}" readonly="readonly"/>
-								</div>
-								<label for="pais" class="col-lg-2 col-md-2 control-label"><small>País: </small></label>
-								<div class="col-lg-4 col-md-4">
-									<input id="pais" class="form-control input-sm" value="${documento.comprobante.receptor.domicilio.pais}" readonly="readonly"/>
+									<form:input id="estado" path="comprobante.receptor.domicilio.estado" cssClass="form-control input-sm"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="cp" class="col-lg-2 col-md-2 control-label"><small>Código Postal: </small></label>
+								<label for="pais" class="col-lg-4 col-md-4 control-label"><small>País: </small></label>
+								<div class="col-lg-4 col-md-4">
+									<form:input id="pais" path="comprobante.receptor.domicilio.pais" cssClass="form-control input-sm"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="cp" class="col-lg-4 col-md-4 control-label"><small>Código Postal: </small></label>
 								<div class="col-lg-2 col-md-2">
-									<input id="cp" class="form-control input-sm" value="${documento.comprobante.receptor.domicilio.codigoPostal}" readonly="readonly"/>
+									<form:input id="cp" path="comprobante.receptor.domicilio.codigoPostal" cssClass="form-control input-sm"/>
 								</div>
 							</div>
 						</fieldset>

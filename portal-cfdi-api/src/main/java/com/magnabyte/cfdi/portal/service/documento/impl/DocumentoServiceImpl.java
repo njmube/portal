@@ -602,6 +602,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			throw new PortalException("Solo es posible modificar facturas expedidas en Sucursal.");
 		}
 		documentoDao.findBySerieFolioImporte(documento);
+		documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi()));
 	}
 	
 	@Override

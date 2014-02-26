@@ -13,7 +13,7 @@
 $(document).ready(function() {
 	var rfcExtranjeros = "${rfcExtranjeros}";
 	
-	$(document.body).on('change',"#pais",function() {
+	$(document.body).on('change',"#pais0",function() {
 		if($("option:selected", this).val() > 1) {
 			if($("#personaFisica").is(":checked", true)) {
 				$("#rfc").removeClass("validate[required, custom[rfcFisica]]");
