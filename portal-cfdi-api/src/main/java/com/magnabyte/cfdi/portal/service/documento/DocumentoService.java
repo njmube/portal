@@ -2,15 +2,20 @@ package com.magnabyte.cfdi.portal.service.documento;
 
 import java.util.List;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:31/01/2014
+ *
+ * Interfáz que representa el servicio de documento
+ */
 public interface DocumentoService {
 	
 	void insertDocumentoCfdi(Documento documento);
@@ -21,7 +26,7 @@ public interface DocumentoService {
 
 	List<Documento> obtenerAcusesPendientes();
 
-	List<Documento> getDocumentos(Cliente cliente);
+	List<Documento> getDocumentos(Cliente cliente, String fechaInicial, String fechaFinal);
 
 	byte[] recuperarDocumentoArchivo(String fileName, Integer idEstablecimiento,
 			String extension);
@@ -44,9 +49,9 @@ public interface DocumentoService {
 	Documento findById(Documento documento);
 
 	void envioDocumentosFacturacionPorXml(String para, String fileName,
-			Integer idDocumento, HttpServletRequest request);
+			Integer idDocumento);
 
-	byte[] recuperarDocumentoPdf(Documento documento, ServletContext context);
+	byte[] recuperarDocumentoPdf(Documento documento);
 
 	void saveAcuseCfdiXmlFile(Documento documento);
 
@@ -54,5 +59,7 @@ public interface DocumentoService {
 			List<Ticket> devoluciones);
 
 	Cliente readClienteFromDocumento(Documento documento);
+
+	void findBySerieFolioImporte(Documento documento);
 
 }

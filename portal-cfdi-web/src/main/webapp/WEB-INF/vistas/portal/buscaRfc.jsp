@@ -30,8 +30,8 @@
 				<c:url var="urlBuscaRfc" value="/portal/cfdi/buscaPorRfc" />
 				<form:form id="receptorFormPortal" action="${urlBuscaRfc}" method="GET" modelAttribute="cliente" cssClass="form-horizontal" role="form">
 					<div class="form-group">
-						<label for="rfc" class="col-lg-4 control-label">RFC: </label>
-						<div class="col-lg-5">
+						<label for="rfc" class="col-lg-4 col-md-4 control-label">RFC: </label>
+						<div class="col-lg-5 col-md-5">
 							<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfc]]" />
 						</div>
 					</div>

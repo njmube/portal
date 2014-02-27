@@ -2,15 +2,14 @@ package com.magnabyte.cfdi.portal.service.documento.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 import jcifs.smb.NtlmPasswordAuthentication;
 import net.sf.jasperreports.engine.JRException;
@@ -62,6 +61,14 @@ import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:31/01/2014
+ * 
+ * Clase que representa el servicio de documento
+ */
 @Service("documentoService")
 public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAware {
 
@@ -120,6 +127,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Value("${email.plantilla.plaintexterror}")
 	private String namePlainTextError;
 	
+	@Autowired
+	private ServletContext context;
+	
 	@Transactional
 	@Override
 	public void insertDocumentoCfdi(Documento documento) {
@@ -130,6 +140,11 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public void guardarDocumento(Documento documento) {
 		if(documento != null) {
+			Calendar fechaFacturacion = Calendar.getInstance();
+			documento.setFechaFacturacion(fechaFacturacion.getTime());
+			if (documento.isVentasMostrador()) {
+				ticketService.guardarTicketsCierreDia(documento);
+			}
 			documento.setXmlCfdi(documentoXmlService
 					.convierteComprobanteAByteArray(documento.getComprobante(), PortalUtils.encodingUTF16));
 			if(documento instanceof DocumentoSucursal) {
@@ -163,13 +178,14 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 						Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolioDocumento(documento);
 						documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
 						documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO));
-						String msg = "El ticket ya fue facturado con anterioridad, puede consultar " 
-								+ "la " + documento.getTipoDocumento().getNombre() 
-								+ " " + documento.getComprobante().getSerie() 
-								+ "-" + documento.getComprobante().getFolio() 
-								+ " por medio de su RFC.";
-						logger.debug(msg);
-						throw new PortalException(msg);
+						StringBuilder builder = new StringBuilder();
+						builder.append("El ticket ya fue facturado con anterioridad, puede consultar la ");
+						builder.append(documento.getTipoDocumento().getNombre());
+						builder.append(" ").append(documento.getComprobante().getSerie());
+						builder.append("-").append(documento.getComprobante().getFolio());
+						builder.append(" por medio de su RFC.");
+						logger.debug(builder.toString());
+						throw new PortalException(builder.toString());
 					default:
 						break;
 					}
@@ -181,12 +197,13 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			} else if (documento instanceof DocumentoCorporativo) {
 				Documento documentoDB = documentoDao.readDocumentoFolio(documento);
 				if (documentoDB != null) {
-					String msg = "La factura " + documento.getTipoDocumento().getNombre() 
-							+ " " + documento.getComprobante().getSerie() 
-							+ "-" + documento.getComprobante().getFolio() 
-							+ " ya fue procesada con anterioridad.";
-					logger.debug(msg);
-					throw new PortalException(msg);
+					StringBuilder builder = new StringBuilder();
+					builder.append("La factura ").append(documento.getTipoDocumento().getNombre());
+					builder.append(" ").append(documento.getComprobante().getSerie());
+					builder.append("-").append(documento.getComprobante().getFolio());
+					builder.append(" ya fue procesada con anterioridad.");
+					logger.debug(builder.toString());
+					throw new PortalException(builder.toString());
 				} else {
 					saveDocumentAndDetail(documento);
 					documentoDao.insertDocumentoFolio(documento);
@@ -255,8 +272,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Transactional(readOnly = true)
 	@Override
-	public List<Documento> getDocumentos(Cliente cliente) {
-		List<Documento> listaDocumentos = documentoDao.getDocumentoByCliente(cliente);
+	public List<Documento> getDocumentos(Cliente cliente, String fechaInicial, String fechaFinal) {
+		List<Documento> listaDocumentos = documentoDao
+				.getDocumentoByCliente(cliente, fechaInicial, fechaFinal);
 		List<Integer> idDocumentos = new ArrayList<Integer>();
 		List<Documento> documentosPorId = null;
 		
@@ -306,18 +324,18 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Override
 	public byte[] recuperarDocumentoXml(Documento documento) {
-		try {
-			logger.debug(new String(documento.getXmlCfdi(), PortalUtils.encodingUTF8));
+//		try {
+//			logger.debug(new String(documento.getXmlCfdi(), PortalUtils.encodingUTF16));
 			Comprobante comprobante = documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi());
 			return documentoXmlService.convierteComprobanteAByteArray(comprobante, PortalUtils.encodingUTF8);
-		} catch (UnsupportedEncodingException ex) {
-			logger.error("Error al convertir el documento a bytes");
-			throw new PortalException("Error al convertir el documento a bytes");
-		}
+//		} catch (UnsupportedEncodingException ex) {
+//			logger.error("Error al convertir el documento a bytes");
+//			throw new PortalException("Error al convertir el documento a bytes");
+//		}
 	}
 	
 	@Override
-	public byte[] recuperarDocumentoPdf(Documento documento, ServletContext context) {
+	public byte[] recuperarDocumentoPdf(Documento documento) {
 		logger.debug("Creando reporte");
 		JasperPrint reporteCompleto = null;
 		byte[] bytesReport = null;
@@ -413,49 +431,41 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	}
 	
 	@Override
-	public void envioDocumentosFacturacionPorXml(final String para, final String fileName,
-		final Integer idDocumento, final HttpServletRequest request) {
-		final ServletContext context = request.getSession().getServletContext();
-		new Thread(new Runnable() {
+	public void envioDocumentosFacturacionPorXml(String para, String fileName,
+		Integer idDocumento) {
+		Documento documento = new Documento();
+		documento.setId(idDocumento);
+		documento = findById(documento);
+		String asunto = subject + fileName;
+		String htmlPlantilla = null;
+		String textoPlanoPlantilla = null;
+		String htmlPlantillaError = null;
+		String textoPlanoPlantillaError = null;
+		
+		Resource htmlResource = resourceLoader.getResource("classpath:/" + nameHtmlText);
+		Resource plainTextResource = resourceLoader.getResource("classpath:/" + namePlainText);
+		Resource htmlResourceError = resourceLoader.getResource("classpath:/" + nameHtmlTextError);
+		Resource plainTextResourceError = resourceLoader.getResource("classpath:/" + namePlainTextError);
+		
+		try {
+			htmlPlantillaError = IOUtils.toString(htmlResourceError.getInputStream(), PortalUtils.encodingUTF8);
+			textoPlanoPlantillaError = IOUtils.toString(plainTextResourceError.getInputStream(), PortalUtils.encodingUTF8);
 			
-			@Override
-			public void run() {
-				Documento documento = new Documento();
-				documento.setId(idDocumento);
-				documento = findById(documento);
-				String asunto = subject + fileName;
-				String htmlPlantilla = null;
-				String textoPlanoPlantilla = null;
-				String htmlPlantillaError = null;
-				String textoPlanoPlantillaError = null;
-				
-				Resource htmlResource = resourceLoader.getResource("classpath:/" + nameHtmlText);
-				Resource plainTextResource = resourceLoader.getResource("classpath:/" + namePlainText);
-				Resource htmlResourceError = resourceLoader.getResource("classpath:/" + nameHtmlTextError);
-				Resource plainTextResourceError = resourceLoader.getResource("classpath:/" + namePlainTextError);
-				
-				try {
-					htmlPlantillaError = IOUtils.toString(htmlResourceError.getInputStream(), PortalUtils.encodingUTF8);
-					textoPlanoPlantillaError = IOUtils.toString(plainTextResourceError.getInputStream(), PortalUtils.encodingUTF8);
-					
-					final Map<String, ByteArrayResource> attach = new HashMap<String, ByteArrayResource>();
-					attach.put(fileName + ".pdf", new ByteArrayResource(recuperarDocumentoPdf(documento, context)));
-					attach.put(fileName + ".xml", new ByteArrayResource(recuperarDocumentoXml(documento)));
-					
-					htmlPlantilla = IOUtils.toString(htmlResource.getInputStream(), PortalUtils.encodingUTF8);
-					textoPlanoPlantilla = IOUtils.toString(plainTextResource.getInputStream(), PortalUtils.encodingUTF8);
-					//FIXME Cambiar configuracion mail
-					emailService.sendMailWithAttach(textoPlanoPlantilla,htmlPlantilla, asunto, attach, para);
-					
-				} catch (PortalException ex) {
-					logger.error("Error al leer los archivos adjuntos.", ex);
-					emailService.sendMimeMail(textoPlanoPlantillaError, htmlPlantillaError ,asunto, para);
-				} catch (IOException ex) {
-					logger.error("Error al leer los archivos adjuntos.", ex);
-					emailService.sendMimeMail(textoPlanoPlantillaError, htmlPlantillaError ,asunto, para);
-				}
-			}
-		}).start();
+			final Map<String, ByteArrayResource> attach = new HashMap<String, ByteArrayResource>();
+			attach.put(fileName + ".pdf", new ByteArrayResource(recuperarDocumentoPdf(documento)));
+			attach.put(fileName + ".xml", new ByteArrayResource(recuperarDocumentoXml(documento)));
+			
+			htmlPlantilla = IOUtils.toString(htmlResource.getInputStream(), PortalUtils.encodingUTF8);
+			textoPlanoPlantilla = IOUtils.toString(plainTextResource.getInputStream(), PortalUtils.encodingUTF8);
+			emailService.sendMailWithAttach(textoPlanoPlantilla,htmlPlantilla, asunto, attach, para);
+			
+		} catch (PortalException ex) {
+			logger.error("Error al leer los archivos adjuntos.", ex);
+			emailService.sendMimeMail(textoPlanoPlantillaError, htmlPlantillaError ,asunto, para);
+		} catch (IOException ex) {
+			logger.error("Error al leer los archivos adjuntos.", ex);
+			emailService.sendMimeMail(textoPlanoPlantillaError, htmlPlantillaError ,asunto, para);
+		}
 	}
 
 	@Transactional(readOnly = true)
@@ -578,6 +588,21 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			return articulosSinPrecio.contains(claveArticulo);
 		}
 		return false;
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public void findBySerieFolioImporte(Documento documento) {
+		documentoDao.findBySerie(documento);
+		if (!documento.getTipoDocumento().equals(TipoDocumento.FACTURA)) {
+			throw new PortalException("Solo es posible modificar documentos de tipo factura.");
+		}
+		
+		if (documento.getEstablecimiento().getTipoEstablecimiento().getRol().equalsIgnoreCase("ROLE_CORP")) {
+			throw new PortalException("Solo es posible modificar facturas expedidas en Sucursal.");
+		}
+		documentoDao.findBySerieFolioImporte(documento);
+		documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi()));
 	}
 	
 	@Override

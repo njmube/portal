@@ -28,7 +28,7 @@ public interface DocumentoDao {
 	
 	List<Documento> getNombreDocumentoFacturado(List<Integer> idDocumentos);
 	
-	List<Documento> getDocumentoByCliente(Cliente cliente);
+	List<Documento> getDocumentoByCliente(Cliente cliente, String fechaInicial, String fechaFinal);
 
 	void updateDocumentoCliente(DocumentoSucursal documento);
 
@@ -51,5 +51,9 @@ public interface DocumentoDao {
 	Documento readDocumentoFolioById(Documento documento);
 
 	Cliente readClienteFromDocumento(Documento documentoOrigen);
+
+	void findBySerie(Documento documento);
+
+	void findBySerieFolioImporte(Documento documento);
 
 }

@@ -14,10 +14,10 @@ import com.certus.facturehoy.ws2.cfdi.WsEmisionTimbrado;
 import com.certus.facturehoy.ws2.cfdi.WsResponseBO;
 import com.certus.facturehoy.ws2.cfdi.WsServicioBO;
 import com.certus.facturehoy.ws2.cfdi.WsServicios;
-import com.magnabyte.cfdi.portal.model.cfdi.v32.TimbreFiscalDigital;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
+import com.magnabyte.cfdi.portal.model.tfd.v32.TimbreFiscalDigital;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
@@ -64,10 +64,9 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		WsResponseBO response = new WsResponseBO();
 		
 		try {
-			//FIXME Quitar para produccion solo es para pruebas
-//			if(documento != null) {
-//				throw new Exception("Sin servicio web service.");
-//			}
+			if(idServicio < 1) {
+				throw new Exception("Ocurrío un error al realizar la conexión, el sistema de facturación no se encuentra disponible por el momento.");
+			}
 			response = wsEmisionTimbrado.emitirTimbrar(userWs, passwordWs, idServicio, 
 				documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante(), PortalUtils.encodingUTF8));
 		} catch(Exception ex) {
@@ -126,7 +125,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	
 		if (response.getAcuse() != null) {
 			logger.debug("llamada a samba");
-			//FIXME solo para pruebas
+			//FIXME Solo para pruebas, quitar para produccion.
 			String acuse = "<acuse>Aqui va el acuse</acuse>";
 			try {
 				response.setAcuse(acuse.getBytes(PortalUtils.encodingUTF16));
@@ -150,8 +149,8 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		try {
 			serviciosContratados = wsServicios.obtenerServicios(userWs, passwordWs);
 		} catch(Exception ex) {
-			logger.debug("Ocurrío un error al realizar la conexión, el sistema de facturación no se encuentra disponible por el momento", ex);
-			throw new PortalException("Ocurrío un error al realizar la conexión, el sistema de facturación no se encuentra disponible por el momento", ex);
+			logger.error("Ocurrío un error al realizar la conexión, el sistema de facturación no se encuentra disponible por el momento", ex);
+			return idServicio;
 		}
 		if (serviciosContratados.getArray().size() > 0) {
 			for (WsServicioBO servicio : serviciosContratados.getArray()) {
@@ -161,7 +160,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			}
 		} else {
 			logger.debug("No hay servicios contratados: {}", serviciosContratados.getMensaje());
-			throw new PortalException("No hay servicios contratados: " + serviciosContratados.getMensaje());
+			return idServicio;
 		}
 		//FIXME Comentar para produccion
 		idServicio = 5652528;

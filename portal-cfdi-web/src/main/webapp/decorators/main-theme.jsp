@@ -18,8 +18,8 @@
 	href="<c:url value="/resources/css/font-awesome/css/font-awesome.min.css" />" />
 <link rel="stylesheet" type="text/css"
 	href="<c:url value="/resources/css/bootstrap.min.css" />" />
-<link rel="stylesheet" type="text/css"
-	href="<c:url value="/resources/css/bootstrap-theme.min.css" />" />
+<!-- <link rel="stylesheet" type="text/css" -->
+<%-- 	href="<c:url value="/resources/css/bootstrap-theme.min.css" />" /> --%>
 <link rel="stylesheet" type="text/css"
 	href="<c:url value="/resources/css/modatelas-style.css" />" />
 <link rel="stylesheet" type="text/css"
@@ -47,12 +47,22 @@
 <script type="text/javascript">
 	var contextPath = "${pageContext.request.contextPath}";
 
+	function formatDateToString(dateToFormat) {
+		var today = dateToFormat; 
+	    var curr_date = today.getDate();
+	    var curr_month = today.getMonth() + 1;
+	    var curr_year = today.getFullYear();
+	    if(curr_date < 10){curr_date = '0' + curr_date} 
+	    if(curr_month < 10){curr_month = '0' + curr_month}
+		return curr_date + '-' + curr_month + '-' + curr_year;
+	}
+	
 	function autoClosingAlert(selector, delay) {
 		var alert = $(selector).alert();
 		window.setTimeout(function() {
 			alert.fadeOut("slow");
 		}, delay);
-	}	
+	}
 	
 	$(function() {
 		$.prettyLoader();
@@ -107,6 +117,7 @@
 				<c:url var="logoutUrl" value="/perform_logout" />
 				<c:url var="catalogoEstablecimiento" value="/catalogoEstablecimiento" />
 				<c:url var="catalogoUsuarios" value="/catalogoUsuarios"></c:url>
+				<c:url var="catalogoClientes" value="/buscaRfc"></c:url>
 				
 				<div class="collapse navbar-collapse pull-right">
 					<sec:authorize access="isAnonymous()">
@@ -126,10 +137,11 @@
 						</c:if>
 						<li class="dropdown">
 							<sec:authorize access="hasAnyRole('ROLE_ADMIN')">
-								<a href="" class="dropdown-toggle" data-toggle="dropdown" >Catálogos <b class="caret"></b></a>
+								<a href="" class="dropdown-toggle" data-toggle="dropdown" >Administración <i class="fa fa-cog"></i> <b class="caret"></b></a>
 								<ul class="dropdown-menu">
-									<li><a href="${catalogoUsuarios}">Usuarios</a></li>
-									<li><a href="${catalogoEstablecimiento}">Establecimientos</a></li>
+									<li><a href="${catalogoUsuarios}"><i class="fa fa-user"></i> Usuarios</a></li>
+									<li><a href="${catalogoEstablecimiento}"><i class="fa fa-dot-circle-o"></i> Sucursales</a></li>
+									<li><a href="${catalogoClientes}"><i class="fa fa-users"></i> Clientes</a></li>
 								</ul>
 							</sec:authorize>
 						</li>

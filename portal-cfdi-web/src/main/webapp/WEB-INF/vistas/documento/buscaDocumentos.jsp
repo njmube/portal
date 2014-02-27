@@ -13,7 +13,7 @@
 		<div class="white-panel row">
 			<h2><span class="text-info">Facturación Electrónica</span> <span class="label label-primary">@</span></h2>
 			<blockquote>
-				<p class="text-info">Ingresa el RFC del Cliente.</p>
+				<p class="text-info">Ingresa el RFC del Cliente y un rango de fechas.</p>
 			</blockquote>
 			<hr>
 			<div id="message_response">
@@ -21,9 +21,27 @@
 			<div class="well col-md-offset-2 col-md-8">
 				<form:form id="documentoForm" action="#" method="GET" modelAttribute="cliente" cssClass="form-horizontal" role="form">
 					<div class="form-group">
-						<label for="rfc" class="col-lg-4 control-label">RFC: </label>
-						<div class="col-lg-5">
+						<label for="rfc" class="col-lg-4 col-md-4 control-label">RFC: </label>
+						<div class="col-lg-5 col-md-5">
 							<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfc]]" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="rfc" class="col-lg-4 col-md-4 control-label">Fecha Inicial: </label>
+						<div class="col-lg-5 col-md-5">
+							<div class="input-group date" id="divFechaInit" data-date="" data-date-format="dd-mm-yyyy">
+								<input name="fechaInit" id="fechaInit" class="form-control input-sm validate[required]" />
+							    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+						    </div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="rfc" class="col-lg-4 col-md-4 control-label">Fecha Final: </label>
+						<div class="col-lg-5 col-md-5">
+							<div class="input-group date" id="divFechaFin" data-date="" data-date-format="dd-mm-yyyy">
+								<input name="fechaFin" id="fechaFin" class="form-control input-sm validate[required]" />
+							    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+						    </div>
 						</div>
 					</div>
 					<hr>
@@ -39,7 +57,7 @@
 						</div>
 					</div>
 				</form:form>
-				<div id="listDocumentosPage" class="container">
+				<div id="listDocumentosPage">
 					<jsp:include page="listaDocumentos.jsp" />
 				</div>
 			</div>

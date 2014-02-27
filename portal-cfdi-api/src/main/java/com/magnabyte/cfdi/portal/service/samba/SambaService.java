@@ -11,6 +11,14 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:31/01/2014
+ *
+ * Interfáz que representa el servicio de samba
+ */
 public interface SambaService {
 
 	InputStream getFileStream(String url, String fileName, NtlmPasswordAuthentication authentication);

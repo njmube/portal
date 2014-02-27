@@ -1,8 +1,13 @@
 package com.magnabyte.cfdi.portal.web.utils;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.HttpSessionRequiredException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -39,8 +44,13 @@ public class GlobalHandlerExceptionController {
 	}
 	
 	@ExceptionHandler(HttpSessionRequiredException.class)
-	public String restartFlow() {
+	public String restartFlow(HttpServletRequest request) {
 		logger.debug("redireccionando session incompleta");
-	    return "redirect:/menuPage";
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if(authentication instanceof AnonymousAuthenticationToken) {
+			return "redirect:/portal/cfdi/menu";
+		} else {
+			return "redirect:/menuPage";
+		}
 	}
 }

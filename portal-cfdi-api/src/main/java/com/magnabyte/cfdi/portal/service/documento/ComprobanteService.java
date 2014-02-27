@@ -7,6 +7,14 @@ import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:31/01/2014
+ * 
+ * Interfáz que representa el servicio de comprobante 
+ */
 public interface ComprobanteService {
 
 	boolean sellarComprobante(Comprobante comprobante,

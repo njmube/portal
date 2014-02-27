@@ -46,6 +46,14 @@ import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:31/01/2014
+ *
+ * Clase que representa el servicio de samba
+ */
 @Service("sambaService")
 public class SambaServiceImpl implements SambaService {
 
@@ -152,6 +160,11 @@ public class SambaServiceImpl implements SambaService {
 					documento.getEstablecimiento().getRutaRepositorio().getRutaRepoInProc();
 			SmbFile sapFile = new SmbFile(rutaXmlPrevio, documento.getNombreXmlPrevio(), authentication);
 			if (sapFile.exists()) {
+				SmbFile smbInProc = new SmbFile(rutaXmlProcesado, authentication);
+				if (!smbInProc.exists()) {
+					logger.debug("El directorio de procesados no existe y sera creado.");
+					smbInProc.mkdir();
+				}
 				SmbFile smbFileProc = new SmbFile(rutaXmlProcesado, sapFile.getName(), authentication);
 				sapFile.renameTo(smbFileProc);
 				if (smbFileProc.exists()) {

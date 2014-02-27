@@ -27,7 +27,7 @@ public class Cliente {
 	 * Registro Federal de Contribuyentes de cliente
 	 */
 	@NotEmpty
-	@Pattern(regexp = "[A-Z,Ñ,&amp;]{3,4}[0-9]{2}[0-1][0-9][0-3][0-9][A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?")
+	@Pattern(regexp = "[A-Z,Ñ,&amp;]{3,4}[0-9]{2}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])[A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?")
 	private String rfc;
 	
 	/**
@@ -47,6 +47,11 @@ public class Cliente {
 	 * Tipo de persona de clinte
 	 */
 	private TipoPersona tipoPersona;
+	
+	/**
+	 * Email de cliente
+	 */
+	private String email;
 	
 	/**
 	 * Constructos por default
@@ -129,6 +134,22 @@ public class Cliente {
 	 */
 	public TipoPersona getTipoPersona() {
 		return tipoPersona;
+	}
+
+	/**
+	 * Devuelve el email de cliente
+	 * @return email
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * Asigna el email de cliente
+	 * @param email
+	 */
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	/**

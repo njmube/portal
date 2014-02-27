@@ -149,15 +149,15 @@
                     "alertText": "* La extensión del archivo no es permitida "
                 },
                 "rfc": {
-                	"regex": /^[A-Z,Ñ,&amp;]{3,4}[0-9]{2}[0-1][0-9][0-3][0-9][A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?$/,
+                	"regex": /^[A-Z,Ñ,&amp;]{3,4}[0-9]{2}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])[A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?$/,
                 	"alertText": "* RFC inválido"
                 },
                 "rfcMoral": {
-                	"regex": /^[A-Z,Ñ,&amp;]{3}[0-9]{2}[0-1][0-9][0-3][0-9][A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?$/,
+                	"regex": /^[A-Z,Ñ,&amp;]{3}[0-9]{2}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])[A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?$/,
                 	"alertText": "* RFC moral inválido"
                 },
                 "rfcFisica": {
-                	"regex": /^[A-Z,Ñ,&amp;]{4}[0-9]{2}[0-1][0-9][0-3][0-9][A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?$/,
+                	"regex": /^[A-Z,Ñ,&amp;]{4}[0-9]{2}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])[A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?$/,
                 	"alertText": "* RFC fisica inválido"
                 },
                 "regimenComplemento": {
@@ -171,7 +171,7 @@
                     "alertText": "* El valor max es "
                 },
                 "cantidad" : {
-                	"regex": "none",
+                	"regex": /^[\-\+]?(([0-9]+)([\.,]([0-9]+))?|([\.,]([0-9]+))?)$/,
                 	"alertText": "* Cantidad inválida"
                 },
                 "descuento" : {

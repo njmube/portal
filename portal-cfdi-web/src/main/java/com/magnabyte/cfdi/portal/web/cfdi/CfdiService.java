@@ -21,5 +21,12 @@ public interface CfdiService {
 	void sellarYTimbrarComprobante(Documento documento, int idServicio, CertificadoDigital certificado);
 
 	void recuperarTimbreDocumentosPendientes();
+
+	void envioDocumentosFacturacion(String email, String fileName,
+			Integer idDocumento);
+	
+	void recuperaTicketsRest(Establecimiento establecimiento, String fechaCierre);
+
+	void generarDocumentoCorp(Documento documento);
 	
 }

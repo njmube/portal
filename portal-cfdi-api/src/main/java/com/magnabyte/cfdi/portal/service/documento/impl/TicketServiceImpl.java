@@ -53,6 +53,14 @@ import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:31/01/2014
+ *
+ * Clase que representa el servicio de ticket
+ */
 @Service("ticketService")
 public class TicketServiceImpl implements TicketService {
 
@@ -103,6 +111,9 @@ public class TicketServiceImpl implements TicketService {
 	
 	@Value("${ticket.categoria.sinprecio}")
 	private String categoriaSinPrecio; 
+	
+	@Value("${ticket.numero.cuenta.default}")
+	private String numeroCuentaDefault;
 	
 	private static final String ticketGenerico = "0";
 	
@@ -231,6 +242,9 @@ public class TicketServiceImpl implements TicketService {
 								ticket.getTransaccion().getInformacionPago().get(0).getNumeroCuenta() != null) {
 							String numeroCuenta = ticket.getTransaccion().getInformacionPago().get(0).getNumeroCuenta();
 							ticket.getTransaccion().getInformacionPago().get(0).setNumeroCuenta(numeroCuenta.replaceAll("\\*", ""));
+							if (ticket.getTransaccion().getInformacionPago().get(0).getNumeroCuenta().isEmpty()) {
+								ticket.getTransaccion().getInformacionPago().get(0).setNumeroCuenta(numeroCuentaDefault);
+							}
 						}
 						ticket.setNombreArchivo(file.getName());
 						return true;
@@ -431,7 +445,8 @@ public class TicketServiceImpl implements TicketService {
 					.equals(documentoOrigen.getTicket().getNombreArchivo())) {
 				for (PartidaDevolucion partidaDevolucion : ticket.getTransaccion().getPartidasDevolucion()) {
 					if (!documentoService.isArticuloSinPrecio(partidaDevolucion.getArticulo().getId())) {
-						if (partidaDevolucion.getArticulo().getTipoCategoria() != null && !partidaDevolucion.getArticulo().getTipoCategoria().equals(categoriaSinPrecio)) {
+						if (partidaDevolucion.getArticulo().getTipoCategoria() != null && !partidaDevolucion
+								.getArticulo().getTipoCategoria().equals(categoriaSinPrecio)) {
 							Partida partida = new Partida();
 							Articulo articulo = new Articulo();
 							articulo.setId(partidaDevolucion.getArticulo().getId());

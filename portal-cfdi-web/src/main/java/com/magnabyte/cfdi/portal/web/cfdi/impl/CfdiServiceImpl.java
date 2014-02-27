@@ -3,17 +3,21 @@ package com.magnabyte.cfdi.portal.web.cfdi.impl;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
@@ -52,6 +56,8 @@ public class CfdiServiceImpl implements CfdiService {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(CfdiServiceImpl.class);
+	
+	private RestTemplate restTemplate;
 
 	@Autowired
 	private DocumentoWebService documentoWebService;
@@ -89,6 +95,7 @@ public class CfdiServiceImpl implements CfdiService {
 	@Value("${generic.rfc.ventas.mostrador}")
 	private String rfcVentasMostrador;
 
+	@Async
 	@Override
 	public void generarDocumento(Documento documento) {
 		logger.debug("cfdiService...");
@@ -96,12 +103,6 @@ public class CfdiServiceImpl implements CfdiService {
 		int idServicio = documentoWebService.obtenerIdServicio();
 		CertificadoDigital certificado = certificadoService
 				.readVigente(documento.getComprobante());
-		Calendar fechaFacturacion = Calendar.getInstance();
-		documento.setFechaFacturacion(fechaFacturacion.getTime());
-		documentoService.guardarDocumento(documento);
-		if (documento.isVentasMostrador()) {
-			ticketService.guardarTicketsCierreDia(documento);
-		}
 		sellarYTimbrarComprobante(documento, idServicio, certificado);
 		if (documento instanceof DocumentoCorporativo) {
 			sambaService.moveProcessedSapFile((DocumentoCorporativo) documento);
@@ -109,6 +110,18 @@ public class CfdiServiceImpl implements CfdiService {
 					.convierteComprobanteAByteArray(documento.getComprobante(),
 							PortalUtils.encodingUTF8), documento);
 		}
+		if (documento.getCliente().getEmail() != null && !documento.getCliente().getEmail().isEmpty()) {
+			logger.debug("Se enviara el email con los archivos del documento");
+			String fileName = documento.getTipoDocumento().getNombre() 
+					+ "_" + documento.getComprobante().getSerie() 
+					+ "_" + documento.getComprobante().getFolio();
+			envioDocumentosFacturacion(documento.getCliente().getEmail(), fileName, documento.getId());
+		}
+	}
+	
+	@Override
+	public void generarDocumentoCorp(Documento documento) {
+		generarDocumento(documento);
 	}
 
 	@Override
@@ -277,6 +290,13 @@ public class CfdiServiceImpl implements CfdiService {
 					"El cierre del dia actual es posible realizarlo hasta despues del cierre de la tienda");
 		}
 	}
+	
+	@Async
+	@Override
+	public void envioDocumentosFacturacion(String email, String fileName,
+			Integer idDocumento) {
+		documentoService.envioDocumentosFacturacionPorXml(email, fileName, idDocumento);
+	}
 
 	private List<Documento> prepararDocumentosNcr(List<Ticket> devoluciones,
 			Establecimiento establecimiento) {
@@ -323,5 +343,25 @@ public class CfdiServiceImpl implements CfdiService {
 				}
 			}
 		}
+	}
+	
+	@Async
+	@Override
+	public void recuperaTicketsRest(Establecimiento establecimiento, String fechaCierre) {
+		
+		restTemplate = new RestTemplate();
+		
+		String rutaIpLocal = establecimiento.getRutaRepositorio()
+				.getRutaRepositorio().replace("smb://", "http://") + ":8080/" ;
+		
+		Map<String, String> parametros = new HashMap<String, String>();
+		
+		parametros.put("fechaCierre", fechaCierre);
+		parametros.put("claveEstablecimiento", establecimiento.getClave());
+		parametros.put("rutaRepoIn", establecimiento.getRutaRepositorio().getRutaRepoIn());
+		
+		String resp = restTemplate.postForObject(rutaIpLocal + "obtenerTickets", parametros, String.class);
+		
+		logger.debug(resp);
 	}
 }

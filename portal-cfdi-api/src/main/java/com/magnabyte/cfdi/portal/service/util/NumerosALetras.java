@@ -7,6 +7,15 @@ import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:31/01/2014
+ *
+ * Interfáz que representa el servicio con la logica para comvertir de numeros a letras
+ * cantidades numpericas.
+ */
 public class NumerosALetras {
 	private static final Logger logger = LoggerFactory
 			.getLogger(NumerosALetras.class);

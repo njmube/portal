@@ -119,10 +119,10 @@ $(document).ready(function() {
 									messageClass = "";
 									
 									if(response) {
-										message = "El correo fue enviado correctamente.";
+										message = "<i class='fa fa-check-circle-o'\></i> En unos momentos se enviará la factura electrónica en el correo proporcionado.";
 										messageClass = "success";
 									} else {
-										message = "Error al enviar el correo electronico.";
+										message = "Ocurrió un error al enviar el correo electrónico.";
 										messageClass = "danger";
 									}
 									var messageContainer = "<div class=\'col-md-offset-2 col-md-8\'> " +
@@ -135,7 +135,7 @@ $(document).ready(function() {
 										
 									$("#message_response").html(messageContainer);
 									$("#email").val("");
-									autoClosingAlert("div.alert", 2500);
+// 									autoClosingAlert("div.alert", 2500);
 									
 								}
 							});

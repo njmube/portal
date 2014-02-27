@@ -5,7 +5,9 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,6 +16,9 @@ import net.sf.jasperreports.engine.JRParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,7 +28,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.DefaultSessionAttributeStore;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
@@ -66,15 +75,25 @@ public class DocumentoController {
 	@Autowired
 	private DocumentoWebService documentoWebService;
 	
+	@Autowired 
+	private ServletContext servletContext;
+	
 	@Autowired
 	private CfdiService cfdiService;
 	
 	@RequestMapping(value = {"/generarDocumento", "/portal/cfdi/generarDocumento"}, method = RequestMethod.POST)
-	public String generarDocumento(@ModelAttribute Documento documento, ModelMap model) {
+	public String generarDocumento(@ModelAttribute Documento documento, ModelMap model, final RedirectAttributes redirectAttributes) {
 		logger.debug("generando documento");
 
-		cfdiService.generarDocumento(documento);
-		model.put("documento", documento);
+		documentoService.guardarDocumento(documento);
+		if (documento instanceof DocumentoCorporativo) {
+			//FIXME Quitar para produccion
+			documento.getComprobante().getEmisor().setRfc("AAA010101AAA");
+			cfdiService.generarDocumentoCorp(documento);
+		} else {
+			cfdiService.generarDocumento(documento);
+		}
+		redirectAttributes.addFlashAttribute("documento", documento);
 		
 		if (documento instanceof DocumentoPortal) {
 			return "redirect:/portal/cfdi/imprimirFactura";
@@ -84,26 +103,48 @@ public class DocumentoController {
 	}
 
 	@RequestMapping(value = {"/imprimirFactura", "/portal/cfdi/imprimirFactura"})
-	public String imprimirFactura() {
+	public String imprimirFactura(@ModelAttribute Documento documento, HttpServletRequest request, 
+			DefaultSessionAttributeStore store, WebRequest webRequest, ModelMap model) {
+		Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
+		if (inputFlashMap == null) {
+			model.remove("documento");
+			store.cleanupAttribute(webRequest, "documento");
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			if(authentication instanceof AnonymousAuthenticationToken) {
+				return "redirect:/portal/cfdi/menu";
+			} else {
+				return "redirect:/menuPage";
+			}
+		}
 		logger.debug("Factura generada...");
-		return "documento/documentoSuccess";
+		if (documento instanceof DocumentoCorporativo) {
+			return "documento/documentoSuccessCorp";
+		} else {
+			return "documento/documentoSuccess";
+		}
 	}
 	
-	//FIXME verificar limpieza de session
 	@RequestMapping("/restartFlow")
-	public String restarFlow(SessionStatus status) {
+	public String restarFlow(SessionStatus status, DefaultSessionAttributeStore store, WebRequest webRequest, ModelMap model) {
 		logger.debug("reiniciando flujo");
-		return "redirect:/menu";
+		model.remove("documento");
+		store.cleanupAttribute(webRequest, "documento");
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if(authentication instanceof AnonymousAuthenticationToken) {
+			return "redirect:/portal/cfdi/menu";
+		} else {
+			return "redirect:/menuPage";
+		}
 	}
 
 	@RequestMapping(value = {"/reporte/{filename}", "/portal/cfdi/reporte/{filename}"})
 	public String reporte(@ModelAttribute Documento documento, @PathVariable String filename, 
-			ModelMap model, HttpServletRequest request) {
+			ModelMap model) {
 		logger.debug("Creando reporte");
 		Locale locale = new Locale("es", "MX");
 		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
 		comprobantes.add(documento.getComprobante());
-		String pathImages = request.getSession().getServletContext().getRealPath("resources/img");
+		String pathImages = servletContext.getRealPath("resources/img");
 		if (documento instanceof DocumentoCorporativo) {
 			model.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
 		} else if (documento instanceof DocumentoSucursal) {
@@ -121,6 +162,7 @@ public class DocumentoController {
 		model.put("QRCODE", codigoQRService.generaCodigoQR(documento));
 		model.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
 		model.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
+		model.put("IVA", documento.getComprobante().getImpuestos().getTraslados().getTraslado().get(0).getTasa());
 		model.put("objetoKey", comprobantes);
 		return ("reporte");
 	}
@@ -181,9 +223,9 @@ public class DocumentoController {
 	
 	@RequestMapping("/portal/cfdi/documentoEnvio") 
 	public @ResponseBody Boolean documentoEnvio(@RequestParam Integer idDocumento, 
-			@RequestParam String fileName, @RequestParam String email, HttpServletRequest request) {
+			@RequestParam String fileName, @RequestParam String email) {
 		try {
-			documentoService.envioDocumentosFacturacionPorXml(email, fileName, idDocumento, request);
+			cfdiService.envioDocumentosFacturacion(email, fileName, idDocumento);
 		} catch (PortalException ex) {
 			return false;
 		}
@@ -198,9 +240,10 @@ public class DocumentoController {
 	}
 	
 	@RequestMapping("/portal/cfdi/listaDocumentos")
-	public String listaDocumentos(ModelMap model, @ModelAttribute Cliente cliente) {
-		logger.debug("Opteniendo la lista de documentos");
-		List<Documento> documentos = documentoService.getDocumentos(cliente);
+	public String listaDocumentos(ModelMap model, @ModelAttribute Cliente cliente, 
+			@RequestParam String fechaInicial, @RequestParam String fechaFinal) {
+		logger.debug("Obteniendo la lista de documentos");
+		List<Documento> documentos = documentoService.getDocumentos(cliente, fechaInicial, fechaFinal);
 		if(documentos != null && !documentos.isEmpty()) {
 			model.put("emptyList", false);
 		}
@@ -208,5 +251,35 @@ public class DocumentoController {
 		
 		return "documento/listaDocumentos";
 	}
+
+	@RequestMapping("/refacturarForm")
+	public String refacturar(ModelMap model) {
+		model.put("documento", new DocumentoSucursal());
+		return "documento/refacturarForm";
+	}
 	
+	@RequestMapping(value = "/validaSerieFolio", method = RequestMethod.POST)
+	public String validaSerieFolio(@ModelAttribute Documento documento, ModelMap model) {
+		logger.debug("validaSerieFolio");
+		try {
+			documentoService.findBySerieFolioImporte(documento);
+			return "redirect:/modificarFactura";
+		} catch (PortalException ex) {
+			model.put("error", true);
+			model.put("messageError", ex.getMessage());
+			return "documento/refacturarForm";
+		}
+	}
+	
+	@RequestMapping("/modificarFactura")
+	public String modificarFactura(@ModelAttribute Documento documento) {
+		logger.debug("modificarFactura");
+		return "documento/modificarFactura";
+	}
+	
+	@RequestMapping("/prueba")
+	public String prueba(@ModelAttribute Documento documento) {
+		logger.debug("prueba");
+		return "documento/modificarFactura";
+	}
 }

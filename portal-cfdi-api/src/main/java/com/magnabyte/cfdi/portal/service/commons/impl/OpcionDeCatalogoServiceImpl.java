@@ -11,6 +11,14 @@ import com.magnabyte.cfdi.portal.dao.commons.OpcionDeCatalogoDao;
 import com.magnabyte.cfdi.portal.model.commons.OpcionDeCatalogo;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:31/01/2014
+ * 
+ * Clase que representa el servicio de opcion de catalogo
+ */
 @Service("opcionDeCatalogoService")
 public class OpcionDeCatalogoServiceImpl implements OpcionDeCatalogoService{
 

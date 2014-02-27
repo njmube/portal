@@ -11,6 +11,14 @@ import com.magnabyte.cfdi.portal.model.commons.Usuario;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.commons.UsuarioService;
 
+/**
+ * 
+ * @author Magnabyte, S.A. de C.V
+ * magnabyte.com.mx
+ * Fecha:31/01/2014
+ *
+ * Clase que representa el servicio de usuario
+ */
 @Service("usuarioService")
 public class UsuarioServiceImpl implements UsuarioService {
 

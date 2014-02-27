@@ -31,7 +31,7 @@ import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
  * Clase que representa el controlador de cliente
  */ 
 @Controller
-@SessionAttributes({"cliente", "ticket"})
+@SessionAttributes({"cliente"})
 public class ClienteController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ClienteController.class);
@@ -69,9 +69,9 @@ public class ClienteController {
 	}
 	
 	@RequestMapping(value = {"/clienteForm", "/portal/cfdi/clienteForm"})
-	public String clienteForm(ModelMap model) {
+	public String clienteForm(@ModelAttribute Cliente cliente, ModelMap model) {
 		logger.debug("regresando forma cliente");
-		model.put("cliente", new Cliente());
+		model.put("cliente", cliente);
 		model.put("rfcExtranjeros", genericRfcExtranjeros);
 		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
 		model.put("emptyList", true);
