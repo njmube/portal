@@ -503,7 +503,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 				
 			}, documento.getComprobante().getSerie(), documento.getComprobante().getFolio(), documento.getComprobante().getTotal());
 		} catch (EmptyResultDataAccessException ex) {
-			throw new PortalException("El documento no existe.");
+			throw new PortalException("No existe el documento para la serie, folio e importe proporcionados.");
 		}
 	}
 }

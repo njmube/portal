@@ -590,6 +590,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		return false;
 	}
 	
+	//FIXME Terminar
 	@Transactional(readOnly = true)
 	@Override
 	public void findBySerieFolioImporte(Documento documento) {

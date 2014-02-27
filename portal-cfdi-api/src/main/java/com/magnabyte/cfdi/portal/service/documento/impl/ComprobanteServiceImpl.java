@@ -254,7 +254,7 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 				concepto.setCantidad(partida.getCantidad());
 				concepto.setDescripcion(partida.getArticulo().getId() + " " + partida.getArticulo().getDescripcion());
 				concepto.setImporte(partida.getPrecioTotal().divide(IVA_DIVISION, 4, BigDecimal.ROUND_HALF_UP));
-				concepto.setValorUnitario(partida.getPrecioUnitario().divide(IVA_DIVISION, 4, BigDecimal.ROUND_HALF_UP));
+				concepto.setValorUnitario(concepto.getImporte().divide(concepto.getCantidad(), 4, BigDecimal.ROUND_HALF_UP));
 				if (partida.getArticulo().getUnidad() != null) {
 					concepto.setUnidad(partida.getArticulo().getUnidad());
 				} else {
@@ -274,12 +274,12 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 		}
 		
 		descuentoTotal = descuentoTotal.negate();
-		comprobante.setDescuento(descuentoTotal.divide(IVA_DIVISION, 4, BigDecimal.ROUND_HALF_UP));
+		comprobante.setDescuento(descuentoTotal.divide(IVA_DIVISION, 2, BigDecimal.ROUND_HALF_UP));
 
-		comprobante.setSubTotal(subTotal.setScale(4, BigDecimal.ROUND_HALF_UP));
+		comprobante.setSubTotal(subTotal.setScale(2, BigDecimal.ROUND_HALF_UP));
 		Impuestos impuesto = new Impuestos();
 		BigDecimal importeImpuesto = (comprobante.getSubTotal().subtract(comprobante.getDescuento()))
-				.multiply(IVA_MULTIPLICACION).setScale(4, BigDecimal.ROUND_HALF_UP);
+				.multiply(IVA_MULTIPLICACION).setScale(2, BigDecimal.ROUND_HALF_UP);
 		impuesto.setTotalImpuestosTrasladados(importeImpuesto);
 		Traslados traslados = new Traslados();
 		Traslado traslado = new Traslado();
@@ -289,7 +289,7 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 		traslados.getTraslado().add(traslado);
 		impuesto.setTraslados(traslados);
 		comprobante.setImpuestos(impuesto);
-		comprobante.setTotal(comprobante.getSubTotal().subtract(comprobante.getDescuento()).add(comprobante.getImpuestos().getTotalImpuestosTrasladados()).setScale(4, BigDecimal.ROUND_UP));
+		comprobante.setTotal(comprobante.getSubTotal().subtract(comprobante.getDescuento()).add(comprobante.getImpuestos().getTotalImpuestosTrasladados()).setScale(2, BigDecimal.ROUND_UP));
 	}
 	
 	private void createFechaDocumento(Comprobante comprobante) {
