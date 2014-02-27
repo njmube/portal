@@ -59,6 +59,7 @@ import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.commons.Estado;
 import com.magnabyte.cfdi.portal.model.commons.Pais;
 import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusDomicilioCliente;
+import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
@@ -162,7 +163,15 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 				ticket.getTransaccion().getTransaccionHeader().getFechaHora() != null) {
 		
 			
-			inicializaComprobante(comprobante, ticket);
+			inicializaComprobante(comprobante);
+			
+			for(InformacionPago infoPago : ticket.getTransaccion().getInformacionPago()) {
+				comprobante.setNumCtaPago(infoPago.getNumeroCuenta());
+				comprobante.setMetodoDePago(infoPago.getPago().getMetodoPago().toUpperCase());
+				comprobante.setMoneda(infoPago.getPago().getMoneda());
+				break;
+			}
+			
 			formatTicketDate(ticket);
 			comprobante.setEmisor(emisorService.getEmisorPorEstablecimiento(establecimiento));
 			comprobante.setReceptor(createReceptor(cliente, idDomicilioFiscal));
@@ -183,17 +192,44 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 		return comprobante;
 	}
 	
-	private void inicializaComprobante(Comprobante comprobante, Ticket ticket) {
+	@Override
+	public Comprobante obtenerComprobantePor(Documento documento, Cliente cliente,
+			Integer idDomicilioFiscal, Establecimiento establecimiento) {
+		Comprobante comprobante = new Comprobante();
+		inicializaComprobante(comprobante);
+		
+		comprobante.setNumCtaPago(documento.getComprobante().getNumCtaPago());
+		comprobante.setMetodoDePago(documento.getComprobante().getMetodoDePago());
+		comprobante.setMoneda(documento.getComprobante().getMoneda());
+		
+		comprobante.setEmisor(emisorService.getEmisorPorEstablecimiento(establecimiento));
+		comprobante.setReceptor(createReceptor(cliente, idDomicilioFiscal));
+		
+		
+		comprobante.setConceptos(documento.getComprobante().getConceptos());
+		comprobante.setDescuento(documento.getComprobante().getDescuento());
+
+		comprobante.setSubTotal(documento.getComprobante().getSubTotal());
+		comprobante.setImpuestos(documento.getComprobante().getImpuestos());
+		comprobante.setTotal(documento.getComprobante().getTotal());
+		
+		//FIXME validar que fecha utilizara el comprobante
+		createFechaDocumento(comprobante);
+		comprobante.setLugarExpedicion(comprobante.getEmisor().getExpedidoEn().getLocalidad() 
+				+ ", " + comprobante.getEmisor().getExpedidoEn().getEstado());
+		
+		comprobante.setTipoDeComprobante(documento.getComprobante().getTipoDeComprobante());
+		comprobante.setTipoCambio(tipoCambio);
+		comprobante.setCondicionesDePago(condicionesPago);
+		comprobante.setFormaDePago(formaPago);
+		return comprobante;
+	}
+	
+	private void inicializaComprobante(Comprobante comprobante) {
 		comprobante.setVersion(cfdiConfiguration.getVersionCfdi());
 		comprobante.setSello(cfdiConfiguration.getSelloPrevio());
 		comprobante.setNoCertificado(cfdiConfiguration.getNumeroCertificadoPrevio());
 		comprobante.setCertificado(cfdiConfiguration.getCertificadoPrevio());
-		for(InformacionPago infoPago : ticket.getTransaccion().getInformacionPago()) {
-			comprobante.setNumCtaPago(infoPago.getNumeroCuenta());
-			comprobante.setMetodoDePago(infoPago.getPago().getMetodoPago().toUpperCase());
-			comprobante.setMoneda(infoPago.getPago().getMoneda());
-			break;
-		}
 	}
 	
 	private void formatTicketDate(Ticket ticket) {
@@ -252,7 +288,8 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 			if (!documentoService.isArticuloSinPrecio(partida.getArticulo().getId())) {
 				Concepto concepto = new Concepto();
 				concepto.setCantidad(partida.getCantidad());
-				concepto.setDescripcion(partida.getArticulo().getId() + " " + partida.getArticulo().getDescripcion());
+				concepto.setNoIdentificacion(partida.getArticulo().getId());
+				concepto.setDescripcion(partida.getArticulo().getDescripcion());
 				concepto.setImporte(partida.getPrecioTotal().divide(IVA_DIVISION, 4, BigDecimal.ROUND_HALF_UP));
 				concepto.setValorUnitario(concepto.getImporte().divide(concepto.getCantidad(), 4, BigDecimal.ROUND_HALF_UP));
 				if (partida.getArticulo().getUnidad() != null) {

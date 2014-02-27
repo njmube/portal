@@ -579,9 +579,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	public void saveAcuseCfdiXmlFile(Documento documento) {
 		documentoDao.saveAcuseCfdiXmlFile(documento);
 	}
-	
-	@Transactional(readOnly = true)
-	@Override
 	public boolean isArticuloSinPrecio(String claveArticulo) {
 		List<String> articulosSinPrecio = ticketService.readArticulosSinPrecio();
 		if (articulosSinPrecio != null) {
@@ -604,6 +601,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 		documentoDao.findBySerieFolioImporte(documento);
 		documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi()));
+		try {
+			documento.setDocumentoOrigen((Documento) documento.clone());
+		} catch (CloneNotSupportedException e) {
+			// FIXME Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	@Override

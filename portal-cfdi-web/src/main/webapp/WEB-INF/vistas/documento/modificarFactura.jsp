@@ -34,7 +34,7 @@
 							<div class="form-group">
 								<label for="factura" class="col-lg-5 col-md-5 control-label"><small>Factura a modificar: </small></label>
 								<div class="col-lg-2 col-md-2">
-									<input id="factura" class="form-control input-sm" value="${documento.comprobante.serie} - ${documento.comprobante.folio}" readonly="readonly"/>
+									<input id="factura" class="form-control input-sm" value="${documento.documentoOrigen.comprobante.serie} - ${documento.documentoOrigen.comprobante.folio}" readonly="readonly"/>
 								</div>
 							</div>
 							<div class="form-group">

@@ -51,7 +51,7 @@ $(document).ready(function() {
 			<hr>
 			<div class="well">
 				<sec:authorize access="hasRole('ROLE_SUC')">
-					<c:url var="altaUrl" value="refacturacion/confirmarDatos/clienteForm"/>
+					<c:url var="altaUrl" value="/refacturacion/confirmarDatos/clienteForm"/>
 				</sec:authorize>
 				<form:form id="clienteForm" action="${altaUrl}" method="POST" modelAttribute="cliente" cssClass="form-horizontal" role="form">
 					<div class="row">

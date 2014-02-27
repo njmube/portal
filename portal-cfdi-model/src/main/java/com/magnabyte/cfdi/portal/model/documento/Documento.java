@@ -10,7 +10,7 @@ import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.tfd.v32.TimbreFiscalDigital;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 
-public class Documento implements Serializable {
+public class Documento implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 383916791240840326L;
 
@@ -29,6 +29,7 @@ public class Documento implements Serializable {
 	private byte[] xmlCfdi;
 	private byte[] xmlCfdiAcuse;
 	private boolean ventasMostrador;
+	private Documento documentoOrigen;
 
 	public Integer getId() {
 		return id;
@@ -85,35 +86,35 @@ public class Documento implements Serializable {
 	public void setEstablecimiento(Establecimiento establecimiento) {
 		this.establecimiento = establecimiento;
 	}
-	
+
 	public TipoDocumento getTipoDocumento() {
 		return tipoDocumento;
 	}
-	
+
 	public void setTipoDocumento(TipoDocumento tipoDocumento) {
 		this.tipoDocumento = tipoDocumento;
 	}
-	
+
 	public List<Ticket> getVentas() {
 		return ventas;
 	}
-	
+
 	public void setVentas(List<Ticket> ventas) {
 		this.ventas = ventas;
 	}
-	
+
 	public List<Ticket> getDevoluciones() {
 		return devoluciones;
 	}
-	
+
 	public void setDevoluciones(List<Ticket> devoluciones) {
 		this.devoluciones = devoluciones;
 	}
-	
+
 	public byte[] getXmlCfdi() {
 		return xmlCfdi;
 	}
-	
+
 	public void setXmlCfdi(byte[] xmlCfdi) {
 		this.xmlCfdi = xmlCfdi;
 	}
@@ -150,6 +151,19 @@ public class Documento implements Serializable {
 		this.id_domicilio = id_domicilio;
 	}
 
+	public Documento getDocumentoOrigen() {
+		return documentoOrigen;
+	}
+
+	public void setDocumentoOrigen(Documento documentoOrigen) {
+		this.documentoOrigen = documentoOrigen;
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();

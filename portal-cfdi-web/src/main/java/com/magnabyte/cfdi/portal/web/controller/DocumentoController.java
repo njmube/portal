@@ -10,7 +10,6 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
 import net.sf.jasperreports.engine.JRParameter;
 
@@ -39,17 +38,17 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
-import com.magnabyte.cfdi.portal.model.cliente.factory.ClienteFactory;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoPortal;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
+import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
-import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
+import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
@@ -64,7 +63,7 @@ import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
  * Clase que represente el controlador de documento
  */
 @Controller
-@SessionAttributes({"documento", "cliente"})
+@SessionAttributes({"documento", "cliente", "establecimiento"})
 public class DocumentoController {
 
 	private static final Logger logger = LoggerFactory
@@ -90,6 +89,9 @@ public class DocumentoController {
 	
 	@Autowired
 	private ClienteService clienteService;
+	
+	@Autowired
+	private ComprobanteService comprobanteService;
 	
 	@Autowired
 	private OpcionDeCatalogoService opcionDeCatalogoService;
@@ -288,96 +290,17 @@ public class DocumentoController {
 	}
 	
 	@RequestMapping("/modificarFactura")
-	public String modificarFactura(@ModelAttribute Documento documento) {
+	public String modificarFactura(@ModelAttribute Documento documento, ModelMap model) {
 		logger.debug("modificarFactura");
 		return "documento/modificarFactura";
 	}
 	
-	@RequestMapping(value = "/refacturacion/listaClientes", method = RequestMethod.POST)
-	public String listaClientes(ModelMap model, @ModelAttribute Cliente cliente) {		
-		List<Cliente> clientes = clienteService.findClientesByNameRfc(cliente);
-		if(!clientes.isEmpty()) {
-			model.put("emptyList", false);
-		}
-		model.put("clientes", clientes);
-		return "documento/listaClientes";
-	}
-	
-	@RequestMapping(value = {"/refacturacion/clienteForm"})
-	public String clienteForm(@ModelAttribute Cliente cliente, ModelMap model) {
-		logger.debug("regresando forma cliente");
-		model.put("cliente", cliente);
-		model.put("rfcExtranjeros", genericRfcExtranjeros);
-		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
-		model.put("emptyList", true);
-		return "documento/clienteForm";
-	}
-	
-	@RequestMapping(value = "/refacturacion/confirmarDatos/{viewError}", method = RequestMethod.POST)
-	public String confirmarDatos(@Valid @ModelAttribute("clienteCorregir") Cliente cliente, BindingResult result, ModelMap model, 
-			@PathVariable String viewError) {
-		logger.debug("Confimar datos");	
-		if (result.hasErrors()) {
-			model.put("errorSave", true);
-			model.put("errorMessage", result.getAllErrors());
-			model.put("listaPaises", opcionDeCatalogoService
-					.getCatalogo("c_pais", "id_pais"));
-			model.put("rfcExtranjeros", genericRfcExtranjeros);
-			logger.debug(result.getAllErrors().toString());
-			
-			return "documento/" + viewError;
-		}
-		
-		if(cliente.getId() != null) {		
-			clienteService.update(cliente);
-		} else {
-			try {
-				clienteService.save(cliente);
-			} catch (PortalException ex) {
-				model.put("errorSave", true);
-				model.put("errorMessage", ex.getMessage());
-				model.put("listaPaises", opcionDeCatalogoService
-						.getCatalogo("c_pais", "id_pais"));
-				model.put("rfcExtranjeros", genericRfcExtranjeros);
-				return "documento/" + viewError;
-			}
-		}
-		model.put("cliente", cliente);
-		logger.debug("Cliente: {}", cliente.getId());		
-		return "redirect:/refacturacion/confirmarDatos/" + cliente.getId();
-	}
-	
-	@RequestMapping("/refacturacion/clienteCorregir/{id}")
-	public String corregirDatos(@PathVariable Integer id, ModelMap model) {
-		logger.debug("confirmarDatos page");
-		Cliente cliente = clienteService.read(ClienteFactory.newInstance(id));
-		model.put("clienteCorregir", cliente);
-		model.put("rfcExtranjeros", genericRfcExtranjeros);
-		model.put("listaEstados", opcionDeCatalogoService.getCatalogoParam("c_estado", "id_pais", 
-				cliente.getDomicilios().get(0).getEstado().getPais().getId().toString(), "id_estado"));
-		return "documento/clienteCorregir";
-	}
-	
-	@RequestMapping("/refacturacion/buscaRfc")
-	public String buscaRfc(ModelMap model) {
-		logger.debug("buscaRfc page");
-		logger.debug("Ticket: ---{}", (Ticket)model.get("ticket"));
-		model.put("cliente", new Cliente());
-		model.put("emptyList", true);
-		return "documento/buscaRfc";
-	}
-	
-	@RequestMapping("/refacturacion/confirmarDatos/{id}")
-	public String confirmarDatos(@PathVariable Integer id, ModelMap model) {
-		logger.debug("confirmarDatos page");
-		model.put("cliente", clienteService.read(ClienteFactory.newInstance(id)));
-		return "documento/confirmarDatos";
-	}
-	
-	@RequestMapping("/refacturacion/cambiarCliente/{id}")
-	public String prueba(@ModelAttribute Documento documento, @ModelAttribute Cliente cliente) {
+	@RequestMapping("/refacturacion/cambiarCliente/{idDomicilioFiscal}")
+	public String prueba(@ModelAttribute Documento documento, @ModelAttribute Cliente cliente, 
+			@ModelAttribute Establecimiento establecimiento, @PathVariable Integer idDomicilioFiscal, ModelMap model) {
 		logger.debug("prueba");
-		documento.getComprobante().getReceptor().setRfc(cliente.getRfc());
+		Comprobante comprobante = comprobanteService.obtenerComprobantePor(documento, cliente, idDomicilioFiscal, establecimiento);
+		documento.setComprobante(comprobante);
 		return "documento/modificarFactura";
 	}
 }
