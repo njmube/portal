@@ -240,8 +240,8 @@ public class TicketServiceImpl implements TicketService {
 						Ticket ticketXml = (Ticket) unmarshaller.unmarshal(new StreamSource(sambaService
 								.getFileStream(urlTicketFiles, file.getName(), authentication)));
 						
-						if (!ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveVentaTicket)
-								|| !ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveAnticipoTicket)
+						if ((!ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveVentaTicket)
+								&& !ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveAnticipoTicket))
 								|| ticketXml.getTransaccion().getTransaccionTotal().getTotalVenta().compareTo(importe) != 0) {
 							return false;
 						}
