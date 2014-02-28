@@ -50,6 +50,7 @@ import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
+import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.web.cfdi.CfdiService;
@@ -95,6 +96,9 @@ public class DocumentoController {
 	
 	@Autowired
 	private OpcionDeCatalogoService opcionDeCatalogoService;
+	
+	@Autowired
+	private TicketService ticketService;
 	
 	@Value("${generic.rfc.extranjeros}")
 	private String genericRfcExtranjeros;
@@ -169,7 +173,7 @@ public class DocumentoController {
 			model.put("SUCURSAL", documento.getEstablecimiento().getNombre());
 			model.put("CAJA", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getIdCaja());
 			model.put("TICKET", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getIdTicket());
-			model.put("FECHATICKET", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getFechaHora());
+			model.put("FECHATICKET", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getFecha());
 		}
 		model.put("TIPO_DOC", documento.getTipoDocumento().getNombre());
 		model.put("NUM_SERIE_CERT", documentoXmlService.obtenerNumCertificado(documento.getXmlCfdi()));
@@ -232,7 +236,11 @@ public class DocumentoController {
 		
 		Documento documento = new Documento();
 		documento.setId(idDocumento);
-		model.put("documento", documentoService.findById(documento));
+		documento = documentoService.findById(documento);
+		if (documento instanceof DocumentoSucursal ) {
+			((DocumentoSucursal) documento).setTicket(ticketService.findByDocumento(documento));
+		}
+		model.put("documento", documento);
 		
 		if (origin.equals("in")) {
 			return "redirect:/reporte/" + fileName;

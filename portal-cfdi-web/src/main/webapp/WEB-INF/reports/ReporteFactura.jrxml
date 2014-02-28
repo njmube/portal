@@ -395,9 +395,9 @@
 						<font size="7"/>
 					</textElement>
 					<textFieldExpression><![CDATA[($F{receptor.domicilio.calle} !=null ? $F{receptor.domicilio.calle}+"" : "")+
-($F{receptor.domicilio.noExterior} !=null ? ", "+$F{receptor.domicilio.noExterior} : "")+
-($F{receptor.domicilio.noInterior} != null ? ", "+$F{receptor.domicilio.noInterior} : "")+
-($F{receptor.domicilio.colonia} !=null ? ", "+$F{receptor.domicilio.colonia} : "")]]></textFieldExpression>
+($F{receptor.domicilio.noExterior} !=null ? " "+$F{receptor.domicilio.noExterior} : "")+
+($F{receptor.domicilio.noInterior} != null ? " "+$F{receptor.domicilio.noInterior} : "")+
+($F{receptor.domicilio.colonia} !=null ? " "+$F{receptor.domicilio.colonia} : "")]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="33" width="325" height="10" uuid="0ec53e7d-e2a7-41b6-8ce0-58fd6cde96b4"/>
@@ -512,7 +512,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="7"/>
 					</textElement>
-					<textFieldExpression><![CDATA["PESOS"]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{moneda}]]></textFieldExpression>
 				</textField>
 				<line>
 					<reportElement x="1" y="31" width="141" height="1" uuid="eb0e1f17-9ba1-45d4-98a7-6e9672734d6d"/>
@@ -615,8 +615,7 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$F{emisor.domicilioFiscal.calle}+" "+
 ($F{emisor.domicilioFiscal.noExterior} !=null ? $F{emisor.domicilioFiscal.noExterior}+" " : " " )+
-($F{emisor.domicilioFiscal.noInterior} !=null ? $F{emisor.domicilioFiscal.noInterior}+" " : " " )
-]]></textFieldExpression>
+($F{emisor.domicilioFiscal.noInterior} !=null ? $F{emisor.domicilioFiscal.noInterior}+" " : " " )]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="31" width="228" height="10" uuid="c8ace24e-f079-4861-a914-e702a1d17836"/>
@@ -624,8 +623,7 @@
 						<font size="7"/>
 					</textElement>
 					<textFieldExpression><![CDATA[($F{emisor.domicilioFiscal.municipio} !=null ? $F{emisor.domicilioFiscal.municipio}+", " : "")+
-($F{emisor.domicilioFiscal.colonia} !=null ? $F{emisor.domicilioFiscal.colonia}+" ": "")
-]]></textFieldExpression>
+($F{emisor.domicilioFiscal.colonia} !=null ? $F{emisor.domicilioFiscal.colonia}+" ": "")]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="41" width="228" height="10" uuid="605574b6-78e0-4619-b7b2-338313a0ba3e"/>
@@ -693,7 +691,7 @@ $F{emisor.domicilioFiscal.estado}+" "+
 				<textElement>
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{TICKET}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Ticket: "+$P{TICKET}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="163" y="193" width="100" height="10" uuid="afcb186d-00c2-41bd-95f1-b0be654b6c79">
@@ -702,7 +700,7 @@ $F{emisor.domicilioFiscal.estado}+" "+
 				<textElement>
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{CAJA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Caja: "+$P{CAJA}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="282" y="193" width="143" height="10" uuid="c63daf93-c93b-438a-9bbe-2cd2af007fe4">
@@ -711,7 +709,7 @@ $F{emisor.domicilioFiscal.estado}+" "+
 				<textElement>
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{FECHATICKET}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Fecha Ticket: "+$P{FECHATICKET}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
