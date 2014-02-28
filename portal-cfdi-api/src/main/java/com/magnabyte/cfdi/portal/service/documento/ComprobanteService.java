@@ -3,6 +3,7 @@ package com.magnabyte.cfdi.portal.service.documento;
 import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
+import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
@@ -25,5 +26,8 @@ public interface ComprobanteService {
 			TipoDocumento tipoDocumento);
 
 	Cliente obtenerClienteDeComprobante(Comprobante comprobante);
+
+	Comprobante obtenerComprobantePor(Documento documento, Cliente cliente,
+			Integer idDomicilioFiscal, Establecimiento establecimiento);
 
 }

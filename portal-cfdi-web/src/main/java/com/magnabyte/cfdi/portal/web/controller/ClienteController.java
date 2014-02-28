@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.cliente.factory.ClienteFactory;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 
@@ -156,5 +157,87 @@ public class ClienteController {
 				cliente.getDomicilios().get(0).getEstado().getPais().getId().toString(), "id_estado"));
 		return "portal/clienteCorregir";
 	}
+	
+	@RequestMapping(value = "/refacturacion/listaClientes", method = RequestMethod.POST)
+	public String listaClientesRefact(ModelMap model, @ModelAttribute Cliente cliente) {		
+		List<Cliente> clientes = clienteService.findClientesByNameRfc(cliente);
+		if(!clientes.isEmpty()) {
+			model.put("emptyList", false);
+		}
+		model.put("clientes", clientes);
+		return "documento/listaClientes";
+	}
+	
+	@RequestMapping(value = {"/refacturacion/clienteForm"})
+	public String clienteFormRefact(@ModelAttribute Cliente cliente, ModelMap model) {
+		logger.debug("regresando forma cliente");
+		model.put("cliente", cliente);
+		model.put("rfcExtranjeros", genericRfcExtranjeros);
+		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
+		model.put("emptyList", true);
+		return "documento/clienteForm";
+	}
+	
+	@RequestMapping(value = "/refacturacion/confirmarDatos/{viewError}", method = RequestMethod.POST)
+	public String confirmarDatosRefact(@Valid @ModelAttribute("clienteCorregir") Cliente cliente, BindingResult result, ModelMap model, 
+			@PathVariable String viewError) {
+		logger.debug("Confimar datos");	
+		if (result.hasErrors()) {
+			model.put("errorSave", true);
+			model.put("errorMessage", result.getAllErrors());
+			model.put("listaPaises", opcionDeCatalogoService
+					.getCatalogo("c_pais", "id_pais"));
+			model.put("rfcExtranjeros", genericRfcExtranjeros);
+			logger.debug(result.getAllErrors().toString());
+			
+			return "documento/" + viewError;
+		}
+		
+		if(cliente.getId() != null) {		
+			clienteService.update(cliente);
+		} else {
+			try {
+				clienteService.save(cliente);
+			} catch (PortalException ex) {
+				model.put("errorSave", true);
+				model.put("errorMessage", ex.getMessage());
+				model.put("listaPaises", opcionDeCatalogoService
+						.getCatalogo("c_pais", "id_pais"));
+				model.put("rfcExtranjeros", genericRfcExtranjeros);
+				return "documento/" + viewError;
+			}
+		}
+		model.put("cliente", cliente);
+		logger.debug("Cliente: {}", cliente.getId());		
+		return "redirect:/refacturacion/confirmarDatos/" + cliente.getId();
+	}
+	
+	@RequestMapping("/refacturacion/clienteCorregir/{id}")
+	public String corregirDatosRefact(@PathVariable Integer id, ModelMap model) {
+		logger.debug("confirmarDatos page");
+		Cliente cliente = clienteService.read(ClienteFactory.newInstance(id));
+		model.put("clienteCorregir", cliente);
+		model.put("rfcExtranjeros", genericRfcExtranjeros);
+		model.put("listaEstados", opcionDeCatalogoService.getCatalogoParam("c_estado", "id_pais", 
+				cliente.getDomicilios().get(0).getEstado().getPais().getId().toString(), "id_estado"));
+		return "documento/clienteCorregir";
+	}
+	
+	@RequestMapping("/refacturacion/buscaRfc")
+	public String buscaRfcRefact(ModelMap model) {
+		logger.debug("buscaRfc page");
+		logger.debug("Ticket: ---{}", (Ticket)model.get("ticket"));
+		model.put("cliente", new Cliente());
+		model.put("emptyList", true);
+		return "documento/buscaRfc";
+	}
+	
+	@RequestMapping("/refacturacion/confirmarDatos/{id}")
+	public String confirmarDatosRefact(@PathVariable Integer id, ModelMap model) {
+		logger.debug("confirmarDatos page");
+		model.put("cliente", clienteService.read(ClienteFactory.newInstance(id)));
+		return "documento/confirmarDatos";
+	}
+
 	
 }

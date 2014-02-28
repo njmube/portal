@@ -16,11 +16,13 @@ import net.sf.jasperreports.engine.JRParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,9 +42,13 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoPortal;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
+import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
+import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
+import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
+import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
@@ -57,7 +63,7 @@ import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
  * Clase que represente el controlador de documento
  */
 @Controller
-@SessionAttributes("documento")
+@SessionAttributes({"documento", "cliente", "establecimiento"})
 public class DocumentoController {
 
 	private static final Logger logger = LoggerFactory
@@ -80,6 +86,18 @@ public class DocumentoController {
 	
 	@Autowired
 	private CfdiService cfdiService;
+	
+	@Autowired
+	private ClienteService clienteService;
+	
+	@Autowired
+	private ComprobanteService comprobanteService;
+	
+	@Autowired
+	private OpcionDeCatalogoService opcionDeCatalogoService;
+	
+	@Value("${generic.rfc.extranjeros}")
+	private String genericRfcExtranjeros;
 	
 	@RequestMapping(value = {"/generarDocumento", "/portal/cfdi/generarDocumento"}, method = RequestMethod.POST)
 	public String generarDocumento(@ModelAttribute Documento documento, ModelMap model, final RedirectAttributes redirectAttributes) {
@@ -272,14 +290,17 @@ public class DocumentoController {
 	}
 	
 	@RequestMapping("/modificarFactura")
-	public String modificarFactura(@ModelAttribute Documento documento) {
+	public String modificarFactura(@ModelAttribute Documento documento, ModelMap model) {
 		logger.debug("modificarFactura");
 		return "documento/modificarFactura";
 	}
 	
-	@RequestMapping("/prueba")
-	public String prueba(@ModelAttribute Documento documento) {
+	@RequestMapping("/refacturacion/cambiarCliente/{idDomicilioFiscal}")
+	public String prueba(@ModelAttribute Documento documento, @ModelAttribute Cliente cliente, 
+			@ModelAttribute Establecimiento establecimiento, @PathVariable Integer idDomicilioFiscal, ModelMap model) {
 		logger.debug("prueba");
+		Comprobante comprobante = comprobanteService.obtenerComprobantePor(documento, cliente, idDomicilioFiscal, establecimiento);
+		documento.setComprobante(comprobante);
 		return "documento/modificarFactura";
 	}
 }
