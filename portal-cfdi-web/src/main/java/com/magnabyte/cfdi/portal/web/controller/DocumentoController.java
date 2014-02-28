@@ -22,7 +22,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -288,10 +287,11 @@ public class DocumentoController {
 	}
 	
 	@RequestMapping(value = "/validaSerieFolio", method = RequestMethod.POST)
-	public String validaSerieFolio(@ModelAttribute Documento documento, ModelMap model) {
+	public String validaSerieFolio(@ModelAttribute Documento documento, @ModelAttribute Establecimiento establecimiento, ModelMap model) {
 		logger.debug("validaSerieFolio");
 		try {
 			documentoService.findBySerieFolioImporte(documento);
+			documento.setEstablecimiento(establecimiento);
 			return "redirect:/modificarFactura";
 		} catch (PortalException ex) {
 			model.put("error", true);
@@ -312,6 +312,23 @@ public class DocumentoController {
 		logger.debug("cambiarCliente");
 		Comprobante comprobante = comprobanteService.obtenerComprobantePor(documento, cliente, idDomicilioFiscal, establecimiento);
 		documento.setComprobante(comprobante);
+		documento.setCliente(cliente);
+		documento.setId_domicilio(idDomicilioFiscal);
 		return "redirect:/modificarFactura";
+	}
+	
+	@RequestMapping(value = {"/refacturarDocumento"}, method = RequestMethod.POST)
+	public String refacturarDocumento(@ModelAttribute Documento documento, ModelMap model, final RedirectAttributes redirectAttributes) {
+		logger.debug("generando documento");
+		Documento facturaDocumentoNuevo = documento;
+		Documento notaCreditoDocumentoOrigen = documento.getDocumentoOrigen();
+		
+		comprobanteService.depurarReceptor(facturaDocumentoNuevo);
+		documentoService.guardarDocumento(facturaDocumentoNuevo);
+		documentoService.guardarDocumento(notaCreditoDocumentoOrigen);
+		cfdiService.procesarDocumentoRefacturado(documento);
+		redirectAttributes.addFlashAttribute("documento", documento);
+		
+		return "redirect:/imprimirFactura";
 	}
 }

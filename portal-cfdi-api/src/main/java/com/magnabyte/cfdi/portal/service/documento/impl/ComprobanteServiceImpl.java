@@ -281,6 +281,13 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 		return receptor;
 	}
 	
+	@Override
+	public void depurarReceptor(Documento facturaDocumentoNuevo) {
+		if (facturaDocumentoNuevo.getComprobante().getReceptor().getDomicilio().getNoInterior().isEmpty()) {
+			facturaDocumentoNuevo.getComprobante().getReceptor().getDomicilio().setNoInterior(null);
+		}
+	}
+	
 	private void getDetalleFromTicket(Ticket ticket, Comprobante comprobante) {
 		Conceptos conceptos = new Conceptos();
 		BigDecimal subTotal = new BigDecimal(0);

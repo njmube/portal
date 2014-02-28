@@ -18,7 +18,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "TAS")
-public class Ticket implements Serializable {
+public class Ticket implements Serializable, Cloneable {
 	
 	/**
 	 * 
@@ -730,6 +730,11 @@ public class Ticket implements Serializable {
 
         }
 
+		@Override
+		public Object clone() throws CloneNotSupportedException {
+			return super.clone();
+		}
+		
         @Override
         public String toString() {
                 return "Ticket [transaccion=" + transaccion + "]";

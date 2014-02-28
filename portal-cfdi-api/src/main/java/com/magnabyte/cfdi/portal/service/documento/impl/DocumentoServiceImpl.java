@@ -3,7 +3,6 @@ package com.magnabyte.cfdi.portal.service.documento.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -152,6 +151,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 				if(((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket() != null 
 						&& ((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket().equals(TipoEstadoTicket.NCR_GENERADA)) {
 					ticketDB = null;
+				} else if (((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket() != null 
+						&& ((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket().equals(TipoEstadoTicket.REFACTURADO)) {
+					ticketDB = ((DocumentoSucursal) documento).getTicket();
 				} else {
 					ticketDB = ticketService.read(((DocumentoSucursal) documento).getTicket(), documento.getEstablecimiento());
 				}
@@ -166,6 +168,13 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 //						documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
 //						documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO));
 //						break;
+					case REFACTURADO:
+						ticketService.updateEstadoRefacturado((DocumentoSucursal) documento);
+						saveDocumentAndDetail(documento);
+						((DocumentoSucursal) documento).getTicket().setTipoEstadoTicket(TipoEstadoTicket.NCR_GENERADA);
+						ticketService.save((DocumentoSucursal) documento);
+						asignarSerieYFolio(documento);
+						break;
 					case FACTURADO_MOSTRADOR:
 						logger.debug("El ticket ya fue facturado por ventas mostrador.");
 						saveDocumentAndDetail(documento);
@@ -601,13 +610,39 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 		documento = documentoDao.findBySerieFolioImporte(documento);
 		documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi()));
+		if (documento instanceof DocumentoSucursal) {
+			((DocumentoSucursal) documento).setTicket(ticketService.findByDocumento(documento));
+		}
 		try {
 			documento.setDocumentoOrigen((Documento) documento.clone());
 		} catch (CloneNotSupportedException e) {
-			// FIXME Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Ocurrió un error al clonar el documento");
+			throw new PortalException("Ocurrió un error al clonar el documento");
 		}
-		((DocumentoSucursal) documento).setTicket(ticketService.findByDocumento(documento));
+		procesarDocumentoNuevo(documento);
+		procesarDocumentoOrigen(documento.getDocumentoOrigen());
+	}
+	
+	private void procesarDocumentoNuevo(Documento documento) {
+		documento.setId(null);
+		documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi()));
+		if (documento instanceof DocumentoSucursal) {
+			((DocumentoSucursal) documento).getTicket().setTipoEstadoTicket(TipoEstadoTicket.NCR_GENERADA);
+			((DocumentoSucursal) documento).setRequiereNotaCredito(true);
+		}
+	}
+
+	private void procesarDocumentoOrigen(Documento documentoOrigen) {
+		documentoOrigen.setTipoDocumento(TipoDocumento.NOTA_CREDITO);
+		if (documentoOrigen instanceof DocumentoSucursal) {
+			((DocumentoSucursal) documentoOrigen).getTicket().setTipoEstadoTicket(TipoEstadoTicket.REFACTURADO);
+		}
+		documentoOrigen.getComprobante().setNoCertificado(null);
+		documentoOrigen.getComprobante().setCertificado(null);
+		documentoOrigen.getComprobante().setFecha(null);
+		documentoOrigen.getComprobante().setSello(null);
+		documentoOrigen.getComprobante().setComplemento(null);
+		documentoOrigen.getComprobante().setTipoDeComprobante(documentoOrigen.getTipoDocumento().getNombreComprobante());
 	}
 	
 	@Override

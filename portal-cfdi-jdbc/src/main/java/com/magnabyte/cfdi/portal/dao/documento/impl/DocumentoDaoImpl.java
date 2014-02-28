@@ -95,7 +95,9 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue(DocumentoSql.ID_ESTABLECIMIENTO, documento.getEstablecimiento().getId());
 		params.addValue(DocumentoSql.ID_CLIENTE, documento.getCliente().getId());
-		if (documento.getCliente().getDomicilios().get(0).getId() != null 
+		if (documento.getId_domicilio() != null) {
+			params.addValue(DocumentoSql.ID_DOMICILIO_CLIENTE, documento.getId_domicilio());
+		} else if (documento.getCliente().getDomicilios().get(0).getId() != null 
 				&& documento.getCliente().getDomicilios().get(0).getId() > 0) {
 			params.addValue(DocumentoSql.ID_DOMICILIO_CLIENTE, documento.getCliente().getDomicilios().get(0).getId());
 		}
@@ -464,6 +466,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 				public Documento mapRow(ResultSet rs, int rowNum)
 						throws SQLException {
 					Establecimiento establecimiento = new Establecimiento();
+					establecimiento.setId(rs.getInt(DocumentoSql.ID_ESTABLECIMIENTO));
 					TipoEstablecimiento tipoEstablecimiento = new TipoEstablecimiento();
 					tipoEstablecimiento.setId(rs.getInt(EstablecimientoSql.ID_TIPO_ESTAB));
 					tipoEstablecimiento.setRol(rs.getString(EstablecimientoSql.ROL));
@@ -489,6 +492,10 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 				public Documento mapRow(ResultSet rs, int rowNum)
 						throws SQLException {
 					documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
+					Cliente cliente = new Cliente();
+					cliente.setId(rs.getInt(DocumentoSql.ID_CLIENTE));
+					documento.setCliente(cliente);
+					documento.setId_domicilio(rs.getInt(DocumentoSql.ID_DOMICILIO_CLIENTE));
 					SQLXML xmlFile = rs.getSQLXML(DocumentoSql.XML_FILE);
 					if (xmlFile != null) {
 						try {

@@ -28,5 +28,7 @@ public interface CfdiService {
 	void recuperaTicketsRest(Establecimiento establecimiento, String fechaCierre);
 
 	void generarDocumentoCorp(Documento documento);
+
+	void procesarDocumentoRefacturado(Documento documento);
 	
 }

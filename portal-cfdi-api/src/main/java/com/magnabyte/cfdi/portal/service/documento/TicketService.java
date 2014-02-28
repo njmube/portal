@@ -54,6 +54,8 @@ public interface TicketService {
 	Ticket crearTicketDevolucion(DocumentoSucursal documentoOrigen,
 			List<Ticket> devoluciones, Establecimiento establecimiento);
 
-	Ticket findByDocumento(Documento documento);	
+	Ticket findByDocumento(Documento documento);
+
+	void updateEstadoRefacturado(DocumentoSucursal documento);	
 
 }

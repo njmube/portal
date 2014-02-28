@@ -32,4 +32,6 @@ public interface ComprobanteService {
 
 	void createFechaDocumento(Comprobante comprobante);
 
+	void depurarReceptor(Documento facturaDocumentoNuevo);
+
 }

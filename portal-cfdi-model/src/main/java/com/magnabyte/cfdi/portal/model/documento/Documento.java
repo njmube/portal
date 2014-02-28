@@ -161,7 +161,11 @@ public class Documento implements Serializable, Cloneable {
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
+		Documento cloned = (Documento) super.clone();
+		if (cloned instanceof DocumentoSucursal) {
+			((DocumentoSucursal) cloned).setTicket((Ticket) ((DocumentoSucursal) cloned).getTicket().clone());
+		}
+		return cloned;
 	}
 	
 	@Override

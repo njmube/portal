@@ -23,8 +23,8 @@
 					<c:set var="tipoComprobante" value="Nota de Crédito"/>
 				</c:when>
 			</c:choose>
-			<c:url value="/prueba" var="urlDocumento"/>
-			<form:form action="${urlDocumento}" id="formPdf" modelAttribute="documento">
+			<c:url value="/refacturarDocumento" var="urlDocumento"/>
+			<form:form action="${urlDocumento}" id="formPdf" method="post" modelAttribute="documento">
 			<div class="row">
 				<div class="col-md-12">
 					<div class="white-panel form-horizontal">
@@ -161,7 +161,7 @@
 							<div class="form-group">
 								<label for="rfc" class="col-lg-4 col-md-4 control-label"><small>RFC: </small></label>
 								<div class="col-lg-2 col-md-2">
-									<form:input id="rfc" path="comprobante.receptor.rfc" cssClass="form-control input-sm"/>
+									<form:input id="rfc" path="comprobante.receptor.rfc" cssClass="form-control input-sm" readonly="true"/>
 								</div>
 							</div>
 							<div class="form-group">

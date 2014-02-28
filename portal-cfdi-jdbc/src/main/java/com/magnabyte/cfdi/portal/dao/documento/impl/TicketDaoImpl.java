@@ -3,12 +3,7 @@ package com.magnabyte.cfdi.portal.dao.documento.impl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.GregorianCalendar;
 import java.util.List;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -218,6 +213,8 @@ public class TicketDaoImpl extends GenericJdbcDao
 			
 			transaccionHeader.setFecha(FechasUtils.parseDateToString(rs.getTimestamp(TicketSql.FECHA), 
 					FechasUtils.formatyyyyMMddHHmmssHyphen));
+			transaccionHeader.setFechaHora(FechasUtils.specificStringFormatDate(transaccionHeader.getFecha(), 
+					FechasUtils.formatyyyyMMddHHmmssHyphen, FechasUtils.formatddMMyyyyHHmmssSlash));
 			transaccion.setTransaccionHeader(transaccionHeader);
 			ticket.setTransaccion(transaccion);
 			ticket.setNombreArchivo(rs.getString(TicketSql.FILENAME));

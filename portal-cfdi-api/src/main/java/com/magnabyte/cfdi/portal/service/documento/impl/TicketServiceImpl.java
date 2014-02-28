@@ -199,6 +199,12 @@ public class TicketServiceImpl implements TicketService {
 	
 	@Transactional
 	@Override
+	public void updateEstadoRefacturado(DocumentoSucursal documento) {
+		ticketDao.updateEstado(documento);
+	}
+	
+	@Transactional
+	@Override
 	public void updateEstadoNcr(DocumentoSucursal documento) {
 		if(documento.getTicket() != null) {
 			documento.getTicket().setTipoEstadoTicket(TipoEstadoTicket.NCR_GENERADA);

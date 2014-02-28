@@ -207,7 +207,7 @@ public class DocumentoSql extends GenericSql {
 		
 		clearAndReuseStringBuilder(qryBuilder);
 		
-		qryBuilder.append("select te.id_tipo_establecimiento, dbo.TRIM(cte.rol) as rol, tes.id_tipo_documento").append(EOL);
+		qryBuilder.append("select te.id_establecimiento, te.id_tipo_establecimiento, dbo.TRIM(cte.rol) as rol, tes.id_tipo_documento").append(EOL);
 		qryBuilder.append("from t_establecimiento_serie as tes inner join t_establecimiento as te").append(EOL);
 		qryBuilder.append("on tes.id_establecimiento = te.id_establecimiento").append(EOL);
 		qryBuilder.append("inner join c_tipo_establecimiento as cte").append(EOL);
@@ -218,7 +218,7 @@ public class DocumentoSql extends GenericSql {
 		
 		clearAndReuseStringBuilder(qryBuilder);
 		
-		qryBuilder.append("select td.id_documento, td.xml_file").append(EOL);
+		qryBuilder.append("select td.id_documento, td.id_cliente, td.id_domicilio_cliente, td.xml_file").append(EOL);
 		qryBuilder.append("from t_documento as td inner join t_documento_folio as tdf").append(EOL);
 		qryBuilder.append("on td.id_documento = tdf.id_documento").append(EOL);
 		qryBuilder.append("where tdf.serie = ?").append(EOL);

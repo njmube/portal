@@ -126,6 +126,7 @@ public class SucursalController {
 				.obtenerComprobantePor(cliente, ticket, idDomicilio, establecimiento, TipoDocumento.FACTURA);
 		DocumentoSucursal documento = new DocumentoSucursal();
 		documento.setCliente(cliente);
+		documento.setId_domicilio(idDomicilio);
 		documento.setTicket(ticket);
 		documento.setComprobante(comprobante);
 		documento.setEstablecimiento(establecimiento);

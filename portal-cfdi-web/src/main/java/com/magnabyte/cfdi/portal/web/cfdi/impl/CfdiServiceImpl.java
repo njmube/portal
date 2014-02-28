@@ -120,6 +120,20 @@ public class CfdiServiceImpl implements CfdiService {
 		}
 	}
 	
+	@Async
+	@Override
+	public void procesarDocumentoRefacturado(Documento documento) {
+		Documento facturaDocumentoNuevo = documento;
+		Documento notaCreditoDocumentoOrigen = documento.getDocumentoOrigen();
+		
+		//FIXME Quitar para produccion
+		facturaDocumentoNuevo.getComprobante().getEmisor().setRfc("AAA010101AAA");
+		notaCreditoDocumentoOrigen.getComprobante().getEmisor().setRfc("AAA010101AAA");
+		
+		generarDocumento(facturaDocumentoNuevo);
+		generarDocumento(notaCreditoDocumentoOrigen);
+	}
+	
 	@Override
 	public void generarDocumentoCorp(Documento documento) {
 		generarDocumento(documento);
