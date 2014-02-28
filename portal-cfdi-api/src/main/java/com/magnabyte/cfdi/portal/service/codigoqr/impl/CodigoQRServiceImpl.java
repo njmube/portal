@@ -28,12 +28,12 @@ import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 
 /**
- * 
- * @author Magnabyte, S.A. de C.V
- * magnabyte.com.mx
- * Fecha:31/01/2014
- * Clase que representa el servicio de codigo qr
- */
+*
+* @author  Magnabyte, S.A. de C.V.
+* magnabyte.com.mx
+* Fecha:31/01/2014
+* [Servicio para la generación del codigo QR para la factura]
+*/
 @Service("CodigoQRService")
 public class CodigoQRServiceImpl implements CodigoQRService {
 
