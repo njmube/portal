@@ -140,8 +140,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public void guardarDocumento(Documento documento) {
 		if(documento != null) {
-			Calendar fechaFacturacion = Calendar.getInstance();
-			documento.setFechaFacturacion(fechaFacturacion.getTime());
+			comprobanteService.createFechaDocumento(documento.getComprobante());
+			documento.setFechaFacturacion(documento.getComprobante().getFecha().toGregorianCalendar().getTime());
 			if (documento.isVentasMostrador()) {
 				ticketService.guardarTicketsCierreDia(documento);
 			}
@@ -591,7 +591,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Transactional(readOnly = true)
 	@Override
 	public void findBySerieFolioImporte(Documento documento) {
-		documentoDao.findBySerie(documento);
+		documento = documentoDao.findBySerie(documento);
 		if (!documento.getTipoDocumento().equals(TipoDocumento.FACTURA)) {
 			throw new PortalException("Solo es posible modificar documentos de tipo factura.");
 		}
@@ -599,7 +599,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		if (documento.getEstablecimiento().getTipoEstablecimiento().getRol().equalsIgnoreCase("ROLE_CORP")) {
 			throw new PortalException("Solo es posible modificar facturas expedidas en Sucursal.");
 		}
-		documentoDao.findBySerieFolioImporte(documento);
+		documento = documentoDao.findBySerieFolioImporte(documento);
 		documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi()));
 		try {
 			documento.setDocumentoOrigen((Documento) documento.clone());
@@ -607,6 +607,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			// FIXME Auto-generated catch block
 			e.printStackTrace();
 		}
+		((DocumentoSucursal) documento).setTicket(ticketService.findByDocumento(documento));
 	}
 	
 	@Override

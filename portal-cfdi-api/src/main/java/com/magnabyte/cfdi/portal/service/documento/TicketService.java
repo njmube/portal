@@ -52,6 +52,8 @@ public interface TicketService {
 	DocumentoSucursal readDocFromTicket(String archivoOrigen);
 
 	Ticket crearTicketDevolucion(DocumentoSucursal documentoOrigen,
-			List<Ticket> devoluciones, Establecimiento establecimiento);	
+			List<Ticket> devoluciones, Establecimiento establecimiento);
+
+	Ticket findByDocumento(Documento documento);	
 
 }

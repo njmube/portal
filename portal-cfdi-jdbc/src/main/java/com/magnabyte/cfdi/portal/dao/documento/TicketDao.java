@@ -41,4 +41,6 @@ public interface TicketDao {
 	DocumentoSucursal readDocByStatus(String archivoOrigen,
 			TipoEstadoTicket estadoTicket);
 
+	Ticket findByDocumento(Documento documento);
+
 }

@@ -30,4 +30,6 @@ public interface ComprobanteService {
 	Comprobante obtenerComprobantePor(Documento documento, Cliente cliente,
 			Integer idDomicilioFiscal, Establecimiento establecimiento);
 
+	void createFechaDocumento(Comprobante comprobante);
+
 }

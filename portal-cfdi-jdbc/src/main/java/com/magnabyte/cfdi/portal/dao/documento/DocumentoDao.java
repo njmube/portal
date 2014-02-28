@@ -52,8 +52,8 @@ public interface DocumentoDao {
 
 	Cliente readClienteFromDocumento(Documento documentoOrigen);
 
-	void findBySerie(Documento documento);
+	Documento findBySerie(Documento documento);
 
-	void findBySerieFolioImporte(Documento documento);
+	Documento findBySerieFolioImporte(Documento documento);
 
 }
