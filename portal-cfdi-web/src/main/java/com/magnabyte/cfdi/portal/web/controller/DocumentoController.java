@@ -301,6 +301,6 @@ public class DocumentoController {
 		logger.debug("prueba");
 		Comprobante comprobante = comprobanteService.obtenerComprobantePor(documento, cliente, idDomicilioFiscal, establecimiento);
 		documento.setComprobante(comprobante);
-		return "documento/modificarFactura";
+		return "redirect:/modificarFactura";
 	}
 }
