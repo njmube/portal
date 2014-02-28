@@ -167,6 +167,9 @@ public class DocumentoController {
 			model.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
 		} else if (documento instanceof DocumentoSucursal) {
 			model.put("SUCURSAL", documento.getEstablecimiento().getNombre());
+			model.put("CAJA", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getIdCaja());
+			model.put("TICKET", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getIdTicket());
+			model.put("FECHATICKET", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getFechaHora());
 		}
 		model.put("TIPO_DOC", documento.getTipoDocumento().getNombre());
 		model.put("NUM_SERIE_CERT", documentoXmlService.obtenerNumCertificado(documento.getXmlCfdi()));
