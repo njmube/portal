@@ -30,6 +30,7 @@ public class TicketSql extends GenericSql {
 	public static final String SAVE_TICKETS_CIERRE;
 	public static final String READ_BY_STATUS_FILENAME;
 	public static final String READ_BY_DOC;
+	public static final String FIND_BY_DOC;
 
 	
 	static {
@@ -89,5 +90,13 @@ public class TicketSql extends GenericSql {
 		qryBuilder.append("and id_status_ticket = ?");
 		
 		READ_BY_DOC = qryBuilder.toString();
+		
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("select id_ticket, no_ticket, no_caja, id_establecimiento, fecha_ticket, id_status_ticket, dbo.TRIM(nombre_archivo) as nombre_archivo").append(EOL);
+		qryBuilder.append("from t_ticket where id_documento = ?").append(EOL);
+		
+		FIND_BY_DOC = qryBuilder.toString();
+				
 	}
 }

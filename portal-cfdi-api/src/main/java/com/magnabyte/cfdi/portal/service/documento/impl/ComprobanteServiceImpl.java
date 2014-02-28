@@ -329,7 +329,8 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 		comprobante.setTotal(comprobante.getSubTotal().subtract(comprobante.getDescuento()).add(comprobante.getImpuestos().getTotalImpuestosTrasladados()).setScale(2, BigDecimal.ROUND_UP));
 	}
 	
-	private void createFechaDocumento(Comprobante comprobante) {
+	@Override
+	public void createFechaDocumento(Comprobante comprobante) {
 		Calendar dateNow = Calendar.getInstance();
 		//FIXME verificar hora servidor
 		dateNow.add(Calendar.HOUR, -1);

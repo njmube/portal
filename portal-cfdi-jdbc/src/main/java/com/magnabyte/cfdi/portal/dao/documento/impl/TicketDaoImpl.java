@@ -3,7 +3,12 @@ package com.magnabyte.cfdi.portal.dao.documento.impl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.GregorianCalendar;
 import java.util.List;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +30,8 @@ import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion;
+import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.TransaccionHeader;
 import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
 import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 
@@ -118,6 +125,16 @@ public class TicketDaoImpl extends GenericJdbcDao
 	}
 	
 	@Override
+	public Ticket findByDocumento(Documento documento) {
+		try {
+			return getJdbcTemplate().queryForObject(TicketSql.FIND_BY_DOC, MAPPER_FULL_TICKET, 
+					documento.getId());
+		} catch (EmptyResultDataAccessException ex) {
+			return null;
+		}
+	}
+	
+	@Override
 	public Integer readIdDocFromTicketFacturado(DocumentoSucursal documento) {
 		return getJdbcTemplate().queryForObject(TicketSql.READ_ID_DOC_BY_TICKET, Integer.class,
 				documento.getTicket().getTransaccion().getTransaccionHeader().getIdTicket(), 
@@ -184,6 +201,30 @@ public class TicketDaoImpl extends GenericJdbcDao
 			ticket.setTipoEstadoTicket(TipoEstadoTicket.getById(rs.getInt(TicketSql.ID_STATUS)));
 			return ticket;
 		}
+		
+	};
+	
+	private static final RowMapper<Ticket> MAPPER_FULL_TICKET = new RowMapper<Ticket>() {
+		
+		@Override
+		public Ticket mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Ticket ticket = new Ticket();
+			Transaccion transaccion = new Transaccion();
+			TransaccionHeader transaccionHeader = new TransaccionHeader();
+			ticket.setId(rs.getInt(TicketSql.ID_TICKET));
+			transaccionHeader.setIdTicket(rs.getString(TicketSql.NO_TICKET));
+			transaccionHeader.setIdCaja(rs.getString(TicketSql.NO_CAJA));
+			transaccionHeader.setIdSucursal(rs.getString(EstablecimientoSql.ID_ESTABLECIMIENTO));
+			
+			transaccionHeader.setFecha(FechasUtils.parseDateToString(rs.getTimestamp(TicketSql.FECHA), 
+					FechasUtils.formatyyyyMMddHHmmssHyphen));
+			transaccion.setTransaccionHeader(transaccionHeader);
+			ticket.setTransaccion(transaccion);
+			ticket.setNombreArchivo(rs.getString(TicketSql.FILENAME));
+			ticket.setTipoEstadoTicket(TipoEstadoTicket.getById(rs.getInt(TicketSql.ID_STATUS)));
+			return ticket;
+		}
+		
 	};
 	
 	private MapSqlParameterSource getParameters(DocumentoSucursal documento) {

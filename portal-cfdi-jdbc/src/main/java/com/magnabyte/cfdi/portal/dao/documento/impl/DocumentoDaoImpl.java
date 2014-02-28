@@ -354,7 +354,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	@Override
 	public List<Documento> getDocumentoByCliente(Cliente cliente, String fechaInicial, String fechaFinal) {
 		return getJdbcTemplate().query(DocumentoSql.READ_DOCUMENTO_RUTA, 
-				DOCUMENTO_RUTA_MAPPER,cliente.getRfc(), 
+				DOCUMENTO_RUTA_MAPPER, cliente.getRfc(), 
 				new java.sql.Date(FechasUtils.parseStringToDate(fechaInicial, FechasUtils.formatddMMyyyyHyphen).getTime()),
 				new java.sql.Date(FechasUtils.parseStringToDate(fechaFinal, FechasUtils.formatddMMyyyyHyphen).getTime()));
 	}
@@ -456,9 +456,9 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	}
 	
 	@Override
-	public void findBySerie(final Documento documento) {
+	public Documento findBySerie(final Documento documento) {
 		try {
-			getJdbcTemplate().queryForObject(DocumentoSql.READ_BY_SERIE, new RowMapper<Documento>() {
+			return getJdbcTemplate().queryForObject(DocumentoSql.READ_BY_SERIE, new RowMapper<Documento>() {
 				
 				@Override
 				public Documento mapRow(ResultSet rs, int rowNum)
@@ -481,9 +481,9 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	}
 	
 	@Override
-	public void findBySerieFolioImporte(final Documento documento) {
+	public Documento findBySerieFolioImporte(final Documento documento) {
 		try {
-			getJdbcTemplate().queryForObject(DocumentoSql.READ_BY_SERIE_FOLIO_IMPORTE, new RowMapper<Documento>() {
+			return getJdbcTemplate().queryForObject(DocumentoSql.READ_BY_SERIE_FOLIO_IMPORTE, new RowMapper<Documento>() {
 				
 				@Override
 				public Documento mapRow(ResultSet rs, int rowNum)
