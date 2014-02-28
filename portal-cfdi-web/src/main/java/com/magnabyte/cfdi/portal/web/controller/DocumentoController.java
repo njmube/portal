@@ -307,9 +307,9 @@ public class DocumentoController {
 	}
 	
 	@RequestMapping("/refacturacion/cambiarCliente/{idDomicilioFiscal}")
-	public String prueba(@ModelAttribute Documento documento, @ModelAttribute Cliente cliente, 
+	public String cambiarCliente(@ModelAttribute Documento documento, @ModelAttribute Cliente cliente, 
 			@ModelAttribute Establecimiento establecimiento, @PathVariable Integer idDomicilioFiscal, ModelMap model) {
-		logger.debug("prueba");
+		logger.debug("cambiarCliente");
 		Comprobante comprobante = comprobanteService.obtenerComprobantePor(documento, cliente, idDomicilioFiscal, establecimiento);
 		documento.setComprobante(comprobante);
 		return "redirect:/modificarFactura";

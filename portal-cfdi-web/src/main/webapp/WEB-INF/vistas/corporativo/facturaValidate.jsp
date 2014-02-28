@@ -143,7 +143,7 @@
 				<div class="row">
 					<div class="col-md-12 text-center">
 						<p>
-							<button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#articulos">
+							<button id="btnArticulos" type="button" class="btn btn-warning" data-toggle="collapse" data-target="#articulos">
 							  Mostrar Artículos <i class="fa fa-sort"></i>
 							</button>
 						</p>
@@ -255,6 +255,14 @@
 				$(this).attr("disabled", "disabled");
 				$("#cancel").attr("disabled", "disabled");
 				$("#formPdf").submit();
+			});
+			
+			$('#articulos').on('shown.bs.collapse', function () {
+				  $('#btnArticulos').html("Ocultar Artículos <i class=\"fa fa-sort\"></i>");
+			});
+			
+			$('#articulos').on('hidden.bs.collapse', function () {
+				  $('#btnArticulos').html("Mostrar Artículos <i class=\"fa fa-sort\"></i>");
 			});
 		});
 	</script>

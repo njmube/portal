@@ -91,6 +91,9 @@ public class TicketServiceImpl implements TicketService {
 	@Value("${ticket.clave.venta}")
 	private String claveVentaTicket;
 	
+	@Value("${ticket.clave.anticipo}")
+	private String claveAnticipoTicket;
+	
 	@Value("${ticket.clave.devolucion}")
 	private String claveDevolucionTicket;
 	
@@ -238,6 +241,7 @@ public class TicketServiceImpl implements TicketService {
 								.getFileStream(urlTicketFiles, file.getName(), authentication)));
 						
 						if (!ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveVentaTicket)
+								|| !ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveAnticipoTicket)
 								|| ticketXml.getTransaccion().getTransaccionTotal().getTotalVenta().compareTo(importe) != 0) {
 							return false;
 						}
@@ -309,7 +313,8 @@ public class TicketServiceImpl implements TicketService {
 					if (matcher.matches()) {
 						Ticket ticketXml = (Ticket) unmarshaller.unmarshal(new StreamSource(sambaService.getFileStream(urlTicketFiles, file, authentication)));
 						ticketXml.setNombreArchivo(file);
-						if (ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveVentaTicket)) {
+						if (ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveVentaTicket)
+								|| ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveAnticipoTicket)) {
 							ventas.add(ticketXml);
 						} else if (ticketXml.getTransaccion().getTransaccionHeader().getTipoTransaccion().equalsIgnoreCase(claveDevolucionTicket)) {
 							devoluciones.add(ticketXml);
