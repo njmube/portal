@@ -135,6 +135,9 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 	@Value("${cfdi.comprobante.descripcion.iva}")
 	private String ivaDescripcion;
 	
+	@Value("${ticket.moneda.default}")
+	private String tipoMoneda;
+	
 	private BigDecimal IVA;
 	
 	private BigDecimal IVA_DIVISION;
@@ -168,7 +171,8 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 			for(InformacionPago infoPago : ticket.getTransaccion().getInformacionPago()) {
 				comprobante.setNumCtaPago(infoPago.getNumeroCuenta());
 				comprobante.setMetodoDePago(infoPago.getPago().getMetodoPago().toUpperCase());
-				comprobante.setMoneda(infoPago.getPago().getMoneda());
+//				comprobante.setMoneda(infoPago.getPago().getMoneda());
+				comprobante.setMoneda(tipoMoneda);
 				break;
 			}
 			
