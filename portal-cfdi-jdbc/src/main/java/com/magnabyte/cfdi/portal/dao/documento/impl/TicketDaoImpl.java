@@ -206,10 +206,13 @@ public class TicketDaoImpl extends GenericJdbcDao
 			Ticket ticket = new Ticket();
 			Transaccion transaccion = new Transaccion();
 			TransaccionHeader transaccionHeader = new TransaccionHeader();
+			Establecimiento establecimiento = new Establecimiento();
 			ticket.setId(rs.getInt(TicketSql.ID_TICKET));
 			transaccionHeader.setIdTicket(rs.getString(TicketSql.NO_TICKET));
 			transaccionHeader.setIdCaja(rs.getString(TicketSql.NO_CAJA));
 			transaccionHeader.setIdSucursal(rs.getString(EstablecimientoSql.ID_ESTABLECIMIENTO));
+			establecimiento.setId(rs.getInt(EstablecimientoSql.ID_ESTABLECIMIENTO));
+			ticket.setEstablecimiento(establecimiento);
 			
 			transaccionHeader.setFecha(FechasUtils.parseDateToString(rs.getTimestamp(TicketSql.FECHA), 
 					FechasUtils.formatyyyyMMddHHmmssHyphen));
@@ -227,7 +230,7 @@ public class TicketDaoImpl extends GenericJdbcDao
 	private MapSqlParameterSource getParameters(DocumentoSucursal documento) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue(DocumentoSql.ID_DOCUMENTO, documento.getId());
-		params.addValue(EstablecimientoSql.ID_ESTABLECIMIENTO, documento.getEstablecimiento().getId());
+		params.addValue(EstablecimientoSql.ID_ESTABLECIMIENTO, documento.getTicket().getEstablecimiento().getId());
 		params.addValue(TicketSql.ID_STATUS, documento.getTicket().getTipoEstadoTicket().getId());
 		params.addValue(TicketSql.FECHA, FechasUtils.parseStringToDate(documento
 				.getTicket().getTransaccion().getTransaccionHeader().getFechaHora(), 

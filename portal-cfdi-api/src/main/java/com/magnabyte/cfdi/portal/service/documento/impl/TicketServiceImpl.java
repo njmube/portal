@@ -263,6 +263,7 @@ public class TicketServiceImpl implements TicketService {
 							}
 						}
 						ticket.setNombreArchivo(file.getName());
+						ticket.setEstablecimiento(establecimiento);
 						return true;
 					}
 				}
@@ -426,7 +427,7 @@ public class TicketServiceImpl implements TicketService {
 		descuento.setDescuentoTotal(descuentoTotal);
 		ticketVentasMostrador.getTransaccion().getPartidas().add(concepto);
 		ticketVentasMostrador.getTransaccion().getPartidasDescuentos().add(descuento);
-		
+		ticketVentasMostrador.setEstablecimiento(establecimiento);
 		return ticketVentasMostrador;
 	}
 	
@@ -487,6 +488,7 @@ public class TicketServiceImpl implements TicketService {
 				}
 			}
 		}
+		ticketDevolucion.setEstablecimiento(establecimiento);
 		return ticketDevolucion;
 	}
 

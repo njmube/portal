@@ -16,6 +16,8 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "TAS")
 public class Ticket implements Serializable, Cloneable {
@@ -34,6 +36,9 @@ public class Ticket implements Serializable, Cloneable {
         
         @XmlTransient
         protected TipoEstadoTicket tipoEstadoTicket;
+
+        @XmlTransient
+        protected Establecimiento establecimiento;
         
         @XmlElement(name = "fileName")
         protected String nombreArchivo;
@@ -60,6 +65,14 @@ public class Ticket implements Serializable, Cloneable {
         
         public void setTipoEstadoTicket(TipoEstadoTicket tipoEstadoTicket) {
 			this.tipoEstadoTicket = tipoEstadoTicket;
+		}
+        
+        public Establecimiento getEstablecimiento() {
+			return establecimiento;
+		}
+        
+        public void setEstablecimiento(Establecimiento establecimiento) {
+			this.establecimiento = establecimiento;
 		}
         
         public String getNombreArchivo() {

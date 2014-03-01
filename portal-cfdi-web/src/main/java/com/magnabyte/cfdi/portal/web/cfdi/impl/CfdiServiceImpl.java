@@ -130,8 +130,20 @@ public class CfdiServiceImpl implements CfdiService {
 		facturaDocumentoNuevo.getComprobante().getEmisor().setRfc("AAA010101AAA");
 		notaCreditoDocumentoOrigen.getComprobante().getEmisor().setRfc("AAA010101AAA");
 		
-		generarDocumento(facturaDocumentoNuevo);
-		generarDocumento(notaCreditoDocumentoOrigen);
+		try {
+			generarDocumento(facturaDocumentoNuevo);
+		} catch (PortalException ex) {
+			logger.info(
+					"Ocurrio un error al generar la factura {}",
+					documento.getId());
+		}
+		try {
+			generarDocumento(notaCreditoDocumentoOrigen);
+		} catch (PortalException ex) {
+			logger.info(
+					"Ocurrio un error al generar la nota de credito {}",
+					documento.getId());
+		}
 	}
 	
 	@Override

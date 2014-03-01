@@ -47,6 +47,7 @@ import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
+import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
 import com.magnabyte.cfdi.portal.service.commons.EmailService;
@@ -108,6 +109,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Autowired
 	private EmisorService emisorService;
+	
+	@Autowired
+	private ClienteService clienteService;
 
 	private ResourceLoader resourceLoader;
 	
@@ -552,9 +556,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 		int domicilioFiscal = cliente.getDomicilios().get(0).getId();
 		Comprobante comprobante = comprobanteService.obtenerComprobantePor(cliente, ticketDevuelto, domicilioFiscal, establecimiento, TipoDocumento.NOTA_CREDITO);
-		Documento documentoNcr = new Documento();
+		//FIXME revisar
+		Documento documentoNcr = new DocumentoSucursal();
 		documentoNcr.setEstablecimiento(establecimiento);
 		documentoNcr.setCliente(cliente);
+		//FIXME revisar
+		((DocumentoSucursal) documentoNcr).setTicket(ticketDevuelto);
 		documentoNcr.setComprobante(comprobante);
 		documentoNcr.setTipoDocumento(TipoDocumento.NOTA_CREDITO);
 		return documentoNcr;
@@ -609,15 +616,24 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			throw new PortalException("Solo es posible modificar facturas expedidas en Sucursal.");
 		}
 		documento = documentoDao.findBySerieFolioImporte(documento);
+		documento.setCliente(clienteService.read(documento.getCliente()));
 		documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi()));
 		if (documento instanceof DocumentoSucursal) {
 			((DocumentoSucursal) documento).setTicket(ticketService.findByDocumento(documento));
+			//FIXME validar del estado del documento
+			switch (((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket()) {
+			case REFACTURADO:
+				logger.error("El documento ya fue refacturado con anterioridad.");
+				throw new PortalException("El documento ya fue refacturado con anterioridad.");				
+			default:
+				break;
+			}
 		}
 		try {
 			documento.setDocumentoOrigen((Documento) documento.clone());
 		} catch (CloneNotSupportedException e) {
-			logger.error("Ocurrió un error al clonar el documento");
-			throw new PortalException("Ocurrió un error al clonar el documento");
+			logger.error("Ocurrió un error al clonar el documento.");
+			throw new PortalException("Ocurrió un error al clonar el documento.");
 		}
 		procesarDocumentoNuevo(documento);
 		procesarDocumentoOrigen(documento.getDocumentoOrigen());
@@ -628,21 +644,26 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi()));
 		if (documento instanceof DocumentoSucursal) {
 			((DocumentoSucursal) documento).getTicket().setTipoEstadoTicket(TipoEstadoTicket.NCR_GENERADA);
-			((DocumentoSucursal) documento).setRequiereNotaCredito(true);
 		}
+		limpiarComprobante(documento);
 	}
 
 	private void procesarDocumentoOrigen(Documento documentoOrigen) {
 		documentoOrigen.setTipoDocumento(TipoDocumento.NOTA_CREDITO);
 		if (documentoOrigen instanceof DocumentoSucursal) {
 			((DocumentoSucursal) documentoOrigen).getTicket().setTipoEstadoTicket(TipoEstadoTicket.REFACTURADO);
+			((DocumentoSucursal) documentoOrigen).setRequiereNotaCredito(true);
 		}
-		documentoOrigen.getComprobante().setNoCertificado(null);
-		documentoOrigen.getComprobante().setCertificado(null);
-		documentoOrigen.getComprobante().setFecha(null);
-		documentoOrigen.getComprobante().setSello(null);
-		documentoOrigen.getComprobante().setComplemento(null);
-		documentoOrigen.getComprobante().setTipoDeComprobante(documentoOrigen.getTipoDocumento().getNombreComprobante());
+		limpiarComprobante(documentoOrigen);
+	}
+	
+	private void limpiarComprobante(Documento documento) {
+		documento.getComprobante().setNoCertificado(null);
+		documento.getComprobante().setCertificado(null);
+		documento.getComprobante().setFecha(null);
+		documento.getComprobante().setSello(null);
+		documento.getComprobante().setComplemento(null);
+		documento.getComprobante().setTipoDeComprobante(documento.getTipoDocumento().getNombreComprobante());
 	}
 	
 	@Override

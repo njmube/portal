@@ -203,13 +203,13 @@
 							<div class="form-group">
 								<label for="estado" class="col-lg-4 col-md-4 control-label"><small>Estado: </small></label>
 								<div class="col-lg-4 col-md-4">
-									<form:input id="estado" path="comprobante.receptor.domicilio.estado" cssClass="form-control input-sm"/>
+									<form:input id="estado" path="comprobante.receptor.domicilio.estado" cssClass="form-control input-sm" readonly="true"/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="pais" class="col-lg-4 col-md-4 control-label"><small>País: </small></label>
 								<div class="col-lg-4 col-md-4">
-									<form:input id="pais" path="comprobante.receptor.domicilio.pais" cssClass="form-control input-sm"/>
+									<form:input id="pais" path="comprobante.receptor.domicilio.pais" cssClass="form-control input-sm"  readonly="true"/>
 								</div>
 							</div>
 							<div class="form-group">

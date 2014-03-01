@@ -169,6 +169,7 @@ public class DocumentoController {
 		if (documento instanceof DocumentoCorporativo) {
 			model.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
 		} else if (documento instanceof DocumentoSucursal) {
+			//FIXME revisar el id de establecimiento
 			model.put("SUCURSAL", documento.getEstablecimiento().getNombre());
 			model.put("CAJA", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getIdCaja());
 			model.put("TICKET", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getIdTicket());
