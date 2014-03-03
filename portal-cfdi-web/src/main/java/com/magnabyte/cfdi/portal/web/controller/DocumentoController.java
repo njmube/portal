@@ -321,12 +321,8 @@ public class DocumentoController {
 	@RequestMapping(value = {"/refacturarDocumento"}, method = RequestMethod.POST)
 	public String refacturarDocumento(@ModelAttribute Documento documento, ModelMap model, final RedirectAttributes redirectAttributes) {
 		logger.debug("generando documento");
-		Documento facturaDocumentoNuevo = documento;
-		Documento notaCreditoDocumentoOrigen = documento.getDocumentoOrigen();
-		
-		comprobanteService.depurarReceptor(facturaDocumentoNuevo);
-		documentoService.guardarDocumento(facturaDocumentoNuevo);
-		documentoService.guardarDocumento(notaCreditoDocumentoOrigen);
+		comprobanteService.depurarReceptor(documento);
+		documentoService.guardarDocumentoRefacturado(documento);
 		cfdiService.procesarDocumentoRefacturado(documento);
 		redirectAttributes.addFlashAttribute("documento", documento);
 		

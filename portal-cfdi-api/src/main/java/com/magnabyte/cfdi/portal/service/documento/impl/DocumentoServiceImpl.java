@@ -40,6 +40,7 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
+import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumento;
 import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.factory.EstablecimientoFactory;
@@ -232,9 +233,25 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		
 	}
 	
+	@Override
+	public void guardarDocumentoRefacturado(Documento documento) {
+		guardarDocumento(documento);
+		documento.getDocumentoOrigen().setTipoEstadoDocumento(TipoEstadoDocumento.REPROCESADO);
+		updateDocumentoStatus(documento.getDocumentoOrigen());
+		guardarDocumento(documento.getDocumentoOrigen());		
+	}
+	
 	@Transactional
 	@Override
-	public void updateDocumentoXmlCfdi(Documento documento) {
+	public void updateDocumentoStatus(Documento documento) {
+		documentoDao.updateDocumentoStatus(documento);
+	}
+	
+	@Transactional
+	@Override
+	public void updateDocumentoStatusAndXml(Documento documento) {
+		documento.setTipoEstadoDocumento(TipoEstadoDocumento.PROCESADO);
+		documentoDao.updateDocumentoStatus(documento);
 		documentoDao.updateDocumentoXmlCfdi(documento);
 	}
 
@@ -249,6 +266,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	}
 
 	private void saveDocumentAndDetail(Documento documento) {
+		documento.setTipoEstadoDocumento(TipoEstadoDocumento.PENDIENTE);
 		documentoDao.save(documento);
 		documentoDetalleService.save(documento);		
 	}
@@ -616,18 +634,17 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			throw new PortalException("Solo es posible modificar facturas expedidas en Sucursal.");
 		}
 		documento = documentoDao.findBySerieFolioImporte(documento);
+		switch (documento.getTipoEstadoDocumento()) {
+		case REPROCESADO:
+			logger.error("El documento ya fue refacturado con anterioridad.");
+			throw new PortalException("El documento ya fue refacturado con anterioridad.");				
+		default:
+			break;
+		}		
 		documento.setCliente(clienteService.read(documento.getCliente()));
 		documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi()));
 		if (documento instanceof DocumentoSucursal) {
 			((DocumentoSucursal) documento).setTicket(ticketService.findByDocumento(documento));
-			//FIXME validar del estado del documento
-			switch (((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket()) {
-			case REFACTURADO:
-				logger.error("El documento ya fue refacturado con anterioridad.");
-				throw new PortalException("El documento ya fue refacturado con anterioridad.");				
-			default:
-				break;
-			}
 		}
 		try {
 			documento.setDocumentoOrigen((Documento) documento.clone());

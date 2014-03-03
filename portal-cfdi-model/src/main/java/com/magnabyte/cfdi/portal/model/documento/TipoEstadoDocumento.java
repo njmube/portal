@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum TipoEstadoDocumento {
-	PENDIENTE(1), FACTURADO(2);
+	PENDIENTE(1), PROCESADO(2), REPROCESADO(3);
 
 	private int id;
 	

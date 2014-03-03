@@ -30,6 +30,7 @@ public class Documento implements Serializable, Cloneable {
 	private byte[] xmlCfdiAcuse;
 	private boolean ventasMostrador;
 	private Documento documentoOrigen;
+	private TipoEstadoDocumento tipoEstadoDocumento;
 
 	public Integer getId() {
 		return id;
@@ -159,6 +160,14 @@ public class Documento implements Serializable, Cloneable {
 		this.documentoOrigen = documentoOrigen;
 	}
 
+	public TipoEstadoDocumento getTipoEstadoDocumento() {
+		return tipoEstadoDocumento;
+	}
+	
+	public void setTipoEstadoDocumento(TipoEstadoDocumento tipoEstadoDocumento) {
+		this.tipoEstadoDocumento = tipoEstadoDocumento;
+	}
+	
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		Documento cloned = (Documento) super.clone();

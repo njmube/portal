@@ -19,7 +19,7 @@ public class SqlGenericTest {
 
 	@Test
 	public void qryTest() {
-		String qryString = DocumentoSql.READ_DOCUMENTO_RUTA;
+		String qryString = DocumentoSql.READ_BY_SERIE_FOLIO_IMPORTE;
 		logger.info(qryString);
 		Assert.assertNotNull(qryString);
 	}

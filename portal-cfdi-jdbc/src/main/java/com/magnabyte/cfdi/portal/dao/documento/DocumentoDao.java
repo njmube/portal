@@ -56,4 +56,6 @@ public interface DocumentoDao {
 
 	Documento findBySerieFolioImporte(Documento documento);
 
+	void updateDocumentoStatus(Documento documento);
+
 }

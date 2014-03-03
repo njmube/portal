@@ -42,7 +42,7 @@ public interface DocumentoService {
 
 	void deleteDocumentoPendiente(Documento documento, TipoEstadoDocumentoPendiente estadoDocumentoPendiente);
 
-	void updateDocumentoXmlCfdi(Documento documento);
+	void updateDocumentoStatusAndXml(Documento documento);
 
 	byte[] recuperarDocumentoXml(Documento documento);
 
@@ -61,5 +61,9 @@ public interface DocumentoService {
 	Cliente readClienteFromDocumento(Documento documento);
 
 	void findBySerieFolioImporte(Documento documento);
+
+	void updateDocumentoStatus(Documento documento);
+
+	void guardarDocumentoRefacturado(Documento documento);
 
 }

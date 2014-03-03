@@ -73,13 +73,25 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	public void updateDocumentoCliente(DocumentoSucursal documento) {
 		getJdbcTemplate().update(DocumentoSql.UPDATE_DOC_CTE, documento.getCliente().getId(), documento.getId());
 	}
+	
+	@Override
+	public void updateDocumentoStatus(Documento documento) {
+		try {
+			int rowsAffected = getJdbcTemplate().update(DocumentoSql.UPDATE_DOC_STATUS, 
+					documento.getTipoEstadoDocumento().getId(),
+					documento.getId());
+			logger.debug("archivos afectados {}", rowsAffected);
+		} catch (DataAccessException e) {
+			logger.debug("No se pudo actualizar el Documento en la base de datos.", e);
+			throw new PortalException("No se pudo actualizar el Documento en la base de datos.", e);
+		}
+	}
 
 	@Override
 	public void updateDocumentoXmlCfdi(Documento documento) {
 		try {
 			int rowsAffected = getJdbcTemplate().update(DocumentoSql.UPDATE_DOC_XML_FILE, 
 					new String(documento.getXmlCfdi(), PortalUtils.encodingUTF16),
-					TipoEstadoDocumento.FACTURADO.getId(),
 					documento.getId());
 			logger.debug("archivos afectados {}", rowsAffected);
 		} catch (DataAccessException e) {
@@ -109,7 +121,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		params.addValue(DocumentoSql.SUBTOTAL, documento.getComprobante().getSubTotal());
 		params.addValue(DocumentoSql.IVA, documento.getComprobante().getImpuestos().getTotalImpuestosTrasladados());
 		params.addValue(DocumentoSql.TOTAL, documento.getComprobante().getTotal());
-		params.addValue(DocumentoSql.ID_STATUS, TipoEstadoDocumento.PENDIENTE.getId());
+		params.addValue(DocumentoSql.ID_STATUS, documento.getTipoEstadoDocumento().getId());
 		try {
 			params.addValue(DocumentoSql.XML_FILE, new String(documento.getXmlCfdi(), PortalUtils.encodingUTF16));
 		} catch (UnsupportedEncodingException e) {
@@ -272,6 +284,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	public List<Documento> getNombreDocumentoFacturado(List<Integer> idDocumentos) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("idDocumentos", idDocumentos);
+		map.addValue("idTipoDocumento", TipoDocumento.FACTURA.getId());
 		return getNamedParameterJdbcTemplate().query(DocumentoSql.READ_DOCUMENTOS_FACTURADOS,
 				map, DOCUMENTO_FACTURADO_MAPPER);
 	}
@@ -358,7 +371,8 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		return getJdbcTemplate().query(DocumentoSql.READ_DOCUMENTO_RUTA, 
 				DOCUMENTO_RUTA_MAPPER, cliente.getRfc(), 
 				new java.sql.Date(FechasUtils.parseStringToDate(fechaInicial, FechasUtils.formatddMMyyyyHyphen).getTime()),
-				new java.sql.Date(FechasUtils.parseStringToDate(fechaFinal, FechasUtils.formatddMMyyyyHyphen).getTime()));
+				new java.sql.Date(FechasUtils.parseStringToDate(fechaFinal, FechasUtils.formatddMMyyyyHyphen).getTime()),
+				TipoEstadoDocumento.PROCESADO.getId());
 	}
 
 	@Override
@@ -479,7 +493,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 				
 			}, documento.getComprobante().getSerie());
 		} catch (EmptyResultDataAccessException ex) {
-			throw new PortalException("El documento no existe.");
+			throw new PortalException("No existe el documento para la serie proporcianada.");
 		}
 	}
 	
@@ -496,6 +510,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 					cliente.setId(rs.getInt(DocumentoSql.ID_CLIENTE));
 					documento.setCliente(cliente);
 					documento.setId_domicilio(rs.getInt(DocumentoSql.ID_DOMICILIO_CLIENTE));
+					documento.setTipoEstadoDocumento(TipoEstadoDocumento.getById(rs.getInt(DocumentoSql.ID_STATUS)));
 					SQLXML xmlFile = rs.getSQLXML(DocumentoSql.XML_FILE);
 					if (xmlFile != null) {
 						try {
@@ -510,7 +525,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 				
 			}, documento.getComprobante().getSerie(), documento.getComprobante().getFolio(), documento.getComprobante().getTotal());
 		} catch (EmptyResultDataAccessException ex) {
-			throw new PortalException("No existe el documento para la serie, folio e importe proporcionados.");
+			throw new PortalException("No existe el documento para la serie, folio e importe proporcionados, o aun esta siendo procesado por el SAT, intente de nuevo más tarde.");
 		}
 	}
 }

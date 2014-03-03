@@ -157,7 +157,7 @@ public class CfdiServiceImpl implements CfdiService {
 		if (comprobanteService.sellarComprobante(documento.getComprobante(),
 				certificado)) {
 			if (documentoWebService.timbrarDocumento(documento, idServicio)) {
-				documentoService.updateDocumentoXmlCfdi(documento);
+				documentoService.updateDocumentoStatusAndXml(documento);
 				documentoService.insertDocumentoCfdi(documento);
 				documentoService.insertDocumentoPendiente(documento,
 						TipoEstadoDocumentoPendiente.ACUSE_PENDIENTE);

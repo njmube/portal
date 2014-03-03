@@ -14,7 +14,6 @@ $(document).ready(function() {
 		todayHighlight: true,
 		autoclose: true
 	}).on('changeDate', function(ev){
-		$("#fechaFin").val("");
 		fechaFin.datepicker('remove');
 		fechaFin.datepicker({
 			startDate: new Date(ev.date.valueOf()), 
