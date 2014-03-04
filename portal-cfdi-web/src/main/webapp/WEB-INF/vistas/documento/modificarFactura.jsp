@@ -161,43 +161,43 @@
 							<div class="form-group">
 								<label for="rfc" class="col-lg-4 col-md-4 control-label"><small>RFC: </small></label>
 								<div class="col-lg-2 col-md-2">
-									<form:input id="rfc" path="comprobante.receptor.rfc" cssClass="form-control input-sm" readonly="true"/>
+									<form:input id="rfc" path="comprobante.receptor.rfc" cssClass="form-control input-sm validate[required, custom[rfcFisica]]" readonly="true"/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="nombre" class="col-lg-4 col-md-4 control-label"><small>Nombre: </small></label>
 								<div class="col-lg-6 col-md-6">
-									<form:input id="nombre" path="comprobante.receptor.nombre" cssClass="form-control input-sm"/>
+									<form:input id="nombre" path="comprobante.receptor.nombre" cssClass="form-control input-sm validate[required]"/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="calle" class="col-lg-4 col-md-4 control-label"><small>Calle: </small></label>
 								<div class="col-lg-6 col-md-6">
-									<form:input id="calle" path="comprobante.receptor.domicilio.calle" cssClass="form-control input-sm"/>
+									<form:input id="calle" path="comprobante.receptor.domicilio.calle" cssClass="form-control input-sm validate[required]"/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="noExterior" class="col-lg-4 col-md-4 control-label"><small>No. Exterior: </small></label>
 								<div class="col-lg-2 col-md-2">
-									<form:input id="noExterior" path="comprobante.receptor.domicilio.noExterior" cssClass="form-control input-sm"/>
+									<form:input id="noExterior" path="comprobante.receptor.domicilio.noExterior" cssClass="form-control input-sm validate[required, integer, minSize[1]]"/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="noInterior" class="col-lg-4 col-md-4 control-label"><small>No. Interior: </small></label>
 								<div class="col-lg-2 col-md-2">
-									<form:input id="noInterior" path="comprobante.receptor.domicilio.noInterior" cssClass="form-control input-sm"/>
+									<form:input id="noInterior" path="comprobante.receptor.domicilio.noInterior" cssClass="form-control input-sm validate[integer]"/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="colonia" class="col-lg-4 col-md-4 control-label"><small>Colonia: </small></label>
 								<div class="col-lg-4 col-md-4">
-									<form:input id="colonia" path="comprobante.receptor.domicilio.colonia" cssClass="form-control input-sm"/>
+									<form:input id="colonia" path="comprobante.receptor.domicilio.colonia" cssClass="form-control input-sm validate[required]"/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="delmun" class="col-lg-4 col-md-4 control-label"><small>Delegación/Municipio: </small></label>
 								<div class="col-lg-4 col-md-3">
-									<form:input id="delmun" path="comprobante.receptor.domicilio.municipio" cssClass="form-control input-sm"/>
+									<form:input id="delmun" path="comprobante.receptor.domicilio.municipio" cssClass="form-control input-sm validate[required]"/>
 								</div>
 							</div>
 							<div class="form-group">
@@ -215,7 +215,7 @@
 							<div class="form-group">
 								<label for="cp" class="col-lg-4 col-md-4 control-label"><small>Código Postal: </small></label>
 								<div class="col-lg-2 col-md-2">
-									<form:input id="cp" path="comprobante.receptor.domicilio.codigoPostal" cssClass="form-control input-sm"/>
+									<form:input id="cp" path="comprobante.receptor.domicilio.codigoPostal" cssClass="form-control input-sm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]]"/>
 								</div>
 							</div>
 						</fieldset>
@@ -232,13 +232,17 @@
 	</div>
 	<script type="text/javascript">
 		$(document).ready(function() {
+			$("#formPdf").validationEngine();
+			
 			$("#generaFactura").click(function() {
-				$("#page_loader").show();
-				$("#page_loader_factura_content").show();
-				$(this).attr("disabled", "disabled");
-				$("#goback").attr("disabled", "disabled");
-				$("#cancel").attr("disabled", "disabled");
-				$("#formPdf").submit();
+				if($("#formPdf").validationEngine('validate')) {
+					$("#page_loader").show();
+					$("#page_loader_factura_content").show();
+					$(this).attr("disabled", "disabled");
+					$("#goback").attr("disabled", "disabled");
+					$("#cancel").attr("disabled", "disabled");
+					$("#formPdf").submit();
+				}
 			});
 			
 			$('#articulos').on('shown.bs.collapse', function () {

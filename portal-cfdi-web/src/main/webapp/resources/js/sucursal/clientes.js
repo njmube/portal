@@ -4,7 +4,7 @@ $(document).ready(function() {
 		var nombre = $("#nombre").val();
 		$.ajax({
 			url: contextPath + "/listaClientes?ajax=true",
-			data: "rfc=" + rfc + "&nombre=" + nombre,
+			data: {rfc: rfc, nombre: nombre},
 			type: "post",
 			success: function(response) {
 				$("#listClientesPage").html(response);
@@ -17,7 +17,7 @@ $(document).ready(function() {
 		var nombre = $("#nombre").val();
 		$.ajax({
 			url: contextPath + "/refacturacion/listaClientes?ajax=true",
-			data: "rfc=" + rfc + "&nombre=" + nombre,
+			data: {rfc: rfc, nombre: nombre},
 			type: "post",
 			success: function(response) {
 				$("#listClientesPage").html(response);
@@ -26,14 +26,14 @@ $(document).ready(function() {
 	});
 	
 	$("#crearCliente").click(function(){
-		var rfc = $("#rfc").val();
+		var rfc = encodeURIComponent($("#rfc").val());
 		var nombre = $("#nombre").val();
 		var urlContinue = contextPath + "/clienteForm?rfc=" + rfc + "&nombre=" + nombre;
 		location.href = urlContinue;
 	});
 	
 	$("#crearClienteRefact").click(function(){
-		var rfc = $("#rfc").val();
+		var rfc = encodeURIComponent($("#rfc").val());
 		var nombre = $("#nombre").val();
 		var urlContinue = contextPath + "/refacturacion/clienteForm?rfc=" + rfc + "&nombre=" + nombre;
 		location.href = urlContinue;

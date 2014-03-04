@@ -166,7 +166,7 @@
 												<td><form:input path="domicilios[${theCount.index}].municipio" id="municipio${theCount.index}" cssClass="form-control input-xsm validate[required] municipio"/></td>
 												<td width="200px"><form:input  path="domicilios[${theCount.index}].colonia" id="colonia${theCount.index}" cssClass="form-control input-xsm validate[required] colonia"/></td>
 												<td width="70px"><form:input  path="domicilios[${theCount.index}].codigoPostal" id="codigoPostal${theCount.index}" 
-													cssClass="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5] codigoPostal"/></td>
+													cssClass="form-control input-xsm validate[required, custom[onlyNumberSp], maxSize[5], minSize[5]] codigoPostal"/></td>
 												<c:choose>
 													<c:when test="${theCount.index > 0 }">
 														<c:if test="${domicilio.estatus.id eq 1}">														
