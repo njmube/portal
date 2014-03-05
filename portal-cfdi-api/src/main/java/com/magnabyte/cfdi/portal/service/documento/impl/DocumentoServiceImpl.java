@@ -146,9 +146,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		if(documento != null) {
 			comprobanteService.createFechaDocumento(documento.getComprobante());
 			documento.setFechaFacturacion(documento.getComprobante().getFecha().toGregorianCalendar().getTime());
-			if (documento.isVentasMostrador()) {
-				ticketService.guardarTicketsCierreDia(documento);
-			}
+
 			documento.setXmlCfdi(documentoXmlService
 					.convierteComprobanteAByteArray(documento.getComprobante(), PortalUtils.encodingUTF16));
 			if(documento instanceof DocumentoSucursal) {
@@ -225,6 +223,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			} else {
 				saveDocumentAndDetail(documento);
 				asignarSerieYFolio(documento);
+				if (documento.isVentasMostrador()) {
+					ticketService.guardarTicketsCierreDia(documento);
+				}
 			}
 		} else {
 			logger.debug("El Documento no puede ser nulo.");
@@ -550,6 +551,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public Documento findByEstadoTicket(String archivoOrigen, 
 			Establecimiento establecimiento, List<Ticket> devoluciones) {
+		//FIXME Revisar recuperacion del ticket
 		DocumentoSucursal documentoTicketOrigen = ticketService.readDocFromTicket(archivoOrigen);
 		if (documentoTicketOrigen != null) {
 			switch (documentoTicketOrigen.getTicket().getTipoEstadoTicket()) {
@@ -669,7 +671,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		documentoOrigen.setTipoDocumento(TipoDocumento.NOTA_CREDITO);
 		if (documentoOrigen instanceof DocumentoSucursal) {
 			((DocumentoSucursal) documentoOrigen).getTicket().setTipoEstadoTicket(TipoEstadoTicket.REFACTURADO);
-			((DocumentoSucursal) documentoOrigen).setRequiereNotaCredito(true);
 		}
 		limpiarComprobante(documentoOrigen);
 	}

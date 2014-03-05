@@ -3,6 +3,7 @@ package com.magnabyte.cfdi.portal.dao.documento.impl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -66,7 +67,7 @@ public class TicketDaoImpl extends GenericJdbcDao
 				ps.setInt(1, Integer.parseInt(documento.getVentas().get(i).getTransaccion().getTransaccionHeader().getIdTicket()));
 				ps.setInt(2, documento.getEstablecimiento().getId());
 				ps.setInt(3, Integer.parseInt(documento.getVentas().get(i).getTransaccion().getTransaccionHeader().getIdCaja()));
-				ps.setDate(4, new java.sql.Date(FechasUtils.parseStringToDate(documento.getVentas().get(i).
+				ps.setTimestamp(4, new java.sql.Timestamp(FechasUtils.parseStringToDate(documento.getVentas().get(i).
 						getTransaccion().getTransaccionHeader().getFechaHora(), FechasUtils.formatyyyyMMddHHmmss).getTime()));
 				ps.setInt(5, estadoTicket.getId());
 				ps.setInt(6, documento.getId());
@@ -170,6 +171,7 @@ public class TicketDaoImpl extends GenericJdbcDao
 		}
 	}
 	
+	//FIXME Revisar si se usa
 	@Override
 	public int readProcesado(String archivoOrigen,
 			TipoEstadoTicket facturado, TipoEstadoTicket facturadoMostrador) {
@@ -184,10 +186,27 @@ public class TicketDaoImpl extends GenericJdbcDao
 				throws SQLException {
 			DocumentoSucursal documento = new DocumentoSucursal();
 			Ticket ticket = new Ticket();
+			Transaccion transaccion = new Transaccion();
+			TransaccionHeader transaccionHeader = new TransaccionHeader();
+			Establecimiento establecimiento = new Establecimiento();
 			documento.setId(rs.getInt(DocumentoSql.ID_DOCUMENTO));
 			ticket.setId(rs.getInt(TicketSql.ID_TICKET));
-			ticket.setTipoEstadoTicket(TipoEstadoTicket.getById(rs.getInt(TicketSql.ID_STATUS)));
+			
+			transaccionHeader.setIdTicket(rs.getString(TicketSql.NO_TICKET));
+			transaccionHeader.setIdCaja(rs.getString(TicketSql.NO_CAJA));
+			transaccionHeader.setIdSucursal(rs.getString(EstablecimientoSql.ID_ESTABLECIMIENTO));
+			establecimiento.setId(rs.getInt(EstablecimientoSql.ID_ESTABLECIMIENTO));
+			ticket.setEstablecimiento(establecimiento);
+			
+			transaccionHeader.setFecha(FechasUtils.parseDateToString(rs.getTimestamp(TicketSql.FECHA), 
+					FechasUtils.formatyyyyMMddHHmmssHyphen));
+			transaccionHeader.setFechaHora(FechasUtils.specificStringFormatDate(transaccionHeader.getFecha(), 
+					FechasUtils.formatyyyyMMddHHmmssHyphen, FechasUtils.formatddMMyyyyHHmmssSlash));
+			transaccion.setTransaccionHeader(transaccionHeader);
+			ticket.setTransaccion(transaccion);
 			ticket.setNombreArchivo(rs.getString(TicketSql.FILENAME));
+			ticket.setTipoEstadoTicket(TipoEstadoTicket.getById(rs.getInt(TicketSql.ID_STATUS)));
+			
 			documento.setTicket(ticket);
 			return documento;
 		}

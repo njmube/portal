@@ -126,9 +126,9 @@ public class TicketServiceImpl implements TicketService {
 	@Override
 	public void save(DocumentoSucursal documento) {
 		if(documento.getTicket() != null) {
-			if (!documento.isRequiereNotaCredito()) {
-				documento.getTicket().setTipoEstadoTicket(TipoEstadoTicket.FACTURADO);
-			}
+//			if (!documento.isRequiereNotaCredito()) {
+//				documento.getTicket().setTipoEstadoTicket(TipoEstadoTicket.FACTURADO);
+//			}
 			ticketDao.save(documento);
 		} else {
 			logger.debug("El Ticket no puede ser nulo.");
@@ -142,7 +142,7 @@ public class TicketServiceImpl implements TicketService {
 		if (documento.getVentas() != null && !documento.getVentas().isEmpty()) {
 			ticketDao.saveTicketsCierreDia(documento, TipoEstadoTicket.FACTURADO_MOSTRADOR);
 		}
-		
+		//FIXME Revisar logica
 		if (documento.getDevoluciones() != null && !documento.getDevoluciones().isEmpty()) {
 			ticketDao.saveTicketsCierreDia(documento, TipoEstadoTicket.DEVUELTO);
 		}
@@ -264,6 +264,7 @@ public class TicketServiceImpl implements TicketService {
 						}
 						ticket.setNombreArchivo(file.getName());
 						ticket.setEstablecimiento(establecimiento);
+						ticket.setTipoEstadoTicket(TipoEstadoTicket.FACTURADO);
 						return true;
 					}
 				}
@@ -403,7 +404,7 @@ public class TicketServiceImpl implements TicketService {
 		header.setIdSucursal(establecimiento.getClave());
 		header.setFechaHora(FechasUtils.parseDateToString(new Date(), FechasUtils.formatddMMyyyyHHmmssSlash));
 		
-		concepto.setCantidad(new BigDecimal(0));
+		concepto.setCantidad(new BigDecimal(1));
 		articulo.setId(null);
 		articulo.setDescripcion(vmConceptoDescripcion);
 		articulo.setUnidad(vmConceptoUnidad);
@@ -439,7 +440,6 @@ public class TicketServiceImpl implements TicketService {
 		Comprobante comprobante = documentoService.findById(documentoOrigen).getComprobante();
 		Ticket ticketDevolucion = new Ticket();
 		Transaccion transaccion = new Transaccion();
-		TransaccionHeader header = new TransaccionHeader();
 		InformacionPago infoPago = new InformacionPago();
 		Pago pago = new Pago();
 		BigDecimal precioTotal = new BigDecimal(0);
@@ -451,14 +451,12 @@ public class TicketServiceImpl implements TicketService {
 		infoPago.setNumeroCuenta(comprobante.getNumCtaPago());
 		infoPago.setPago(pago);
 		
-		transaccion.setTransaccionHeader(header);
+		transaccion.setTransaccionHeader(documentoOrigen.getTicket().getTransaccion().getTransaccionHeader());
 		transaccion.getInformacionPago().add(infoPago);
 		ticketDevolucion.setTransaccion(transaccion);
-		header.setIdTicket(ticketGenerico);
-		header.setIdCaja(cajaGenerica);
-		header.setIdSucursal(establecimiento.getClave());
-		header.setFechaHora(FechasUtils.parseDateToString(new Date(), FechasUtils.formatddMMyyyyHHmmssSlash));
-		
+		ticketDevolucion.setEstablecimiento(establecimiento);
+		ticketDevolucion.setNombreArchivo(documentoOrigen.getTicket().getNombreArchivo());
+		ticketDevolucion.setTipoEstadoTicket(TipoEstadoTicket.NCR_GENERADA);
 		for (Ticket ticket : devoluciones) {
 			if (ticket.getTransaccion().getPartidasDevolucion().get(0).getTicketFileOrigen()
 					.equals(documentoOrigen.getTicket().getNombreArchivo())) {
@@ -489,7 +487,6 @@ public class TicketServiceImpl implements TicketService {
 				}
 			}
 		}
-		ticketDevolucion.setEstablecimiento(establecimiento);
 		return ticketDevolucion;
 	}
 

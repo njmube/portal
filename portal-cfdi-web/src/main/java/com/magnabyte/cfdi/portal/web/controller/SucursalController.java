@@ -176,7 +176,7 @@ public class SucursalController {
 		ListaTickets listaTickets = new ListaTickets();
 		listaTickets.setFechaCierre(fechaCierre);
 		try {
-			if(nowHere.getHourOfDay() > 12) {
+			if(nowHere.getHourOfDay() > 9) {
 				//FIXME revisar hora cierre
 //				if(today.isEqual(closeDate)) {
 					autCierreService.autorizar(usuario);

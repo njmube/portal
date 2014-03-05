@@ -228,8 +228,6 @@ public class CfdiServiceImpl implements CfdiService {
 		documentoNcr.setComprobante(comprobante);
 		documentoNcr.setEstablecimiento(documento.getEstablecimiento());
 		documentoNcr.setTipoDocumento(TipoDocumento.NOTA_CREDITO);
-		documentoNcr.setRequiereNotaCredito(((DocumentoSucursal) documento)
-				.isRequiereNotaCredito());
 		documentoNcr.setFechaFacturacion(new Date());
 		CertificadoDigital certificado = certificadoService
 				.readVigente(documento.getComprobante());
@@ -304,9 +302,11 @@ public class CfdiServiceImpl implements CfdiService {
 			documentoVentasMostardor.setVentasMostrador(true);
 
 			documentosAProcesar.add(documentoVentasMostardor);
+			//FIXME logica cambiar estados ticket y documento origen
 			documentosAProcesar.addAll(listaNotasDeCredito);
 
 			for (Documento documento : documentosAProcesar) {
+				documentoService.guardarDocumento(documento);
 				generarDocumento(documento);
 			}
 			 establecimientoService.updateFechaCierre(establecimiento,

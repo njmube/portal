@@ -32,14 +32,14 @@
 			<hr>
 
 			<c:if test="${error}">
-				<div class="col-md-offset-3 col-md-6 alert alert-danger alert-dismissable alert-fixed auto-close">
+				<div class="col-md-offset-3 col-md-6 alert alert-danger alert-dismissable">
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 					<spring:message code="messages.error.autorizacion.cierre"/>
 					<br><br> <strong>${messageError}</strong> 
 				</div>
 			</c:if>
 			<c:if test="${success}">
-				<div class="col-md-offset-3 col-md-6 alert alert-success alert-dismissable alert-fixed">
+				<div class="col-md-offset-3 col-md-6 alert alert-success alert-dismissable">
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 					<spring:message code="messages.success.autorizacion.cierre"/>
 					<br><br> <strong>${messageSuccess}</strong> 
@@ -171,9 +171,9 @@
 				
 				$('[data-toggle="confirmation"]').confirmation({onConfirm: function(){
 					if($("#autorizacionForm").validationEngine("validate")) {
-						$("#autorizacionForm").submit();
 						$(".page_loader").show();
 						$("#page_loader_factura_content").show();
+						$("#autorizacionForm").submit();
 					}
 				}});
 			});

@@ -82,7 +82,8 @@ public class TicketSql extends GenericSql {
 		
 		clearAndReuseStringBuilder(qryBuilder);
 		
-		qryBuilder.append("select * from t_ticket where nombre_archivo = ? and id_status_ticket = ? ");
+		qryBuilder.append("select id_ticket, no_ticket, no_caja, id_establecimiento, fecha_ticket, id_status_ticket, dbo.TRIM(nombre_archivo) as nombre_archivo, id_documento").append(EOL);
+		qryBuilder.append("from t_ticket where nombre_archivo = ? and id_status_ticket = ? ");
 		
 		READ_BY_STATUS_FILENAME = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
