@@ -26,9 +26,12 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoSucursal;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.establecimiento.factory.EstablecimientoFactory;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
+import com.magnabyte.cfdi.portal.model.ticket.ListaTickets;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
+import com.magnabyte.cfdi.portal.model.utils.StringUtils;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
@@ -157,7 +160,7 @@ public class SucursalController {
 		return json.toString();
 	}
 	
-	//FIXME Validar si se quita
+	//FIXME Revisar logica
 	@RequestMapping(value="/cierre", method = RequestMethod.POST)
 	public String cierre(@RequestParam String fechaCierre, @ModelAttribute Usuario usuario,
 			@ModelAttribute Establecimiento establecimiento, ModelMap model) {		
@@ -169,20 +172,22 @@ public class SucursalController {
 		
 		long closeDate = FechasUtils.parseStringToDate(fechaCierre,
 				FechasUtils.formatddMMyyyyHyphen).getTime();
-		
+		//FIXME Logica temporal
+		ListaTickets listaTickets = new ListaTickets();
+		listaTickets.setFechaCierre(fechaCierre);
 		try {
-			
 			if(nowHere.getHourOfDay() > 12) {
-				if(today.isEqual(closeDate)) {
+				//FIXME revisar hora cierre
+//				if(today.isEqual(closeDate)) {
 					autCierreService.autorizar(usuario);
-					cfdiService.recuperaTicketsRest(establecimiento, fechaCierre);
-	//				cfdiService.closeOfDay(EstablecimientoFactory
-	//						.newInstanceClave(StringUtils.formatTicketClaveSucursal(establecimiento.getClave())), null);
-				} else if(today.isBefore(closeDate)) {
-					model.put("error", true);
-					model.put("messageError", "Ya se ha realizado el cierre del día.");
-					return "menu/menu";
-				}
+//					cfdiService.recuperaTicketsRest(establecimiento, fechaCierre);
+					cfdiService.closeOfDay(EstablecimientoFactory
+							.newInstanceClave(StringUtils.formatTicketClaveSucursal(establecimiento.getClave())), listaTickets);
+//				} else if(today.isBefore(closeDate)) {
+//					model.put("error", true);
+//					model.put("messageError", "Ya se ha realizado el cierre del día.");
+//					return "menu/menu";
+//				}
 			} else {
 				model.put("error", true);
 				model.put("messageError", "El cierre solo es permitido a partir de las 20:00 hrs.");

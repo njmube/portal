@@ -286,6 +286,7 @@ public class TicketServiceImpl implements TicketService {
 		return false;
 	}
 	
+	//FIXME revisar pork no se usa
 	@Override
 	public void closeOfDay(Establecimiento establecimiento, String fechaCierre, List<Ticket> ventas, List<Ticket> devoluciones) {
 		String urlTicketFiles = establecimiento.getRutaRepositorio().getRutaRepositorio() 

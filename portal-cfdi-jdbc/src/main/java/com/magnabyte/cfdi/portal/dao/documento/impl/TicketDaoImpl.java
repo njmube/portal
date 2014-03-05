@@ -94,7 +94,13 @@ public class TicketDaoImpl extends GenericJdbcDao
 	
 	@Override
 	public List<String> readAllByDate(String fecha) {
-		return getJdbcTemplate().queryForList(TicketSql.READ_FACTURADOS_DIA, String.class, fecha);
+		logger.debug(fecha);
+//		select distinct dbo.TRIM(nombre_archivo) as nombre_archivo from t_ticket where convert(varchar(10), fecha_ticket, 120) = '2013-12-07'
+//				and (id_status_ticket = 1 or id_status_ticket = 2)
+		return getJdbcTemplate().queryForList(TicketSql.READ_FACTURADOS_DIA, 
+				String.class, 
+				new java.sql.Date(FechasUtils.parseStringToDate(fecha, FechasUtils.formatyyyyMMddHyphen).getTime()), 
+				TipoEstadoTicket.FACTURADO.getId());
 	}
 	
 	@Override

@@ -68,7 +68,8 @@ public class TicketSql extends GenericSql {
 		
 		clearAndReuseStringBuilder(qryBuilder);
 		
-		qryBuilder.append("select dbo.TRIM(nombre_archivo) as nombre_archivo from t_ticket where convert(varchar(10), fecha_ticket, 120) = ?");
+		qryBuilder.append("select dbo.TRIM(nombre_archivo) as nombre_archivo from t_ticket where convert(varchar(10), fecha_ticket, 120) = ?").append(EOL);
+		qryBuilder.append("and id_status_ticket = ?");
 		
 		READ_FACTURADOS_DIA = qryBuilder.toString();
 		

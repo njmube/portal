@@ -302,6 +302,8 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 				concepto.setNoIdentificacion(partida.getArticulo().getId());
 				concepto.setDescripcion(partida.getArticulo().getDescripcion());
 				concepto.setImporte(partida.getPrecioTotal().divide(IVA_DIVISION, 4, BigDecimal.ROUND_HALF_UP));
+				logger.debug(partida.getArticulo().getId());
+				logger.debug(concepto.getCantidad().toString());
 				concepto.setValorUnitario(concepto.getImporte().divide(concepto.getCantidad(), 4, BigDecimal.ROUND_HALF_UP));
 				if (partida.getArticulo().getUnidad() != null) {
 					concepto.setUnidad(partida.getArticulo().getUnidad());

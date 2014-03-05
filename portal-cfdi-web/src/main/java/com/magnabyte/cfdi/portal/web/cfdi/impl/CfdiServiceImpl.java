@@ -32,6 +32,7 @@ import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.ListaTickets;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
+import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.certificado.CertificadoService;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
@@ -257,22 +258,22 @@ public class CfdiServiceImpl implements CfdiService {
 		int hora = calendar.get(Calendar.HOUR_OF_DAY);
 
 		if (hora > horaCierre) {
-			// FIXME quitar fecha dura
-			// String fechaCierre = "07-12-2013";
 			List<Documento> documentosAProcesar = new ArrayList<Documento>();
 
 			establecimiento = establecimientoService
 					.readByClave(establecimiento);
 
-//			ticketService.closeOfDay(establecimiento, FechasUtils
-//					.specificStringFormatDate(fechaCierre,
-//							FechasUtils.formatddMMyyyyHyphen,
-//							FechasUtils.formatyyyyMMdd), ventas, devoluciones);
-
+			//FIXME logica inicial
+			ticketService.closeOfDay(establecimiento, FechasUtils
+					.specificStringFormatDate(tickets.getFechaCierre(),
+							FechasUtils.formatddMMyyyyHyphen,
+							FechasUtils.formatyyyyMMdd), ventas, devoluciones);
+			//
 			// FIXME Logica para web service
-			 ventas = tickets.getVentas();
-			 devoluciones = tickets.getDevoluciones();
-
+//			 ventas = tickets.getVentas();
+			//FIXME Filtrar ventas de facturados
+//			 devoluciones = tickets.getDevoluciones();
+//
 			logger.debug("devoluciones {}", devoluciones.size());
 
 			logger.debug("Antes " + ventas.size());
