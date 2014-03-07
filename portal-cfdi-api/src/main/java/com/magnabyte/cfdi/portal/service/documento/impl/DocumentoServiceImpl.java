@@ -615,6 +615,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	public void saveAcuseCfdiXmlFile(Documento documento) {
 		documentoDao.saveAcuseCfdiXmlFile(documento);
 	}
+	
 	public boolean isArticuloSinPrecio(String claveArticulo) {
 		List<String> articulosSinPrecio = ticketService.readArticulosSinPrecio();
 		if (articulosSinPrecio != null) {
@@ -626,7 +627,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	//FIXME Terminar
 	@Transactional(readOnly = true)
 	@Override
-	public void findBySerieFolioImporte(Documento documento) {
+	public void findBySerieFolioImporte(Documento documento, Establecimiento establecimiento) {
+		
 		documento = documentoDao.findBySerie(documento);
 		if (!documento.getTipoDocumento().equals(TipoDocumento.FACTURA)) {
 			throw new PortalException("Solo es posible modificar documentos de tipo factura.");
@@ -654,6 +656,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			logger.error("Ocurrió un error al clonar el documento.");
 			throw new PortalException("Ocurrió un error al clonar el documento.");
 		}
+		documento.setEstablecimiento(establecimiento);
 		procesarDocumentoNuevo(documento);
 		procesarDocumentoOrigen(documento.getDocumentoOrigen());
 	}

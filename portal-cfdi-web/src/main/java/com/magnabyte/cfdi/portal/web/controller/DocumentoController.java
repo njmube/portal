@@ -291,8 +291,7 @@ public class DocumentoController {
 	public String validaSerieFolio(@ModelAttribute Documento documento, @ModelAttribute Establecimiento establecimiento, ModelMap model) {
 		logger.debug("validaSerieFolio");
 		try {
-			documentoService.findBySerieFolioImporte(documento);
-			documento.setEstablecimiento(establecimiento);
+			documentoService.findBySerieFolioImporte(documento, establecimiento);
 			return "redirect:/modificarFactura";
 		} catch (PortalException ex) {
 			model.put("error", true);
