@@ -107,7 +107,7 @@ public class EstablecimientoController {
 				establecimientoService.save(establecimiento);
 			}
 		} else {
-			model = muestraError(model, establecimiento);
+			muestraError(model, establecimiento);
 			if (establecimiento.getId() != null){
 				return "admin/establecimientoForm";
 			} else {

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,9 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 
 	public static final Logger logger = Logger
 			.getLogger(DomicilioClienteServiceImpl.class);
+	
+	@Autowired
+	private MessageSource messageSource;
 
 	@Autowired
 	private DomicilioClienteDao domicilioClienteDao;
@@ -45,12 +49,12 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 			if(cliente.getId() != null) {
 				domiciliosBD = domicilioClienteDao.readByCliente(cliente);
 			} else {
-				logger.error("El id de cliente no puede ser nulo.");
-				throw new PortalException("El id de cliente no puede ser nulo.");
+				logger.error(messageSource.getMessage("cliente.id.nulo", null, null));
+				throw new PortalException(messageSource.getMessage("cliente.id.nulo", null, null));
 			}
 		} else {
-			logger.error("El cliente no puede ser nulo.");
-			throw new PortalException("El cliente no puede ser nulo.");
+			logger.error(messageSource.getMessage("cliente.nulo", null, null));
+			throw new PortalException(messageSource.getMessage("cliente.nulo", null, null));
 		}
 		return domiciliosBD;
 	}
@@ -64,8 +68,8 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 				domicilioClienteDao.save(domicilio);
 			}
 		} else {
-			logger.error("La lista de domicilios no puede ser vacia.");
-			throw new PortalException("La lista de domicilios no puede ser vacia.");
+			logger.error(messageSource.getMessage("domicilio.lista.vacia", null, null));
+			throw new PortalException(messageSource.getMessage("domicilio.lista.vacia", null, null));
 		}
 		
 	}
@@ -89,8 +93,8 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 			}
 			
 		} else {
-			logger.error("La lista de domicilios no puede ser vacia.");
-			throw new PortalException("La lista de domicilios no puede ser vacia.");
+			logger.error(messageSource.getMessage("domicilio.lista.vacia", null, null));
+			throw new PortalException(messageSource.getMessage("domicilio.lista.vacia", null, null));
 		}
 	}
 	
@@ -100,8 +104,8 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 		if(estado != null) {
 			domicilioClienteDao.saveEstado(estado);
 		} else {
-			logger.error("El estado no puede ser nulo.");
-			throw new PortalException("El estado no puede ser nulo.");
+			logger.error(messageSource.getMessage("domicilio.estado.nulo", null, null));
+			throw new PortalException(messageSource.getMessage("domicilio.estado.nulo", null, null));
 		}
 	}
 	
@@ -111,8 +115,8 @@ public class DomicilioClienteServiceImpl implements DomicilioClienteService {
 		if(pais != null) {
 			domicilioClienteDao.savePaisSinEstado(domicilio, pais);
 		} else {
-			logger.error("El país no puede ser nulo.");
-			throw new PortalException("El país no puede ser nulo.");
+			logger.error(messageSource.getMessage("domicilio.pais.nulo", null, null));
+			throw new PortalException(messageSource.getMessage("domicilio.pais.nulo", null, null));
 		}
 	}
 

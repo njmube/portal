@@ -56,6 +56,8 @@ public interface TicketService {
 
 	Ticket findByDocumento(Documento documento);
 
-	void updateEstadoRefacturado(DocumentoSucursal documento);	
+	void updateEstadoRefacturado(DocumentoSucursal documento);
+
+	void validarFechaFacturacion(Ticket ticket);	
 
 }

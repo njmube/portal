@@ -6,6 +6,8 @@ import java.sql.SQLException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
@@ -32,6 +34,9 @@ public class DocumentoDetalleDaoImpl extends GenericJdbcDao
 	
 	private static final Logger logger = 
 			LoggerFactory.getLogger(DocumentoDetalleDaoImpl.class);
+	
+	@Autowired
+	private MessageSource messageSource;
 
 	public void save(final Documento documento) {
 		String qry = DocumentoDetalleSql.INSERT_DETALLE_DOC;
@@ -60,10 +65,8 @@ public class DocumentoDetalleDaoImpl extends GenericJdbcDao
 			});
 			
 		} catch (DataAccessException ex) {
-			logger.debug("No se pudo registrar el DocumentoDetalle "
-					+ "en la base de datos.",ex);
-			throw new PortalException("No se pudo registrar el DocumentoDetalle "
-					+ "en la base de datos.",ex);
+			logger.debug(messageSource.getMessage("documento.detalle.error.save", new Object[] {ex}, null));
+			throw new PortalException(messageSource.getMessage("documento.detalle.error.save", new Object[] {ex}, null));
 		}
 	}
 	

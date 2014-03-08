@@ -5,6 +5,8 @@ import java.sql.SQLException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -15,6 +17,7 @@ import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
 import com.magnabyte.cfdi.portal.dao.establecimiento.RutaEstablecimientoDao;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.RutaRepositorioSql;
 import com.magnabyte.cfdi.portal.model.establecimiento.RutaRepositorio;
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
 /**
  * 
@@ -30,6 +33,9 @@ public class RutaEstablecimientoDaoImpl extends GenericJdbcDao implements
 	public static final Logger logger = LoggerFactory
 			.getLogger(RutaEstablecimientoDaoImpl.class);
 
+	@Autowired
+	private MessageSource messageSource;
+	
 	@Override
 	public void save(RutaRepositorio rutaRepositorio) {
 		try {
@@ -40,9 +46,8 @@ public class RutaEstablecimientoDaoImpl extends GenericJdbcDao implements
 			rutaRepositorio.setId(simpleInsert.executeAndReturnKey(
 					getParameters(rutaRepositorio)).intValue());
 		} catch (DataAccessException ex) {
-			logger.debug(
-					"No se pudo registrar la ruta del Establecimiento en la base de datos.",
-					ex);
+			logger.debug(messageSource.getMessage("ruta.establecimiento.error.save", new Object[] {ex}, null));
+			throw new PortalException(messageSource.getMessage("ruta.establecimiento.error.save", new Object[] {ex}, null));
 		}
 	}
 	

@@ -28,6 +28,7 @@ import org.jdom.output.XMLOutputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.oxm.Marshaller;
@@ -71,6 +72,9 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	@Autowired
 	private CfdiConfiguration cfdiConfiguration;
 	
+	@Autowired
+	private MessageSource messageSource;
+	
 	private ResourceLoader resourceLoader;
 	
 	@Override
@@ -108,11 +112,11 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 				comprobante = convierteByteArrayAComprobante(baos.toByteArray());
 			}
 		} catch (IOException e) {
-			logger.error("Error al convertir el archivo SAP a CFDI: ", e);
-			throw new PortalException("Error al convertir el archivo SAP a CFDI: " + e.getMessage());
+			logger.error(messageSource.getMessage("documento.xml.error.sap", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("documento.xml.error.sap", new Object[] {e.getMessage()}, null));
 		} catch (JDOMException e) {
-			logger.error("Error al leer el documento SAP: ", e);
-			throw new PortalException("Error al leer el documento SAP: " + e.getMessage());
+			logger.error(messageSource.getMessage("documento.xml.error.lectura.sap", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("documento.xml.error.lectura.sap", new Object[] {e.getMessage()}, null));
 		}  
 		return comprobante;
 	}
@@ -159,8 +163,8 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 			validator.validate(new StreamSource(comprobanteStream));
 			return true;
 		} catch (Exception e) {
-			logger.error("Error al validar el Comprobante: ", e);
-			throw new PortalException("Error al validar el Comprobante: " + e.getMessage());
+			logger.error(messageSource.getMessage("documento.xml.comprobante.invalido", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("documento.xml.comprobante.invalido", new Object[] {e.getMessage()}, null));
 		}
 	}
 	
@@ -186,11 +190,13 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	        oos.flush();
 	        oos.close();
 		} catch (UnsupportedEncodingException e) {
-			logger.error("La codificacion no es soportada: ", e);
-			throw new PortalException("La codificacion no es soportada: " + e.getMessage());
+			logger.error(messageSource.getMessage("documento.error.codificacion", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("documento.error.codificacion", 
+					new Object[] {e.getMessage()}, null));
 		} catch (IOException e) {
-			logger.error("Error al convertir el Comprobante a Arreglo de Bytes: ", e);
-			throw new PortalException("Error al convertir el Comprobante a Arreglo de Bytes: " + e.getMessage());
+			logger.error(messageSource.getMessage("documento.xml.comprobante.error.conversion.byte", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("documento.xml.comprobante.error.conversion.byte", 
+					new Object[] {e.getMessage()}, null));
 		}
 		return baos.toByteArray();
 	}
@@ -200,8 +206,9 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 		try {
 			return (Comprobante) unmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(xmlCfdi)));
 		} catch (IOException e) {
-			logger.error("Error al convertir el Arreglo de Bytes a Comprobante: ", e);
-			throw new PortalException("Error al convertir el Arreglo de Bytes a Comprobante: " + e.getMessage());
+			logger.error(messageSource.getMessage("documento.xml.comprobante.error.conversion", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("documento.xml.comprobante.error.conversion", 
+					new Object[] {e.getMessage()}, null));
 		}
 	}
 	
@@ -211,15 +218,20 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 		String noCertificadoSat = null;
 		try {
 			Document documentoCFDI = (Document) builder.build(new ByteArrayInputStream(xmlCfdi));
-			Namespace nsCfdi = Namespace.getNamespace(customNamespacePrefixMapper.getCfdiPrefix(), customNamespacePrefixMapper.getCfdiUri());
-			Namespace nsTfd = Namespace.getNamespace(customNamespacePrefixMapper.getTfdPrefix(), customNamespacePrefixMapper.getTfdUri());
-			noCertificadoSat = documentoCFDI.getRootElement().getChild("Complemento", nsCfdi).getChild("TimbreFiscalDigital", nsTfd).getAttributeValue("noCertificadoSAT");
+			Namespace nsCfdi = Namespace.getNamespace(customNamespacePrefixMapper.getCfdiPrefix(), 
+					customNamespacePrefixMapper.getCfdiUri());
+			Namespace nsTfd = Namespace.getNamespace(customNamespacePrefixMapper.getTfdPrefix(), 
+					customNamespacePrefixMapper.getTfdUri());
+			noCertificadoSat = documentoCFDI.getRootElement().getChild("Complemento", nsCfdi)
+					.getChild("TimbreFiscalDigital", nsTfd).getAttributeValue("noCertificadoSAT");
 		} catch (JDOMException e) {
-			logger.error("Error al obtener el numero de certificado del SAT: ", e);
-			throw new PortalException("Error al obtener el numero de certificado del SAT: " + e.getMessage());
+			logger.error(messageSource.getMessage("documento.xml.error.numcertificado.sat", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("documento.xml.error.numcertificado.sat", 
+					new Object[] {e.getMessage()}, null));
 		} catch (IOException e) {
-			logger.error("Error al obtener el numero de certificado del SAT: ", e);
-			throw new PortalException("Error al obtener el numero de certificado del SAT: " + e.getMessage());
+			logger.error(messageSource.getMessage("documento.xml.error.numcertificado.sat", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("documento.xml.error.numcertificado.sat", 
+					new Object[] {e.getMessage()}, null));
 		}
 		
 		return noCertificadoSat;

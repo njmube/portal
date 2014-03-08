@@ -3,11 +3,12 @@ package com.magnabyte.cfdi.portal.dao.documento.impl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -45,6 +46,9 @@ public class TicketDaoImpl extends GenericJdbcDao
 	private static final Logger logger = 
 			LoggerFactory.getLogger(TicketDaoImpl.class);
 	
+	@Autowired
+	private MessageSource messageSource;
+	
 	@Override
 	public void save(DocumentoSucursal documento) {
 		try {
@@ -53,8 +57,8 @@ public class TicketDaoImpl extends GenericJdbcDao
 			simpleInsert.setGeneratedKeyName(TicketSql.ID_TICKET);
 			documento.getTicket().setId(simpleInsert.executeAndReturnKey(getParameters(documento)).intValue());
 		} catch (DataAccessException ex) {			
-			logger.debug("No se pudo registrar el Ticket en la base de datos.", ex);
-			throw new PortalException("No se pudo registrar el Ticket en la base de datos.", ex);
+			logger.debug(messageSource.getMessage("ticket.error.save", new Object[] {ex}, null));
+			throw new PortalException(messageSource.getMessage("ticket.error.save", new Object[] {ex}, null));
 		}
 	}
 	

@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -39,6 +41,9 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 	private static final Logger logger = LoggerFactory
 			.getLogger(EstablecimientoDaoImpl.class);
 
+	@Autowired
+	private MessageSource messageSource;
+	
 	@Override
 	public Establecimiento findByClave(Establecimiento establecimiento) {
 		logger.debug(EstablecimientoSql.FIND_BY_CLAVE);
@@ -129,8 +134,8 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 			simpleInsert.setGeneratedKeyName(EstablecimientoSql.ID_ESTABLECIMIENTO);
 			establecimiento.setId(simpleInsert.executeAndReturnKey(getParameters(establecimiento)).intValue());
 		} catch (DataAccessException ex) {			
-			logger.debug("No se pudo registrar el Establecimiento en la base de datos.", ex);
-			throw new PortalException("No se pudo registrar el Establecimiento en la base de datos.", ex);
+			logger.debug(messageSource.getMessage("establecimiento.error.save", new Object[] {ex}, null));
+			throw new PortalException(messageSource.getMessage("establecimiento.error.save", new Object[] {ex}, null));
 		}
 	}
 	
@@ -143,7 +148,7 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 	
 	@Override
 	public Establecimiento findbyName(Establecimiento establecimiento) {
-		logger.debug("findByName...------ "+ EstablecimientoSql.FIND_BY_NAME);
+		logger.debug(EstablecimientoSql.FIND_BY_NAME);
 		String qry = EstablecimientoSql.FIND_BY_NAME;
 		Establecimiento object = null;
 		try {

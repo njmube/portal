@@ -21,7 +21,6 @@ import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoPortal;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
-import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.utils.StringUtils;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
@@ -134,11 +133,7 @@ public class PortalController {
 	
 	@RequestMapping("/confirmarDatosFacturacion")
 	public String confirmarDatosFacturacion(@ModelAttribute Documento documento, ModelMap model) {
-		if(documentoXmlService.isValidComprobanteXml(documento.getComprobante())) {
-			return "portal/facturaValidate";
-		} else {
-			logger.error("Error al validar el Comprobante.");
-			throw new PortalException("Error al validar el Comprobante.");
-		}
+		documentoXmlService.isValidComprobanteXml(documento.getComprobante());
+		return "portal/facturaValidate";
 	}
 }

@@ -3,6 +3,7 @@ package com.magnabyte.cfdi.portal.service.documento.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +28,10 @@ public class DocumentoDetalleServiceImpl  implements DocumentoDetalleService {
 			LoggerFactory.getLogger(DocumentoDetalleServiceImpl.class);
 	
 	@Autowired
-	DocumentoDetalleDao documentoDetalleDao;
+	private DocumentoDetalleDao documentoDetalleDao;
+	
+	@Autowired
+	private MessageSource messageSource;
 	
 	@Transactional
 	@Override
@@ -36,8 +40,8 @@ public class DocumentoDetalleServiceImpl  implements DocumentoDetalleService {
 				.getConcepto().isEmpty()) {
 			documentoDetalleDao.save(documento);
 		} else {
-			logger.error("La lista de Conceptos no puede ser nula.");
-			throw new PortalException("La lista de Conceptos no puede ser nula.");
+			logger.error(messageSource.getMessage("documento.detalle.conceptos.nulos", null, null));
+			throw new PortalException(messageSource.getMessage("documento.detalle.conceptos.nulos", null, null));
 		}
 	}
 	

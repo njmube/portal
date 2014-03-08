@@ -5,6 +5,8 @@ import java.sql.SQLException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -22,6 +24,9 @@ public class CertificadoDaoImpl extends GenericJdbcDao implements
 	private static final Logger logger = LoggerFactory
 			.getLogger(CertificadoDaoImpl.class);
 
+	@Autowired
+	private MessageSource messageSource;
+	
 	@Override
 	public CertificadoDigital readVigente(String fechaComprobante) {
 		try {
@@ -44,8 +49,8 @@ public class CertificadoDaoImpl extends GenericJdbcDao implements
 				}
 			}, fechaComprobante);
 		} catch (EmptyResultDataAccessException ex) {
-			logger.error("No hay ningun certificado vigente para realiza la factura.");
-			throw new PortalException("No hay ningun certificado vigente para realiza la factura.");
+			logger.error(messageSource.getMessage("certificado.vigencia.invalida", null, null));
+			throw new PortalException(messageSource.getMessage("certificado.vigencia.invalida", null, null));
 		}
 	}
 }

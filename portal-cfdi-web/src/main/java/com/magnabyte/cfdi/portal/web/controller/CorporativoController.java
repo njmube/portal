@@ -79,12 +79,8 @@ public class CorporativoController {
 	
 	@RequestMapping("/facturaCorp/confirmarDatosFacturacion")
 	public String confirmarDatosFacturacion(@ModelAttribute Documento documento, ModelMap model) {
-		if(documentoXmlService.isValidComprobanteXml(documento.getComprobante())) {
-			return "corporativo/facturaValidate";
-		} else {
-			logger.error("Error al validar el Comprobante.");
-			throw new PortalException("Error al validar el Comprobante.");
-		}
+		documentoXmlService.isValidComprobanteXml(documento.getComprobante());
+		return "corporativo/facturaValidate";
 	}
 	
 }

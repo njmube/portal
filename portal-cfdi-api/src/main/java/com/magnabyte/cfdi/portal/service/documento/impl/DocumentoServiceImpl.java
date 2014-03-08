@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -114,6 +115,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Autowired
 	private ClienteService clienteService;
 
+	@Autowired
+	private ServletContext context;
+	
+	@Autowired
+	private MessageSource messageSource;
+	
 	private ResourceLoader resourceLoader;
 	
 	@Value("${email.subject}")
@@ -130,9 +137,6 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Value("${email.plantilla.plaintexterror}")
 	private String namePlainTextError;
-	
-	@Autowired
-	private ServletContext context;
 	
 	@Transactional
 	@Override
@@ -190,14 +194,13 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 						Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolioDocumento(documento);
 						documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
 						documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO));
-						StringBuilder builder = new StringBuilder();
-						builder.append("El ticket ya fue facturado con anterioridad, puede consultar la ");
-						builder.append(documento.getTipoDocumento().getNombre());
-						builder.append(" ").append(documento.getComprobante().getSerie());
-						builder.append("-").append(documento.getComprobante().getFolio());
-						builder.append(" por medio de su RFC.");
-						logger.debug(builder.toString());
-						throw new PortalException(builder.toString());
+						Object[] exArgs = { 
+								documento.getTipoDocumento().getNombre(), 
+								documento.getComprobante().getSerie(),
+								documento.getComprobante().getFolio()
+								};
+						logger.debug(messageSource.getMessage("documento.ticket.facturado", exArgs, null));
+						throw new PortalException(messageSource.getMessage("documento.ticket.facturado", exArgs, null));
 					default:
 						break;
 					}
@@ -209,13 +212,13 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			} else if (documento instanceof DocumentoCorporativo) {
 				Documento documentoDB = documentoDao.readDocumentoFolio(documento);
 				if (documentoDB != null) {
-					StringBuilder builder = new StringBuilder();
-					builder.append("La factura ").append(documento.getTipoDocumento().getNombre());
-					builder.append(" ").append(documento.getComprobante().getSerie());
-					builder.append("-").append(documento.getComprobante().getFolio());
-					builder.append(" ya fue procesada con anterioridad.");
-					logger.debug(builder.toString());
-					throw new PortalException(builder.toString());
+					Object[] exArgs = { 
+							documento.getTipoDocumento().getNombre(), 
+							documento.getComprobante().getSerie(),
+							documento.getComprobante().getFolio()
+							};
+					logger.debug(messageSource.getMessage("documento.corporativo.facturado", exArgs, null));
+					throw new PortalException(messageSource.getMessage("documento.corporativo.facturado", exArgs, null));
 				} else {
 					saveDocumentAndDetail(documento);
 					documentoDao.insertDocumentoFolio(documento);
@@ -228,8 +231,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 				}
 			}
 		} else {
-			logger.debug("El Documento no puede ser nulo.");
-			throw new PortalException("El Documento no puede ser nulo.");
+			logger.debug(messageSource.getMessage("documento.nulo", null, null));
+			throw new PortalException(messageSource.getMessage("documento.nulo", null, null));
 		}		
 		
 	}
@@ -283,7 +286,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			if (!isTimbrePendiente(documento)) {
 				documentoDao.insertDocumentoPendiente(documento, estadoDocumento);
 			} else {
-				logger.debug("El documento ya encuentra en la lista de pendientes por timbrar.");
+				logger.info("El documento ya encuentra en la lista de pendientes por timbrar.");
 			}
 			break;
 		default:
@@ -349,8 +352,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			return IOUtils.toByteArray(file);
 		
 		} catch (Exception e) {
-			logger.error("Error al convertir el documento a bytes");
-			throw new PortalException("Error al convertir el documento a bytes");
+			logger.error(messageSource.getMessage("documento.conversion.error", null, null));
+			throw new PortalException(messageSource.getMessage("documento.conversion.error", null, null));
 		}
 	}
 	
@@ -404,8 +407,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			bytesReport = JasperExportManager.exportReportToPdf(reporteCompleto);
 			return bytesReport;
 		} catch (JRException e) {
-			logger.error("Ocurrió un error al crear el PDF: {}", e);
-			throw new PortalException("Ocurrió un error al crear el PDF: " + e.getMessage());
+			logger.error(messageSource.getMessage("documento.error.pdf", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("documento.error.pdf", new Object[] {e.getMessage()}, null));
 		}
 	}
 
@@ -631,17 +634,17 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		
 		documento = documentoDao.findBySerie(documento);
 		if (!documento.getTipoDocumento().equals(TipoDocumento.FACTURA)) {
-			throw new PortalException("Solo es posible modificar documentos de tipo factura.");
+			throw new PortalException(messageSource.getMessage("documento.error.tipo.refacturacion", null, null));
 		}
 		
 		if (documento.getEstablecimiento().getTipoEstablecimiento().getRol().equalsIgnoreCase("ROLE_CORP")) {
-			throw new PortalException("Solo es posible modificar facturas expedidas en Sucursal.");
+			throw new PortalException(messageSource.getMessage("documento.error.sucursal.refacturacion", null, null));
 		}
 		documento = documentoDao.findBySerieFolioImporte(documento);
 		switch (documento.getTipoEstadoDocumento()) {
 		case REPROCESADO:
-			logger.error("El documento ya fue refacturado con anterioridad.");
-			throw new PortalException("El documento ya fue refacturado con anterioridad.");				
+			logger.error(messageSource.getMessage("documento.error.refacturado", null, null));
+			throw new PortalException(messageSource.getMessage("documento.error.refacturado", null, null));				
 		default:
 			break;
 		}		
@@ -653,8 +656,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		try {
 			documento.setDocumentoOrigen((Documento) documento.clone());
 		} catch (CloneNotSupportedException e) {
-			logger.error("Ocurrió un error al clonar el documento.");
-			throw new PortalException("Ocurrió un error al clonar el documento.");
+			logger.error(messageSource.getMessage("documento.error.origen", null, null));
+			throw new PortalException(messageSource.getMessage("documento.error.origen", null, null));
 		}
 		documento.setEstablecimiento(establecimiento);
 		procesarDocumentoNuevo(documento);

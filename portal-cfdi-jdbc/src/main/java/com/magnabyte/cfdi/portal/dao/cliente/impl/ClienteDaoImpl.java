@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -32,6 +34,9 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClienteDaoImpl.class);
 	
+	@Autowired
+	private MessageSource messageSource;
+	
 	@Override
 	public List<Cliente> getAll() {
 		return getJdbcTemplate().query(ClienteSql.GET_ALL, CLIENTE_MAPPER);
@@ -45,8 +50,8 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 			simpleInsert.setGeneratedKeyName(ClienteSql.ID_CLIENTE);
 			cliente.setId(simpleInsert.executeAndReturnKey(getParameters(cliente)).intValue());
 		} catch (DataAccessException ex) {			
-			logger.debug("No se pudo registrar el Cliente en la base de datos.", ex);
-			throw new PortalException("No se pudo registrar el Cliente en la base de datos.", ex);
+			logger.debug(messageSource.getMessage("cliente.error.save", new Object[] {ex}, null));
+			throw new PortalException(messageSource.getMessage("cliente.error.save", new Object[] {ex}, null));
 		}
 	}
 
@@ -68,7 +73,7 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 			return getJdbcTemplate().queryForObject(ClienteSql.READ_BY_RFC,
 					CLIENTE_MAPPER, cliente.getRfc());
 		} catch (EmptyResultDataAccessException ex) {
-			logger.info("El cliente no existe.");
+			logger.info(messageSource.getMessage("cliente.inexistente", null, null));
 			return null;
 		}
 	}
@@ -79,7 +84,7 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 			return getJdbcTemplate().queryForObject(ClienteSql.READ_BY_NAME_RFC,
 					CLIENTE_MAPPER, cliente.getRfc(), cliente.getNombre());
 		} catch (EmptyResultDataAccessException ex) {
-			logger.info("El cliente no existe, se insertara.");
+			logger.info(messageSource.getMessage("cliente.inexistente", null, null));
 			return null;
 		}
 	}
@@ -132,7 +137,7 @@ public class ClienteDaoImpl extends GenericJdbcDao implements ClienteDao {
 		try {
 			return getJdbcTemplate().queryForObject(qry, CLIENTE_MAPPER, cliente.getNombre());
 		} catch (EmptyResultDataAccessException ex) {
-			logger.info("El cliente no existe.");
+			logger.info(messageSource.getMessage("cliente.inexistente", null, null));
 			return null;
 		}
 	}

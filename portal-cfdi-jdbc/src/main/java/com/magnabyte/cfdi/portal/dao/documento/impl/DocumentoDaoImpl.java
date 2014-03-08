@@ -14,6 +14,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -56,6 +58,9 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	private static final Logger logger = 
 			LoggerFactory.getLogger(DocumentoDaoImpl.class);
 	
+	@Autowired
+	private MessageSource messageSource;
+	
 	@Override
 	public void save(Documento documento) {
 		try {
@@ -64,8 +69,8 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			simpleInsert.setGeneratedKeyName(DocumentoSql.ID_DOCUMENTO);
 			documento.setId(simpleInsert.executeAndReturnKey(getParameters(documento)).intValue());
 		} catch (DataAccessException ex) {			
-			logger.debug("No se pudo registrar el Documento en la base de datos.", ex);
-			throw new PortalException("No se pudo registrar el Documento en la base de datos.", ex);
+			logger.debug(messageSource.getMessage("documento.error.save", new Object[] {ex}, null));
+			throw new PortalException(messageSource.getMessage("documento.error.save", new Object[] {ex}, null));
 		}
 	}
 	
@@ -82,8 +87,8 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 					documento.getId());
 			logger.debug("archivos afectados {}", rowsAffected);
 		} catch (DataAccessException e) {
-			logger.debug("No se pudo actualizar el Documento en la base de datos.", e);
-			throw new PortalException("No se pudo actualizar el Documento en la base de datos.", e);
+			logger.debug(messageSource.getMessage("documento.error.update", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("documento.error.update", new Object[] {e}, null));
 		}
 	}
 
@@ -95,11 +100,11 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 					documento.getId());
 			logger.debug("archivos afectados {}", rowsAffected);
 		} catch (DataAccessException e) {
-			logger.debug("No se pudo actualizar el Documento en la base de datos.", e);
-			throw new PortalException("No se pudo actualizar el Documento en la base de datos.", e);
+			logger.debug(messageSource.getMessage("documento.error.update", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("documento.error.update", new Object[] {e}, null));
 		} catch (UnsupportedEncodingException e) {
-			logger.debug("No se pudo actualizar el Documento en la base de datos.", e);
-			throw new PortalException("No se pudo actualizar el Documento en la base de datos.", e);
+			logger.debug(messageSource.getMessage("documento.error.update", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("documento.error.update", new Object[] {e}, null));
 		}
 	}
 	
@@ -125,8 +130,8 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		try {
 			params.addValue(DocumentoSql.XML_FILE, new String(documento.getXmlCfdi(), PortalUtils.encodingUTF16));
 		} catch (UnsupportedEncodingException e) {
-			logger.debug("No se pudo registrar el Documento en la base de datos, ocurrió un error al guardar el xml.", e);
-			throw new PortalException("No se pudo registrar el Documento en la base de datos, ocurrió un error al guardar el xml.", e);
+			logger.debug(messageSource.getMessage("documento.error.save.xml", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("documento.error.save.xml", new Object[] {e}, null));
 		}
 		return params;
 	}
@@ -439,8 +444,8 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 						XMLGregorianCalendar fechaTimbradoXml = DatatypeFactory.newInstance().newXMLGregorianCalendar(fechaTimbrado);
 						timbreFiscalDigital.setFechaTimbrado(fechaTimbradoXml);
 					} catch (DatatypeConfigurationException e) {
-						logger.error("Ocurrió un error al asignar la fecha del Documento.", e);
-						throw new PortalException("Ocurrió un error al asignar la fecha del Documento.", e);
+						logger.error(messageSource.getMessage("documento.error.fecha.sql", new Object[] {e}, null));
+						throw new PortalException(messageSource.getMessage("documento.error.fecha.sql", new Object[] {e}, null));
 					}
 					documento.setTimbreFiscalDigital(timbreFiscalDigital);
 					documento.setCadenaOriginal(rs.getString(DocumentoSql.CADENA));
@@ -466,8 +471,8 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 					new String(documento.getXmlCfdiAcuse(), PortalUtils.encodingUTF16), 
 					documento.getId());
 		} catch (UnsupportedEncodingException e) {
-			logger.debug("No se pudo actualizar el Documento en la base de datos, ocurrió un error al guardar el acuse xml.", e);
-			throw new PortalException("No se pudo actualizar el Documento en la base de datos, ocurrió un error al guardar el acuse xml.", e);
+			logger.debug(messageSource.getMessage("documento.error.update.acusexml", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("documento.error.update.acusexml", new Object[] {e}, null));
 		}
 	}
 	
@@ -493,7 +498,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 				
 			}, documento.getComprobante().getSerie());
 		} catch (EmptyResultDataAccessException ex) {
-			throw new PortalException("No existe el documento para la serie proporcianada.");
+			throw new PortalException(messageSource.getMessage("documento.serie.inexistente", null, null));
 		}
 	}
 	
@@ -516,8 +521,8 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 						try {
 							documento.setXmlCfdi(xmlFile.getString().getBytes(PortalUtils.encodingUTF16));
 						} catch (UnsupportedEncodingException e) {
-							logger.debug("Ocurrió un error al leer el acuse xml.", e);
-							throw new PortalException("Ocurrió un error al leer el acuse xml.", e);
+							logger.debug(messageSource.getMessage("documento.error.lectura.acuse", new Object[] {e}, null));
+							throw new PortalException(messageSource.getMessage("documento.error.lectura.acuse", new Object[] {e}, null));
 						}
 					}
 					return documento;
@@ -525,7 +530,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 				
 			}, documento.getComprobante().getSerie(), documento.getComprobante().getFolio(), documento.getComprobante().getTotal());
 		} catch (EmptyResultDataAccessException ex) {
-			throw new PortalException("No existe el documento para la serie, folio e importe proporcionados, o aun esta siendo procesado por el SAT, intente de nuevo más tarde.");
+			throw new PortalException(messageSource.getMessage("documento.refacturacion.error", null, null));
 		}
 	}
 }

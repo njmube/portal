@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -98,6 +99,9 @@ public class DocumentoController {
 	
 	@Autowired
 	private TicketService ticketService;
+	
+	@Autowired
+	private MessageSource messageSource;
 	
 	@Value("${generic.rfc.extranjeros}")
 	private String genericRfcExtranjeros;
@@ -203,8 +207,8 @@ public class DocumentoController {
 			out.flush();
 			out.close();
 		} catch (IOException e) {
-			logger.debug("Ocurrió un error al descargar el XML.", e);
-			throw new PortalException("Ocurrió un error al descargar el XML.", e);
+			logger.debug(messageSource.getMessage("documento.descarga.error.xml", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("documento.descarga.error.xml", new Object[] {e}, null));
 		}
 	}
 	
@@ -224,8 +228,8 @@ public class DocumentoController {
 			out.flush();
 			out.close();
 		} catch (IOException e) {
-			logger.debug("Ocurrió un error al descargar el XML.", e);
-			throw new PortalException("Ocurrió un error al descargar el XML.", e);
+			logger.debug(messageSource.getMessage("documento.descarga.error.xml", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("documento.descarga.error.xml", new Object[] {e}, null));
 		}
 	}
 	

@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -113,6 +114,9 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 	
 	@Autowired
 	private OpcionDeCatalogoService opcionDeCatalogoService;
+	
+	@Autowired
+	private MessageSource messageSource;
 	
 	@Value("${cfdi.comprobante.tipo.cambio}")
 	private String tipoCambio;
@@ -190,7 +194,7 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 			comprobante.setCondicionesDePago(condicionesPago);
 			comprobante.setFormaDePago(formaPago);
 		} else {
-			throw new PortalException("El ticket no puedo ser nulo.");
+			throw new PortalException(messageSource.getMessage("ticket.nulo", null, null));
 		}
 		
 		return comprobante;
@@ -352,8 +356,8 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 					DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED); 
 			comprobante.setFecha(fechaComprobante);
 		} catch (DatatypeConfigurationException e) {
-			logger.error("Ocurrió un error al asignar la fecha del Documento.", e);
-			throw new PortalException("Ocurrió un error al asignar la fecha del Documento.", e);
+			logger.error(messageSource.getMessage("comprobante.error.fecha", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("comprobante.error.fecha", new Object[] {e.getMessage()}, null));
 		}
 	}
 	
@@ -368,8 +372,8 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 			comprobante.setSello(sello);
 			return true;
 		} else {
-			logger.error("El Sello Digital no es valido");
-			throw new PortalException("El Sello Digital no es valido");
+			logger.error(messageSource.getMessage("comprobante.sello.invalido", null, null));
+			throw new PortalException(messageSource.getMessage("comprobante.sello.invalido", null, null));
 		}
 	}
 	
@@ -391,20 +395,20 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 			
 			return signature.verify(Base64.decode(sello));
 		} catch (CertificateException e) {
-			logger.error("Ocurrió un error al obtener la fecha del ticket: ", e);
-			throw new PortalException("Ocurrió un error al obtener la fecha del ticket: ", e);
+			logger.error(messageSource.getMessage("comprobante.error.certificado", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("comprobante.error.certificado", new Object[] {e}, null));
 		} catch (IOException e) {
-			logger.error("Ocurrió un error al validar el Sello Digital, no se pudo cargar el certificado.", e);
-			throw new PortalException("Ocurrió un error al validar el Sello Digital, no se pudo cargar el certificado.", e);
+			logger.error(messageSource.getMessage("comprobante.error.carga.certificado", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("comprobante.error.carga.certificado", new Object[] {e}, null));
 		} catch (NoSuchAlgorithmException e) {
-			logger.error("Ocurrió un error al validar el Sello Digital.", e);
-			throw new PortalException("Ocurrió un error al validar el Sello Digital.", e);
+			logger.error(messageSource.getMessage("comprobante.error.validar.sello", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("comprobante.error.validar.sello", new Object[] {e}, null));
 		} catch (InvalidKeyException e) {
-			logger.error("Ocurrió un error al validar el Sello Digital, el certificado es invalido", e);
-			throw new PortalException("Ocurrió un error al validar el Sello Digital, el certificado es invalido", e);
+			logger.error(messageSource.getMessage("comprobante.error.certificado.invalido", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("comprobante.error.certificado.invalido", new Object[] {e}, null));
 		} catch (SignatureException e) {
-			logger.error("Ocurrió un error al validar el Sello Digital, el certificado es invalido", e);
-			throw new PortalException("Ocurrió un error al validar el Sello Digital, el certificado es invalido", e);
+			logger.error(messageSource.getMessage("comprobante.error.certificado.invalido", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("comprobante.error.certificado.invalido", new Object[] {e}, null));
 		}
 	}
 
@@ -425,11 +429,11 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 			logger.debug("regresando sello");
 			return new String(Base64.encode(firma));
 		} catch (IOException e) {
-			logger.error("Ocurrió un error al obtener el Sello Digital, no se pudo cargar la llave del certificado.", e);
-			throw new PortalException("Ocurrió un error al obtener el Sello Digital, no se pudo cargar la llave del certificado.", e);
+			logger.error(messageSource.getMessage("comprobante.error.carga.sello.llave", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("comprobante.error.carga.sello.llave", new Object[] {e}, null));
 		} catch (GeneralSecurityException e) {
-			logger.error("Ocurrió un error al obtener el Sello Digital.", e);
-			throw new PortalException("Ocurrió un error al obtener el Sello Digital.", e);
+			logger.error(messageSource.getMessage("comprobante.error.carga.sello", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("comprobante.error.carga.sello", new Object[] {e}, null));
 		}
 	}
 
@@ -448,10 +452,8 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 					try {
 						return new StreamSource(resourceLoader.getResource(href).getInputStream());
 					} catch (IOException e) {
-						logger.error("Ocurrió un error al obtener la Cadena Original, "
-								+ "no se pudo leer el xslt para generar la cadena original", e);
-						throw new PortalException("Ocurrió un error al obtener la Cadena Original, "
-								+ "no se pudo leer el xslt para generar la cadena original", e);
+						logger.error(messageSource.getMessage("comprobante.error.cadena.xslt", new Object[] {e}, null));
+						throw new PortalException(messageSource.getMessage("comprobante.error.cadena.xslt", new Object[] {e}, null));
 					}
 				}
 			});
@@ -460,16 +462,14 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 			logger.debug("regresando Cadena");
 			return writer.toString();
 		} catch (TransformerConfigurationException e) {
-			logger.error("Ocurrió un error al obtener la Cadena Original.", e);
-			throw new PortalException("Ocurrió un error al obtener la Cadena Original.", e);
+			logger.error(messageSource.getMessage("comprobante.error.cadena.original", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("comprobante.error.cadena.original", new Object[] {e}, null));
 		} catch (IOException e) {
-			logger.error("Ocurrió un error al obtener la Cadena Original, "
-					+ "no se pudo leer el xslt para generar la cadena original", e);
-			throw new PortalException("Ocurrió un error al obtener la Cadena Original, "
-					+ "no se pudo leer el xslt para generar la cadena original", e);
+			logger.error(messageSource.getMessage("comprobante.error.cadena.xslt", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("comprobante.error.cadena.xslt", new Object[] {e}, null));
 		} catch (TransformerException e) {
-			logger.error("Ocurrió un error al obtener la Cadena Original.", e);
-			throw new PortalException("Ocurrió un error al obtener la Cadena Original.", e);
+			logger.error(messageSource.getMessage("comprobante.error.cadena.original", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("comprobante.error.cadena.original", new Object[] {e}, null));
 		}
 	}
 	

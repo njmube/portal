@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -35,6 +37,9 @@ public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 	public static final Logger logger = 
 			LoggerFactory.getLogger(UsuarioDaoImpl.class);
 	
+	@Autowired
+	private MessageSource messageSource;
+	
 	@Override
 	public void save(Usuario usuario) {
 		try {
@@ -43,8 +48,8 @@ public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 			simpleInsert.setGeneratedKeyName(UsuarioSql.ID_USUARIO);
 			usuario.setId(simpleInsert.executeAndReturnKey(getParameters(usuario)).intValue());
 		} catch (DataAccessException ex) {			
-			logger.debug("No se pudo registrar el Usuario en la base de datos.", ex);
-			throw new PortalException("No se pudo registrar el Usuario en la base de datos.", ex);
+			logger.debug(messageSource.getMessage("usuario.error.save", new Object[] {ex}, null));
+			throw new PortalException(messageSource.getMessage("usuario.error.save", new Object[] {ex}, null));
 		}
 	}
 	
@@ -67,7 +72,7 @@ public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 		Usuario object = null;
 		try {
 			object = getJdbcTemplate().queryForObject(qry, 
-					UASUARIO_MAPPER, usuario.getEstablecimiento().getId(), usuario.getUsuario());
+					USUARIO_MAPPER, usuario.getEstablecimiento().getId(), usuario.getUsuario());
 		} catch (EmptyResultDataAccessException ex) {
 			return null;
 		}
@@ -78,12 +83,12 @@ public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 	@Override
 	public Usuario read(Usuario usuario) {
 		return getJdbcTemplate().queryForObject(UsuarioSql.READ, 
-				UASUARIO_MAPPER, usuario.getId());
+				USUARIO_MAPPER, usuario.getId());
 	}
 	
 	@Override
 	public List<Usuario> getAllUsuarios() {
-		return getJdbcTemplate().query(UsuarioSql.GET_ALL, UASUARIO_MAPPER);
+		return getJdbcTemplate().query(UsuarioSql.GET_ALL, USUARIO_MAPPER);
 	}
 	
 	@Override
@@ -99,7 +104,7 @@ public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 		});
 	}
 	
-	private static final RowMapper<Usuario> UASUARIO_MAPPER = new RowMapper<Usuario>() {
+	private static final RowMapper<Usuario> USUARIO_MAPPER = new RowMapper<Usuario>() {
 
 		@Override
 		public Usuario mapRow(ResultSet rs, int rowNum) throws SQLException {

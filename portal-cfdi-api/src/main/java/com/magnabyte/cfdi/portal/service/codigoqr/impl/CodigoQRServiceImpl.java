@@ -10,11 +10,14 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.util.Locale;
 
 import javax.imageio.ImageIO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import com.google.zxing.BarcodeFormat;
@@ -39,6 +42,9 @@ public class CodigoQRServiceImpl implements CodigoQRService {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(CodigoQRServiceImpl.class);
+	
+	@Autowired
+	private MessageSource messageSource;
 
 	public InputStream generaCodigoQR(Documento documento) {
 		logger.debug("Generando Codigo QR");
@@ -86,8 +92,8 @@ public class CodigoQRServiceImpl implements CodigoQRService {
 
 			stream = new ByteArrayInputStream(baos.toByteArray());
 		} catch (Exception e) {
-			logger.error("Error al crear el Codigo Qr");
-			throw new PortalException("Error al crear el Codigo Qr");
+			logger.error(messageSource.getMessage("codigo.qr.error", null, null));
+			throw new PortalException(messageSource.getMessage("codigo.qr.error", null, null));
 		}
 		return stream;
 	}
