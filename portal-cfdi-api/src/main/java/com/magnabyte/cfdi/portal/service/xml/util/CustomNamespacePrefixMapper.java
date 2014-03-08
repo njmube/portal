@@ -10,10 +10,13 @@ public class CustomNamespacePrefixMapper extends NamespacePrefixMapper {
 
 	@Value("${cfdi.uri}")
 	private String cfdiUri;
+	
 	@Value("${cfdi.prefix}")
 	private String cfdiPrefix;
+	
 	@Value("${cfdi.tfd.uri}")
 	private String tfdUri;
+	
 	@Value("${cfdi.tfd.prefix}")
 	private String tfdPrefix;
 

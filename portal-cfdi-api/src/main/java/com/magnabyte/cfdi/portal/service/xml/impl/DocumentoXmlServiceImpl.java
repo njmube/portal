@@ -91,9 +91,12 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 			
 			if (trasladosPrevio != null) {
 				Element traslados = (Element) trasladosPrevio.clone();
-				documentoCFD.getRootElement().getChild("Impuestos").addContent(traslados);
+				if (traslados.getChild("Traslado") != null)
+					documentoCFD.getRootElement().getChild("Impuestos").addContent(traslados);
 			}
 			
+			validarTraslados(documento);
+			agregarLeyendasFiscales(documento);
 			revisaNodos(documento);
 			if (documento != null) {
 				cambiaNameSpace(documento, Namespace.getNamespace(customNamespacePrefixMapper.getCfdiPrefix(), customNamespacePrefixMapper.getCfdiUri()));
@@ -121,6 +124,31 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 		return comprobante;
 	}
 
+	private void validarTraslados(Element document) {
+		if(document.getChild("Impuestos").getChild("Traslados") != null) {
+			if(document.getChild("Impuestos").getChild("Traslados").getChild("Traslado") == null) {
+				document.getChild("Impuestos").removeChild("Traslados");
+			}
+		}
+	}
+	
+	private void agregarLeyendasFiscales(Element document) {
+		if (document.getChild("Complemento") != null) {
+			String leyendaFiscValue = document.getChild("Complemento")
+					.getChild("AdditionalInformation").getChild("referenceIdentification")
+					.getAttributeValue("referencia"); 
+			Attribute textoLeyenda = new Attribute("textoLeyenda", leyendaFiscValue); 
+			if (document.getChild("Complemento").removeChild("AdditionalInformation")) {
+				Element leyendasFiscales = new Element("LeyendasFiscales");
+				leyendasFiscales.setAttribute("version", "1.0");
+				Element leyenda = new Element("Leyenda");
+				leyenda.setAttribute(textoLeyenda);
+				leyendasFiscales.addContent(leyenda);
+				document.getChild("Complemento").addContent(leyendasFiscales);
+			}
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	private void cambiaNameSpace(Element parentElement, Namespace namespace) {
 		parentElement.setNamespace(namespace);
