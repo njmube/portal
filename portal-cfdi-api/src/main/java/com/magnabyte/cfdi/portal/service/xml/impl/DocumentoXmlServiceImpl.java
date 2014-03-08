@@ -99,7 +99,13 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 			agregarLeyendasFiscales(documento);
 			revisaNodos(documento);
 			if (documento != null) {
-				cambiaNameSpace(documento, Namespace.getNamespace(customNamespacePrefixMapper.getCfdiPrefix(), customNamespacePrefixMapper.getCfdiUri()));
+				Namespace cfdiNS = Namespace.getNamespace(customNamespacePrefixMapper.getCfdiPrefix()
+						, customNamespacePrefixMapper.getCfdiUri());
+				cambiaNameSpace(documento, cfdiNS);
+				if (documento.getChild("Complemento", cfdiNS).getChild("LeyendasFiscales", cfdiNS) != null) {
+					Namespace leyFiscNS = Namespace.getNamespace(customNamespacePrefixMapper.getLeyfiscPrefix(), customNamespacePrefixMapper.getLeyfiscUri());
+					cambiaNameSpace(documento.getChild("Complemento", cfdiNS).getChild("LeyendasFiscales", cfdiNS), leyFiscNS);
+				}
 				documento.setAttribute("version", cfdiConfiguration.getVersionCfdi());
 				documento.setAttribute("tipoDeComprobante", documento.getAttributeValue("tipoDeComprobante").toLowerCase());
 				documento.setAttribute("sello", cfdiConfiguration.getSelloPrevio());
@@ -198,7 +204,8 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	
 	@Override
 	public InputStream convierteComprobanteAStream(Comprobante comprobante) {
-		return new ByteArrayInputStream(convierteComprobanteAByteArray(comprobante, PortalUtils.encodingUTF16));
+//		return new ByteArrayInputStream(convierteComprobanteAByteArray(comprobante, PortalUtils.encodingUTF16));
+		return new ByteArrayInputStream(convierteComprobanteAByteArray(comprobante, PortalUtils.encodingUTF8));
 	}
 	
 	@Override
@@ -215,6 +222,7 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 		try {
 			oos = new OutputStreamWriter(baos, encoding);
 			marshaller.marshal(comprobante, new StreamResult(oos));
+			marshaller.marshal(comprobante, new StreamResult(System.out));
 	        oos.flush();
 	        oos.close();
 		} catch (UnsupportedEncodingException e) {

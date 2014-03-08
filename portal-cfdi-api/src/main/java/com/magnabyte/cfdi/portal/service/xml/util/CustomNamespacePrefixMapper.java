@@ -19,6 +19,12 @@ public class CustomNamespacePrefixMapper extends NamespacePrefixMapper {
 	
 	@Value("${cfdi.tfd.prefix}")
 	private String tfdPrefix;
+	
+	@Value("${cfdi.leyfisc.uri}")
+	private String leyfiscUri;
+	
+	@Value("${cfdi.leyfisc.prefix}")
+	private String leyfiscPrefix;
 
 	@Override
 	public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
@@ -28,12 +34,15 @@ public class CustomNamespacePrefixMapper extends NamespacePrefixMapper {
 		if (tfdUri.equals(namespaceUri)) {
 			return tfdPrefix;
 		}
+		if (leyfiscPrefix.equals(namespaceUri)) {
+			return leyfiscPrefix;
+		}
 		return suggestion;
 	}
 
 	@Override
     public String[] getPreDeclaredNamespaceUris() {
-        return new String[] {cfdiUri,tfdUri};
+        return new String[] {cfdiUri, tfdUri, leyfiscPrefix};
     }
 
 	public String getCfdiUri() {
@@ -66,6 +75,22 @@ public class CustomNamespacePrefixMapper extends NamespacePrefixMapper {
 
 	public void setTfdPrefix(String tfdPrefix) {
 		this.tfdPrefix = tfdPrefix;
+	}
+	
+	public String getLeyfiscUri() {
+		return leyfiscUri;
+	}
+	
+	public void setLeyfiscUri(String leyfiscUri) {
+		this.leyfiscUri = leyfiscUri;
+	}
+	
+	public String getLeyfiscPrefix() {
+		return leyfiscPrefix;
+	}
+	
+	public void setLeyfiscPrefix(String leyfiscPrefix) {
+		this.leyfiscPrefix = leyfiscPrefix;
 	}
 
 }
