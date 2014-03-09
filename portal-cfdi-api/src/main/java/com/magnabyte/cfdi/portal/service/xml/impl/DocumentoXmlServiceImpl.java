@@ -204,6 +204,7 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	
 	@Override
 	public InputStream convierteComprobanteAStream(Comprobante comprobante) {
+		//FIXME quitar
 //		return new ByteArrayInputStream(convierteComprobanteAByteArray(comprobante, PortalUtils.encodingUTF16));
 		return new ByteArrayInputStream(convierteComprobanteAByteArray(comprobante, PortalUtils.encodingUTF8));
 	}
@@ -212,6 +213,8 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	public byte[] convierteComprobanteAByteArray(Comprobante comprobante, String encoding) {
 		Map<String, Object> marshallerProperties = new HashMap<String, Object>();
 		marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		//FIXME validar para que sirve
+		marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_FRAGMENT, true);
 		marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_SCHEMA_LOCATION, cfdiConfiguration.getSchemaLocation());
 		marshallerProperties.put("com.sun.xml.bind.namespacePrefixMapper", customNamespacePrefixMapper);
 		marshallerProperties.put("jaxb.encoding", encoding);
