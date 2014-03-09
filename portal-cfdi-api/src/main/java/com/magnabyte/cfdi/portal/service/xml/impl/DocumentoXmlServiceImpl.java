@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -192,7 +193,12 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 		try {
 			InputStream comprobanteStream = convierteComprobanteAStream(comprobante);
 			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			Schema schema = sf.newSchema(new StreamSource(resourceLoader.getResource("classpath:/cfdv32.xsd").getInputStream()));
+			//FIXME cambiar logica
+			Source schema1 = new StreamSource(resourceLoader.getResource("classpath:/cfdv32.xsd").getInputStream()); 
+			Source schema2 = new StreamSource(resourceLoader.getResource("classpath:/tfdv32.xsd").getInputStream());
+			Source schema3 = new StreamSource(resourceLoader.getResource("classpath:/leyendasFisc.xsd").getInputStream());
+			Source[] schemas = {schema1, schema2, schema3};
+			Schema schema = sf.newSchema(schemas);
 			Validator validator = schema.newValidator();
 			validator.validate(new StreamSource(comprobanteStream));
 			return true;
