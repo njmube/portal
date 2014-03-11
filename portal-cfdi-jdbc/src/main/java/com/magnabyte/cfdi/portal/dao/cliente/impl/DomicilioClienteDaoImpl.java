@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -21,6 +23,7 @@ import com.magnabyte.cfdi.portal.model.cliente.DomicilioCliente;
 import com.magnabyte.cfdi.portal.model.commons.Estado;
 import com.magnabyte.cfdi.portal.model.commons.Pais;
 import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusDomicilioCliente;
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
 /**
  * 
@@ -36,6 +39,9 @@ public class DomicilioClienteDaoImpl extends GenericJdbcDao implements
 	public static final Logger logger = Logger
 			.getLogger(DomicilioClienteDaoImpl.class);
 
+	@Autowired
+	private MessageSource messageSource;
+	
 	@Override
 	public void save(DomicilioCliente domicilio) {
 		try {
@@ -44,7 +50,8 @@ public class DomicilioClienteDaoImpl extends GenericJdbcDao implements
 			simpleInsert.setGeneratedKeyName(DomicilioSql.ID_DOMICILIO);
 			domicilio.setId(simpleInsert.executeAndReturnKey(getParameters(domicilio)).intValue());
 		} catch (DataAccessException ex) {
-			logger.debug("No se pudo registrar el DomicilioCliente en la base de datos.",ex);
+			logger.debug(messageSource.getMessage("domicilio.error.save", new Object[] {ex}, null));
+			throw new PortalException(messageSource.getMessage("domicilio.error.save", new Object[] {ex}, null));
 		}
 	}
 	
@@ -115,7 +122,8 @@ public class DomicilioClienteDaoImpl extends GenericJdbcDao implements
 			simpleInsert.setGeneratedKeyName(DomicilioSql.ID_ESTADO);
 			estado.setId(simpleInsert.executeAndReturnKey(getParametersEstado(estado)).intValue());
 		} catch (DataAccessException ex) {
-			logger.debug("No se pudo registrar el Estado en la base de datos.",ex);
+			logger.debug(messageSource.getMessage("domicilio.estado.error.save", new Object[] {ex}, null));
+			throw new PortalException(messageSource.getMessage("domicilio.estado.error.save", new Object[] {ex}, null));
 		}
 	}
 	
@@ -127,7 +135,8 @@ public class DomicilioClienteDaoImpl extends GenericJdbcDao implements
 			simpleInsert.setGeneratedKeyName(DomicilioSql.ID_ESTADO);
 			pais.setId(simpleInsert.executeAndReturnKey(getParamsPaisSinEstado(domicilio, pais)).intValue());
 		} catch (DataAccessException ex) {
-			logger.debug("No se pudo registrar el País sin Estado en la base de datos.",ex);
+			logger.debug(messageSource.getMessage("domicilio.pais.error.save", new Object[] {ex}, null));
+			throw new PortalException(messageSource.getMessage("domicilio.pais.error.save", new Object[] {ex}, null));
 		}
 	}
 	

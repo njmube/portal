@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,7 @@ import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
 import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.certificado.CertificadoService;
+import com.magnabyte.cfdi.portal.service.cfdi.v32.CfdiV32Service;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
@@ -68,6 +70,9 @@ public class CfdiServiceImpl implements CfdiService {
 
 	@Autowired
 	private ComprobanteService comprobanteService;
+	
+	@Autowired
+	private CfdiV32Service cfdiV32Service;
 
 	@Autowired
 	private TicketService ticketService;
@@ -86,6 +91,9 @@ public class CfdiServiceImpl implements CfdiService {
 
 	@Autowired
 	private EstablecimientoService establecimientoService;
+	
+	@Autowired
+	private MessageSource messageSource;
 
 	@Value("${hora.inicio}")
 	private int horaInicio;
@@ -135,16 +143,12 @@ public class CfdiServiceImpl implements CfdiService {
 		try {
 			generarDocumento(facturaDocumentoNuevo);
 		} catch (PortalException ex) {
-			logger.info(
-					"Ocurrio un error al generar la factura {}",
-					documento.getId());
+			logger.info(messageSource.getMessage("cfdi.error.factura.generar", new Object[] {documento.getId()}, null));
 		}
 		try {
 			generarDocumento(notaCreditoDocumentoOrigen);
 		} catch (PortalException ex) {
-			logger.info(
-					"Ocurrio un error al generar la nota de credito {}",
-					documento.getId());
+			logger.info(messageSource.getMessage("cfdi.error.ncr.generar", new Object[] {documento.getId()}, null));
 		}
 	}
 	
@@ -156,7 +160,7 @@ public class CfdiServiceImpl implements CfdiService {
 	@Override
 	public void sellarYTimbrarComprobante(Documento documento, int idServicio,
 			CertificadoDigital certificado) {
-		if (comprobanteService.sellarComprobante(documento.getComprobante(),
+		if (cfdiV32Service.sellarComprobante(documento.getComprobante(),
 				certificado)) {
 			if (documentoWebService.timbrarDocumento(documento, idServicio)) {
 				documentoService.updateDocumentoStatusAndXml(documento);
@@ -170,9 +174,7 @@ public class CfdiServiceImpl implements CfdiService {
 						try {
 							generarDocumentoNcr(documento, idServicio);
 						} catch (PortalException ex) {
-							logger.info(
-									"Ocurrio un error al generar la nota de credito {}",
-									documento.getId());
+							logger.info(messageSource.getMessage("cfdi.error.ncr.generar", new Object[] {documento.getId()}, null));
 						}
 					}
 				}
@@ -203,9 +205,7 @@ public class CfdiServiceImpl implements CfdiService {
 							documentoPendiente,
 							TipoEstadoDocumentoPendiente.TIMBRE_PENDIENTE);
 				} catch (PortalException ex) {
-					logger.info(
-							"Ocurrió un error al obtener el timbre pendiente del documento {}, se continua con el proceso.",
-							documentoPendiente.getId());
+					logger.info(messageSource.getMessage("cfdi.error.timbre.pendiente", new Object[] {documentoPendiente.getId()}, null));
 				}
 			}
 		}
@@ -233,7 +233,7 @@ public class CfdiServiceImpl implements CfdiService {
 		CertificadoDigital certificado = certificadoService
 				.readVigente(documento.getComprobante());
 		documentoService.guardarDocumento(documentoNcr);
-		if (comprobanteService.sellarComprobante(documentoNcr.getComprobante(),
+		if (cfdiV32Service.sellarComprobante(documentoNcr.getComprobante(),
 				certificado)) {
 			if (documentoWebService.timbrarDocumento(documentoNcr, idServicio)) {
 				documentoService.insertDocumentoCfdi(documentoNcr);
@@ -314,9 +314,8 @@ public class CfdiServiceImpl implements CfdiService {
 			 tickets.getFechaCierre());
 			 
 		} else {
-			logger.error("El cierre del dia actual es posible realizarlo hasta despues del cierre de la tienda");
-			throw new PortalException(
-					"El cierre del dia actual es posible realizarlo hasta despues del cierre de la tienda");
+			logger.error(messageSource.getMessage("cierre.error.hora", null, null));
+			throw new PortalException(messageSource.getMessage("cierre.error.hora", null, null));
 		}
 	}
 	

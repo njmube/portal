@@ -33,6 +33,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
@@ -65,6 +66,9 @@ public class SambaServiceImpl implements SambaService {
 	@Autowired
 	private CodigoQRService codigoQRService;
 	
+	@Autowired
+	private MessageSource messageSource;
+	
 	@Override
 	public NtlmPasswordAuthentication getAuthentication(Establecimiento establecimiento) {
 		NtlmPasswordAuthentication authentication = null;
@@ -94,17 +98,17 @@ public class SambaServiceImpl implements SambaService {
 				throw new PortalException("El archivo seleccionado no existe: " + file.getPath());
 			}
 		} catch (MalformedURLException e) {
-			logger.error("La URL del archivo no es valida: {}", e);
-			throw new PortalException("La URL del archivo no es válida: " + e.getMessage());
+			logger.error(messageSource.getMessage("samba.error.url", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("samba.error.url", new Object[] {e.getMessage()}, null));
 		} catch (SmbException e) {
-			logger.error("Ocurrió un error al intentar recuperar el archivo: {}", e);
-			throw new PortalException("Ocurrió un error al intentar recuperar el archivo: " + e.getMessage());
+			logger.error(messageSource.getMessage("samba.error.recuperar.archivo", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("samba.error.recuperar.archivo", new Object[] {e.getMessage()}, null));
 		} catch (UnknownHostException e) {
-			logger.error("La direccion IP es inválida: {}", e);
-			throw new PortalException("La direccion IP es inválida: " + e.getMessage());
+			logger.error(messageSource.getMessage("samba.ip.invalida", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("samba.ip.invalida", new Object[] {e.getMessage()}, null));
 		} catch (Exception e) {
-			logger.error("Ocurrió un error: {}", e);
-			throw new PortalException("Ocurrió un error: " + e.getMessage());
+			logger.error(messageSource.getMessage("samba.error.recuperar.archivo", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("samba.error.recuperar.archivo", new Object[] {e.getMessage()}, null));
 		}
 		
 	}
@@ -138,11 +142,11 @@ public class SambaServiceImpl implements SambaService {
 				throw new PortalException("El directorio no existe...");
 			}
 		} catch (MalformedURLException e) {
-			logger.error("La URL del archivo no es valida: {}", e);
-			throw new PortalException("La URL del archivo no es válida: " + e.getMessage());
+			logger.error(messageSource.getMessage("samba.error.url", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("samba.error.url", new Object[] {e.getMessage()}, null));
 		} catch (SmbException e) {
-			logger.error("Error al leer la carpeta compartida: {}", e);
-			throw new PortalException("Error al leer la carpeta compartida: " + e.getMessage());
+			logger.error(messageSource.getMessage("samba.error.lectura.carpeta", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("samba.error.lectura.carpeta", new Object[] {e.getMessage()}, null));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -172,11 +176,11 @@ public class SambaServiceImpl implements SambaService {
 				}
 			}
 		} catch (MalformedURLException e) {
-			logger.error("La URL del archivo a mover no es valida: ", e);
-			throw new PortalException("La URL del archivo a mover no es válida: " + e.getMessage());
+			logger.error(messageSource.getMessage("samba.error.url.destino", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("samba.error.url.destino", new Object[] {e.getMessage()}, null));
 		} catch (SmbException e) {
-			logger.error("Ocurrió un error al mover el archivo SAP procesado: ", e);
-			throw new PortalException("Ocurrió un error al mover el archivo SAP procesado: " + e.getMessage());
+			logger.error(messageSource.getMessage("samba.error.sap.destino", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("samba.error.sap.destino", new Object[] {e.getMessage()}, null));
 		}
 	}
 	
@@ -218,17 +222,17 @@ public class SambaServiceImpl implements SambaService {
 			smbFileOutputStream.close();
 			logger.debug("Se ha escrito el xml correctamente.");
 		} catch (MalformedURLException e) {
-			logger.error("Ocurrió un error, la URL del archivo es inválida: {}", e);
-			throw new PortalException("Ocurrió un error, la URL del archivo es inválida: " + e.getMessage());
+			logger.error(messageSource.getMessage("samba.error.url", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("samba.error.url", new Object[] {e.getMessage()}, null));
 		} catch (SmbException e) {
-			logger.error("Ocurrió un error al escribir el archivo: {}", e);
-			throw new PortalException("Ocurrió un error al escribir el archivo: " + e.getMessage());
+			logger.error(messageSource.getMessage("samba.error.escritura", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("samba.error.escritura", new Object[] {e.getMessage()}, null));
 		} catch (UnknownHostException e) {
-			logger.error("Ocurrió un error al escribir el archivo: {}", e);
-			throw new PortalException("Ocurrió un error al escribir el archivo: " + e.getMessage());
+			logger.error(messageSource.getMessage("samba.error.escritura", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("samba.error.escritura", new Object[] {e.getMessage()}, null));
 		} catch (IOException e) {
-			logger.error("Ocurrió un error al escribir el archivo: {}", e);
-			throw new PortalException("Ocurrió un error al escribir el archivo: " + e.getMessage());
+			logger.error(messageSource.getMessage("samba.error.escritura", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("samba.error.escritura", new Object[] {e.getMessage()}, null));
 		}
 	}
 	
@@ -276,14 +280,14 @@ public class SambaServiceImpl implements SambaService {
 			bos.flush();
 			bos.close();
 		} catch (JRException e) {
-			logger.error("Ocurrió un error al crear el PDF: {}", e);
-			throw new PortalException("Ocurrió un error al crear el PDF: " + e.getMessage());
+			logger.error(messageSource.getMessage("samba.error.pdf", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("samba.error.pdf", new Object[] {e.getMessage()}, null));
 		} catch (FileNotFoundException e) {
-			logger.error("Ocurrió un error al crear el PDF: {}", e);
-			throw new PortalException("Ocurrió un error al crear el PDF: " + e.getMessage());
+			logger.error(messageSource.getMessage("samba.error.pdf", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("samba.error.pdf", new Object[] {e.getMessage()}, null));
 		} catch (IOException e) {
-			logger.error("Ocurrió un error al crear el PDF: {}", e);
-			throw new PortalException("Ocurrió un error al crear el PDF: " + e.getMessage());
+			logger.error(messageSource.getMessage("samba.error.pdf", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("samba.error.pdf", new Object[] {e.getMessage()}, null));
 		}
 		
 	}

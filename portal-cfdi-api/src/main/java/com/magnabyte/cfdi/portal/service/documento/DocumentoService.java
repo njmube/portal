@@ -1,6 +1,7 @@
 package com.magnabyte.cfdi.portal.service.documento;
 
 import java.util.List;
+import java.util.Map;
 
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
@@ -65,5 +66,7 @@ public interface DocumentoService {
 	void updateDocumentoStatus(Documento documento);
 
 	void guardarDocumentoRefacturado(Documento documento);
+
+	Map<String, Object> populateReportParams(Documento documento);
 
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,6 +33,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Autowired
 	private EstablecimientoDao establecimientoDao;
 	
+	@Autowired
+	private MessageSource messageSource;
+	
 	@Transactional(readOnly = true)
 	@Override
 	public UserDetails loadUserByUsername(String username)
@@ -43,7 +47,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		logger.debug("Recuperando establecimiento" + establecimiento);
 		
 		if (establecimiento == null) {
-			throw new UsernameNotFoundException("Usuario no encontrado");
+			throw new UsernameNotFoundException(messageSource.getMessage("establecimiento.inexistente", null, null));
 		}
 		
 		return buildUserFromEstablecimiento(establecimiento);

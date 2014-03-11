@@ -1,6 +1,7 @@
 package com.magnabyte.cfdi.portal.service.establecimiento.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,9 @@ public class AutorizacionCierreServiceImpl implements AutorizacionCierreService 
 	@Autowired
 	private UsuarioService usuarioService;
 	
+	@Autowired
+	private MessageSource messageSource;
+	
 	@Transactional(readOnly = true)
 	@Override
 	public boolean autorizar(Usuario usuario) {
@@ -33,22 +37,21 @@ public class AutorizacionCierreServiceImpl implements AutorizacionCierreService 
 			if(usrBd.getEstatus().getId() != EstatusUsuario.INACTIVO.getId()) {
 				if(usuario.getUsuario().equals(usrBd.getUsuario()) && 
 						!usuario.getPassword().equals(usrBd.getPassword())) {
-					throw new PortalException("El password proporcionado es incorrecto.");
+					throw new PortalException(messageSource.getMessage("cierre.error.password", null, null));
 				} else if (!usuario.getUsuario().equals(usrBd.getUsuario()) && 
 						usuario.getPassword().equals(usrBd.getPassword())) {
-					throw new PortalException("El usuario proporcionado es incorrecto.");			
+					throw new PortalException(messageSource.getMessage("cierre.error.usuario", null, null));			
 				} else if (!usuario.getUsuario().equals(usrBd.getUsuario()) &&
 						!usuario.getPassword().equals(usrBd.getPassword())) {
-					throw new PortalException("El usuario y password proporcionado son incorrectos.");
+					throw new PortalException(messageSource.getMessage("cierre.error.usuario.password", null, null));
 				} else {
 					return true;
 					}
 				} else {
-				throw new PortalException("No se pudo autorizar el cierre,"
-						+ " el usuario esta inactivo.");
+				throw new PortalException(messageSource.getMessage("cierre.error.usuario.inactivo", null, null));
 			}
 		} else {
-			throw new PortalException("No existe el usuario en la sucursal");
+			throw new PortalException(messageSource.getMessage("cierre.error.usuario.inexistente", null, null));
 		}
 	}
 

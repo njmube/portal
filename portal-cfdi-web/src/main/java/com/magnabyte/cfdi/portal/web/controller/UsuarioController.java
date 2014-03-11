@@ -46,7 +46,7 @@ public class UsuarioController {
 	
 	@RequestMapping("/mostrarUsuario/{id}")
 	public String mostrarUsuario(@PathVariable int id, ModelMap model) {
-		logger.debug("-- id "+id);
+		logger.debug("-- id {}", id);
 		Usuario usu = new Usuario();
 		usu.setId(id);
 		Usuario usuario = usuarioService.read(usu);

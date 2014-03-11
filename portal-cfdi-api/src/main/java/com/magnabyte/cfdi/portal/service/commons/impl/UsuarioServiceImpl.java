@@ -3,6 +3,7 @@ package com.magnabyte.cfdi.portal.service.commons.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +24,10 @@ import com.magnabyte.cfdi.portal.service.commons.UsuarioService;
 public class UsuarioServiceImpl implements UsuarioService {
 
 	@Autowired
-	UsuarioDao usuarioDao;
+	private UsuarioDao usuarioDao;
+	
+	@Autowired
+	private MessageSource messageSource;
 	
 	@Transactional(readOnly = true)
 	@Override
@@ -50,11 +54,10 @@ public class UsuarioServiceImpl implements UsuarioService {
 			if (!exist(usuario)) {
 				usuarioDao.save(usuario);		
 			} else {
-				throw new PortalException("Ya existe un usuario con este "
-						+ "nombre en la sucursal.");
+				throw new PortalException(messageSource.getMessage("usuario.nombre.existente", null, null));
 			}
 		 } else {
-			throw new PortalException("El usuario no puede ser nulo");
+			throw new PortalException(messageSource.getMessage("usuario.nulo", null, null));
 		 }
 	}
 	
@@ -66,31 +69,31 @@ public class UsuarioServiceImpl implements UsuarioService {
 				if (!exist(usuario)) {
 					usuarioDao.update(usuario);		
 				} else {
-					throw new PortalException("Ya existe el usuario en la sucursal.");
+					throw new PortalException(messageSource.getMessage("usuario.sucursal.existente", null, null));
 				}
 			} else {
-				throw new PortalException("El id de usuario no puede ser nulo");
+				throw new PortalException(messageSource.getMessage("usuario.id.nulo", null, null));
 			}
 		} else {
-			throw new PortalException("El usuario no puede ser nulo");
+			throw new PortalException(messageSource.getMessage("usuario.nulo", null, null));
 		}
 	}
 	
 	private boolean exist(Usuario usuario) {
-		Usuario usu = usuarioDao.getUsuarioByEstablecimiento(usuario);
+		Usuario usuarioDB = usuarioDao.getUsuarioByEstablecimiento(usuario);
 		
 		if (usuario.getId() != null) {
-			if (usu != null) {
-				if (usuario.getId() == usu.getId()){
-					if (!usuario.getPassword().equals(usu.getPassword()) || 
-							usuario.getEstatus().getId() != usu.getEstatus().getId()) {
+			if (usuarioDB != null) {
+				if (usuario.getId() == usuarioDB.getId()){
+					if (!usuario.getPassword().equals(usuarioDB.getPassword()) || 
+							usuario.getEstatus().getId() != usuarioDB.getEstatus().getId()) {
 						return false;
 					}
 				}
 				return true;
 			}
 		} else {
-			if (usu != null) {
+			if (usuarioDB != null) {
 				return true;
 			}
 		}

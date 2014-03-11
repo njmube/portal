@@ -1,20 +1,6 @@
 package com.magnabyte.cfdi.portal.service.documento.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
 import java.math.BigDecimal;
-import java.security.GeneralSecurityException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.Signature;
-import java.security.SignatureException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -24,28 +10,15 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.URIResolver;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.ssl.PKCS8Key;
-import org.bouncycastle.util.encoders.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ResourceLoaderAware;
-import org.springframework.core.io.ResourceLoader;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Conceptos;
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante.Conceptos.Concepto;
@@ -68,15 +41,14 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.InformacionPago
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.Partida;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket.Transaccion.PartidaDescuento;
 import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
-import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
+import com.magnabyte.cfdi.portal.service.cfdi.v32.CfdiV32Service;
+import com.magnabyte.cfdi.portal.service.cfdi.v32.impl.CfdiV32ServiceImpl;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.emisor.EmisorService;
-import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
-import com.magnabyte.cfdi.portal.service.xml.util.CfdiConfiguration;
 
 /**
  * 
@@ -87,17 +59,12 @@ import com.magnabyte.cfdi.portal.service.xml.util.CfdiConfiguration;
  * Clase que representa el servicio de comprobante
  */
 @Service("comprobanteService")
-public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoaderAware {
+public class ComprobanteServiceImpl implements ComprobanteService {
 
 	private static final Logger logger = LoggerFactory.getLogger(ComprobanteServiceImpl.class);
 	
-	private ResourceLoader resourceLoader;
-	
 	@Autowired
-	private DocumentoXmlService documentoXmlService;
-	
-	@Autowired
-	private CfdiConfiguration cfdiConfiguration;
+	private CfdiV32Service cfdiV32Service;
 
 	@Autowired
 	private EmisorService emisorService;
@@ -113,6 +80,9 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 	
 	@Autowired
 	private OpcionDeCatalogoService opcionDeCatalogoService;
+	
+	@Autowired
+	private MessageSource messageSource;
 	
 	@Value("${cfdi.comprobante.tipo.cambio}")
 	private String tipoCambio;
@@ -190,7 +160,7 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 			comprobante.setCondicionesDePago(condicionesPago);
 			comprobante.setFormaDePago(formaPago);
 		} else {
-			throw new PortalException("El ticket no puedo ser nulo.");
+			throw new PortalException(messageSource.getMessage("ticket.nulo", null, null));
 		}
 		
 		return comprobante;
@@ -230,10 +200,10 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 	}
 	
 	private void inicializaComprobante(Comprobante comprobante) {
-		comprobante.setVersion(cfdiConfiguration.getVersionCfdi());
-		comprobante.setSello(cfdiConfiguration.getSelloPrevio());
-		comprobante.setNoCertificado(cfdiConfiguration.getNumeroCertificadoPrevio());
-		comprobante.setCertificado(cfdiConfiguration.getCertificadoPrevio());
+		comprobante.setVersion(CfdiV32ServiceImpl.VERSION_CFDI);
+		comprobante.setSello(CfdiV32ServiceImpl.SELLO_PREVIO);
+		comprobante.setNoCertificado(CfdiV32ServiceImpl.NUMERO_CERTIFICADO_PREVIO);
+		comprobante.setCertificado(CfdiV32ServiceImpl.CERTIFICADO_PREVIO);
 	}
 	
 	private void formatTicketDate(Ticket ticket) {
@@ -352,124 +322,8 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 					DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED); 
 			comprobante.setFecha(fechaComprobante);
 		} catch (DatatypeConfigurationException e) {
-			logger.error("Ocurrió un error al asignar la fecha del Documento.", e);
-			throw new PortalException("Ocurrió un error al asignar la fecha del Documento.", e);
-		}
-	}
-	
-	@Override
-	public boolean sellarComprobante(Comprobante comprobante, CertificadoDigital certificado) {
-		logger.debug("en sellar Documento");
-		String cadena = obtenerCadena(comprobante);
-		String sello = obtenerSelloDigital(cadena, certificado);
-		logger.debug("SELLO: {}", sello);
-		logger.debug("CADENA: {}", cadena);
-		if(validSelloDigital(sello, cadena, comprobante, certificado)) {
-			comprobante.setSello(sello);
-			return true;
-		} else {
-			logger.error("El Sello Digital no es valido");
-			throw new PortalException("El Sello Digital no es valido");
-		}
-	}
-	
-	private boolean validSelloDigital(String sello, String cadena, Comprobante comprobante, CertificadoDigital certificado) {
-		CertificateFactory certFactory;
-		try {
-			logger.debug("validando sello...");
-			String certificateFileLocation = certificado.getRutaCertificado() + File.separator + certificado.getNombreCertificado();
-			certFactory = CertificateFactory.getInstance("X.509");
-			X509Certificate certificate = (X509Certificate) certFactory.generateCertificate(resourceLoader.getResource(certificateFileLocation).getInputStream());
-			certificate.checkValidity();
-			PublicKey publicKey = certificate.getPublicKey();
-			comprobante.setNoCertificado(new String(certificate.getSerialNumber().toByteArray()));
-			comprobante.setCertificado(new String(Base64.encode(certificate.getEncoded())));
-			
-			Signature signature = Signature.getInstance("SHA1withRSA");
-			signature.initVerify(publicKey);
-			signature.update(cadena.getBytes(PortalUtils.encodingUTF8));
-			
-			return signature.verify(Base64.decode(sello));
-		} catch (CertificateException e) {
-			logger.error("Ocurrió un error al obtener la fecha del ticket: ", e);
-			throw new PortalException("Ocurrió un error al obtener la fecha del ticket: ", e);
-		} catch (IOException e) {
-			logger.error("Ocurrió un error al validar el Sello Digital, no se pudo cargar el certificado.", e);
-			throw new PortalException("Ocurrió un error al validar el Sello Digital, no se pudo cargar el certificado.", e);
-		} catch (NoSuchAlgorithmException e) {
-			logger.error("Ocurrió un error al validar el Sello Digital.", e);
-			throw new PortalException("Ocurrió un error al validar el Sello Digital.", e);
-		} catch (InvalidKeyException e) {
-			logger.error("Ocurrió un error al validar el Sello Digital, el certificado es invalido", e);
-			throw new PortalException("Ocurrió un error al validar el Sello Digital, el certificado es invalido", e);
-		} catch (SignatureException e) {
-			logger.error("Ocurrió un error al validar el Sello Digital, el certificado es invalido", e);
-			throw new PortalException("Ocurrió un error al validar el Sello Digital, el certificado es invalido", e);
-		}
-	}
-
-	private String obtenerSelloDigital(String cadena, CertificadoDigital certificado) {
-		try {
-			logger.debug("en obtener sello digital");
-			String keyFileLocation = certificado.getRutaKey() + File.separator + certificado.getNombreKey();
-			InputStream keyStream = resourceLoader.getResource(keyFileLocation).getInputStream();
-			String password = new String(Base64.decode(certificado.getPassword())).trim();
-			logger.debug("password {}", password);
-			PKCS8Key key = new PKCS8Key(keyStream, password.toCharArray());
-			PrivateKey privateKey = key.getPrivateKey();
-			
-			Signature signature = Signature.getInstance("SHA1withRSA");
-			signature.initSign(privateKey);
-			signature.update(cadena.getBytes(PortalUtils.encodingUTF8));
-			byte[] firma = signature.sign();
-			logger.debug("regresando sello");
-			return new String(Base64.encode(firma));
-		} catch (IOException e) {
-			logger.error("Ocurrió un error al obtener el Sello Digital, no se pudo cargar la llave del certificado.", e);
-			throw new PortalException("Ocurrió un error al obtener el Sello Digital, no se pudo cargar la llave del certificado.", e);
-		} catch (GeneralSecurityException e) {
-			logger.error("Ocurrió un error al obtener el Sello Digital.", e);
-			throw new PortalException("Ocurrió un error al obtener el Sello Digital.", e);
-		}
-	}
-
-	private String obtenerCadena(Comprobante comprobante) {
-		try {
-			logger.debug("en obtener Cadena");
-			Source xmlSource = new StreamSource(documentoXmlService.convierteComprobanteAStream(comprobante));
-			Source xsltSource = new StreamSource(resourceLoader.getResource("WEB-INF/xslt/cadenaoriginal_3_2.xslt").getInputStream());
-			StringWriter writer = new StringWriter();
-			Result outputTarget = new StreamResult(writer);
-			TransformerFactory tFactory = TransformerFactory.newInstance();
-			tFactory.setURIResolver(new URIResolver() {
-				
-				@Override
-				public Source resolve(String href, String base) throws TransformerException {
-					try {
-						return new StreamSource(resourceLoader.getResource(href).getInputStream());
-					} catch (IOException e) {
-						logger.error("Ocurrió un error al obtener la Cadena Original, "
-								+ "no se pudo leer el xslt para generar la cadena original", e);
-						throw new PortalException("Ocurrió un error al obtener la Cadena Original, "
-								+ "no se pudo leer el xslt para generar la cadena original", e);
-					}
-				}
-			});
-			Transformer transformer = tFactory.newTransformer(xsltSource);
-			transformer.transform(xmlSource, outputTarget);
-			logger.debug("regresando Cadena");
-			return writer.toString();
-		} catch (TransformerConfigurationException e) {
-			logger.error("Ocurrió un error al obtener la Cadena Original.", e);
-			throw new PortalException("Ocurrió un error al obtener la Cadena Original.", e);
-		} catch (IOException e) {
-			logger.error("Ocurrió un error al obtener la Cadena Original, "
-					+ "no se pudo leer el xslt para generar la cadena original", e);
-			throw new PortalException("Ocurrió un error al obtener la Cadena Original, "
-					+ "no se pudo leer el xslt para generar la cadena original", e);
-		} catch (TransformerException e) {
-			logger.error("Ocurrió un error al obtener la Cadena Original.", e);
-			throw new PortalException("Ocurrió un error al obtener la Cadena Original.", e);
+			logger.error(messageSource.getMessage("comprobante.error.fecha", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("comprobante.error.fecha", new Object[] {e.getMessage()}, null));
 		}
 	}
 	
@@ -567,11 +421,6 @@ public class ComprobanteServiceImpl implements ComprobanteService, ResourceLoade
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public void setResourceLoader(ResourceLoader resourceLoader) {
-		this.resourceLoader = resourceLoader;
 	}
 
 }

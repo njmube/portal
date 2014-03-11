@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import com.certus.facturehoy.ws2.cfdi.WsEmisionTimbrado;
@@ -51,6 +52,9 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	@Autowired
 	private EstablecimientoService establecimientoService;
 	
+	@Autowired
+	private MessageSource messageSource;
+	
 	@Value("${ws.user}")
 	private String userWs;
 	
@@ -65,14 +69,14 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		
 		try {
 			if(idServicio < 1) {
-				throw new Exception("Ocurrío un error al realizar la conexión, el sistema de facturación no se encuentra disponible por el momento.");
+				throw new Exception(messageSource.getMessage("ws.error.conexion", null, null));
 			}
 			response = wsEmisionTimbrado.emitirTimbrar(userWs, passwordWs, idServicio, 
 				documentoXmlService.convierteComprobanteAByteArray(documento.getComprobante(), PortalUtils.encodingUTF8));
 		} catch(Exception ex) {
 			documentoService.insertDocumentoPendiente(documento, TipoEstadoDocumentoPendiente.TIMBRE_PENDIENTE);
-			logger.debug("Ocurrío un error al realizar la conexión", ex);
-			throw new PortalException("Ocurrío un error al realizar la conexión", ex);
+			logger.debug(messageSource.getMessage("ws.error.conexion", null, null));
+			throw new PortalException(messageSource.getMessage("ws.error.conexion", null, null));
 		}
 		
 		if (!response.isIsError()) {
@@ -91,7 +95,7 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			return true;
 		} else {
 			documentoService.insertDocumentoPendiente(documento, TipoEstadoDocumentoPendiente.TIMBRE_PENDIENTE);
-			logger.debug("El Web Service devolvió un error: {}", response.getMessage());
+			logger.info("El Web Service devolvió un error: {}", response.getMessage());
 			throw new PortalException(response.getMessage());
 		}
 	}
@@ -119,8 +123,8 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		try {
 			response = wsEmisionTimbrado.recuperarAcuse(userWs, passwordWs, documento.getTimbreFiscalDigital().getUUID());
 		} catch(Exception ex) {
-			logger.debug("Ocurrío un error al realizar la conexión", ex);
-			throw new PortalException("Ocurrío un error al realizar la conexión", ex);
+			logger.debug(messageSource.getMessage("ws.error.conexion", null, null));
+			throw new PortalException(messageSource.getMessage("ws.error.conexion", null, null));
 		}
 	
 		if (response.getAcuse() != null) {
@@ -137,8 +141,8 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 			documentoService.saveAcuseCfdiXmlFile(documento);
 			documentoService.deleteDocumentoPendiente(documento, TipoEstadoDocumentoPendiente.ACUSE_PENDIENTE);
 		} else {
-			logger.debug("El webservice no devolvio el acuse");
-			logger.debug(response.getMessage());
+			logger.info("El webservice no devolvio el acuse");
+			logger.info(response.getMessage());
 		}
 	}
 	
@@ -149,17 +153,15 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 		try {
 			serviciosContratados = wsServicios.obtenerServicios(userWs, passwordWs);
 		} catch(Exception ex) {
-			logger.error("Ocurrío un error al realizar la conexión, el sistema de facturación no se encuentra disponible por el momento", ex);
+			logger.error(messageSource.getMessage("ws.error.conexion", null, null));
 			return idServicio;
 		}
 		if (serviciosContratados.getArray().size() > 0) {
 			for (WsServicioBO servicio : serviciosContratados.getArray()) {
-				logger.debug("Id proceso {}", servicio.getIdProcess());
-				logger.debug("Nombre servicio {}", servicio.getNombreServicio());
 				idServicio = servicio.getIdProcess();
 			}
 		} else {
-			logger.debug("No hay servicios contratados: {}", serviciosContratados.getMensaje());
+			logger.info("No hay servicios contratados: {}", serviciosContratados.getMensaje());
 			return idServicio;
 		}
 		//FIXME Comentar para produccion

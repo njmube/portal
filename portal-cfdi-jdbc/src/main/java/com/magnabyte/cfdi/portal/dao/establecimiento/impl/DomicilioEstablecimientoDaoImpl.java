@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -18,6 +20,7 @@ import com.magnabyte.cfdi.portal.dao.establecimiento.sql.DomicilioEstablecimient
 import com.magnabyte.cfdi.portal.model.commons.Estado;
 import com.magnabyte.cfdi.portal.model.commons.Pais;
 import com.magnabyte.cfdi.portal.model.establecimiento.DomicilioEstablecimiento;
+import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
 /**
  * 
@@ -33,6 +36,9 @@ public class DomicilioEstablecimientoDaoImpl extends GenericJdbcDao implements
 	public static final Logger logger = Logger
 			.getLogger(DomicilioEstablecimientoDaoImpl.class);
 
+	@Autowired
+	private MessageSource messageSource;
+	
 	@Override
 	public void save(DomicilioEstablecimiento domicilioEstablecimiento) {
 		try {
@@ -44,9 +50,8 @@ public class DomicilioEstablecimientoDaoImpl extends GenericJdbcDao implements
 			domicilioEstablecimiento.setId(simpleInsert.executeAndReturnKey(
 					getParameters(domicilioEstablecimiento)).intValue());
 		} catch (DataAccessException ex) {
-			logger.debug(
-					"No se pudo registrar el DomicilioEstablecimiento en la base de datos.",
-					ex);
+			logger.debug(messageSource.getMessage("domicilio.establecimiento.error.save", new Object[] {ex}, null));
+			throw new PortalException(messageSource.getMessage("domicilio.establecimiento.error.save", new Object[] {ex}, null));
 		}
 	}
 

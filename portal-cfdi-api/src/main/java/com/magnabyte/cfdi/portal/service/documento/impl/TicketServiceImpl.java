@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -19,8 +20,10 @@ import jcifs.smb.SmbFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.MessageSource;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.XmlMappingException;
 import org.springframework.stereotype.Service;
@@ -83,10 +86,14 @@ public class TicketServiceImpl implements TicketService {
 	private EstablecimientoService establecimientoService;
 	
 	@Autowired
+	@Qualifier("jaxb2Marshaller")
 	private Unmarshaller unmarshaller;
 	
 	@Autowired
 	private SambaService sambaService;
+	
+	@Autowired
+	private MessageSource messageSource;
 	
 	@Value("${ticket.clave.venta}")
 	private String claveVentaTicket;
@@ -131,8 +138,8 @@ public class TicketServiceImpl implements TicketService {
 //			}
 			ticketDao.save(documento);
 		} else {
-			logger.debug("El Ticket no puede ser nulo.");
-			throw new PortalException("El Ticket no puede ser nulo.");
+			logger.debug(messageSource.getMessage("ticket.nulo", null, null));
+			throw new PortalException(messageSource.getMessage("ticket.nulo", null, null));
 		}
 	}
 	
@@ -192,8 +199,8 @@ public class TicketServiceImpl implements TicketService {
 			documento.getTicket().setTipoEstadoTicket(TipoEstadoTicket.FACTURADO);
 			ticketDao.updateEstado(documento);
 		} else {
-			logger.debug("El Ticket no puede ser nulo.");
-			throw new PortalException("El Ticket no puede ser nulo.");
+			logger.debug(messageSource.getMessage("ticket.nulo", null, null));
+			throw new PortalException(messageSource.getMessage("ticket.nulo", null, null));
 		}
 	}
 	
@@ -210,8 +217,8 @@ public class TicketServiceImpl implements TicketService {
 			documento.getTicket().setTipoEstadoTicket(TipoEstadoTicket.NCR_GENERADA);
 			ticketDao.updateEstado(documento);
 		} else {
-			logger.debug("El Ticket no puede ser nulo.");
-			throw new PortalException("El Ticket no puede ser nulo.");
+			logger.debug(messageSource.getMessage("ticket.nulo", null, null));
+			throw new PortalException(messageSource.getMessage("ticket.nulo", null, null));
 		}
 	}
 	
@@ -272,17 +279,17 @@ public class TicketServiceImpl implements TicketService {
 				logger.debug("el archivo no existe");
 			}
 		} catch (MalformedURLException e) {
-			logger.error("La URL del archivo no es valida: ", e);
-			throw new PortalException("La URL del archivo no es válida: "+ e.getMessage());
+			logger.error(messageSource.getMessage("ticket.ruta.invalida", new Object [] {e}, null));
+			throw new PortalException(messageSource.getMessage("ticket.ruta.invalida", new Object[] {e.getMessage()}, null));
 		} catch (SmbException e) {
-			logger.error("Ocurrió un error al intentar recuperar el ticket: ", e);
-			throw new PortalException("Ocurrió un error al intentar recuperar el ticket: " + e.getMessage());
+			logger.error(messageSource.getMessage("ticket.recuperar.error", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("ticket.recuperar.error", new Object[] {e.getMessage()}, null));
 		} catch (XmlMappingException e) {
-			logger.error("Ocurrió un error al leer ticket: ", e);
-			throw new PortalException("Ocurrió un error al leer el ticket: " + e.getMessage());
+			logger.error(messageSource.getMessage("ticket.lectura.error", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("ticket.lectura.error", new Object[] {e.getMessage()}, null));
 		} catch (IOException e) {
-			logger.error("Ocurrió un error al intentar recuperar el ticket: ", e);
-			throw new PortalException("Ocurrió un error al intentar recuperar el ticket: " + e.getMessage());
+			logger.error(messageSource.getMessage("ticket.recuperar.error", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("ticket.recuperar.error", new Object[] {e.getMessage()}, null));
 		}
 		return false;
 	}
@@ -332,8 +339,8 @@ public class TicketServiceImpl implements TicketService {
 				}
 			}
 		} catch(IOException ex) {
-			logger.error("Ocurrió un error al generar la factura de ventas mostrador");
-			throw new PortalException("Ocurrió un error al generar la factura de ventas mostrador");
+			logger.error(messageSource.getMessage("ticket.factura.ventas.mostrador", null, null));
+			throw new PortalException(messageSource.getMessage("ticket.factura.ventas.mostrador", null, null));
 		}
 	}
 	
@@ -366,17 +373,19 @@ public class TicketServiceImpl implements TicketService {
 		return ticketDao.readArticulosSinPrecio();
 	}
 
-//	@Override
-//	public String formatTicketClaveSucursal(Ticket ticket) {
-//		NumberFormat nf = new DecimalFormat("000");
-//		Integer numeroSucursal = 0;
-//		try {
-//			numeroSucursal = Integer.valueOf(ticket.getTransaccion().getTransaccionHeader().getIdSucursal());
-//		} catch (NumberFormatException nfe) {
-//			logger.error("El numero de sucursal es invalido:", nfe);
-//		}
-//		return nf.format(numeroSucursal);
-//	}
+	@Override
+	public void validarFechaFacturacion(Ticket ticket) {
+		Calendar fechaLimite = Calendar.getInstance();
+		fechaLimite.add(Calendar.MONTH, -1);
+		Calendar fechaTicket = Calendar.getInstance();
+		fechaTicket.setTime(FechasUtils
+				.parseStringToDate(ticket.getTransaccion().getTransaccionHeader().getFecha(), 
+						FechasUtils.formatddMMyyyyHyphen));
+
+		if(fechaTicket.before(fechaLimite)) {
+			throw new PortalException(messageSource.getMessage("ticket.fecha.limite", null, null));
+		}
+	}
 	
 	@Override
 	public Ticket crearTicketVentasMostrador(List<Ticket> ventas,

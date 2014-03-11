@@ -6,6 +6,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -32,13 +33,13 @@ import com.magnabyte.cfdi.portal.model.ticket.ListaTickets;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.model.utils.StringUtils;
+import com.magnabyte.cfdi.portal.service.cfdi.v32.CfdiV32Service;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.establecimiento.AutorizacionCierreService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
-import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.web.cfdi.CfdiService;
 
 /**
@@ -53,6 +54,9 @@ import com.magnabyte.cfdi.portal.web.cfdi.CfdiService;
 public class SucursalController {
 
 	@Autowired
+	private MessageSource messageSource;
+	
+	@Autowired
 	private ClienteService clienteService;
 	
 	@Autowired
@@ -62,7 +66,7 @@ public class SucursalController {
 	private SambaService sambaService;
 	
 	@Autowired
-	private DocumentoXmlService documentoXmlService;
+	private CfdiV32Service cfdiV32Service;
 	
 	@Autowired
 	private ComprobanteService comprobanteService;
@@ -93,6 +97,8 @@ public class SucursalController {
 		if (resultTicket.hasErrors()) {
 			return buscaTicketPage;
 		}
+		//FIXME Descomentar para produccion
+//		ticketService.validarFechaFacturacion(ticket);
 		if (ticketService.ticketExists(ticket, establecimiento)) {
 			if (!ticketService.isTicketFacturado(ticket, establecimiento)) {
 				model.put("ticket", ticket);
@@ -141,12 +147,8 @@ public class SucursalController {
 	
 	@RequestMapping("/confirmarDatosFacturacion")
 	public String confirmarDatosFacturacion(@ModelAttribute Documento documento, ModelMap model) {
-		if(documentoXmlService.isValidComprobanteXml(documento.getComprobante())) {
-			return "sucursal/facturaValidate";
-		} else {
-			logger.error("Error al validar el Comprobante.");
-			throw new PortalException("Error al validar el Comprobante.");
-		}
+		cfdiV32Service.isValidComprobanteXml(documento.getComprobante());
+		return "sucursal/facturaValidate";
 	}
 	
 	@RequestMapping(value="/fechaCierre", method = RequestMethod.POST)
@@ -190,7 +192,7 @@ public class SucursalController {
 //				}
 			} else {
 				model.put("error", true);
-				model.put("messageError", "El cierre solo es permitido a partir de las 20:00 hrs.");
+				model.put("messageError", messageSource.getMessage("cierre.error.hora", null, null));
 				return "menu/menu";
 			}
 			
@@ -205,7 +207,7 @@ public class SucursalController {
 	@RequestMapping("/successCierre")
 	public String successCierre(ModelMap model) {
 		model.put("success", true);
-		model.put("messageSuccess", "La factura se ha generado exitosamente.");
+		model.put("messageSuccess", messageSource.getMessage("cierre.success", null, null));
 		return "menu/menu";
 	}
 }

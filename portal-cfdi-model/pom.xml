@@ -52,6 +52,19 @@
 							<clearOutputDir>false</clearOutputDir>
 						</configuration>
 					</execution>
+					<execution>
+						<id>schema3-xjc</id>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+						<configuration>
+							<schemaFiles>leyendasFisc.xsd</schemaFiles>
+							<packageName>com.magnabyte.cfdi.portal.model.leyendasfisc.v32</packageName>
+							<schemaDirectory>src/main/resources/xsd</schemaDirectory>
+							<staleFile>${project.build.directory}/generated-sources/xjc3/.staleFlag</staleFile>
+							<clearOutputDir>false</clearOutputDir>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>

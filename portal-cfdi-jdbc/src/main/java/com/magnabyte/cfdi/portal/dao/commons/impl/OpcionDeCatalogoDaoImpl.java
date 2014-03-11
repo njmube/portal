@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -29,6 +31,9 @@ public class OpcionDeCatalogoDaoImpl extends GenericJdbcDao
 
 	private static final Logger logger = 
 			Logger.getLogger(OpcionDeCatalogoDaoImpl.class);
+	
+	@Autowired
+	private MessageSource messageSource;
 	
 	@Override
 	public Collection<OpcionDeCatalogo> getCatalogo(String catalogo,
@@ -55,8 +60,8 @@ public class OpcionDeCatalogoDaoImpl extends GenericJdbcDao
 			simpleInsert.setGeneratedKeyName(campoId);
 			opcionDeCatalogo.setId(simpleInsert.executeAndReturnKey(getParameters(opcionDeCatalogo)).intValue());
 		} catch (DataAccessException ex) {			
-			logger.debug("No se pudo registrar el Cliente en la base de datos.", ex);
-			throw new PortalException("No se pudo registrar el Cliente en la base de datos.", ex);
+			logger.debug(messageSource.getMessage("opcatalogo.error.save", new Object[] {ex}, null));
+			throw new PortalException(messageSource.getMessage("opcatalogo.error.save", new Object[] {ex}, null));
 		}
 	}
 	

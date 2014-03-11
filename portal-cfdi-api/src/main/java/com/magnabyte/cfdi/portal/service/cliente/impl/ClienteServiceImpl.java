@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +45,12 @@ public class ClienteServiceImpl implements ClienteService {
 	@Autowired
 	private ComparadorNombre comparadorNombre;
 	
+	@Autowired
+	private MessageSource messageSource;
+	
+	private static final String RFC_REGEX = "^[A-Z,Ñ,&amp;]{4}[0-9]{2}[0-1][0-9][0-3][0-9][A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?$";
+	private static final String LIKE = "%";
+	
 	@Transactional(readOnly = true)
 	@Override
 	public Cliente findClienteByRfc(Cliente cliente) {
@@ -60,11 +67,11 @@ public class ClienteServiceImpl implements ClienteService {
 		List<Cliente> clientes = null;
 		
 		if (cliente.getRfc() != null && !cliente.getRfc().isEmpty()) {
-			cliente.setRfc("%" + cliente.getRfc() + "%");
+			cliente.setRfc(LIKE + cliente.getRfc() + LIKE);
 		}
 		
 		if (cliente.getNombre() != null && !cliente.getNombre().isEmpty()) {
-			cliente.setNombre("%" + cliente.getNombre() + "%");
+			cliente.setNombre(LIKE + cliente.getNombre() + LIKE);
 		}
 		
 		if(cliente.getNombre().isEmpty() && cliente.getRfc().isEmpty()) {
@@ -85,12 +92,12 @@ public class ClienteServiceImpl implements ClienteService {
 				cteBD = clienteDao.read(cliente);
 				cteBD.setDomicilios(domicilioClienteService.getByCliente(cliente));
 			} else {
-				logger.error("El id de cliente no puede ser nulo.");
-				throw new PortalException("El id de cliente no puede ser nulo.");
+				logger.error(messageSource.getMessage("cliente.id.nulo", null, null));
+				throw new PortalException(messageSource.getMessage("cliente.id.nulo", null, null));
 			}
 		} else {
-			logger.error("El cliente no puede ser nulo.");
-			throw new PortalException("El cliente no puede ser nulo.");
+			logger.error(messageSource.getMessage("cliente.nulo", null, null));
+			throw new PortalException(messageSource.getMessage("cliente.nulo", null, null));
 		}
 		return cteBD;
 	}
@@ -106,15 +113,13 @@ public class ClienteServiceImpl implements ClienteService {
 					clienteDao.save(cliente);
 					guardaDomicilioCliente(cliente);
 				} else {
-					logger.error("El rfc del cliente ya existe, no es "
-							+ "posible guardarlo nuevamente.");
-					throw new PortalException("El rfc del cliente ya existe, no es "
-							+ "posible guardarlo nuevamente.");
+					logger.error(messageSource.getMessage("cliente.rfc.existente", null, null));
+					throw new PortalException(messageSource.getMessage("cliente.rfc.existente", null, null));
 				}
 			}
 		} else {
-			logger.error("El cliente no puede ser nulo.");
-			throw new PortalException("El cliente no puede ser nulo.");
+			logger.error(messageSource.getMessage("cliente.nulo", null, null));
+			throw new PortalException(messageSource.getMessage("cliente.nulo", null, null));
 		}
 	}
 
@@ -122,8 +127,8 @@ public class ClienteServiceImpl implements ClienteService {
 		if(cliente.getDomicilios() != null && !cliente.getDomicilios().isEmpty()) {
 			domicilioClienteService.save(cliente);
 		} else {
-			logger.error("La lista de direcciones no puede estar vacia.");
-			throw new PortalException("La lista de direcciones no puede estar vacia.");
+			logger.error(messageSource.getMessage("domicilio.lista.vacia", null, null));
+			throw new PortalException(messageSource.getMessage("domicilio.lista.vacia", null, null));
 		}
 	}
 
@@ -132,10 +137,8 @@ public class ClienteServiceImpl implements ClienteService {
 			clienteDao.save(cliente);
 			guardaDomicilioCliente(cliente);
 		} else {
-			logger.error("El nombre del cliente ya existe, no es "
-					+ "posible guardarlo nuevamente.");
-			throw new PortalException("El nombre del cliente ya existe, no es "
-					+ "posible guardarlo nuevamente.");
+			logger.error(messageSource.getMessage("cliente.nombre.existente", null, null));
+			throw new PortalException(messageSource.getMessage("cliente.nombre.existente", null, null));
 		}
 	}
 	
@@ -148,7 +151,7 @@ public class ClienteServiceImpl implements ClienteService {
 	@Override
 	public void saveClienteCorporativo(Cliente cliente) {
 		if(cliente != null) {
-			Pattern pattern = Pattern.compile("^[A-Z,Ñ,&amp;]{4}[0-9]{2}[0-1][0-9][0-3][0-9][A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?$");
+			Pattern pattern = Pattern.compile(RFC_REGEX);
 			Matcher matcher = pattern.matcher(cliente.getRfc());
 			if (matcher.matches()) {
 				cliente.setTipoPersona(new TipoPersona(TipoPersona.PERSONA_FISICA));
@@ -167,12 +170,12 @@ public class ClienteServiceImpl implements ClienteService {
 			if(!cliente.getDomicilios().isEmpty()) {
 				domicilioClienteService.update(cliente);
 			} else {
-				logger.error("La lista de direcciones de cliente está vacía.");
-				throw new PortalException("La lista de direcciones de cliente está vacía.");
+				logger.error(messageSource.getMessage("domicilio.lista.vacia", null, null));
+				throw new PortalException(messageSource.getMessage("domicilio.lista.vacia", null, null));
 			}
 		} else {
-			logger.error("El cliente no puede ser nulo.");
-			throw new PortalException("El cliente no puede ser nulo.");
+			logger.error(messageSource.getMessage("cliente.nulo", null, null));
+			throw new PortalException(messageSource.getMessage("cliente.nulo", null, null));
 		}
 	}
 	
@@ -187,12 +190,12 @@ public class ClienteServiceImpl implements ClienteService {
 //					cteBD.setDomicilios(domicilioClienteService.getByCliente(cteBD));
 //				}
 			} else {
-				logger.error("El rfc y nombre de cliente no puede ser nulo.");
-				throw new PortalException("El rfc y nombre de cliente no puede ser nulo.");
+				logger.error(messageSource.getMessage("cliente.rfcnombre.nulo", null, null));
+				throw new PortalException(messageSource.getMessage("cliente.rfcnombre.nulo", null, null));
 			}
 		} else {
-			logger.error("El cliente no puede ser nulo.");
-			throw new PortalException("El cliente no puede ser nulo.");
+			logger.error(messageSource.getMessage("cliente.nulo", null, null));
+			throw new PortalException(messageSource.getMessage("cliente.nulo", null, null));
 		}
 		return cteBD;
 	}
