@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteFactura" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4a6ba1cb-2ea7-4218-8d09-5f9f932a9716">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="5"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="0.0" lineColor="#000000"/>
@@ -300,6 +300,7 @@
 	<parameter name="TICKET" class="java.lang.String"/>
 	<parameter name="FECHATICKET" class="java.lang.String"/>
 	<parameter name="NIT" class="java.lang.String"/>
+	<parameter name="LEYFISC" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -380,7 +381,7 @@
 						<font size="7"/>
 					</textElement>
 					<textFieldExpression><![CDATA["RFC: " + $F{receptor.rfc}+
-($P{NIT} =! null ? "  NIT: "+$P{NIT} : "")]]></textFieldExpression>
+($P{NIT} != null ? "  NIT: "+$P{NIT} : "")]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="13" width="325" height="10" uuid="790a4e93-2e38-4fda-b170-be257c32f373"/>
@@ -553,7 +554,7 @@
 				<textFieldExpression><![CDATA["FOLIO FISCAL:  "+$P{FOLIO_FISCAL}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="240" y="112" width="191" height="10" uuid="7a4377d5-5a97-4c67-b3ae-51a7aaff1fc4">
+				<reportElement x="230" y="112" width="199" height="10" uuid="7a4377d5-5a97-4c67-b3ae-51a7aaff1fc4">
 					<printWhenExpression><![CDATA[$P{FOLIO_SAP} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -585,7 +586,7 @@
 				<text><![CDATA[MÉXICO, D. F.]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="70" width="240" height="10" uuid="9f515601-f087-4843-9f69-7758f7ac01e9">
+				<reportElement x="0" y="70" width="230" height="10" uuid="9f515601-f087-4843-9f69-7758f7ac01e9">
 					<printWhenExpression><![CDATA[$P{FOLIO_SAP} == null]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -595,7 +596,14 @@
 ($F{emisor.expedidoEn.estado} !=null ? ", "+$F{emisor.expedidoEn.estado} : "" )]]></textFieldExpression>
 			</textField>
 			<frame>
-				<reportElement x="201" y="0" width="229" height="65" uuid="670fa061-3add-4db8-8d7f-fbe80195ea99"/>
+				<reportElement x="201" y="0" width="229" height="75" uuid="670fa061-3add-4db8-8d7f-fbe80195ea99"/>
+				<textField>
+					<reportElement x="1" y="63" width="228" height="10" uuid="dfeff1f4-6403-406c-aaac-66767e16fa40"/>
+					<textElement textAlignment="Center">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{LEYFISC}]]></textFieldExpression>
+				</textField>
 				<textField>
 					<reportElement x="0" y="1" width="228" height="10" uuid="366c957b-efe6-4921-836d-647b503631af"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -645,11 +653,11 @@ $F{emisor.domicilioFiscal.estado}+" "+
 				</textField>
 			</frame>
 			<frame>
-				<reportElement x="0" y="82" width="240" height="40" uuid="403d469b-1c28-48f4-a0bc-4e59173d5929">
+				<reportElement x="0" y="82" width="230" height="40" uuid="403d469b-1c28-48f4-a0bc-4e59173d5929">
 					<printWhenExpression><![CDATA[$P{FOLIO_SAP} == null]]></printWhenExpression>
 				</reportElement>
 				<textField>
-					<reportElement x="0" y="10" width="240" height="10" uuid="8f9d9ead-409f-4d13-88a6-7e16b1e089e2"/>
+					<reportElement x="0" y="10" width="230" height="10" uuid="8f9d9ead-409f-4d13-88a6-7e16b1e089e2"/>
 					<textElement>
 						<font size="7"/>
 					</textElement>
@@ -659,7 +667,7 @@ $F{emisor.domicilioFiscal.estado}+" "+
 ($F{emisor.expedidoEn.noInterior} !=null ? ", "+$F{emisor.expedidoEn.noInterior} : "")]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="0" y="20" width="240" height="10" uuid="afd72984-d715-4411-8c8e-b7b59ca35b98"/>
+					<reportElement x="0" y="20" width="230" height="10" uuid="afd72984-d715-4411-8c8e-b7b59ca35b98"/>
 					<textElement>
 						<font size="7"/>
 					</textElement>
@@ -667,7 +675,7 @@ $F{emisor.domicilioFiscal.estado}+" "+
 ($F{emisor.expedidoEn.municipio} !=null ? ", "+$F{emisor.expedidoEn.municipio} : "")]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="0" y="30" width="240" height="10" uuid="1e73dc26-5760-4244-b793-b439798c3ae9"/>
+					<reportElement x="0" y="30" width="230" height="10" uuid="1e73dc26-5760-4244-b793-b439798c3ae9"/>
 					<textElement>
 						<font size="7"/>
 					</textElement>
@@ -676,7 +684,7 @@ $F{emisor.domicilioFiscal.estado}+" "+
 ($F{emisor.expedidoEn.codigoPostal} !=null ?  ", C.P. "+$F{emisor.expedidoEn.codigoPostal} : "")]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="1" y="0" width="239" height="10" uuid="14307857-01d0-43ee-8952-d9d860ef2ac7">
+					<reportElement x="0" y="0" width="230" height="10" uuid="14307857-01d0-43ee-8952-d9d860ef2ac7">
 						<printWhenExpression><![CDATA[$P{SUCURSAL} != null]]></printWhenExpression>
 					</reportElement>
 					<textElement verticalAlignment="Middle">
