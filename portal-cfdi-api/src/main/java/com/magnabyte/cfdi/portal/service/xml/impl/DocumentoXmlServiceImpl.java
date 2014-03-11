@@ -71,11 +71,11 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService {
 	private Marshaller marshaller;
 
 	@Autowired
-	@Qualifier("jaxb2MarshallerLeyFisc")
-	private Unmarshaller unmarshallerLeyFisc;
+	@Qualifier("jaxb2MarshallerComplementos")
+	private Unmarshaller unmarshallerComplementos;
 	
 	@Autowired
-	@Qualifier("jaxb2MarshallerLeyFisc")
+	@Qualifier("jaxb2MarshallerComplementos")
 	private Marshaller marshallerLeyFisc;
 
 	@Autowired
@@ -246,11 +246,13 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService {
 		return baos.toByteArray();
 	}
 
-	private boolean hasLeyendasFiscales(Comprobante comprobante) {
+	@Override
+	public boolean hasLeyendasFiscales(Comprobante comprobante) {
+		logger.debug("en hasLeyendasFiscales");
 		if (comprobante.getComplemento() != null) {
 			for (Object complemento : comprobante.getComplemento().getAny()) {
 				try {
-					Object complementoLeyFisc = unmarshallerLeyFisc.unmarshal(new DOMSource((Node) complemento));
+					Object complementoLeyFisc = unmarshallerComplementos.unmarshal(new DOMSource((Node) complemento));
 					if (complementoLeyFisc instanceof LeyendasFiscales) {
 						return true;
 					}
@@ -262,6 +264,24 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService {
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public String obtenerLeyendasFiscales(Comprobante comprobante) {
+		logger.debug("en obtenerLeyendasFiscales");
+		for (Object complemento : comprobante.getComplemento().getAny()) {
+			try {
+				Object complementoLeyFisc = unmarshallerComplementos.unmarshal(new DOMSource((Node) complemento));
+				if (complementoLeyFisc instanceof LeyendasFiscales) {
+					return ((LeyendasFiscales) complementoLeyFisc).getLeyenda().get(0).getTextoLeyenda();
+				}
+			} catch (XmlMappingException e) {
+				continue;
+			} catch (IOException e) {
+				continue;
+			}
+		}
+		return null;
 	}
 
 	@Override

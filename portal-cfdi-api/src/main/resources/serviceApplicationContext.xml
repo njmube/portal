@@ -19,8 +19,9 @@
 		<oxm:class-to-be-bound name="com.magnabyte.cfdi.portal.model.ticket.Ticket"/>
 	</oxm:jaxb2-marshaller>
 	
-	<oxm:jaxb2-marshaller id="jaxb2MarshallerLeyFisc">
+	<oxm:jaxb2-marshaller id="jaxb2MarshallerComplementos">
 		<oxm:class-to-be-bound name="com.magnabyte.cfdi.portal.model.leyendasfisc.v32.LeyendasFiscales"/>
+		<oxm:class-to-be-bound name="com.magnabyte.cfdi.portal.model.tfd.v32.TimbreFiscalDigital"/>
 	</oxm:jaxb2-marshaller>
 	
 	<bean id="comparatorRfc" class="com.magnabyte.cfdi.portal.model.cliente.comparator.ComparadorRfc">

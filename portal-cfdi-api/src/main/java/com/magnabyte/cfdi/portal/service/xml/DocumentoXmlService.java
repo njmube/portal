@@ -13,8 +13,12 @@ public interface DocumentoXmlService {
 	
 	Comprobante convierteByteArrayAComprobante(byte[] xmlCfdi);
 
-	String obtenerNumCertificado(byte[] xmlCfdi);
-
 	byte[] convierteComprobanteAByteArray(Comprobante comprobante, String encoding);
+
+	boolean hasLeyendasFiscales(Comprobante comprobante);
+
+	String obtenerLeyendasFiscales(Comprobante comprobante);
+
+	String obtenerNumCertificado(byte[] xmlCfdi);
 
 }
