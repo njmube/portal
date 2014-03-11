@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
-import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.service.cfdi.v32.CfdiV32Service;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
@@ -65,17 +63,12 @@ public class CorporativoController {
 		logger.debug("valida factura");
 		String urlSapFiles = establecimiento.getRutaRepositorio().getRutaRepositorio() + establecimiento.getRutaRepositorio().getRutaRepoIn();
 		NtlmPasswordAuthentication authentication = sambaService.getAuthentication(establecimiento);
-		Comprobante comprobante = documentoXmlService.convertXmlSapToCfdi(sambaService.getFileStream(urlSapFiles, fileName, authentication));
-		DocumentoCorporativo documento = new DocumentoCorporativo();
-		documento.setCliente(comprobanteService.obtenerClienteDeComprobante(comprobante));
-		TipoDocumento tipoDocumento = comprobante.getTipoDeComprobante().equalsIgnoreCase("ingreso") 
-				? TipoDocumento.FACTURA : TipoDocumento.NOTA_CREDITO;
-		documento.setTipoDocumento(tipoDocumento);
-		documento.setComprobante(comprobante);
+		DocumentoCorporativo documento = documentoXmlService.convertXmlSapToCfdi(sambaService.getFileStream(urlSapFiles, fileName, authentication));
+		documento.setCliente(comprobanteService.obtenerClienteDeComprobante(documento.getComprobante()));
 		documento.setFolioSap(fileName.substring(1, 11));
 		documento.setNombreXmlPrevio(fileName);
 		documento.setEstablecimiento(establecimiento);
-		model.put("comprobante", comprobante);
+		model.put("comprobante", documento.getComprobante());
 		model.put("documento", documento);
 		return "redirect:/facturaCorp/confirmarDatosFacturacion";
 	}

@@ -1,11 +1,12 @@
 package com.magnabyte.cfdi.portal.model.documento;
 
 public class DocumentoCorporativo extends Documento {
-	
+
 	private static final long serialVersionUID = -6239507110898792522L;
-	
+
 	private String folioSap;
 	private String nombreXmlPrevio;
+	private String nit;
 
 	public String getFolioSap() {
 		return folioSap;
@@ -21,6 +22,14 @@ public class DocumentoCorporativo extends Documento {
 
 	public void setNombreXmlPrevio(String nombreXmlPrevio) {
 		this.nombreXmlPrevio = nombreXmlPrevio;
+	}
+
+	public String getNit() {
+		return nit;
+	}
+
+	public void setNit(String nit) {
+		this.nit = nit;
 	}
 
 	@Override
