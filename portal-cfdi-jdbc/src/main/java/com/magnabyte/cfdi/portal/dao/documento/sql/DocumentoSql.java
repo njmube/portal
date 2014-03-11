@@ -24,6 +24,7 @@ public class DocumentoSql extends GenericSql {
 	public static final String ID_DOMICILIO_CLIENTE = "id_domicilio_cliente";
 	public static final String ID_TICKET = "id_ticket";
 	public static final String FOLIO_SAP = "folio_sap";
+	public static final String NIT = "nit";
 	public static final String FECHA_DOCUMENTO = "fecha_doc";
 	public static final String SUBTOTAL = "subtotal";
 	public static final String IVA = "iva";

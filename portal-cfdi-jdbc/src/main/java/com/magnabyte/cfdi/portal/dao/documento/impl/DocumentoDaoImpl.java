@@ -120,6 +120,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 		}
 		if(documento instanceof DocumentoCorporativo){
 			params.addValue(DocumentoSql.FOLIO_SAP, ((DocumentoCorporativo) documento).getFolioSap());
+			params.addValue(DocumentoSql.NIT, ((DocumentoCorporativo) documento).getNit());
 		}
 		params.addValue(DocumentoSql.FECHA_DOCUMENTO, documento.getFechaFacturacion());
 		params.addValue(DocumentoSql.TOTAL_DESCUENTO, documento.getComprobante().getDescuento());

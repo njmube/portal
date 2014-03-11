@@ -378,6 +378,10 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		String pathImages = context.getRealPath("resources/img");
 		if (documento instanceof DocumentoCorporativo) {
 			model.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
+//			model.put("NIT", ((DocumentoCorporativo) documento).getNit());
+			if (documentoXmlService.hasLeyendasFiscales(documento.getComprobante())) {
+				model.put("LEYFISC", documentoXmlService.obtenerLeyendasFiscales(documento.getComprobante()));
+			}
 		} else if (documento instanceof DocumentoSucursal) {
 			//FIXME revisar el id de establecimiento
 			model.put("SUCURSAL", documento.getEstablecimiento().getNombre());

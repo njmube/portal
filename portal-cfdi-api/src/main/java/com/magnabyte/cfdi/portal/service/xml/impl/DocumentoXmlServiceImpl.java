@@ -35,6 +35,8 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Node;
 
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
+import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
+import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.leyendasfisc.v32.LeyendasFiscales;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
@@ -69,11 +71,11 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService {
 	private Marshaller marshaller;
 
 	@Autowired
-	@Qualifier("jaxb2MarshallerLeyFisc")
-	private Unmarshaller unmarshallerLeyFisc;
+	@Qualifier("jaxb2MarshallerComplementos")
+	private Unmarshaller unmarshallerComplementos;
 	
 	@Autowired
-	@Qualifier("jaxb2MarshallerLeyFisc")
+	@Qualifier("jaxb2MarshallerComplementos")
 	private Marshaller marshallerLeyFisc;
 
 	@Autowired
@@ -83,13 +85,14 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService {
 	private MessageSource messageSource;
 	
 	@Override
-	public Comprobante convertXmlSapToCfdi(InputStream xmlSap) {
-		Comprobante comprobante = null;
+	public DocumentoCorporativo convertXmlSapToCfdi(InputStream xmlSap) {
+		DocumentoCorporativo documentoCorporativo = new DocumentoCorporativo();
 		try {
 			SAXBuilder builder = new SAXBuilder();
 			
 			Document documentoCFD = (Document) builder.build(xmlSap);
 			Element documentoPrevio = documentoCFD.getRootElement().getChild("Comprobante");
+			Element obsGralPrevio = documentoCFD.getRootElement().getChild("Observaciongral");
 			Element trasladosPrevio = documentoCFD.getRootElement().getChild("Comprobante").getChild("Traslados");
 			Element documento = (Element) documentoPrevio.clone();
 			documentoCFD.setRootElement(documento);
@@ -98,6 +101,13 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService {
 				Element traslados = (Element) trasladosPrevio.clone();
 				if (traslados.getChild("Traslado") != null)
 					documentoCFD.getRootElement().getChild("Impuestos").addContent(traslados);
+			}
+			
+			if (obsGralPrevio != null) {
+				String nit = obsGralPrevio.getAttributeValue("NIT");
+				if (nit != null) {
+					documentoCorporativo.setNit(nit);
+				}
 			}
 			
 			validarTraslados(documento);
@@ -124,7 +134,10 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService {
 	            outputter.output(documentoCFD, oos);
 	            oos.flush();
 	            oos.close();
-				comprobante = convierteByteArrayAComprobante(baos.toByteArray());
+				documentoCorporativo.setComprobante(convierteByteArrayAComprobante(baos.toByteArray()));
+				TipoDocumento tipoDocumento = documentoCorporativo.getComprobante().getTipoDeComprobante().equalsIgnoreCase("ingreso") 
+						? TipoDocumento.FACTURA : TipoDocumento.NOTA_CREDITO;
+				documentoCorporativo.setTipoDocumento(tipoDocumento);
 			}
 		} catch (IOException e) {
 			logger.error(messageSource.getMessage("documento.xml.error.sap", new Object[] {e}, null));
@@ -133,7 +146,7 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService {
 			logger.error(messageSource.getMessage("documento.xml.error.lectura.sap", new Object[] {e}, null));
 			throw new PortalException(messageSource.getMessage("documento.xml.error.lectura.sap", new Object[] {e.getMessage()}, null));
 		}  
-		return comprobante;
+		return documentoCorporativo;
 	}
 
 	private void validarTraslados(Element document) {
@@ -233,11 +246,13 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService {
 		return baos.toByteArray();
 	}
 
-	private boolean hasLeyendasFiscales(Comprobante comprobante) {
+	@Override
+	public boolean hasLeyendasFiscales(Comprobante comprobante) {
+		logger.debug("en hasLeyendasFiscales");
 		if (comprobante.getComplemento() != null) {
 			for (Object complemento : comprobante.getComplemento().getAny()) {
 				try {
-					Object complementoLeyFisc = unmarshallerLeyFisc.unmarshal(new DOMSource((Node) complemento));
+					Object complementoLeyFisc = unmarshallerComplementos.unmarshal(new DOMSource((Node) complemento));
 					if (complementoLeyFisc instanceof LeyendasFiscales) {
 						return true;
 					}
@@ -249,6 +264,24 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService {
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public String obtenerLeyendasFiscales(Comprobante comprobante) {
+		logger.debug("en obtenerLeyendasFiscales");
+		for (Object complemento : comprobante.getComplemento().getAny()) {
+			try {
+				Object complementoLeyFisc = unmarshallerComplementos.unmarshal(new DOMSource((Node) complemento));
+				if (complementoLeyFisc instanceof LeyendasFiscales) {
+					return ((LeyendasFiscales) complementoLeyFisc).getLeyenda().get(0).getTextoLeyenda();
+				}
+			} catch (XmlMappingException e) {
+				continue;
+			} catch (IOException e) {
+				continue;
+			}
+		}
+		return null;
 	}
 
 	@Override

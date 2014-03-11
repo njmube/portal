@@ -55,6 +55,7 @@
 		<property name="namespaceUri" value="http://cfdi.ws2.facturehoy.certus.com/" />
 		<property name="serviceName" value="WsServiciosService" />
 		<property name="portName" value="WsServiciosPort" />
+		<property name="lookupServiceOnStartup" value="false" />
 	</bean>
 
 	<bean id="wsEmisionTimbrado"
@@ -65,6 +66,7 @@
 		<property name="namespaceUri" value="http://cfdi.ws2.facturehoy.certus.com/" />
 		<property name="serviceName" value="WsEmisionTimbradoService" />
 		<property name="portName" value="WsEmisionTimbradoPort" />
+		<property name="lookupServiceOnStartup" value="false" />
 	</bean>
 
 	<task:annotation-driven executor="executor" scheduler="scheduler"/>
