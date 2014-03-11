@@ -19,6 +19,9 @@
 		<oxm:class-to-be-bound name="com.magnabyte.cfdi.portal.model.ticket.Ticket"/>
 	</oxm:jaxb2-marshaller>
 	
+	<oxm:jaxb2-marshaller id="jaxb2MarshallerLeyFisc">
+		<oxm:class-to-be-bound name="com.magnabyte.cfdi.portal.model.leyendasfisc.v32.LeyendasFiscales"/>
+	</oxm:jaxb2-marshaller>
 	
 	<bean id="comparatorRfc" class="com.magnabyte.cfdi.portal.model.cliente.comparator.ComparadorRfc">
 	</bean>
@@ -47,6 +50,25 @@
 				<prop key="mail.debug">${mail.debug}</prop>
 				<prop key="mail.smtps.starttls.enable">${mail.smtps.starttls.enable}</prop>				
 			</props>
+		</property>
+	</bean>
+	
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod" value="com.magnabyte.cfdi.portal.service.cfdi.v32.impl.CfdiV32ServiceImpl.initStaticValues"/>
+		<property name="arguments">
+			<list>
+				<value>${cfdi.version}</value>
+				<value>${cfdi.numero.certificado.previo}</value>
+				<value>${cfdi.sello.previo}</value>
+				<value>${cfdi.certificado.previo}</value>
+				<value>${cfdi.schema.location}</value>
+				<value>${cfdi.uri}</value>
+				<value>${cfdi.prefix}</value>
+				<value>${cfdi.tfd.uri}</value>
+				<value>${cfdi.tfd.prefix}</value>
+				<value>${cfdi.leyfisc.uri}</value>
+				<value>${cfdi.leyfisc.prefix}</value>
+			</list>
 		</property>
 	</bean>
 	

@@ -23,12 +23,12 @@ import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.utils.StringUtils;
+import com.magnabyte.cfdi.portal.service.cfdi.v32.CfdiV32Service;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
-import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 
 /**
  * 
@@ -60,7 +60,7 @@ public class PortalController {
 	private ComprobanteService comprobanteService;
 	
 	@Autowired
-	private DocumentoXmlService documentoXmlService;
+	private CfdiV32Service cfdiV32Service;
 	
 	@RequestMapping("/menu")
 	public String menu() {
@@ -86,6 +86,8 @@ public class PortalController {
 				ticket.getTransaccion().getTransaccionHeader().getIdSucursal()));
 		establecimiento = establecimientoService.readByClave(establecimiento);
 		logger.debug("establecimiento {}", establecimiento);
+		//FIXME Descomentar para produccion
+//		ticketService.validarFechaFacturacion(ticket);
 		if (ticketService.ticketExists(ticket, establecimiento)) {
 			if (!ticketService.isTicketFacturado(ticket, establecimiento)) {
 				model.put("ticket", ticket);
@@ -133,7 +135,7 @@ public class PortalController {
 	
 	@RequestMapping("/confirmarDatosFacturacion")
 	public String confirmarDatosFacturacion(@ModelAttribute Documento documento, ModelMap model) {
-		documentoXmlService.isValidComprobanteXml(documento.getComprobante());
+		cfdiV32Service.isValidComprobanteXml(documento.getComprobante());
 		return "portal/facturaValidate";
 	}
 }

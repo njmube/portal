@@ -16,6 +16,4 @@ public interface DocumentoXmlService {
 
 	byte[] convierteComprobanteAByteArray(Comprobante comprobante, String encoding);
 
-	boolean isValidComprobanteXml(Comprobante comprobante);
-
 }

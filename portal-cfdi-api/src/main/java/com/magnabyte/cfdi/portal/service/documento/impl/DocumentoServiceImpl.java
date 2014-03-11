@@ -148,6 +148,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	@Override
 	public void guardarDocumento(Documento documento) {
 		if(documento != null) {
+			//FIXME Validar para corporativo
 			comprobanteService.createFechaDocumento(documento.getComprobante());
 			documento.setFechaFacturacion(documento.getComprobante().getFecha().toGregorianCalendar().getTime());
 
@@ -370,35 +371,49 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	}
 	
 	@Override
+	public Map<String, Object> populateReportParams(Documento documento) {
+		Map<String, Object> model = new HashMap<String, Object>();
+		Locale locale = new Locale("es", "MX");
+		
+		String pathImages = context.getRealPath("resources/img");
+		if (documento instanceof DocumentoCorporativo) {
+			model.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
+		} else if (documento instanceof DocumentoSucursal) {
+			//FIXME revisar el id de establecimiento
+			model.put("SUCURSAL", documento.getEstablecimiento().getNombre());
+			model.put("CAJA", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getIdCaja());
+			model.put("TICKET", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getIdTicket());
+			model.put("FECHATICKET", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getFecha());
+		}
+		model.put("TIPO_DOC", documento.getTipoDocumento().getNombre());
+		model.put("NUM_SERIE_CERT", documentoXmlService.obtenerNumCertificado(documento.getXmlCfdi()));
+		model.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
+		model.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
+		model.put("FECHA_TIMBRADO", documento.getTimbreFiscalDigital().getFechaTimbrado());
+		model.put("FOLIO_FISCAL", documento.getTimbreFiscalDigital().getUUID());
+		model.put("CADENA_ORIGINAL", documento.getCadenaOriginal());
+		model.put("PATH_IMAGES", pathImages);
+		model.put(JRParameter.REPORT_LOCALE, locale);
+		model.put("QRCODE", codigoQRService.generaCodigoQR(documento));
+		model.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
+		model.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
+		if (documento.getComprobante().getImpuestos().getTraslados() != null) {
+			model.put("IVA", documento.getComprobante().getImpuestos().getTraslados().getTraslado().get(0).getTasa());
+		}
+		
+		return model;
+	}
+	
+	@Override
 	public byte[] recuperarDocumentoPdf(Documento documento) {
 		logger.debug("Creando reporte");
 		JasperPrint reporteCompleto = null;
 		byte[] bytesReport = null;
 		String reporteCompilado = context.getRealPath("WEB-INF/reports/ReporteFactura.jasper");
 
-		Locale locale = new Locale("es", "MX");
 		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
 		comprobantes.add(documento.getComprobante());
-		String pathImages = context.getRealPath("resources/img");
-		Map<String, Object> map = new HashMap<String, Object>();
-		if (documento instanceof DocumentoCorporativo) {
-			map.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
-		} else if (documento instanceof DocumentoSucursal) {
-			map.put("SUCURSAL", documento.getEstablecimiento().getNombre());
-		}
-		
-		map.put("TIPO_DOC", documento.getTipoDocumento().getNombre());
-		map.put(JRParameter.REPORT_LOCALE, locale);
-		map.put("NUM_SERIE_CERT", documentoXmlService.obtenerNumCertificado(documento.getXmlCfdi()));
-		map.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
-		map.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
-		map.put("FECHA_TIMBRADO", documento.getTimbreFiscalDigital().getFechaTimbrado());
-		map.put("FOLIO_FISCAL", documento.getTimbreFiscalDigital().getUUID());
-		map.put("CADENA_ORIGINAL", documento.getCadenaOriginal());
-		map.put("PATH_IMAGES", pathImages);
-		map.put("QRCODE", codigoQRService.generaCodigoQR(documento));
-		map.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
-		map.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
+		Map<String, Object> map = populateReportParams(documento);
 
 		JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(comprobantes);
 
@@ -471,6 +486,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		Documento documento = new Documento();
 		documento.setId(idDocumento);
 		documento = findById(documento);
+		if (documento instanceof DocumentoSucursal ) {
+			((DocumentoSucursal) documento).setTicket(ticketService.findByDocumento(documento));
+		}
 		String asunto = subject + fileName;
 		String htmlPlantilla = null;
 		String textoPlanoPlantilla = null;
