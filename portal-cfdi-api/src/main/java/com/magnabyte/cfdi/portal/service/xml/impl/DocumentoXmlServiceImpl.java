@@ -10,12 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.XMLConstants;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 
 import org.jdom.Attribute;
 import org.jdom.Document;
@@ -28,20 +25,25 @@ import org.jdom.output.XMLOutputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
-import org.springframework.context.ResourceLoaderAware;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
+import org.springframework.oxm.XmlMappingException;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Node;
 
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
+import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
+import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
+import com.magnabyte.cfdi.portal.model.leyendasfisc.v32.LeyendasFiscales;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
+import com.magnabyte.cfdi.portal.service.cfdi.v32.CfdiV32Service;
+import com.magnabyte.cfdi.portal.service.cfdi.v32.impl.CfdiV32ServiceImpl;
 import com.magnabyte.cfdi.portal.service.samba.SambaService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
-import com.magnabyte.cfdi.portal.service.xml.util.CfdiConfiguration;
 import com.magnabyte.cfdi.portal.service.xml.util.CustomNamespacePrefixMapper;
 
 /**
@@ -53,7 +55,7 @@ import com.magnabyte.cfdi.portal.service.xml.util.CustomNamespacePrefixMapper;
  * Clase que representa el servicio de documento xml
  */
 @Service("documentoXmlService")
-public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoaderAware {
+public class DocumentoXmlServiceImpl implements DocumentoXmlService {
 
 	private static final Logger logger = LoggerFactory.getLogger(DocumentoXmlServiceImpl.class);
 
@@ -61,30 +63,36 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	private SambaService sambaService;
 
 	@Autowired
+	@Qualifier("jaxb2Marshaller")
 	private Unmarshaller unmarshaller;
 	
 	@Autowired
+	@Qualifier("jaxb2Marshaller")
 	private Marshaller marshaller;
 
 	@Autowired
-	private CustomNamespacePrefixMapper customNamespacePrefixMapper;
+	@Qualifier("jaxb2MarshallerLeyFisc")
+	private Unmarshaller unmarshallerLeyFisc;
 	
 	@Autowired
-	private CfdiConfiguration cfdiConfiguration;
+	@Qualifier("jaxb2MarshallerLeyFisc")
+	private Marshaller marshallerLeyFisc;
+
+	@Autowired
+	private CfdiV32Service cfdiV32Service;
 	
 	@Autowired
 	private MessageSource messageSource;
 	
-	private ResourceLoader resourceLoader;
-	
 	@Override
-	public Comprobante convertXmlSapToCfdi(InputStream xmlSap) {
-		Comprobante comprobante = null;
+	public DocumentoCorporativo convertXmlSapToCfdi(InputStream xmlSap) {
+		DocumentoCorporativo documentoCorporativo = new DocumentoCorporativo();
 		try {
 			SAXBuilder builder = new SAXBuilder();
 			
 			Document documentoCFD = (Document) builder.build(xmlSap);
 			Element documentoPrevio = documentoCFD.getRootElement().getChild("Comprobante");
+			Element obsGralPrevio = documentoCFD.getRootElement().getChild("Observaciongral");
 			Element trasladosPrevio = documentoCFD.getRootElement().getChild("Comprobante").getChild("Traslados");
 			Element documento = (Element) documentoPrevio.clone();
 			documentoCFD.setRootElement(documento);
@@ -95,22 +103,30 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 					documentoCFD.getRootElement().getChild("Impuestos").addContent(traslados);
 			}
 			
+			if (obsGralPrevio != null) {
+				String nit = obsGralPrevio.getAttributeValue("NIT");
+				if (nit != null) {
+					documentoCorporativo.setNit(nit);
+				}
+			}
+			
 			validarTraslados(documento);
 			agregarLeyendasFiscales(documento);
 			revisaNodos(documento);
 			if (documento != null) {
-				Namespace cfdiNS = Namespace.getNamespace(customNamespacePrefixMapper.getCfdiPrefix()
-						, customNamespacePrefixMapper.getCfdiUri());
+				Namespace cfdiNS = Namespace.getNamespace(CfdiV32ServiceImpl.CFDI_PREFIX
+						, CfdiV32ServiceImpl.CFDI_URI);
 				cambiaNameSpace(documento, cfdiNS);
-				if (documento.getChild("Complemento", cfdiNS).getChild("LeyendasFiscales", cfdiNS) != null) {
-					Namespace leyFiscNS = Namespace.getNamespace(customNamespacePrefixMapper.getLeyfiscPrefix(), customNamespacePrefixMapper.getLeyfiscUri());
+				if (documento.getChild("Complemento", cfdiNS) != null 
+						&& documento.getChild("Complemento", cfdiNS).getChild("LeyendasFiscales", cfdiNS) != null) {
+					Namespace leyFiscNS = Namespace.getNamespace(CfdiV32ServiceImpl.LEYFISC_PREFIX, CfdiV32ServiceImpl.LEYFISC_URI);
 					cambiaNameSpace(documento.getChild("Complemento", cfdiNS).getChild("LeyendasFiscales", cfdiNS), leyFiscNS);
 				}
-				documento.setAttribute("version", cfdiConfiguration.getVersionCfdi());
+				documento.setAttribute("version", CfdiV32ServiceImpl.VERSION_CFDI);
 				documento.setAttribute("tipoDeComprobante", documento.getAttributeValue("tipoDeComprobante").toLowerCase());
-				documento.setAttribute("sello", cfdiConfiguration.getSelloPrevio());
-				documento.setAttribute("noCertificado", cfdiConfiguration.getNumeroCertificadoPrevio());
-				documento.setAttribute("certificado", cfdiConfiguration.getCertificadoPrevio());
+				documento.setAttribute("sello", CfdiV32ServiceImpl.SELLO_PREVIO);
+				documento.setAttribute("noCertificado", CfdiV32ServiceImpl.NUMERO_CERTIFICADO_PREVIO);
+				documento.setAttribute("certificado", CfdiV32ServiceImpl.CERTIFICADO_PREVIO);
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				OutputStreamWriter oos = new OutputStreamWriter(baos, PortalUtils.encodingUTF16);
 				XMLOutputter outputter = new XMLOutputter();
@@ -118,7 +134,10 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	            outputter.output(documentoCFD, oos);
 	            oos.flush();
 	            oos.close();
-				comprobante = convierteByteArrayAComprobante(baos.toByteArray());
+				documentoCorporativo.setComprobante(convierteByteArrayAComprobante(baos.toByteArray()));
+				TipoDocumento tipoDocumento = documentoCorporativo.getComprobante().getTipoDeComprobante().equalsIgnoreCase("ingreso") 
+						? TipoDocumento.FACTURA : TipoDocumento.NOTA_CREDITO;
+				documentoCorporativo.setTipoDocumento(tipoDocumento);
 			}
 		} catch (IOException e) {
 			logger.error(messageSource.getMessage("documento.xml.error.sap", new Object[] {e}, null));
@@ -127,7 +146,7 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 			logger.error(messageSource.getMessage("documento.xml.error.lectura.sap", new Object[] {e}, null));
 			throw new PortalException(messageSource.getMessage("documento.xml.error.lectura.sap", new Object[] {e.getMessage()}, null));
 		}  
-		return comprobante;
+		return documentoCorporativo;
 	}
 
 	private void validarTraslados(Element document) {
@@ -188,32 +207,22 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 	}
 
 	@Override
-	public boolean isValidComprobanteXml(Comprobante comprobante) {
-		try {
-			InputStream comprobanteStream = convierteComprobanteAStream(comprobante);
-			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			Schema schema = sf.newSchema(new StreamSource(resourceLoader.getResource("classpath:/cfdv32.xsd").getInputStream()));
-			Validator validator = schema.newValidator();
-			validator.validate(new StreamSource(comprobanteStream));
-			return true;
-		} catch (Exception e) {
-			logger.error(messageSource.getMessage("documento.xml.comprobante.invalido", new Object[] {e}, null));
-			throw new PortalException(messageSource.getMessage("documento.xml.comprobante.invalido", new Object[] {e.getMessage()}, null));
-		}
-	}
-	
-	@Override
 	public InputStream convierteComprobanteAStream(Comprobante comprobante) {
-//		return new ByteArrayInputStream(convierteComprobanteAByteArray(comprobante, PortalUtils.encodingUTF16));
-		return new ByteArrayInputStream(convierteComprobanteAByteArray(comprobante, PortalUtils.encodingUTF8));
+		return new ByteArrayInputStream(convierteComprobanteAByteArray(comprobante, PortalUtils.encodingUTF16));
 	}
 	
 	@Override
 	public byte[] convierteComprobanteAByteArray(Comprobante comprobante, String encoding) {
 		Map<String, Object> marshallerProperties = new HashMap<String, Object>();
 		marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_SCHEMA_LOCATION, cfdiConfiguration.getSchemaLocation());
-		marshallerProperties.put("com.sun.xml.bind.namespacePrefixMapper", customNamespacePrefixMapper);
+		//FIXME validar para que sirve
+		marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_FRAGMENT, true);
+		marshallerProperties.put(javax.xml.bind.Marshaller.JAXB_SCHEMA_LOCATION, CfdiV32ServiceImpl.SCHEMA_LOCATION);
+		if (hasLeyendasFiscales(comprobante)) {
+			marshallerProperties.put("com.sun.xml.bind.namespacePrefixMapper", new CustomNamespacePrefixMapper(CfdiV32ServiceImpl.PREFIXES_LEYFISC));
+		} else {
+			marshallerProperties.put("com.sun.xml.bind.namespacePrefixMapper", new CustomNamespacePrefixMapper(CfdiV32ServiceImpl.PREFIXES));
+		}
 		marshallerProperties.put("jaxb.encoding", encoding);
 		((Jaxb2Marshaller) marshaller).setMarshallerProperties(marshallerProperties);
 
@@ -237,6 +246,24 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 		return baos.toByteArray();
 	}
 
+	private boolean hasLeyendasFiscales(Comprobante comprobante) {
+		if (comprobante.getComplemento() != null) {
+			for (Object complemento : comprobante.getComplemento().getAny()) {
+				try {
+					Object complementoLeyFisc = unmarshallerLeyFisc.unmarshal(new DOMSource((Node) complemento));
+					if (complementoLeyFisc instanceof LeyendasFiscales) {
+						return true;
+					}
+				} catch (XmlMappingException e) {
+					continue;
+				} catch (IOException e) {
+					continue;
+				}
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public Comprobante convierteByteArrayAComprobante(byte[] xmlCfdi) {
 		try {
@@ -254,10 +281,10 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 		String noCertificadoSat = null;
 		try {
 			Document documentoCFDI = (Document) builder.build(new ByteArrayInputStream(xmlCfdi));
-			Namespace nsCfdi = Namespace.getNamespace(customNamespacePrefixMapper.getCfdiPrefix(), 
-					customNamespacePrefixMapper.getCfdiUri());
-			Namespace nsTfd = Namespace.getNamespace(customNamespacePrefixMapper.getTfdPrefix(), 
-					customNamespacePrefixMapper.getTfdUri());
+			Namespace nsCfdi = Namespace.getNamespace(CfdiV32ServiceImpl.CFDI_PREFIX, 
+					CfdiV32ServiceImpl.CFDI_URI);
+			Namespace nsTfd = Namespace.getNamespace(CfdiV32ServiceImpl.TFD_PREFIX, 
+					CfdiV32ServiceImpl.TFD_URI);
 			noCertificadoSat = documentoCFDI.getRootElement().getChild("Complemento", nsCfdi)
 					.getChild("TimbreFiscalDigital", nsTfd).getAttributeValue("noCertificadoSAT");
 		} catch (JDOMException e) {
@@ -273,10 +300,6 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService, ResourceLoa
 		return noCertificadoSat;
 	}
 	
-	@Override
-	public void setResourceLoader(ResourceLoader resourceLoader) {
-		this.resourceLoader = resourceLoader;
-	}
 }
 
 	

@@ -4,14 +4,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import net.sf.jasperreports.engine.JRParameter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +48,6 @@ import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
-import com.magnabyte.cfdi.portal.service.util.NumerosALetras;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
 import com.magnabyte.cfdi.portal.web.cfdi.CfdiService;
 import com.magnabyte.cfdi.portal.web.webservice.DocumentoWebService;
@@ -166,34 +162,11 @@ public class DocumentoController {
 	public String reporte(@ModelAttribute Documento documento, @PathVariable String filename, 
 			ModelMap model) {
 		logger.debug("Creando reporte");
-		Locale locale = new Locale("es", "MX");
 		List<Comprobante> comprobantes = new ArrayList<Comprobante>();
 		comprobantes.add(documento.getComprobante());
-		String pathImages = servletContext.getRealPath("resources/img");
-		if (documento instanceof DocumentoCorporativo) {
-			model.put("FOLIO_SAP", ((DocumentoCorporativo) documento).getFolioSap());
-		} else if (documento instanceof DocumentoSucursal) {
-			//FIXME revisar el id de establecimiento
-			model.put("SUCURSAL", documento.getEstablecimiento().getNombre());
-			model.put("CAJA", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getIdCaja());
-			model.put("TICKET", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getIdTicket());
-			model.put("FECHATICKET", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getFecha());
-		}
-		model.put("TIPO_DOC", documento.getTipoDocumento().getNombre());
-		model.put("NUM_SERIE_CERT", documentoXmlService.obtenerNumCertificado(documento.getXmlCfdi()));
-		model.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
-		model.put("SELLO_SAT", documento.getTimbreFiscalDigital().getSelloSAT());
-		model.put("FECHA_TIMBRADO", documento.getTimbreFiscalDigital().getFechaTimbrado());
-		model.put("FOLIO_FISCAL", documento.getTimbreFiscalDigital().getUUID());
-		model.put("CADENA_ORIGINAL", documento.getCadenaOriginal());
-		model.put("PATH_IMAGES", pathImages);
-		model.put(JRParameter.REPORT_LOCALE, locale);
-		model.put("QRCODE", codigoQRService.generaCodigoQR(documento));
-		model.put("LETRAS", NumerosALetras.convertNumberToLetter(documento.getComprobante().getTotal().toString()));
-		model.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
-		model.put("IVA", documento.getComprobante().getImpuestos().getTraslados().getTraslado().get(0).getTasa());
+		model.putAll(documentoService.populateReportParams(documento));
 		model.put("objetoKey", comprobantes);
-		return ("reporte");
+		return "reporte";
 	}
 
 	@RequestMapping(value = {"/documentoXml", "/portal/cfdi/documentoXml"})

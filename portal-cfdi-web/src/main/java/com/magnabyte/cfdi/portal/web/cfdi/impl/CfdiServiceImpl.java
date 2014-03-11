@@ -36,6 +36,7 @@ import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
 import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.certificado.CertificadoService;
+import com.magnabyte.cfdi.portal.service.cfdi.v32.CfdiV32Service;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
@@ -69,6 +70,9 @@ public class CfdiServiceImpl implements CfdiService {
 
 	@Autowired
 	private ComprobanteService comprobanteService;
+	
+	@Autowired
+	private CfdiV32Service cfdiV32Service;
 
 	@Autowired
 	private TicketService ticketService;
@@ -156,7 +160,7 @@ public class CfdiServiceImpl implements CfdiService {
 	@Override
 	public void sellarYTimbrarComprobante(Documento documento, int idServicio,
 			CertificadoDigital certificado) {
-		if (comprobanteService.sellarComprobante(documento.getComprobante(),
+		if (cfdiV32Service.sellarComprobante(documento.getComprobante(),
 				certificado)) {
 			if (documentoWebService.timbrarDocumento(documento, idServicio)) {
 				documentoService.updateDocumentoStatusAndXml(documento);
@@ -229,7 +233,7 @@ public class CfdiServiceImpl implements CfdiService {
 		CertificadoDigital certificado = certificadoService
 				.readVigente(documento.getComprobante());
 		documentoService.guardarDocumento(documentoNcr);
-		if (comprobanteService.sellarComprobante(documentoNcr.getComprobante(),
+		if (cfdiV32Service.sellarComprobante(documentoNcr.getComprobante(),
 				certificado)) {
 			if (documentoWebService.timbrarDocumento(documentoNcr, idServicio)) {
 				documentoService.insertDocumentoCfdi(documentoNcr);

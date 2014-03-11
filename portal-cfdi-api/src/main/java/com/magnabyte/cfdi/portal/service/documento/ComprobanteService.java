@@ -1,6 +1,5 @@
 package com.magnabyte.cfdi.portal.service.documento;
 
-import com.magnabyte.cfdi.portal.model.certificado.CertificadoDigital;
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
 import com.magnabyte.cfdi.portal.model.cliente.Cliente;
 import com.magnabyte.cfdi.portal.model.documento.Documento;
@@ -17,9 +16,6 @@ import com.magnabyte.cfdi.portal.model.ticket.Ticket;
  * Interfáz que representa el servicio de comprobante 
  */
 public interface ComprobanteService {
-
-	boolean sellarComprobante(Comprobante comprobante,
-			CertificadoDigital certificado);
 
 	Comprobante obtenerComprobantePor(Cliente cliente, Ticket ticket,
 			Integer idDomicilioFiscal, Establecimiento establecimiento,

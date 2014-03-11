@@ -20,6 +20,7 @@ import jcifs.smb.SmbFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
@@ -85,6 +86,7 @@ public class TicketServiceImpl implements TicketService {
 	private EstablecimientoService establecimientoService;
 	
 	@Autowired
+	@Qualifier("jaxb2Marshaller")
 	private Unmarshaller unmarshaller;
 	
 	@Autowired
