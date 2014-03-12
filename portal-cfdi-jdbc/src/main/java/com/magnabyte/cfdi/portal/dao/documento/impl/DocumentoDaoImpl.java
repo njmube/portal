@@ -122,6 +122,9 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			params.addValue(DocumentoSql.FOLIO_SAP, ((DocumentoCorporativo) documento).getFolioSap());
 			params.addValue(DocumentoSql.NIT, ((DocumentoCorporativo) documento).getNit());
 		}
+		if (documento.getDocumentoOrigen() != null) {
+			params.addValue(DocumentoSql.ID_DOCUMENTO_ORIGEN, documento.getDocumentoOrigen().getId());
+		}
 		params.addValue(DocumentoSql.FECHA_DOCUMENTO, documento.getFechaFacturacion());
 		params.addValue(DocumentoSql.TOTAL_DESCUENTO, documento.getComprobante().getDescuento());
 		params.addValue(DocumentoSql.SUBTOTAL, documento.getComprobante().getSubTotal());
@@ -316,13 +319,19 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 
 		@Override
 		public Documento mapRow(ResultSet rs, int rowNum) throws SQLException {
-			String folioSap = rs.getString(DocumentoSql.FOLIO_SAP);
-			
 			Documento documento = null;
-			
+			Documento documentoOrigen = null;
+			String folioSap = rs.getString(DocumentoSql.FOLIO_SAP);
+			String nit = rs.getString(DocumentoSql.NIT);
+			Integer idDocumentoOrigen = rs.getInt(DocumentoSql.ID_DOCUMENTO_ORIGEN);
+			if (idDocumentoOrigen > 0) {
+				documentoOrigen = new Documento();
+				documentoOrigen.setId(idDocumentoOrigen);
+			}
 			if(folioSap != null) {
 				documento  = new DocumentoCorporativo();
 				((DocumentoCorporativo) documento).setFolioSap(folioSap);
+				((DocumentoCorporativo) documento).setNit(nit);
 			} else {
 				documento = new DocumentoSucursal();
 			}
