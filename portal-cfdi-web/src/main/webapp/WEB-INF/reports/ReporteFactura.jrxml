@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteFactura" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4a6ba1cb-2ea7-4218-8d09-5f9f932a9716">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="103"/>
+	<property name="ireport.y" value="94"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="0.0" lineColor="#000000"/>
@@ -429,7 +429,7 @@
 					<textFieldExpression><![CDATA[$F{metodoDePago}]]></textFieldExpression>
 				</textField>
 				<line>
-					<reportElement x="1" y="3" width="141" height="1" uuid="72888b27-064a-4997-a24a-487c6182c3ee"/>
+					<reportElement x="1" y="1" width="141" height="1" uuid="72888b27-064a-4997-a24a-487c6182c3ee"/>
 				</line>
 				<textField>
 					<reportElement x="0" y="102" width="142" height="10" uuid="0194f683-cfa8-493b-8dcd-9062337361ba"/>
@@ -697,7 +697,7 @@ $F{emisor.domicilioFiscal.estado}+" "+
 				</textField>
 			</frame>
 			<textField>
-				<reportElement x="3" y="193" width="100" height="10" uuid="b86bdefb-e091-4349-af07-b068364a27fa">
+				<reportElement x="1" y="193" width="100" height="10" uuid="b86bdefb-e091-4349-af07-b068364a27fa">
 					<printWhenExpression><![CDATA[$P{TICKET} != null]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="3"/>
@@ -1087,26 +1087,27 @@ $F{emisor.domicilioFiscal.estado}+" "+
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textField>
-					<reportElement positionType="Float" x="0" y="48" width="382" height="13" uuid="2807f8d9-dbc6-4eda-8145-15d3135f08df"/>
+					<reportElement positionType="Float" x="0" y="43" width="382" height="20" uuid="2807f8d9-dbc6-4eda-8145-15d3135f08df"/>
 					<box leftPadding="4"/>
-					<textElement>
+					<textElement verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{formaDePago}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement positionType="Float" x="0" y="3" width="382" height="23" uuid="bb38170a-95bf-4e60-b151-cd1277702150"/>
+					<reportElement positionType="Float" x="0" y="1" width="382" height="20" uuid="bb38170a-95bf-4e60-b151-cd1277702150"/>
 					<box topPadding="2" leftPadding="4"/>
-					<textElement>
+					<textElement verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{LETRAS}+" MN"]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="0" y="30" width="382" height="13" uuid="fc41bbfb-fdcd-401f-895b-1b3eb59048db">
+					<reportElement x="0" y="22" width="382" height="20" uuid="fc41bbfb-fdcd-401f-895b-1b3eb59048db">
 						<printWhenExpression><![CDATA[$P{DOC_ORIGEN} != null]]></printWhenExpression>
 					</reportElement>
-					<textElement>
+					<box leftPadding="4"/>
+					<textElement verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression><![CDATA["ESTA FACTURA SUSTITUYE A LA "+ $P{DOC_ORIGEN}]]></textFieldExpression>
