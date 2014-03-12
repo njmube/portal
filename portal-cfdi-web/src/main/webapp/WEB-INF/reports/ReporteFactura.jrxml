@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteFactura" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4a6ba1cb-2ea7-4218-8d09-5f9f932a9716">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="294"/>
+	<property name="ireport.y" value="96"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="0.0" lineColor="#000000"/>
@@ -376,10 +376,10 @@
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textField>
-					<reportElement x="0" y="4" width="325" height="10" uuid="3733e594-38f1-472b-84f4-557db12d8455"/>
+					<reportElement x="0" y="3" width="325" height="10" uuid="3733e594-38f1-472b-84f4-557db12d8455"/>
 					<box leftPadding="4"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Arial" size="7"/>
+						<font fontName="Arial" size="7" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["RFC: " + $F{receptor.rfc}+
 ($P{NIT} != null ? "  NIT: "+$P{NIT} : "")]]></textFieldExpression>
@@ -550,7 +550,7 @@
 				<reportElement x="1" y="181" width="281" height="12" uuid="3e478ff0-d6cf-445e-bf15-c75eef99821f"/>
 				<box leftPadding="3"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial" size="9"/>
+					<font fontName="Arial" size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["FOLIO FISCAL:  "+$P{FOLIO_FISCAL}]]></textFieldExpression>
 			</textField>
@@ -603,21 +603,21 @@
 						<printWhenExpression><![CDATA[$P{LEYFISC} != null]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Center">
-						<font fontName="Arial" size="7"/>
+						<font fontName="Arial" size="7" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{LEYFISC}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="1" width="228" height="10" uuid="366c957b-efe6-4921-836d-647b503631af"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Arial" size="7"/>
+						<font fontName="Arial" size="7" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{emisor.nombre}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="11" width="228" height="10" uuid="c9498366-b074-4afe-be53-9ebe0d3fa60c"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Arial" size="7"/>
+						<font fontName="Arial" size="7" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["RFC: "+$F{emisor.rfc}]]></textFieldExpression>
 				</textField>
@@ -650,7 +650,7 @@ $F{emisor.domicilioFiscal.estado}+" "+
 				<textField>
 					<reportElement x="0" y="53" width="228" height="10" uuid="240c1c5c-55fd-4012-b294-ce9ed9906eff"/>
 					<textElement textAlignment="Center" verticalAlignment="Bottom">
-						<font fontName="Arial" size="7"/>
+						<font fontName="Arial" size="7" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{REGIMEN}]]></textFieldExpression>
 				</textField>
@@ -691,7 +691,7 @@ $F{emisor.domicilioFiscal.estado}+" "+
 						<printWhenExpression><![CDATA[$P{SUCURSAL} != null]]></printWhenExpression>
 					</reportElement>
 					<textElement verticalAlignment="Middle">
-						<font fontName="Arial" size="7"/>
+						<font fontName="Arial" size="7" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["SUCURSAL: "+$P{SUCURSAL}]]></textFieldExpression>
 				</textField>
@@ -745,7 +745,7 @@ $F{emisor.domicilioFiscal.estado}+" "+
 								<reportElement x="1" y="1" width="66" height="18" uuid="d35b451c-e7a0-48ac-a9c1-177957395acf"/>
 								<box rightPadding="3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Arial Black" size="8" isBold="true"/>
+									<font fontName="Arial" size="8" isBold="true"/>
 								</textElement>
 								<text><![CDATA[CANTIDAD]]></text>
 							</staticText>
@@ -776,7 +776,7 @@ $F{emisor.domicilioFiscal.estado}+" "+
 							<staticText>
 								<reportElement x="0" y="1" width="66" height="18" uuid="c1c6d86c-e351-43a7-9d0d-3876c08f9ce9"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Arial Black" size="8" isBold="true"/>
+									<font fontName="Arial" size="8" isBold="true"/>
 								</textElement>
 								<text><![CDATA[UNIDAD]]></text>
 							</staticText>
@@ -806,7 +806,7 @@ $F{emisor.domicilioFiscal.estado}+" "+
 							<staticText>
 								<reportElement x="0" y="1" width="72" height="18" uuid="19acd930-d21f-4d3b-8df4-40df28435f98"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Arial Black" size="8" isBold="true"/>
+									<font fontName="Arial" size="8" isBold="true"/>
 								</textElement>
 								<text><![CDATA[CODIGO]]></text>
 							</staticText>
@@ -832,7 +832,7 @@ $F{emisor.domicilioFiscal.estado}+" "+
 							<staticText>
 								<reportElement x="0" y="1" width="223" height="18" uuid="a3e09e6a-cc14-46cd-a571-fe55f11b3ec3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Arial Black" size="8" isBold="true"/>
+									<font fontName="Arial" size="8" isBold="true"/>
 								</textElement>
 								<text><![CDATA[CONCEPTO]]></text>
 							</staticText>
@@ -863,7 +863,7 @@ $F{emisor.domicilioFiscal.estado}+" "+
 								<reportElement x="0" y="1" width="72" height="18" uuid="35ff1e0c-c9b3-40b3-b9ab-abafac1f902a"/>
 								<box rightPadding="1"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font fontName="Arial Black" size="8" isBold="true"/>
+									<font fontName="Arial" size="8" isBold="true"/>
 								</textElement>
 								<text><![CDATA[P. UNITARIO]]></text>
 							</staticText>
@@ -895,7 +895,7 @@ $F{emisor.domicilioFiscal.estado}+" "+
 								<reportElement x="0" y="1" width="72" height="18" uuid="da3c0895-aa25-4f5f-a660-9555a4d15cde"/>
 								<box rightPadding="4"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle">
-									<font fontName="Arial Black" size="8" isBold="true"/>
+									<font fontName="Arial" size="8" isBold="true"/>
 								</textElement>
 								<text><![CDATA[IMPORTE]]></text>
 							</staticText>
@@ -1107,7 +1107,7 @@ $F{emisor.domicilioFiscal.estado}+" "+
 					</reportElement>
 					<box leftPadding="4"/>
 					<textElement verticalAlignment="Middle">
-						<font fontName="Arial" size="8"/>
+						<font fontName="Arial" size="8" isBold="true" isItalic="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["ESTA FACTURA SUSTITUYE A LA "+ $P{DOC_ORIGEN}]]></textFieldExpression>
 				</textField>
