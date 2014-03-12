@@ -598,7 +598,9 @@
 			<frame>
 				<reportElement x="201" y="0" width="229" height="75" uuid="670fa061-3add-4db8-8d7f-fbe80195ea99"/>
 				<textField>
-					<reportElement x="1" y="63" width="228" height="10" uuid="dfeff1f4-6403-406c-aaac-66767e16fa40"/>
+					<reportElement x="1" y="63" width="228" height="10" uuid="dfeff1f4-6403-406c-aaac-66767e16fa40">
+						<printWhenExpression><![CDATA[$P{LEYFISC} != null]]></printWhenExpression>
+					</reportElement>
 					<textElement textAlignment="Center">
 						<font size="7"/>
 					</textElement>
