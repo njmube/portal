@@ -263,7 +263,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 
 	private void asignarSerieYFolio(Documento documento) {
 		synchronized (documentoSerieDao) {
-			Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolio(documento);
+			Map<String, Object> serieFolioMap = documentoSerieDao.readNextSerieAndFolio(documento);
 			documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
 			documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO_CONSECUTIVO));
 			documentoSerieDao.updateFolioSerie(documento);
@@ -389,6 +389,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			model.put("CAJA", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getIdCaja());
 			model.put("TICKET", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getIdTicket());
 			model.put("FECHATICKET", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getFecha());
+		}
+		if (documento.getDocumentoOrigen() != null) { 
+			Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolioDocumento(documento.getDocumentoOrigen());
+			StringBuilder sb = new StringBuilder();
+			sb.append(serieFolioMap.get(DocumentoSql.SERIE)).append("-").append(serieFolioMap.get(DocumentoSql.FOLIO));
+			model.put("DOC_ORIGEN", sb.toString());
 		}
 		model.put("TIPO_DOC", documento.getTipoDocumento().getNombre());
 		model.put("NUM_SERIE_CERT", documentoXmlService.obtenerNumCertificado(documento.getXmlCfdi()));

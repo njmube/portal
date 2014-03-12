@@ -38,7 +38,7 @@ public class DocumentoDaoTest {
 		e.setId(3);
 		d.setEstablecimiento(e);
 		d.setTipoDocumento(TipoDocumento.FACTURA);
-		Map<String, Object> map = documentoSerieDao.readSerieAndFolio(d);
+		Map<String, Object> map = documentoSerieDao.readNextSerieAndFolio(d);
 		logger.debug("map not null");
 		Assert.assertNotNull(map);
 		logger.debug("serie");
