@@ -127,8 +127,8 @@ public class DocumentoSql extends GenericSql {
 		READ_DOCUMENTOS_FACTURADOS = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		
-		qryBuilder.append(SELECT).append(EOL).append(TAB).append("id_documento, id_establecimiento, id_status_doc, fecha_doc, id_cliente, subtotal,");
-		qryBuilder.append(" iva, total_doc, dbo.TRIM(folio_sap) as folio_sap, total_descuento, id_domicilio_cliente, xml_file").append(EOL);
+		qryBuilder.append(SELECT).append(EOL).append(TAB).append("id_documento, id_documento_origen,id_establecimiento, id_status_doc, fecha_doc, id_cliente, subtotal,");
+		qryBuilder.append(" iva, total_doc, dbo.TRIM(folio_sap) as folio_sap, dbo.TRIM(nit) as nit, total_descuento, id_domicilio_cliente, xml_file").append(EOL);
 		qryBuilder.append(FROM).append(EOL).append(TAB).append("t_documento").append(EOL);
 		qryBuilder.append(WHERE).append(EOL).append(TAB).append("id_documento = ?");
 		

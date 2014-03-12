@@ -87,6 +87,12 @@ public class CfdiV32ServiceImpl implements CfdiV32Service, ResourceLoaderAware {
 	
 	public static Map<String, String> PREFIXES_LEYFISC;
 	
+	private static String[] XSD = {
+		"classpath:/xsd/cfdv32.xsd", 
+		"classpath:/xsd/tfdv32.xsd",
+		"classpath:/xsd/leyendasFisc.xsd"
+	};
+	
 	public static void initStaticValues(String versionCfdi, String numeroCertificadoPrevio, String selloPrevio,
 			String certificadoPrevio, String schemaLocation, String cfdiUri, String cfdiPrefix, String tfdUri, String tfdPrefix,
 			String leyFiscUri, String leyFiscPrefix) {
@@ -229,12 +235,7 @@ public class CfdiV32ServiceImpl implements CfdiV32Service, ResourceLoaderAware {
 		try {
 			InputStream comprobanteStream = documentoXmlService.convierteComprobanteAStream(comprobante);
 			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			//FIXME cambiar logica
-			Source schema1 = new StreamSource(resourceLoader.getResource("classpath:/cfdv32.xsd").getInputStream()); 
-			Source schema2 = new StreamSource(resourceLoader.getResource("classpath:/tfdv32.xsd").getInputStream());
-			Source schema3 = new StreamSource(resourceLoader.getResource("classpath:/leyendasFisc.xsd").getInputStream());
-			Source[] schemas = {schema1, schema2, schema3};
-			Schema schema = sf.newSchema(schemas);
+			Schema schema = sf.newSchema(getXsdSchemas());
 			Validator validator = schema.newValidator();
 			validator.validate(new StreamSource(comprobanteStream));
 			return true;
@@ -244,6 +245,14 @@ public class CfdiV32ServiceImpl implements CfdiV32Service, ResourceLoaderAware {
 		}
 	}
 	
+	private Source[] getXsdSchemas() throws IOException {
+		Source[] schemas = new Source[XSD.length];
+		for (int i = 0; i < XSD.length; i++) {
+			schemas[i] = new StreamSource(resourceLoader.getResource(XSD[i]).getInputStream());
+		}
+		return schemas;
+	}
+
 	@Override
 	public void setResourceLoader(ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;

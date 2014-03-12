@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.service.documento.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -403,6 +404,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		model.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
 		if (documento.getComprobante().getImpuestos().getTraslados() != null) {
 			model.put("IVA", documento.getComprobante().getImpuestos().getTraslados().getTraslado().get(0).getTasa());
+		} else {
+			model.put("IVA", BigDecimal.ZERO);
 		}
 		
 		return model;
@@ -601,11 +604,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 		int domicilioFiscal = cliente.getDomicilios().get(0).getId();
 		Comprobante comprobante = comprobanteService.obtenerComprobantePor(cliente, ticketDevuelto, domicilioFiscal, establecimiento, TipoDocumento.NOTA_CREDITO);
-		//FIXME revisar
 		Documento documentoNcr = new DocumentoSucursal();
 		documentoNcr.setEstablecimiento(establecimiento);
 		documentoNcr.setCliente(cliente);
-		//FIXME revisar
 		((DocumentoSucursal) documentoNcr).setTicket(ticketDevuelto);
 		documentoNcr.setComprobante(comprobante);
 		documentoNcr.setTipoDocumento(TipoDocumento.NOTA_CREDITO);

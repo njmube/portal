@@ -119,9 +119,9 @@ public class ComprobanteServiceImpl implements ComprobanteService {
 		IVA = new BigDecimal(ivaTasa);
 		
 		IVA_DIVISION = IVA
-			.divide(new BigDecimal(100)).add(new BigDecimal(1)).setScale(4, BigDecimal.ROUND_HALF_UP);
+			.divide(BigDecimal.valueOf(100)).add(BigDecimal.ONE).setScale(4, BigDecimal.ROUND_HALF_UP);
 		IVA_MULTIPLICACION = IVA_DIVISION
-			.subtract(new BigDecimal(1)).setScale(4, BigDecimal.ROUND_HALF_UP);
+			.subtract(BigDecimal.ONE).setScale(4, BigDecimal.ROUND_HALF_UP);
 	}
 	
 	@Transactional(readOnly = true)
@@ -264,7 +264,7 @@ public class ComprobanteServiceImpl implements ComprobanteService {
 	
 	private void getDetalleFromTicket(Ticket ticket, Comprobante comprobante) {
 		Conceptos conceptos = new Conceptos();
-		BigDecimal subTotal = new BigDecimal(0);
+		BigDecimal subTotal = BigDecimal.ZERO;
 		for(Partida partida : ticket.getTransaccion().getPartidas()) {
 			if (!documentoService.isArticuloSinPrecio(partida.getArticulo().getId())) {
 				Concepto concepto = new Concepto();
@@ -277,17 +277,15 @@ public class ComprobanteServiceImpl implements ComprobanteService {
 					concepto.setUnidad(partida.getArticulo().getUnidad());
 				} else {
 					concepto.setUnidad(unidadDefault);
-//					subTotal = subTotal.add(concepto.getImporte());
 				}
-				//FIXME validar calculos
-//				if (partida.getArticulo().getTipoCategoria() != null && !partida.getArticulo().getTipoCategoria().equals(categoriaSinPrecio)) {
-//					subTotal = subTotal.add(concepto.getImporte());
-//				}
+				if (partida.getArticulo().getTipoCategoria() != null && !partida.getArticulo().getTipoCategoria().equals(categoriaSinPrecio)) {
+					subTotal = subTotal.add(concepto.getImporte());
+				}
 				conceptos.getConcepto().add(concepto);
 			}
 		}
 		comprobante.setConceptos(conceptos);
-		BigDecimal descuentoTotal = new BigDecimal(0);
+		BigDecimal descuentoTotal = BigDecimal.ZERO;
 		for(PartidaDescuento descuento : ticket.getTransaccion().getPartidasDescuentos()) {
 			descuentoTotal = descuentoTotal.add(descuento.getDescuentoTotal());
 		}
@@ -295,24 +293,13 @@ public class ComprobanteServiceImpl implements ComprobanteService {
 		descuentoTotal = descuentoTotal.negate();
 		comprobante.setDescuento(descuentoTotal.divide(IVA_DIVISION, 2, BigDecimal.ROUND_HALF_UP));
 
-//		comprobante.setSubTotal(subTotal.setScale(2, BigDecimal.ROUND_HALF_UP));
-//		Impuestos impuesto = new Impuestos();
-//		BigDecimal importeImpuesto = (comprobante.getSubTotal().subtract(comprobante.getDescuento()))
-//				.multiply(IVA_MULTIPLICACION).setScale(2, BigDecimal.ROUND_HALF_UP);
-//		impuesto.setTotalImpuestosTrasladados(importeImpuesto);
-//		Traslados traslados = new Traslados();
-//		Traslado traslado = new Traslado();
-//		traslado.setImporte(importeImpuesto);
-//		traslado.setImpuesto(ivaDescripcion);
-//		traslado.setTasa(IVA.setScale(2, BigDecimal.ROUND_HALF_UP));
-//		traslados.getTraslado().add(traslado);
-//		impuesto.setTraslados(traslados);
-//		comprobante.setImpuestos(impuesto);
-//		comprobante.setTotal(comprobante.getSubTotal().subtract(comprobante.getDescuento()).add(comprobante.getImpuestos().getTotalImpuestosTrasladados()).setScale(2, BigDecimal.ROUND_HALF_UP));
+		comprobante.setSubTotal(subTotal.setScale(2, BigDecimal.ROUND_HALF_UP));
+
 		comprobante.setTotal(ticket.getTransaccion().getTransaccionTotal().getTotalVenta());
-		comprobante.setSubTotal(comprobante.getTotal().divide(IVA_DIVISION, 2, BigDecimal.ROUND_HALF_UP));
 		Impuestos impuesto = new Impuestos();
-		BigDecimal importeImpuesto = comprobante.getTotal().subtract(comprobante.getSubTotal()).setScale(2, BigDecimal.ROUND_HALF_UP);
+		BigDecimal importeImpuesto = comprobante.getTotal()
+				.subtract((comprobante.getSubTotal().subtract(comprobante.getDescuento())))
+				.setScale(2, BigDecimal.ROUND_HALF_UP);
 		impuesto.setTotalImpuestosTrasladados(importeImpuesto);
 		Traslados traslados = new Traslados();
 		Traslado traslado = new Traslado();

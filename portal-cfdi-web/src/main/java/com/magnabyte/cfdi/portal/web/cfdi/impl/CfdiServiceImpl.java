@@ -119,7 +119,6 @@ public class CfdiServiceImpl implements CfdiService {
 					.convierteComprobanteAByteArray(documento.getComprobante(),
 							PortalUtils.encodingUTF8), documento);
 		}
-		//FIXME validar para refacturacion
 		if (documento.getTipoDocumento().equals(TipoDocumento.FACTURA) &&
 				(documento.getCliente().getEmail() != null && !documento.getCliente().getEmail().isEmpty())) {
 			logger.debug("Se enviara el email con los archivos del documento");
