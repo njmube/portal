@@ -277,11 +277,12 @@ public class ComprobanteServiceImpl implements ComprobanteService {
 					concepto.setUnidad(partida.getArticulo().getUnidad());
 				} else {
 					concepto.setUnidad(unidadDefault);
-					subTotal = subTotal.add(concepto.getImporte());
+//					subTotal = subTotal.add(concepto.getImporte());
 				}
-				if (partida.getArticulo().getTipoCategoria() != null && !partida.getArticulo().getTipoCategoria().equals(categoriaSinPrecio)) {
-					subTotal = subTotal.add(concepto.getImporte());
-				}
+				//FIXME validar calculos
+//				if (partida.getArticulo().getTipoCategoria() != null && !partida.getArticulo().getTipoCategoria().equals(categoriaSinPrecio)) {
+//					subTotal = subTotal.add(concepto.getImporte());
+//				}
 				conceptos.getConcepto().add(concepto);
 			}
 		}
@@ -294,10 +295,24 @@ public class ComprobanteServiceImpl implements ComprobanteService {
 		descuentoTotal = descuentoTotal.negate();
 		comprobante.setDescuento(descuentoTotal.divide(IVA_DIVISION, 2, BigDecimal.ROUND_HALF_UP));
 
-		comprobante.setSubTotal(subTotal.setScale(2, BigDecimal.ROUND_HALF_UP));
+//		comprobante.setSubTotal(subTotal.setScale(2, BigDecimal.ROUND_HALF_UP));
+//		Impuestos impuesto = new Impuestos();
+//		BigDecimal importeImpuesto = (comprobante.getSubTotal().subtract(comprobante.getDescuento()))
+//				.multiply(IVA_MULTIPLICACION).setScale(2, BigDecimal.ROUND_HALF_UP);
+//		impuesto.setTotalImpuestosTrasladados(importeImpuesto);
+//		Traslados traslados = new Traslados();
+//		Traslado traslado = new Traslado();
+//		traslado.setImporte(importeImpuesto);
+//		traslado.setImpuesto(ivaDescripcion);
+//		traslado.setTasa(IVA.setScale(2, BigDecimal.ROUND_HALF_UP));
+//		traslados.getTraslado().add(traslado);
+//		impuesto.setTraslados(traslados);
+//		comprobante.setImpuestos(impuesto);
+//		comprobante.setTotal(comprobante.getSubTotal().subtract(comprobante.getDescuento()).add(comprobante.getImpuestos().getTotalImpuestosTrasladados()).setScale(2, BigDecimal.ROUND_HALF_UP));
+		comprobante.setTotal(ticket.getTransaccion().getTransaccionTotal().getTotalVenta());
+		comprobante.setSubTotal(comprobante.getTotal().divide(IVA_DIVISION, 2, BigDecimal.ROUND_HALF_UP));
 		Impuestos impuesto = new Impuestos();
-		BigDecimal importeImpuesto = (comprobante.getSubTotal().subtract(comprobante.getDescuento()))
-				.multiply(IVA_MULTIPLICACION).setScale(2, BigDecimal.ROUND_HALF_UP);
+		BigDecimal importeImpuesto = comprobante.getTotal().subtract(comprobante.getSubTotal()).setScale(2, BigDecimal.ROUND_HALF_UP);
 		impuesto.setTotalImpuestosTrasladados(importeImpuesto);
 		Traslados traslados = new Traslados();
 		Traslado traslado = new Traslado();
@@ -307,7 +322,6 @@ public class ComprobanteServiceImpl implements ComprobanteService {
 		traslados.getTraslado().add(traslado);
 		impuesto.setTraslados(traslados);
 		comprobante.setImpuestos(impuesto);
-		comprobante.setTotal(comprobante.getSubTotal().subtract(comprobante.getDescuento()).add(comprobante.getImpuestos().getTotalImpuestosTrasladados()).setScale(2, BigDecimal.ROUND_UP));
 	}
 	
 	@Override
