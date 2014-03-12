@@ -729,7 +729,7 @@ $F{emisor.domicilioFiscal.estado}+" "+
 	<detail>
 		<band height="43" splitType="Stretch">
 			<componentElement>
-				<reportElement key="" isPrintRepeatedValues="false" mode="Transparent" x="1" y="0" width="572" height="35" isRemoveLineWhenBlank="true" forecolor="#9C31DF" uuid="6eaa652b-3079-4d94-a3b8-1972f21d8fe9"/>
+				<reportElement key="" isPrintRepeatedValues="false" mode="Transparent" x="0" y="0" width="572" height="35" isRemoveLineWhenBlank="true" forecolor="#9C31DF" uuid="6eaa652b-3079-4d94-a3b8-1972f21d8fe9"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="Table Dataset 2" uuid="f60a5bc5-b45e-4915-b53d-79a862af02a0">
 						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{conceptos.concepto})]]></dataSourceExpression>
