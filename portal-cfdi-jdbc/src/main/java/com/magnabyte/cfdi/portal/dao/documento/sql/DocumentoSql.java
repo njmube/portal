@@ -19,6 +19,7 @@ public class DocumentoSql extends GenericSql {
 	public static final String TABLE_DOC_PEND = "t_documento_pendiente";
 	
 	public static final String ID_DOCUMENTO = "id_documento";
+	public static final String ID_DOCUMENTO_ORIGEN = "id_documento_origen";
 	public static final String ID_ESTABLECIMIENTO = "id_establecimiento";
 	public static final String ID_CLIENTE = "id_cliente";
 	public static final String ID_DOMICILIO_CLIENTE = "id_domicilio_cliente";

@@ -231,7 +231,6 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService {
 		try {
 			oos = new OutputStreamWriter(baos, encoding);
 			marshaller.marshal(comprobante, new StreamResult(oos));
-			marshaller.marshal(comprobante, new StreamResult(System.out));
 	        oos.flush();
 	        oos.close();
 		} catch (UnsupportedEncodingException e) {
