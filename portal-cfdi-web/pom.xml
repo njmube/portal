@@ -89,6 +89,10 @@
 			<artifactId>itext</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.magnabyte</groupId>
+			<artifactId>jasper-arial</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.certus.facturehoy.ws2.cfdi</groupId>
 			<artifactId>certus-facturehoy-ws-test</artifactId>
 		</dependency>
