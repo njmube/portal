@@ -323,11 +323,7 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			Documento documentoOrigen = null;
 			String folioSap = rs.getString(DocumentoSql.FOLIO_SAP);
 			String nit = rs.getString(DocumentoSql.NIT);
-			Integer idDocumentoOrigen = rs.getInt(DocumentoSql.ID_DOCUMENTO_ORIGEN);
-			if (idDocumentoOrigen > 0) {
-				documentoOrigen = new Documento();
-				documentoOrigen.setId(idDocumentoOrigen);
-			}
+			
 			if(folioSap != null) {
 				documento  = new DocumentoCorporativo();
 				((DocumentoCorporativo) documento).setFolioSap(folioSap);
@@ -335,7 +331,12 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			} else {
 				documento = new DocumentoSucursal();
 			}
-			
+			Integer idDocumentoOrigen = rs.getInt(DocumentoSql.ID_DOCUMENTO_ORIGEN);
+			if (idDocumentoOrigen > 0) {
+				documentoOrigen = new Documento();
+				documentoOrigen.setId(idDocumentoOrigen);
+				documento.setDocumentoOrigen(documentoOrigen);
+			}
 			Establecimiento establecimiento = new Establecimiento();
 			Cliente cliente = new Cliente();
 			Comprobante comprobante = new Comprobante();
