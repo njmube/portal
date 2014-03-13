@@ -163,6 +163,10 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 				} else if (((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket() != null 
 						&& ((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket().equals(TipoEstadoTicket.REFACTURADO)) {
 					ticketDB = ((DocumentoSucursal) documento).getTicket();
+				} else if (((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket() != null 
+						&& ((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket().equals(TipoEstadoTicket.POR_REFACTURAR)) {
+					((DocumentoSucursal) documento).getTicket().setTipoEstadoTicket(TipoEstadoTicket.FACTURADO);
+					ticketDB = null;
 				} else {
 					ticketDB = ticketService.read(((DocumentoSucursal) documento).getTicket(), documento.getEstablecimiento());
 				}
@@ -697,7 +701,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		documento.setId(null);
 		documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi()));
 		if (documento instanceof DocumentoSucursal) {
-			((DocumentoSucursal) documento).getTicket().setTipoEstadoTicket(TipoEstadoTicket.NCR_GENERADA);
+			((DocumentoSucursal) documento).getTicket().setTipoEstadoTicket(TipoEstadoTicket.POR_REFACTURAR);
 		}
 		limpiarComprobante(documento);
 	}
