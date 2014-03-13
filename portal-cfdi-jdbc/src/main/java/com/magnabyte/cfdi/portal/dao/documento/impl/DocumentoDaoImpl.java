@@ -91,6 +91,19 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 			throw new PortalException(messageSource.getMessage("documento.error.update", new Object[] {e}, null));
 		}
 	}
+	
+	@Override
+	public void updateDocumentoPendiente(Documento documento,
+			TipoEstadoDocumentoPendiente estadoDocumento) {
+		try {
+			int rowsAffected = getJdbcTemplate().update(DocumentoSql.UPDATE_DOC_PENDIENTE_STATUS, 
+					estadoDocumento.getId(), documento.getId());
+			logger.debug("archivos afectados {}", rowsAffected);
+		} catch (DataAccessException e) {
+			logger.debug(messageSource.getMessage("documento.error.update", new Object[] {e}, null));
+			throw new PortalException(messageSource.getMessage("documento.error.update", new Object[] {e}, null));
+		}
+	}
 
 	@Override
 	public void updateDocumentoXmlCfdi(Documento documento) {

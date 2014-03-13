@@ -286,7 +286,11 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	public void insertDocumentoPendiente(Documento documento, TipoEstadoDocumentoPendiente estadoDocumento) {
 		switch (estadoDocumento) {
 		case ACUSE_PENDIENTE:
-			documentoDao.insertDocumentoPendiente(documento, estadoDocumento);
+			if (!isTimbrePendiente(documento)) {
+				documentoDao.insertDocumentoPendiente(documento, estadoDocumento);
+			} else {
+				documentoDao.updateDocumentoPendiente(documento, estadoDocumento);
+			}
 			break;
 		case TIMBRE_PENDIENTE:
 			if (!isTimbrePendiente(documento)) {
@@ -668,6 +672,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		documento = documentoDao.findBySerie(documento);
 		if (!documento.getTipoDocumento().equals(TipoDocumento.FACTURA)) {
 			throw new PortalException(messageSource.getMessage("documento.error.tipo.refacturacion", null, null));
+		}
+		
+		if (!documento.getEstablecimiento().equals(establecimiento)) {
+			Establecimiento establecimientoOrigen = establecimientoService.read(documento.getEstablecimiento());
+			throw new PortalException(messageSource.getMessage("documento.error.sucursal.origen.refacturacion", 
+					new Object[] {establecimientoOrigen.getClave(), establecimientoOrigen.getNombre()}, null));
 		}
 		
 		if (documento.getEstablecimiento().getTipoEstablecimiento().getRol().equalsIgnoreCase("ROLE_CORP")) {

@@ -87,6 +87,10 @@ public class CfdiV32ServiceImpl implements CfdiV32Service, ResourceLoaderAware {
 	
 	public static Map<String, String> PREFIXES_LEYFISC;
 	
+	public static String XSLT_CADENA_ORIGINAL = "WEB-INF/xslt/cadenaoriginal_3_2.xslt";
+	
+	public static String XSLT_TFD_CADENA_ORIGINAL = "WEB-INF/xslt/cadenaoriginal_TFD_1_0.xslt";
+	
 	private static String[] XSD = {
 		"classpath:/xsd/cfdv32.xsd", 
 		"classpath:/xsd/tfdv32.xsd",
@@ -119,7 +123,7 @@ public class CfdiV32ServiceImpl implements CfdiV32Service, ResourceLoaderAware {
 	public boolean sellarComprobante(Comprobante comprobante,
 			CertificadoDigital certificado) {
 		logger.debug("en sellar Documento");
-		String cadena = obtenerCadena(comprobante);
+		String cadena = obtenerCadena(comprobante, XSLT_CADENA_ORIGINAL);
 		String sello = obtenerSelloDigital(cadena, certificado);
 		logger.debug("SELLO: {}", sello);
 		logger.debug("CADENA: {}", cadena);
@@ -194,11 +198,12 @@ public class CfdiV32ServiceImpl implements CfdiV32Service, ResourceLoaderAware {
 		}
 	}
 
-	private String obtenerCadena(Comprobante comprobante) {
+	@Override
+	public String obtenerCadena(Comprobante comprobante, String xsltLocation) {
 		try {
 			logger.debug("en obtener Cadena");
 			Source xmlSource = new StreamSource(documentoXmlService.convierteComprobanteAStream(comprobante));
-			Source xsltSource = new StreamSource(resourceLoader.getResource("WEB-INF/xslt/cadenaoriginal_3_2.xslt").getInputStream());
+			Source xsltSource = new StreamSource(resourceLoader.getResource(xsltLocation).getInputStream());
 			StringWriter writer = new StringWriter();
 			Result outputTarget = new StreamResult(writer);
 			TransformerFactory tFactory = TransformerFactory.newInstance();

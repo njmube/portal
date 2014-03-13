@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 import com.magnabyte.cfdi.portal.model.cfdi.v32.Comprobante;
 import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
+import com.magnabyte.cfdi.portal.model.tfd.v32.TimbreFiscalDigital;
 
 public interface DocumentoXmlService {
 
@@ -20,5 +21,7 @@ public interface DocumentoXmlService {
 	String obtenerLeyendasFiscales(Comprobante comprobante);
 
 	String obtenerNumCertificado(byte[] xmlCfdi);
+
+	TimbreFiscalDigital obtenerTimbreFiscal(Comprobante comprobante);
 
 }

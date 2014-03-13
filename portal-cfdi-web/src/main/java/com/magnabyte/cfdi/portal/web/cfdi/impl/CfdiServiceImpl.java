@@ -37,6 +37,7 @@ import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.certificado.CertificadoService;
 import com.magnabyte.cfdi.portal.service.cfdi.v32.CfdiV32Service;
+import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.documento.ComprobanteService;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.documento.TicketService;
@@ -70,6 +71,9 @@ public class CfdiServiceImpl implements CfdiService {
 
 	@Autowired
 	private ComprobanteService comprobanteService;
+	
+	@Autowired
+	private ClienteService clienteService;
 	
 	@Autowired
 	private CfdiV32Service cfdiV32Service;
@@ -119,6 +123,10 @@ public class CfdiServiceImpl implements CfdiService {
 					.convierteComprobanteAByteArray(documento.getComprobante(),
 							PortalUtils.encodingUTF8), documento);
 		}
+		envioMailCliente(documento);
+	}
+
+	private void envioMailCliente(Documento documento) {
 		if (documento.getTipoDocumento().equals(TipoDocumento.FACTURA) &&
 				(documento.getCliente().getEmail() != null && !documento.getCliente().getEmail().isEmpty())) {
 			logger.debug("Se enviara el email con los archivos del documento");
@@ -200,9 +208,13 @@ public class CfdiServiceImpl implements CfdiService {
 					sellarYTimbrarComprobante(documentoPendiente, idServicio,
 							certificado);
 					logger.debug("Sello y timbre obtenidos correctamente");
-					documentoService.deleteDocumentoPendiente(
-							documentoPendiente,
-							TipoEstadoDocumentoPendiente.TIMBRE_PENDIENTE);
+					if (documentoPendiente.getTipoDocumento().equals(TipoDocumento.FACTURA)) {
+						documentoPendiente.setCliente(clienteService.read(documentoPendiente.getCliente()));
+					}
+					envioMailCliente(documentoPendiente);
+//					documentoService.deleteDocumentoPendiente(
+//							documentoPendiente,
+//							TipoEstadoDocumentoPendiente.TIMBRE_PENDIENTE);
 				} catch (PortalException ex) {
 					logger.info(messageSource.getMessage("cfdi.error.timbre.pendiente", new Object[] {documentoPendiente.getId()}, null));
 				}

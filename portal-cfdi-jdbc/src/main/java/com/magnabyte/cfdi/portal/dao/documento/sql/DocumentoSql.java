@@ -66,6 +66,7 @@ public class DocumentoSql extends GenericSql {
 	public static final String READ_CLIENTE_FROM_DOC;
 	public static final String READ_BY_SERIE;
 	public static final String READ_BY_SERIE_FOLIO_IMPORTE;
+	public static final String UPDATE_DOC_PENDIENTE_STATUS;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -197,6 +198,12 @@ public class DocumentoSql extends GenericSql {
 		qryBuilder.append(AND).append(EOL).append(TAB).append("id_estado_documento = ?");
 		
 		READ_DOC_BY_ID_AND_ESTADO = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append("update t_documento_pendiente set id_estado_documento = ?").append(EOL);
+		qryBuilder.append("where id_documento = ?").append(EOL);
+		
+		UPDATE_DOC_PENDIENTE_STATUS = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
 		
 		qryBuilder.append("select doc.id_documento, docfolio.id_tipo_documento, ");
