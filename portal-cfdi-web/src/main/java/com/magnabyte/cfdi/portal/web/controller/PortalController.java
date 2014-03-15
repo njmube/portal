@@ -87,7 +87,7 @@ public class PortalController {
 		establecimiento = establecimientoService.readByClave(establecimiento);
 		logger.debug("establecimiento {}", establecimiento);
 		//FIXME Descomentar para produccion
-//		ticketService.validarFechaFacturacion(ticket);
+		ticketService.validarFechaFacturacion(ticket);
 		if (ticketService.ticketExists(ticket, establecimiento)) {
 			if (!ticketService.isTicketFacturado(ticket, establecimiento)) {
 				model.put("ticket", ticket);
@@ -138,4 +138,5 @@ public class PortalController {
 		cfdiV32Service.isValidComprobanteXml(documento.getComprobante());
 		return "portal/facturaValidate";
 	}
+
 }

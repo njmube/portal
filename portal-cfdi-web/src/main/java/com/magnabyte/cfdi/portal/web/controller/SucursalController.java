@@ -98,7 +98,7 @@ public class SucursalController {
 			return buscaTicketPage;
 		}
 		//FIXME Descomentar para produccion
-//		ticketService.validarFechaFacturacion(ticket);
+		ticketService.validarFechaFacturacion(ticket);
 		if (ticketService.ticketExists(ticket, establecimiento)) {
 			if (!ticketService.isTicketFacturado(ticket, establecimiento)) {
 				model.put("ticket", ticket);
