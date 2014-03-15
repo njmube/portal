@@ -309,6 +309,9 @@ public class Ticket implements Serializable, Cloneable {
                                 @XmlElement(name = "szPOSDepartmentID")
                                 protected String deptoId;
 
+                                @XmlElement(name = "szItemTaxGroupID")
+                                protected String claveIVA;
+                                
                                 public String getId() {
                                         return id;
                                 }
@@ -348,6 +351,14 @@ public class Ticket implements Serializable, Cloneable {
                                 public void setDeptoId(String deptoId) {
                                         this.deptoId = deptoId;
                                 }
+                                
+                                public String getClaveIVA() {
+									return claveIVA;
+								}
+                                
+                                public void setClaveIVA(String claveIVA) {
+									this.claveIVA = claveIVA;
+								}
 
 								@Override
 								public String toString() {
@@ -362,6 +373,8 @@ public class Ticket implements Serializable, Cloneable {
 									builder.append(tipoCategoria);
 									builder.append(", deptoId=");
 									builder.append(deptoId);
+									builder.append(", claveIVA=");
+									builder.append(claveIVA);
 									builder.append("]");
 									return builder.toString();
 								}

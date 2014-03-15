@@ -7,5 +7,7 @@ public interface CfdiV32Service {
 	boolean sellarComprobante(Comprobante comprobante, CertificadoDigital certificado);
 
 	boolean isValidComprobanteXml(Comprobante comprobante);
+
+	String obtenerCadena(Comprobante comprobante, String xsltLocation);
 	
 }

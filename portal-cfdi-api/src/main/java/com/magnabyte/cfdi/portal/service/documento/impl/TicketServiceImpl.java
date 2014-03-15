@@ -399,8 +399,8 @@ public class TicketServiceImpl implements TicketService {
 		Articulo articulo = new Articulo();
 		PartidaDescuento descuento = new PartidaDescuento();
 		Pago pago = new Pago();
-		BigDecimal precioTotal = new BigDecimal(0);
-		BigDecimal descuentoTotal = new BigDecimal(0);
+		BigDecimal precioTotal = BigDecimal.ZERO;
+		BigDecimal descuentoTotal = BigDecimal.ZERO;
 		pago.setMetodoPago(vmMetodoPago);
 		pago.setMoneda(vmMoneda);
 		
@@ -413,7 +413,7 @@ public class TicketServiceImpl implements TicketService {
 		header.setIdSucursal(establecimiento.getClave());
 		header.setFechaHora(FechasUtils.parseDateToString(new Date(), FechasUtils.formatddMMyyyyHHmmssSlash));
 		
-		concepto.setCantidad(new BigDecimal(1));
+		concepto.setCantidad(BigDecimal.ONE);
 		articulo.setId(null);
 		articulo.setDescripcion(vmConceptoDescripcion);
 		articulo.setUnidad(vmConceptoUnidad);
@@ -451,8 +451,8 @@ public class TicketServiceImpl implements TicketService {
 		Transaccion transaccion = new Transaccion();
 		InformacionPago infoPago = new InformacionPago();
 		Pago pago = new Pago();
-		BigDecimal precioTotal = new BigDecimal(0);
-		BigDecimal descuentoTotal = new BigDecimal(0);
+		BigDecimal precioTotal = BigDecimal.ZERO;
+		BigDecimal descuentoTotal = BigDecimal.ZERO;
 		
 		pago.setMetodoPago(comprobante.getMetodoDePago());
 		pago.setMoneda(comprobante.getMoneda());

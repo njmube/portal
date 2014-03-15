@@ -93,14 +93,23 @@ public class ComprobanteServiceImpl implements ComprobanteService {
 	@Value("${cfdi.comprobante.forma.pago}")
 	private String formaPago;
 	
-	@Value("${ticket.categoria.sinprecio}")
-	private String categoriaSinPrecio;
+//	@Value("${ticket.categoria.sinprecio}")
+//	private String categoriaSinPrecio;
 	
 	@Value("${ticket.unidad.default}")
 	private String unidadDefault;
 	
-	@Value("${cfdi.comprobante.tasa.iva}")
-	private String ivaTasa;
+	@Value("${cfdi.comprobante.tasa.iva.b4}")
+	private String ivaTasaB4;
+	
+	@Value("${cfdi.comprobante.tasa.iva.b4.clave}")
+	private String ivaTasaB4Clave;
+	
+	@Value("${cfdi.comprobante.tasa.iva.b0}")
+	private String ivaTasaB0;
+	
+	@Value("${cfdi.comprobante.tasa.iva.b0.clave}")
+	private String ivaTasaB0Clave;
 	
 	@Value("${cfdi.comprobante.descripcion.iva}")
 	private String ivaDescripcion;
@@ -110,18 +119,22 @@ public class ComprobanteServiceImpl implements ComprobanteService {
 	
 	private BigDecimal IVA;
 	
+	private BigDecimal IVA_ZERO;
+	
 	private BigDecimal IVA_DIVISION;
 	
 	private BigDecimal IVA_MULTIPLICACION;
 	
 	@PostConstruct
 	public void init() {
-		IVA = new BigDecimal(ivaTasa);
+		IVA = new BigDecimal(ivaTasaB4);
+		IVA_ZERO = new BigDecimal(ivaTasaB0);
 		
 		IVA_DIVISION = IVA
-			.divide(new BigDecimal(100)).add(new BigDecimal(1)).setScale(4, BigDecimal.ROUND_HALF_UP);
+			.divide(BigDecimal.valueOf(100)).add(BigDecimal.ONE).setScale(4, BigDecimal.ROUND_HALF_UP);
+		
 		IVA_MULTIPLICACION = IVA_DIVISION
-			.subtract(new BigDecimal(1)).setScale(4, BigDecimal.ROUND_HALF_UP);
+			.subtract(BigDecimal.ONE).setScale(4, BigDecimal.ROUND_HALF_UP);
 	}
 	
 	@Transactional(readOnly = true)
@@ -264,61 +277,63 @@ public class ComprobanteServiceImpl implements ComprobanteService {
 	
 	private void getDetalleFromTicket(Ticket ticket, Comprobante comprobante) {
 		Conceptos conceptos = new Conceptos();
-		BigDecimal subTotal = new BigDecimal(0);
+		BigDecimal subTotal = BigDecimal.ZERO;
 		for(Partida partida : ticket.getTransaccion().getPartidas()) {
 			if (!documentoService.isArticuloSinPrecio(partida.getArticulo().getId())) {
-				Concepto concepto = new Concepto();
-				concepto.setCantidad(partida.getCantidad());
-				concepto.setNoIdentificacion(partida.getArticulo().getId());
-				concepto.setDescripcion(partida.getArticulo().getDescripcion());
-				concepto.setValorUnitario(partida.getPrecioUnitario().divide(IVA_DIVISION, 4, BigDecimal.ROUND_HALF_UP));
-				concepto.setImporte(concepto.getValorUnitario().multiply(concepto.getCantidad()).setScale(4, BigDecimal.ROUND_HALF_UP));
-				if (partida.getArticulo().getUnidad() != null) {
-					concepto.setUnidad(partida.getArticulo().getUnidad());
-				} else {
-					concepto.setUnidad(unidadDefault);
-//					subTotal = subTotal.add(concepto.getImporte());
+				try {
+					Concepto concepto = new Concepto();
+					concepto.setCantidad(partida.getCantidad());
+					concepto.setNoIdentificacion(partida.getArticulo().getId());
+					concepto.setDescripcion(partida.getArticulo().getDescripcion());
+					if (partida.getArticulo().getClaveIVA().equalsIgnoreCase(ivaTasaB4Clave)) {
+						concepto.setValorUnitario(partida.getPrecioUnitario().divide(IVA_DIVISION, 4, BigDecimal.ROUND_HALF_UP));
+					} else if (partida.getArticulo().getClaveIVA().equalsIgnoreCase(ivaTasaB0Clave)) {
+						concepto.setValorUnitario(partida.getPrecioUnitario().setScale(4, BigDecimal.ROUND_HALF_UP));
+					} else {
+						logger.error(messageSource.getMessage("comprobante.error.iva", new Object[] {partida.getArticulo().getId()}, null));
+						throw new PortalException(messageSource.getMessage("comprobante.error.iva", new Object[] {partida.getArticulo().getId()}, null));
+					}
+					concepto.setImporte(concepto.getValorUnitario().multiply(concepto.getCantidad()).setScale(4, BigDecimal.ROUND_HALF_UP));
+					if (partida.getArticulo().getUnidad() != null) {
+						concepto.setUnidad(partida.getArticulo().getUnidad());
+					} else {
+						concepto.setUnidad(unidadDefault);
+					}
+					subTotal = subTotal.add(concepto.getImporte());
+					conceptos.getConcepto().add(concepto);
+				} catch (Exception ex) {
+					logger.error(messageSource.getMessage("comprobante.error.calculos", new Object[] {ex}, null));
+					throw new PortalException(messageSource.getMessage("comprobante.error.calculos", new Object[] {ex}, null));
 				}
-				//FIXME validar calculos
-//				if (partida.getArticulo().getTipoCategoria() != null && !partida.getArticulo().getTipoCategoria().equals(categoriaSinPrecio)) {
-//					subTotal = subTotal.add(concepto.getImporte());
-//				}
-				conceptos.getConcepto().add(concepto);
 			}
 		}
 		comprobante.setConceptos(conceptos);
-		BigDecimal descuentoTotal = new BigDecimal(0);
+		BigDecimal descuentoTotal = BigDecimal.ZERO;
 		for(PartidaDescuento descuento : ticket.getTransaccion().getPartidasDescuentos()) {
 			descuentoTotal = descuentoTotal.add(descuento.getDescuentoTotal());
 		}
 		
 		descuentoTotal = descuentoTotal.negate();
+		//FIXME Validar iva a descuento de dulces
 		comprobante.setDescuento(descuentoTotal.divide(IVA_DIVISION, 2, BigDecimal.ROUND_HALF_UP));
 
-//		comprobante.setSubTotal(subTotal.setScale(2, BigDecimal.ROUND_HALF_UP));
-//		Impuestos impuesto = new Impuestos();
-//		BigDecimal importeImpuesto = (comprobante.getSubTotal().subtract(comprobante.getDescuento()))
-//				.multiply(IVA_MULTIPLICACION).setScale(2, BigDecimal.ROUND_HALF_UP);
-//		impuesto.setTotalImpuestosTrasladados(importeImpuesto);
-//		Traslados traslados = new Traslados();
-//		Traslado traslado = new Traslado();
-//		traslado.setImporte(importeImpuesto);
-//		traslado.setImpuesto(ivaDescripcion);
-//		traslado.setTasa(IVA.setScale(2, BigDecimal.ROUND_HALF_UP));
-//		traslados.getTraslado().add(traslado);
-//		impuesto.setTraslados(traslados);
-//		comprobante.setImpuestos(impuesto);
-//		comprobante.setTotal(comprobante.getSubTotal().subtract(comprobante.getDescuento()).add(comprobante.getImpuestos().getTotalImpuestosTrasladados()).setScale(2, BigDecimal.ROUND_HALF_UP));
+		comprobante.setSubTotal(subTotal.setScale(2, BigDecimal.ROUND_HALF_UP));
+
 		comprobante.setTotal(ticket.getTransaccion().getTransaccionTotal().getTotalVenta());
-		comprobante.setSubTotal(comprobante.getTotal().divide(IVA_DIVISION, 2, BigDecimal.ROUND_HALF_UP));
 		Impuestos impuesto = new Impuestos();
-		BigDecimal importeImpuesto = comprobante.getTotal().subtract(comprobante.getSubTotal()).setScale(2, BigDecimal.ROUND_HALF_UP);
+		BigDecimal importeImpuesto = comprobante.getTotal()
+				.subtract((comprobante.getSubTotal().subtract(comprobante.getDescuento())))
+				.setScale(2, BigDecimal.ROUND_HALF_UP);
 		impuesto.setTotalImpuestosTrasladados(importeImpuesto);
 		Traslados traslados = new Traslados();
 		Traslado traslado = new Traslado();
 		traslado.setImporte(importeImpuesto);
 		traslado.setImpuesto(ivaDescripcion);
-		traslado.setTasa(IVA.setScale(2, BigDecimal.ROUND_HALF_UP));
+		if (traslado.getImporte().compareTo(BigDecimal.ZERO) == 0) {
+			traslado.setTasa(IVA_ZERO.setScale(2, BigDecimal.ROUND_HALF_UP));
+		} else {
+			traslado.setTasa(IVA.setScale(2, BigDecimal.ROUND_HALF_UP));
+		}
 		traslados.getTraslado().add(traslado);
 		impuesto.setTraslados(traslados);
 		comprobante.setImpuestos(impuesto);

@@ -39,6 +39,7 @@ import com.magnabyte.cfdi.portal.model.documento.DocumentoCorporativo;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.leyendasfisc.v32.LeyendasFiscales;
+import com.magnabyte.cfdi.portal.model.tfd.v32.TimbreFiscalDigital;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
 import com.magnabyte.cfdi.portal.service.cfdi.v32.CfdiV32Service;
 import com.magnabyte.cfdi.portal.service.cfdi.v32.impl.CfdiV32ServiceImpl;
@@ -273,6 +274,24 @@ public class DocumentoXmlServiceImpl implements DocumentoXmlService {
 				Object complementoLeyFisc = unmarshallerComplementos.unmarshal(new DOMSource((Node) complemento));
 				if (complementoLeyFisc instanceof LeyendasFiscales) {
 					return ((LeyendasFiscales) complementoLeyFisc).getLeyenda().get(0).getTextoLeyenda();
+				}
+			} catch (XmlMappingException e) {
+				continue;
+			} catch (IOException e) {
+				continue;
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	public TimbreFiscalDigital obtenerTimbreFiscal(Comprobante comprobante) {
+		logger.debug("en obtenerTimbreFiscal");
+		for (Object complemento : comprobante.getComplemento().getAny()) {
+			try {
+				Object complementoTimbreFiscal = unmarshallerComplementos.unmarshal(new DOMSource((Node) complemento));
+				if (complementoTimbreFiscal instanceof TimbreFiscalDigital) {
+					return (TimbreFiscalDigital) complementoTimbreFiscal;
 				}
 			} catch (XmlMappingException e) {
 				continue;

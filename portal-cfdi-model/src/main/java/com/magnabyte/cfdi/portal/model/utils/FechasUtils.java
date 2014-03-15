@@ -33,9 +33,9 @@ public class FechasUtils {
 	private static final long MILISECONDS_DAY = 24 * 60 * 60 * 1000;
 
 	public static Date parseStringToDate(String strDate, String formatDate) {
-		logger.debug("Iniciando el proceso de conversión de una cadena de texto a fecha");
-		logger.debug("Convirtiendo la cadena: " + strDate
-				+ " a fecha. La cadena tiene el formato: " + formatDate);
+//		logger.debug("Iniciando el proceso de conversión de una cadena de texto a fecha");
+//		logger.debug("Convirtiendo la cadena: " + strDate
+//				+ " a fecha. La cadena tiene el formato: " + formatDate);
 		Date fecha = null;
 		try {
 			if (StringUtils.isReallyEmptyOrNull(formatDate)) {
@@ -63,7 +63,7 @@ public class FechasUtils {
 	 * @return
 	 */
 	public static String parseDateToString(Date fecha, String formato) {
-		logger.debug("Iniciando el proceso de conversión de una fecha a una cadena");
+//		logger.debug("Iniciando el proceso de conversión de una fecha a una cadena");
 		SimpleDateFormat format = null;
 		if (fecha != null) {
 			if (!StringUtils.isReallyEmptyOrNull(formato)) {

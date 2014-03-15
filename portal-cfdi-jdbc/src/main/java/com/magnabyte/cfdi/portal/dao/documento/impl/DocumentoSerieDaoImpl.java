@@ -26,7 +26,7 @@ public class DocumentoSerieDaoImpl extends GenericJdbcDao implements
 			LoggerFactory.getLogger(DocumentoSerieDaoImpl.class);
 	
 	@Override
-	public Map<String, Object> readSerieAndFolio(Documento documento) {
+	public Map<String, Object> readNextSerieAndFolio(Documento documento) {
 		return getJdbcTemplate().queryForMap(DocumentoSql.READ_NEXT_SERIE_FOLIO, 
 				documento.getEstablecimiento().getId(),
 				documento.getTipoDocumento().getId());

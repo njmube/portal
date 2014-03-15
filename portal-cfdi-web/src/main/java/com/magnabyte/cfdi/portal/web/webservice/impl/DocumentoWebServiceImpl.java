@@ -20,6 +20,8 @@ import com.magnabyte.cfdi.portal.model.documento.TipoEstadoDocumentoPendiente;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.tfd.v32.TimbreFiscalDigital;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
+import com.magnabyte.cfdi.portal.service.cfdi.v32.CfdiV32Service;
+import com.magnabyte.cfdi.portal.service.cfdi.v32.impl.CfdiV32ServiceImpl;
 import com.magnabyte.cfdi.portal.service.documento.DocumentoService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.xml.DocumentoXmlService;
@@ -54,6 +56,9 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 	
 	@Autowired
 	private MessageSource messageSource;
+	
+	@Autowired
+	private CfdiV32Service cfdiV32Service;
 	
 	@Value("${ws.user}")
 	private String userWs;
@@ -94,6 +99,18 @@ public class DocumentoWebServiceImpl implements DocumentoWebService {
 
 			return true;
 		} else {
+			if (response.getXML() != null) {
+				documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(response.getXML()));
+				timbre = documentoXmlService.obtenerTimbreFiscal(documento.getComprobante());
+				if (timbre != null) {
+					documento.setTimbreFiscalDigital(timbre);
+				}
+				documento.setCadenaOriginal(cfdiV32Service
+						.obtenerCadena(documento.getComprobante(), CfdiV32ServiceImpl.XSLT_TFD_CADENA_ORIGINAL));
+				documento.setXmlCfdi(documentoXmlService
+						.convierteComprobanteAByteArray(documento.getComprobante(), PortalUtils.encodingUTF16));
+				return true;
+			}
 			documentoService.insertDocumentoPendiente(documento, TipoEstadoDocumentoPendiente.TIMBRE_PENDIENTE);
 			logger.info("El Web Service devolvió un error: {}", response.getMessage());
 			throw new PortalException(response.getMessage());

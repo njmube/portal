@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.service.documento.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -162,6 +163,10 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 				} else if (((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket() != null 
 						&& ((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket().equals(TipoEstadoTicket.REFACTURADO)) {
 					ticketDB = ((DocumentoSucursal) documento).getTicket();
+				} else if (((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket() != null 
+						&& ((DocumentoSucursal) documento).getTicket().getTipoEstadoTicket().equals(TipoEstadoTicket.POR_REFACTURAR)) {
+					((DocumentoSucursal) documento).getTicket().setTipoEstadoTicket(TipoEstadoTicket.FACTURADO);
+					ticketDB = null;
 				} else {
 					ticketDB = ticketService.read(((DocumentoSucursal) documento).getTicket(), documento.getEstablecimiento());
 				}
@@ -262,7 +267,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 
 	private void asignarSerieYFolio(Documento documento) {
 		synchronized (documentoSerieDao) {
-			Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolio(documento);
+			Map<String, Object> serieFolioMap = documentoSerieDao.readNextSerieAndFolio(documento);
 			documento.getComprobante().setSerie((String) serieFolioMap.get(DocumentoSql.SERIE));
 			documento.getComprobante().setFolio((String) serieFolioMap.get(DocumentoSql.FOLIO_CONSECUTIVO));
 			documentoSerieDao.updateFolioSerie(documento);
@@ -281,7 +286,11 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	public void insertDocumentoPendiente(Documento documento, TipoEstadoDocumentoPendiente estadoDocumento) {
 		switch (estadoDocumento) {
 		case ACUSE_PENDIENTE:
-			documentoDao.insertDocumentoPendiente(documento, estadoDocumento);
+			if (!isTimbrePendiente(documento)) {
+				documentoDao.insertDocumentoPendiente(documento, estadoDocumento);
+			} else {
+				documentoDao.updateDocumentoPendiente(documento, estadoDocumento);
+			}
 			break;
 		case TIMBRE_PENDIENTE:
 			if (!isTimbrePendiente(documento)) {
@@ -389,6 +398,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			model.put("TICKET", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getIdTicket());
 			model.put("FECHATICKET", ((DocumentoSucursal) documento).getTicket().getTransaccion().getTransaccionHeader().getFecha());
 		}
+		if (documento.getDocumentoOrigen() != null) { 
+			Map<String, Object> serieFolioMap = documentoSerieDao.readSerieAndFolioDocumento(documento.getDocumentoOrigen());
+			StringBuilder sb = new StringBuilder();
+			sb.append(serieFolioMap.get(DocumentoSql.SERIE)).append("-").append(serieFolioMap.get(DocumentoSql.FOLIO));
+			model.put("DOC_ORIGEN", sb.toString());
+		}
 		model.put("TIPO_DOC", documento.getTipoDocumento().getNombre());
 		model.put("NUM_SERIE_CERT", documentoXmlService.obtenerNumCertificado(documento.getXmlCfdi()));
 		model.put("SELLO_CFD", documento.getTimbreFiscalDigital().getSelloCFD());
@@ -403,6 +418,8 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		model.put("REGIMEN", documento.getComprobante().getEmisor().getRegimenFiscal().get(0).getRegimen());
 		if (documento.getComprobante().getImpuestos().getTraslados() != null) {
 			model.put("IVA", documento.getComprobante().getImpuestos().getTraslados().getTraslado().get(0).getTasa());
+		} else {
+			model.put("IVA", BigDecimal.ZERO);
 		}
 		
 		return model;
@@ -601,11 +618,9 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		}
 		int domicilioFiscal = cliente.getDomicilios().get(0).getId();
 		Comprobante comprobante = comprobanteService.obtenerComprobantePor(cliente, ticketDevuelto, domicilioFiscal, establecimiento, TipoDocumento.NOTA_CREDITO);
-		//FIXME revisar
 		Documento documentoNcr = new DocumentoSucursal();
 		documentoNcr.setEstablecimiento(establecimiento);
 		documentoNcr.setCliente(cliente);
-		//FIXME revisar
 		((DocumentoSucursal) documentoNcr).setTicket(ticketDevuelto);
 		documentoNcr.setComprobante(comprobante);
 		documentoNcr.setTipoDocumento(TipoDocumento.NOTA_CREDITO);
@@ -659,6 +674,12 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 			throw new PortalException(messageSource.getMessage("documento.error.tipo.refacturacion", null, null));
 		}
 		
+		if (!documento.getEstablecimiento().equals(establecimiento)) {
+			Establecimiento establecimientoOrigen = establecimientoService.read(documento.getEstablecimiento());
+			throw new PortalException(messageSource.getMessage("documento.error.sucursal.origen.refacturacion", 
+					new Object[] {establecimientoOrigen.getClave(), establecimientoOrigen.getNombre()}, null));
+		}
+		
 		if (documento.getEstablecimiento().getTipoEstablecimiento().getRol().equalsIgnoreCase("ROLE_CORP")) {
 			throw new PortalException(messageSource.getMessage("documento.error.sucursal.refacturacion", null, null));
 		}
@@ -690,7 +711,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 		documento.setId(null);
 		documento.setComprobante(documentoXmlService.convierteByteArrayAComprobante(documento.getXmlCfdi()));
 		if (documento instanceof DocumentoSucursal) {
-			((DocumentoSucursal) documento).getTicket().setTipoEstadoTicket(TipoEstadoTicket.NCR_GENERADA);
+			((DocumentoSucursal) documento).getTicket().setTipoEstadoTicket(TipoEstadoTicket.POR_REFACTURAR);
 		}
 		limpiarComprobante(documento);
 	}

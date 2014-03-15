@@ -58,4 +58,7 @@ public interface DocumentoDao {
 
 	void updateDocumentoStatus(Documento documento);
 
+	void updateDocumentoPendiente(Documento documento,
+			TipoEstadoDocumentoPendiente estadoDocumento);
+
 }

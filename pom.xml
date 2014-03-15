@@ -235,6 +235,11 @@
 				<artifactId>itext</artifactId>
 				<version>2.1.7</version>
 			</dependency>
+			<dependency>
+				<groupId>com.magnabyte</groupId>
+				<artifactId>jasper-arial</artifactId>
+				<version>1.0</version>
+			</dependency>
 			<!-- Xml -->
 			<dependency>
 				<groupId>jdom</groupId>
