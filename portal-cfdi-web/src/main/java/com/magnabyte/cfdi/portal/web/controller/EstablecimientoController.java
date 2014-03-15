@@ -11,18 +11,22 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.magnabyte.cfdi.portal.model.commons.Estado;
+import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.DomicilioEstablecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.RutaRepositorio;
+import com.magnabyte.cfdi.portal.model.establecimiento.SerieFolioEstablecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.TipoEstablecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.factory.EstablecimientoFactory;
 import com.magnabyte.cfdi.portal.service.commons.OpcionDeCatalogoService;
 import com.magnabyte.cfdi.portal.service.establecimiento.DomicilioEstablecimientoService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
 import com.magnabyte.cfdi.portal.service.establecimiento.RutaEstablecimientoService;
+import com.magnabyte.cfdi.portal.service.establecimiento.SerieFolioEstablecimientoService;
 
 /**
  * 
@@ -32,6 +36,7 @@ import com.magnabyte.cfdi.portal.service.establecimiento.RutaEstablecimientoServ
  * Clase que represente el controlador de establecimiento
  */
 @Controller
+//@SessionAttributes({"establecimiento"})
 public class EstablecimientoController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EstablecimientoController.class);
@@ -47,6 +52,9 @@ public class EstablecimientoController {
 	
 	@Autowired
 	private OpcionDeCatalogoService opcionDeCatalogoService;
+	
+	@Autowired
+	private  SerieFolioEstablecimientoService serieFolioEstablecimientoService;;
 	
 	
 	@RequestMapping("/catalogoEstablecimiento")
@@ -105,6 +113,24 @@ public class EstablecimientoController {
 				domicilioEstablecimientoService.save(establecimiento.getDomicilio());
 				rutaEstablecimientoService.save(establecimiento.getRutaRepositorio());
 				establecimientoService.save(establecimiento);
+				//revisando
+//				SerieFolioEstablecimiento serieFolioEstablecimiento = new SerieFolioEstablecimiento();
+//				
+//				serieFolioEstablecimiento.setEstablecimiento(establecimiento);
+//				serieFolioEstablecimiento.setStatus(status);
+//				
+//				serieFolioEstablecimiento.setFolio(objetoNuevo.getFolioFactura);
+//				serieFolioEstablecimiento.setSerie(objetoNuevo.getSerieFactura);
+//				serieFolioEstablecimiento.setTipoDocumento(TipoDocumento.FACTURA);
+//				establecimiento.setSerieFolioEstablecimiento(serieFolioEstablecimiento);
+//				serieFolioEstablecimientoService.save(establecimiento.getSerieFolioEstablecimiento());
+//				
+//				serieFolioEstablecimiento.setFolio(objetoNuevo.getFolioNotaDeCredito);
+//				serieFolioEstablecimiento.setSerie(objetoNuevo.getSerieNotaDeCredito);
+//				serieFolioEstablecimiento.setTipoDocumento(TipoDocumento.NOTA_CREDITO);
+//				establecimiento.setSerieFolioEstablecimiento(serieFolioEstablecimiento);
+//				serieFolioEstablecimientoService.save(establecimiento.getSerieFolioEstablecimiento());
+				// end revisando
 			}
 		} else {
 			muestraError(model, establecimiento);
@@ -128,5 +154,12 @@ public class EstablecimientoController {
 				establecimiento.getDomicilio().getEstado().getPais().getId().toString(), "id_estado"));
 		
 		return model;
+	}
+	
+	
+	@RequestMapping("/continuar")
+	public String altaSerieyFolio(@ModelAttribute Establecimiento establecimiento, ModelMap model) {
+		model.put("establecimiento", establecimiento);
+		return "admin/altaSerieFolio";
 	}
 }

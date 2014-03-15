@@ -80,6 +80,11 @@ public class Establecimiento implements Serializable {
 	 * Domicilio de establecimiento
 	 */
 	private DomicilioEstablecimiento domicilio;
+	
+	/**
+	 * {@link SerieFolioEstablecimiento}
+	 */
+	private SerieFolioEstablecimiento serieFolioEstablecimiento;
 
 	/**
 	 * Devuelve el identificador único de
@@ -296,6 +301,23 @@ public class Establecimiento implements Serializable {
 	 */
 	public void setUltimoCierre(Date ultimoCierre) {
 		this.ultimoCierre = ultimoCierre;
+	}
+	
+	/**
+	 * Devuelve la serie y folio del establecimiento
+	 * @return
+	 */
+	public SerieFolioEstablecimiento getSerieFolioEstablecimiento() {
+		return serieFolioEstablecimiento;
+	}
+	
+	/**
+	 * Asigna la serie y folio del establecimiento
+	 * @param serieFolioEstablecimiento
+	 */
+	public void setSerieFolioEstablecimiento(
+			SerieFolioEstablecimiento serieFolioEstablecimiento) {
+		this.serieFolioEstablecimiento = serieFolioEstablecimiento;
 	}
 
 	@Override
