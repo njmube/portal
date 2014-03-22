@@ -39,7 +39,7 @@
 					<br><br> <strong>${messageError}</strong> 
 				</div>
 			</c:if>
-			<form:form id="establecimientoForm" action="${update}" method="post" modelAttribute="establecimiento" cssClass="form-horizontal"	role="form">
+			<form:form id="establecimientoForm" action="${update}" method="post" modelAttribute="nuevoEstablecimiento" cssClass="form-horizontal"	role="form">
 				<div class="row">
 					<div class="col-md-5">
 						<div class="white-panel form-horizontal">
@@ -68,7 +68,7 @@
 								<div class="form-group">
 									<label for="txtConfirmarPassword" class="col-lg-5 col-md-5 control-label">Confirmar password: </label>
 									<div class="col-lg-5 col-md-5">
-										<input value="${establecimiento.password }" class="form-control input-sm validate[required, equals[txtPassword]] noUpper" id="txtConfirmarPassword" />
+										<input value="${nuevoEstablecimiento.password }" class="form-control input-sm validate[required, equals[txtPassword]] noUpper" id="txtConfirmarPassword" />
 									</div>
 								</div>
 							</fieldset>
@@ -99,7 +99,7 @@
 									</div>
 								</div>
 								<c:choose>
-									<c:when test="${establecimiento.tipoEstablecimiento.id eq 1 }">
+									<c:when test="${nuevoEstablecimiento.tipoEstablecimiento.id eq 1 }">
 										<div class="form-group">
 											<label for="txtRutaProc" class="col-lg-3 col-md-3 control-label">Ruta Procesado: </label>
 											<div class="col-lg-9 col-md-9">
@@ -161,7 +161,7 @@
 										<select class="form-control input-sm validate[required]" id="pais">
 									  		<option value="">- Seleccione una opción -</option>
 									  		<c:forEach items="${listaPaises}" var="pais">
-									    		<option value="${pais.id}" ${establecimiento.domicilio.estado.pais.id eq pais.id ? 'selected' : ''}>${pais.nombre}</option>
+									    		<option value="${pais.id}" ${nuevoEstablecimiento.domicilio.estado.pais.id eq pais.id ? 'selected' : ''}>${pais.nombre}</option>
 									  		</c:forEach>
 	  									</select>
 									</div>

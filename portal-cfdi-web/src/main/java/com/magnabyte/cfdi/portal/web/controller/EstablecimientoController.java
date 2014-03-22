@@ -1,5 +1,6 @@
 package com.magnabyte.cfdi.portal.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.magnabyte.cfdi.portal.model.commons.Estado;
+import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusGenerico;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.DomicilioEstablecimiento;
@@ -33,10 +35,10 @@ import com.magnabyte.cfdi.portal.service.establecimiento.SerieFolioEstablecimien
  * @author Magnabyte, S.A. de C.V
  * magnabyte.com.mx
  * Fecha:27/01/2014
- * Clase que represente el controlador de establecimiento
+ * Clase que representa el controlador de establecimiento
  */
 @Controller
-//@SessionAttributes({"establecimiento"})
+@SessionAttributes("nuevoEstablecimiento")
 public class EstablecimientoController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EstablecimientoController.class);
@@ -65,6 +67,23 @@ public class EstablecimientoController {
 		return "admin/listaEstablecimientos";
 	}
 	
+	@RequestMapping("/establecimientoSerieFolio")
+	public String establecimientoSerieFolio(ModelMap model) {
+		logger.debug("-- catalogoEstablecimientoStatusA");
+		List<Establecimiento> establecimientos= establecimientoService.readAll();
+		List<Establecimiento> establecimientoswithSerie = new ArrayList<Establecimiento>();
+		//FIXME validar por el rol
+		for (Establecimiento establecimiento : establecimientos) {
+			establecimiento.setSerieFolioEstablecimientoLista(
+					establecimientoService.readSerieFolioEstablecimiento(establecimiento));
+			if (establecimiento.getId() != 9999){
+				establecimientoswithSerie.add(establecimiento);
+			}
+		}
+		model.put("establecimientos", establecimientoswithSerie);
+		return "admin/listaEstablecimientosStatusA";
+	}
+	
 	@RequestMapping("/mostrarEstablecimiento/{id}")
 	public String guardarEstablecimiento(@PathVariable int id, ModelMap model) {
 		logger.debug("-- id "+id);
@@ -80,7 +99,7 @@ public class EstablecimientoController {
 		estable.setDomicilio(domicilioEstablecimientoService.readById(domEsta));
 		estable.setRutaRepositorio(rutaEstablecimientoService.readById(rutaRepo));
 		
-		model.put("establecimiento", estable);
+		model.put("nuevoEstablecimiento", estable);
 		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
 		model.put("listaEstados", opcionDeCatalogoService.getCatalogoParam("c_estado", "id_pais", 
 				estable.getDomicilio().getEstado().getPais().getId().toString(), "id_estado"));
@@ -88,49 +107,21 @@ public class EstablecimientoController {
 	}
 	
 	@RequestMapping(value = "/altaEstablecimiento")
-	public String altaEstablecimiento (@ModelAttribute Establecimiento establecimiento, ModelMap model){
-		model.put("establecimiento", new  Establecimiento());
+	public String altaEstablecimiento (ModelMap model){
+		model.put("nuevoEstablecimiento", new  Establecimiento());
 		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
 		model.put("listaEstados", opcionDeCatalogoService.getCatalogo("c_estado", "id_estado"));
 		return "admin/altaEstablecimiento";
 	}
 	
 	@RequestMapping(value = "/guardarEstablecimiento", method = RequestMethod.POST)
-	public String guardarEstablecimiento(@ModelAttribute Establecimiento establecimiento, ModelMap model){
+	public String guardarEstablecimiento(@ModelAttribute("nuevoEstablecimiento") Establecimiento establecimiento, ModelMap model){
 		
 		if (!establecimientoService.exist(establecimiento)) {
 			if (establecimiento.getId() != null){
-				domicilioEstablecimientoService.update(establecimiento.getDomicilio());
-				rutaEstablecimientoService.update(establecimiento.getRutaRepositorio());
 				establecimientoService.update(establecimiento); 
 			} else {
-				TipoEstablecimiento  tipoEstablecimiento = new TipoEstablecimiento();
-				EmpresaEmisor empresaEmisor = new EmpresaEmisor();
-				empresaEmisor.setId(1);
-				tipoEstablecimiento.setId(2);
-				establecimiento.setTipoEstablecimiento(tipoEstablecimiento);
-				establecimiento.setEmpresaEmisor(empresaEmisor);
-				domicilioEstablecimientoService.save(establecimiento.getDomicilio());
-				rutaEstablecimientoService.save(establecimiento.getRutaRepositorio());
 				establecimientoService.save(establecimiento);
-				//revisando
-//				SerieFolioEstablecimiento serieFolioEstablecimiento = new SerieFolioEstablecimiento();
-//				
-//				serieFolioEstablecimiento.setEstablecimiento(establecimiento);
-//				serieFolioEstablecimiento.setStatus(status);
-//				
-//				serieFolioEstablecimiento.setFolio(objetoNuevo.getFolioFactura);
-//				serieFolioEstablecimiento.setSerie(objetoNuevo.getSerieFactura);
-//				serieFolioEstablecimiento.setTipoDocumento(TipoDocumento.FACTURA);
-//				establecimiento.setSerieFolioEstablecimiento(serieFolioEstablecimiento);
-//				serieFolioEstablecimientoService.save(establecimiento.getSerieFolioEstablecimiento());
-//				
-//				serieFolioEstablecimiento.setFolio(objetoNuevo.getFolioNotaDeCredito);
-//				serieFolioEstablecimiento.setSerie(objetoNuevo.getSerieNotaDeCredito);
-//				serieFolioEstablecimiento.setTipoDocumento(TipoDocumento.NOTA_CREDITO);
-//				establecimiento.setSerieFolioEstablecimiento(serieFolioEstablecimiento);
-//				serieFolioEstablecimientoService.save(establecimiento.getSerieFolioEstablecimiento());
-				// end revisando
 			}
 		} else {
 			muestraError(model, establecimiento);
@@ -143,23 +134,35 @@ public class EstablecimientoController {
 		return "redirect:/catalogoEstablecimiento";
 	}
 	
+	@RequestMapping(value = "/asignarSerieFolio", method = RequestMethod.POST)
+	public String asignarSerieFolio(@ModelAttribute("nuevoEstablecimiento") Establecimiento establecimiento, ModelMap model) {
+		model.put("nuevoEstablecimiento", establecimiento);
+		return "admin/altaSerieFolio";
+	}
+	
+	@RequestMapping("/reAsignarSerieFolio/{id}")
+	public String reasignarSerieFolio(@PathVariable int id, ModelMap model) {
+		Establecimiento establecimiento = EstablecimientoFactory.newInstance(id);
+		model.put("nuevoEstablecimiento", establecimiento);
+		return "admin/altaSerieFolio";
+	}
+	
+	@RequestMapping("/actualizarSerieFolio")
+	public String actualizarSerieFolio(@ModelAttribute("nuevoEstablecimiento") Establecimiento establecimiento, ModelMap model) {
+		logger.debug("Reasignando Serie y Folio");
+		establecimientoService.updateSerieFolio(establecimiento);
+		return "redirect:/establecimientoSerieFolio";
+	}
+	
 	public ModelMap muestraError(ModelMap model, Establecimiento establecimiento) {
 		model.put("error", true);
 		model.put("messageError", "El nombre o clave de sucusal ya existe");
 		Estado estado = domicilioEstablecimientoService.findEstado(establecimiento.getDomicilio().getEstado());
 		establecimiento.getDomicilio().setEstado(estado);
-		model.put("establecimiento",  establecimiento);
+		model.put("nuevoEstablecimiento",  establecimiento);
 		model.put("listaPaises", opcionDeCatalogoService.getCatalogo("c_pais", "id_pais"));
 		model.put("listaEstados", opcionDeCatalogoService.getCatalogoParam("c_estado", "id_pais", 
 				establecimiento.getDomicilio().getEstado().getPais().getId().toString(), "id_estado"));
-		
 		return model;
-	}
-	
-	
-	@RequestMapping("/continuar")
-	public String altaSerieyFolio(@ModelAttribute Establecimiento establecimiento, ModelMap model) {
-		model.put("establecimiento", establecimiento);
-		return "admin/altaSerieFolio";
 	}
 }

@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.model.establecimiento;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 
@@ -82,9 +83,9 @@ public class Establecimiento implements Serializable {
 	private DomicilioEstablecimiento domicilio;
 	
 	/**
-	 * {@link SerieFolioEstablecimiento}
+	 * Lista de la serie y folio de establecimiento
 	 */
-	private SerieFolioEstablecimiento serieFolioEstablecimiento;
+	private List<SerieFolioEstablecimiento> serieFolioEstablecimientoLista;
 
 	/**
 	 * Devuelve el identificador único de
@@ -304,20 +305,20 @@ public class Establecimiento implements Serializable {
 	}
 	
 	/**
-	 * Devuelve la serie y folio del establecimiento
+	 * Devuelve la lista de la serie y folio del establecimiento
 	 * @return
 	 */
-	public SerieFolioEstablecimiento getSerieFolioEstablecimiento() {
-		return serieFolioEstablecimiento;
+	public List<SerieFolioEstablecimiento> getSerieFolioEstablecimientoLista() {
+		return serieFolioEstablecimientoLista;
 	}
 	
 	/**
-	 * Asigna la serie y folio del establecimiento
+	 * Asigna la lista de la serie y folio del establecimiento
 	 * @param serieFolioEstablecimiento
 	 */
-	public void setSerieFolioEstablecimiento(
-			SerieFolioEstablecimiento serieFolioEstablecimiento) {
-		this.serieFolioEstablecimiento = serieFolioEstablecimiento;
+	public void setSerieFolioEstablecimientoLista(
+			List<SerieFolioEstablecimiento> serieFolioEstablecimientoLista) {
+		this.serieFolioEstablecimientoLista = serieFolioEstablecimientoLista;
 	}
 
 	@Override

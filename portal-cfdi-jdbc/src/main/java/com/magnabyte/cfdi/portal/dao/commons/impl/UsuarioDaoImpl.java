@@ -20,7 +20,7 @@ import com.magnabyte.cfdi.portal.dao.commons.UsuarioDao;
 import com.magnabyte.cfdi.portal.dao.commons.sql.UsuarioSql;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
 import com.magnabyte.cfdi.portal.model.commons.Usuario;
-import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusUsuario;
+import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusGenerico;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 
@@ -117,7 +117,7 @@ public class UsuarioDaoImpl extends GenericJdbcDao implements UsuarioDao {
 			estable.setId(rs.getInt(EstablecimientoSql.ID_ESTABLECIMIENTO));
 			estable.setNombre(rs.getString(EstablecimientoSql.NOM_ESTAB));
 			usuario.setEstablecimiento(estable);
-			usuario.setEstatus(EstatusUsuario.getById(rs.getInt(UsuarioSql.ID_STATUS)));
+			usuario.setEstatus(EstatusGenerico.getById(rs.getInt(UsuarioSql.ID_STATUS)));
 			return usuario;
 		}
 	};

@@ -3,6 +3,7 @@ package com.magnabyte.cfdi.portal.service.establecimiento;
 import java.util.List;
 
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.establecimiento.SerieFolioEstablecimiento;
 
 
 /**
@@ -35,5 +36,10 @@ public interface EstablecimientoService {
 	boolean exist(Establecimiento establecimiento);
 
 	void updateFechaCierre(Establecimiento establecimiento, String fechaCierre);
+
+	List<SerieFolioEstablecimiento> readSerieFolioEstablecimiento(
+			Establecimiento establecimiento);
+
+	void updateSerieFolio(Establecimiento establecimiento);
 	
 }

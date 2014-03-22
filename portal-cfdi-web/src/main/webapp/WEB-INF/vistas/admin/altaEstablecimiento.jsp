@@ -30,7 +30,6 @@
 				<p class="text-info">Ingresa los datos del Establecimiento.</p>
 			</blockquote>
 			<hr>
-			<c:url var="continuar" value="/continuar" />
 			<c:if test="${error}">
 				<div class="col-md-offset-3 col-md-6 alert alert-danger alert-dismissable alert-fixed auto-close">
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -38,7 +37,8 @@
 					<br><br> <strong>${messageError}</strong> 
 				</div>
 			</c:if>
-			<form:form id="establecimientoForm" action="${continuar }" method="post" modelAttribute="establecimiento" cssClass="form-horizontal"	role="form">
+			<c:url var="continuar" value="/asignarSerieFolio" />
+			<form:form id="establecimientoForm" action="${continuar}" method="post" modelAttribute="nuevoEstablecimiento" cssClass="form-horizontal"	role="form">
 			<div class="row">
 				<div class="col-md-5">
 					<div class="white-panel form-horizontal">

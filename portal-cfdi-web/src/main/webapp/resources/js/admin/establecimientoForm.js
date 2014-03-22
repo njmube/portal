@@ -4,7 +4,7 @@
 			$(this).loadEstados(this, $("#estado"));
 		});
 		
-//		$("#establecimientoForm").validationEngine();
+		$("#establecimientoForm").validationEngine();
 	});
 
 

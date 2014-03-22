@@ -9,9 +9,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.dao.establecimiento.EstablecimientoDao;
+import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
+import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.establecimiento.SerieFolioEstablecimiento;
+import com.magnabyte.cfdi.portal.model.establecimiento.TipoEstablecimiento;
 import com.magnabyte.cfdi.portal.model.utils.FechasUtils;
+import com.magnabyte.cfdi.portal.service.establecimiento.DomicilioEstablecimientoService;
 import com.magnabyte.cfdi.portal.service.establecimiento.EstablecimientoService;
+import com.magnabyte.cfdi.portal.service.establecimiento.RutaEstablecimientoService;
+import com.magnabyte.cfdi.portal.service.establecimiento.SerieFolioEstablecimientoService;
 
 /**
  * 
@@ -25,6 +32,15 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 
 	@Autowired
 	private EstablecimientoDao establecimientoDao;
+	
+	@Autowired
+	private  SerieFolioEstablecimientoService serieFolioEstablecimientoService;
+	
+	@Autowired
+	private RutaEstablecimientoService rutaEstablecimientoService;
+	
+	@Autowired
+	private DomicilioEstablecimientoService domicilioEstablecimientoService;
 	
 	@Transactional(readOnly = true)
 	@Override
@@ -65,7 +81,15 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 	
 	@Transactional(readOnly = true)
 	@Override
+	public List<SerieFolioEstablecimiento>  readSerieFolioEstablecimiento(Establecimiento establecimiento) {
+		return establecimientoDao.readSerieFolioEstablecimiento(establecimiento);
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
 	public void update (Establecimiento establecimiento) {
+		domicilioEstablecimientoService.update(establecimiento.getDomicilio());
+		rutaEstablecimientoService.update(establecimiento.getRutaRepositorio());
 		establecimientoDao.update(establecimiento);
 	}
 	
@@ -83,7 +107,17 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 	@Transactional(readOnly = true)
 	@Override
 	public void save (Establecimiento establecimiento) {
+		//FIXME Revisar la asignacion del tipo de establecimiento y emisor
+		TipoEstablecimiento  tipoEstablecimiento = new TipoEstablecimiento();
+		EmpresaEmisor empresaEmisor = new EmpresaEmisor();
+		empresaEmisor.setId(1);
+		tipoEstablecimiento.setId(2);
+		establecimiento.setTipoEstablecimiento(tipoEstablecimiento);
+		establecimiento.setEmpresaEmisor(empresaEmisor);
+		domicilioEstablecimientoService.save(establecimiento.getDomicilio());
+		rutaEstablecimientoService.save(establecimiento.getRutaRepositorio());
 		establecimientoDao.save(establecimiento);
+		insertSerieFolio(establecimiento);
 	}
 	
 	@Transactional(readOnly = true)
@@ -119,6 +153,24 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public void updateSerieFolio (Establecimiento establecimiento) {
+			establecimientoDao.updateSerieFolio(establecimiento);
+			insertSerieFolio(establecimiento);
+	}
+	
+	public void insertSerieFolio (Establecimiento establecimiento){
+		for(int i = 0; i < 2; i ++) {
+			if (i == 0 ) {
+				establecimiento.getSerieFolioEstablecimientoLista().get(i).setTipoDocumento(TipoDocumento.FACTURA);
+			} else {
+				establecimiento.getSerieFolioEstablecimientoLista().get(i).setTipoDocumento(TipoDocumento.NOTA_CREDITO);
+			}
+			establecimiento.getSerieFolioEstablecimientoLista().get(i).setEstablecimiento(establecimiento);
+			serieFolioEstablecimientoService.save(establecimiento.getSerieFolioEstablecimientoLista().get(i));
+		}
 	}
 	
 }

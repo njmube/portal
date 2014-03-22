@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.model.establecimiento;
 
 import java.io.Serializable;
 
+import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusGenerico;
 import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 
 /**
@@ -21,7 +22,7 @@ public class SerieFolioEstablecimiento implements Serializable {
 	/**
 	 * Identificador único de l serie y folio de un {@link Establecimiento}
 	 */
-	private int id;
+	private Integer id;
 	
 	/**
 	 * {@link Establecimiento}
@@ -34,14 +35,19 @@ public class SerieFolioEstablecimiento implements Serializable {
 	private String serie;
 	
 	/**
-	 * Folio del {@link Establecimiento}
+	 * Folio inicial del {@link Establecimiento}
 	 */
-	private String folio;
+	private Integer folioInicial;
+	
+	/**
+	 * Folio consecutivo del {@link Establecimiento}
+	 */
+	private Integer folioConsecutivo;
 	
 	/**
 	 * Status del la serie y folio del {@link Establecimiento}
 	 */
-	private String status;
+	private EstatusGenerico status;
 	
 	/**
 	 * Tipo de documento
@@ -97,26 +103,26 @@ public class SerieFolioEstablecimiento implements Serializable {
 	}
 
 	/**
-	 * Devuelve el folio del establecimiento
+	 * Devuelve el folio inicial del establecimiento
 	 * @return folio
 	 */
-	public String getFolio() {
-		return folio;
+	public Integer getFolioInicial() {
+		return folioInicial;
 	}
 
 	/**
-	 * Asigna el folio del estableimiento
-	 * @param folio
+	 * Asigna el folio inicial del establecimiento
+	 * @param folio_inicial
 	 */
-	public void setFolio(String folio) {
-		this.folio = folio;
+	public void setFolioInicial(Integer folioInicial) {
+		this.folioInicial = folioInicial;
 	}
 
 	/**
 	 * Devuelve el status de la serie y folio del establecimiento 
 	 * @return
 	 */
-	public String getStatus() {
+	public EstatusGenerico getStatus() {
 		return status;
 	}
 
@@ -124,7 +130,7 @@ public class SerieFolioEstablecimiento implements Serializable {
 	 * Asigna el status de la serie y folio del establecimiento
 	 * @param status
 	 */
-	public void setStatus(String status) {
+	public void setStatus(EstatusGenerico status) {
 		this.status = status;
 	}
 
@@ -143,4 +149,21 @@ public class SerieFolioEstablecimiento implements Serializable {
 	public void setTipoDocumento(TipoDocumento tipoDocumento) {
 		this.tipoDocumento = tipoDocumento;
 	}
+
+	/**
+	 * Devuelve el folio consecutivo del establecimiento
+	 * @return folio_consecutivo
+	 */
+	public Integer getFolioConsecutivo() {
+		return folioConsecutivo;
+	}
+
+	/**
+	 * Asigna el folio consecutivo de Establecimiento
+	 * @param folio_consecutivo
+	 */
+	public void setFolioConsecutivo(Integer folioConsecutivo) {
+		this.folioConsecutivo = folioConsecutivo;
+	}
+	
 }

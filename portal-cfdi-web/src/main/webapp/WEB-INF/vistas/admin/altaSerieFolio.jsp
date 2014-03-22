@@ -18,7 +18,6 @@
 				<p class="text-info">Ingresa serie y folio del Establecimiento para la factura y nota de credito.</p>
 			</blockquote>
 			<hr>
-			<c:url var="guardar" value="/guardarEstablecimiento" />
 			<c:if test="${error}">
 				<div class="col-md-offset-3 col-md-6 alert alert-danger alert-dismissable alert-fixed auto-close">
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -26,7 +25,15 @@
 					<br><br> <strong>${messageError}</strong> 
 				</div>
 			</c:if>
-			<form:form id="serieyFolioForm" action="${guardar }" modelAttribute="establecimiento" method="post" cssClass="form-horizontal" role="form">
+			<c:choose>
+				<c:when test="${empty establecimiento.clave}">
+					<c:url var="guardar" value="/guardarEstablecimiento" />
+				</c:when>
+				<c:otherwise >
+					<c:url var="guardar" value="/actualizarSerieFolio" />
+				</c:otherwise>
+			</c:choose>
+			<form:form id="serieFolioForm" action="${guardar}" modelAttribute="nuevoEstablecimiento" method="post" cssClass="form-horizontal" role="form">
 				<div class="row">
 					<div class="col-md-5 col-md-offset-1">
 						<div class="white-panel form-horizontal">
@@ -34,15 +41,16 @@
 							<hr>
 							<fieldset>
 								<div class="form-group">
+								<form:hidden id="idEstablecimiento" path="id" />
 								<label for="txtSerieFactura" class="col-lg-5 col-md-5 control-label">Serie:</label>
 								<div class="col-lg-5 col-md-5">
-									<form:input path="" cssClass="form-control input-sm validate[required] noUpper col-lg-5 col-md-5" id="txtSerieFactura" />
+									<form:input path="serieFolioEstablecimientoLista[0].serie" cssClass="form-control input-sm validate[required] noUpper col-lg-5 col-md-5" id="txtSerieFactura" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="txtFolioFactura" class="col-lg-5 col-md-5 control-label">Folio:</label>
 								<div class="col-lg-5 col-md-5">
-									<form:input path="" cssClass="form-control input-sm validate[required,custom[onlyNumberSp]] noUpper col-lg-5 col-md-5" id="txtFolioFactura" />
+									<form:input path="serieFolioEstablecimientoLista[0].folioInicial" cssClass="form-control input-sm validate[required,custom[onlyNumberSp]] noUpper col-lg-5 col-md-5" id="txtFolioFactura" />
 								</div>
 							</div>
 							</fieldset>
@@ -56,13 +64,13 @@
 								<div class="form-group">
 								<label for="txtSerieNotaDeCredito" class="col-lg-5 col-md-5 control-label">Serie:</label>
 								<div class="col-lg-5 col-md-5">
-									<form:input path="" cssClass="form-control input-sm validate[required] noUpper col-lg-5 col-md-5" id="txtSerieNotaDeCredito" />
+									<form:input path="serieFolioEstablecimientoLista[1].serie" cssClass="form-control input-sm validate[required] noUpper col-lg-5 col-md-5" id="txtSerieNotaDeCredito" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="txtFolioNotaDeCredito" class="col-lg-5 col-md-5 control-label">Folio:</label>
 								<div class="col-lg-5 col-md-5">
-									<form:input path="" cssClass="form-control input-sm validate[required,custom[onlyNumberSp]] noUpper col-lg-5 col-md-5" id="txtFolioNotaDeCredito" />
+									<form:input path="serieFolioEstablecimientoLista[1].folioInicial" cssClass="form-control input-sm validate[required,custom[onlyNumberSp]] noUpper col-lg-5 col-md-5" id="txtFolioNotaDeCredito" />
 								</div>
 							</div>
 							</fieldset>
@@ -72,6 +80,7 @@
 				<div class="row">
 					<p class="form-grup text-center">
 					<button id="guardar" type="button" class="btn btn-primary">Guardar <i class="fa fa-floppy-o"></i></button>
+<!-- 					<button id="cancelar" type="button" class="btn btn-danger">Cancelar <i class="fa fa-times"></i></button> -->
 					</p>
 			</div>					
 			</form:form>
@@ -79,13 +88,17 @@
 	</div>
 	<script type="text/javascript">
 		$(document).ready(function () {
-			$("#serieyFolioForm").validationEngine();
+			$("#serieFolioForm").validationEngine();
 			
 			$("#guardar").click(function () {
-				if ($("#serieyFolioForm").validationEngine("validate")){
-					alert("funcina   ..,  validado");
+				if ($("#serieFolioForm").validationEngine("validate")){
+					$("#serieFolioForm").submit();
 				}
 			});
+			
+// 			$("#cancelar").click(function (){
+// 				location.href = contextPath + "/establecimientoSerieFolio";
+// 			});
 		});
 	</script>
 </body>

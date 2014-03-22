@@ -3,31 +3,31 @@ package com.magnabyte.cfdi.portal.model.commons.enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum EstatusDomicilioCliente {
+public enum EstatusGenerico {
 
 	ACTIVO(1, "ACTIVO"), INACTIVO(2, "INACTIVO");
 	
-	private Integer id;
+	private int id;
 	private String nombre;
-	private static Map<Integer, EstatusDomicilioCliente> idToEstatusMap;
+	private static Map<Integer, EstatusGenerico> idToEstatusMap;
 
 	static {
-		idToEstatusMap = new HashMap<Integer, EstatusDomicilioCliente>();
-		for (EstatusDomicilioCliente estatus : values()) {
+		idToEstatusMap = new HashMap<Integer, EstatusGenerico>();
+		for (EstatusGenerico estatus : values()) {
 			idToEstatusMap.put(estatus.getId(), estatus);
 		}
 	}
 	
-	private EstatusDomicilioCliente(Integer id, String nombre) {
+	private EstatusGenerico(int id, String nombre) {
 		this.id = id;
 		this.nombre = nombre;
 	}
 
-	public Integer getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -39,7 +39,7 @@ public enum EstatusDomicilioCliente {
 		this.nombre = nombre;
 	}
 
-	public static EstatusDomicilioCliente getById(Integer id) {
+	public static EstatusGenerico getById(int id) {
 		return idToEstatusMap.get(id);
 	}
 }

@@ -1,6 +1,6 @@
 package com.magnabyte.cfdi.portal.model.commons;
 
-import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusUsuario;
+import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusGenerico;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 
 /**
@@ -34,7 +34,7 @@ public class Usuario {
 	/**
 	 * Estatus del usuario
 	 */
-	private EstatusUsuario estatus;
+	private EstatusGenerico estatus;
 
 	/**
 	 * Obtiene el id de usuario
@@ -104,7 +104,7 @@ public class Usuario {
 	 * Obtiene el estatus de usuario
 	 * @return estatus
 	 */
-	public EstatusUsuario getEstatus() {
+	public EstatusGenerico getEstatus() {
 		return estatus;
 	}
 
@@ -112,7 +112,7 @@ public class Usuario {
 	 * Asigna el estatus de usuario
 	 * @param estatus
 	 */
-	public void setEstatus(EstatusUsuario estatus) {
+	public void setEstatus(EstatusGenerico estatus) {
 		this.estatus = estatus;
 	}
 

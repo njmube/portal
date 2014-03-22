@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.dao.establecimiento.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,10 +20,14 @@ import org.springframework.stereotype.Repository;
 import com.magnabyte.cfdi.portal.dao.GenericJdbcDao;
 import com.magnabyte.cfdi.portal.dao.establecimiento.EstablecimientoDao;
 import com.magnabyte.cfdi.portal.dao.establecimiento.sql.EstablecimientoSql;
+import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusGenerico;
+import com.magnabyte.cfdi.portal.model.documento.SerieEstablecimiento;
+import com.magnabyte.cfdi.portal.model.documento.TipoDocumento;
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 import com.magnabyte.cfdi.portal.model.establecimiento.DomicilioEstablecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.RutaRepositorio;
+import com.magnabyte.cfdi.portal.model.establecimiento.SerieFolioEstablecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.TipoEstablecimiento;
 import com.magnabyte.cfdi.portal.model.establecimiento.factory.EstablecimientoFactory;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
@@ -104,10 +109,17 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 		return getJdbcTemplate().query(EstablecimientoSql.READ_ALL, MAPPER_ESTABLECIMIENTO);
 	}
 	
+	@Override
 	public Establecimiento readAllById (Establecimiento establecimiento) {
 		String qry = EstablecimientoSql.READ_ALL_WITH_IDS;
 		logger.debug("-- readAllById "+ qry);
 		return getJdbcTemplate().queryForObject(qry, MAPPER_FOR_ESTAB, establecimiento.getId());
+	}
+	
+	@Override
+	public List<SerieFolioEstablecimiento> readSerieFolioEstablecimiento(Establecimiento establecimiento) {
+		return getJdbcTemplate().query(EstablecimientoSql.READ_ALL_SERIE_STATUS_A, 
+				MAPPER_ESTABLECIMIENTO_SERIE, establecimiento.getId(), EstatusGenerico.ACTIVO.getId());
 	}
 	
 	@Override
@@ -117,6 +129,13 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 				establecimiento.getClave(), establecimiento.getNombre(),
 				establecimiento.getPassword(), establecimiento.getId()
 		);
+	}
+	
+	@Override
+	public void updateSerieFolio (Establecimiento establecimiento) {
+		
+		getJdbcTemplate().update(EstablecimientoSql.UPDATE_SERIE_FOLIO, 
+				EstatusGenerico.INACTIVO.getId(), establecimiento.getId());
 	}
 	
 	@Override
@@ -255,6 +274,20 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 			establecimiento.setTipoEstablecimiento(tipoEstablecimiento);
 
 			return establecimiento;
+		}
+	};
+	
+	private static final RowMapper<SerieFolioEstablecimiento> MAPPER_ESTABLECIMIENTO_SERIE= new RowMapper<SerieFolioEstablecimiento>() {
+		
+		@Override
+		public SerieFolioEstablecimiento mapRow(ResultSet rs, int rowNum)
+				throws SQLException {
+			SerieFolioEstablecimiento serieFolioEstablecimiento = new SerieFolioEstablecimiento();
+			serieFolioEstablecimiento.setFolioInicial(rs.getInt(EstablecimientoSql.FOLIO_INICIAL));
+			serieFolioEstablecimiento.setFolioConsecutivo(rs.getInt(EstablecimientoSql.FOLIO_CONSECUTIVO));
+			serieFolioEstablecimiento.setSerie(rs.getString(EstablecimientoSql.SERIE));
+			serieFolioEstablecimiento.setTipoDocumento(TipoDocumento.getById(rs.getInt(EstablecimientoSql.ID_TIPO_DOCUMENTO)));
+			return serieFolioEstablecimiento;
 		}
 	};
 	

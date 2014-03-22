@@ -17,12 +17,16 @@ public class EstablecimientoSql extends GenericSql {
 	public static final String TABLE_DOM_ESTAB = "t_domicilio_establecimiento";
 	public static final String TABLE_RUTA_ESTAB = "t_ruta_establecimiento";
 	public static final String TABLE_ESTAB_CIERRE = "t_establecimiento_cierre";
+	public static final String TABLE_ESTAB_SERIE = "t_establecimiento_serie";
 	public static final String CATALOGO_TIPO_ESTAB = "c_tipo_establecimiento";
+	public static final String CATALOGO_TIPO_DOC = "c_tipo_documento";
 	
 	public static final String ALIAS_TABLE = "te";
 	public static final String ALIAS_TIPO_ESTAB = "cte";
 	public static final String ALIAS_DOM_ESTAB = "tde";
 	public static final String ALIAS_RUTA_ESTAB = "tre";
+	public static final String ALIAS_ESTAB_SERIE = "tes";
+	public static final String ALIAS_TIPO_DOC = "ctd";
 	
 	public static final String ROL = "rol";
 	public static final String CLAVE = "clave";
@@ -50,6 +54,15 @@ public class EstablecimientoSql extends GenericSql {
 	public static final String SIGUIENTE_CIERRE = "siguiente_cierre";
 	public static final String ULTIMO_CIERRE = "ultimo_cierre";
 	
+	//Columnas de la tabla t_establecimiento_serie
+	public static final String ID_SERIE_FOLIO = "id_establecimiento_serie";
+	public static final String SERIE = "serie";
+	public static final String STATUS = "status";
+	public static final String FOLIO_INICIAL = "folio_inicial";
+	public static final String FOLIO_CONSECUTIVO = "folio_consecutivo";
+	public static final String ID_TIPO_DOCUMENTO = "id_tipo_documento";
+	public static final String NOMBRE_TIPO_DOC = "nombre_tipo_doc";
+	
 	public static final String GET_ROLES;
 	public static final String FIND_BY_CLAVE;
 	public static final String READ_BY_CLAVE;
@@ -62,6 +75,8 @@ public class EstablecimientoSql extends GenericSql {
 	public static final String READ_FECHA_CIERRE_BY_ID;
 	public static final String FIND_BY_NAME;
 	public static final String UPDATE_FECHA_CIERRE;
+	public static final String READ_ALL_SERIE_STATUS_A;
+	public static final String UPDATE_SERIE_FOLIO;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -354,5 +369,27 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append("where id_establecimiento = ?").append(EOL);
 		
 		UPDATE_FECHA_CIERRE = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append(SELECT).append(ALL).append(EOL).append(TAB);
+		qryBuilder.append(FROM).append(EOL).append(TAB);
+		qryBuilder.append(TABLE_ESTAB_SERIE).append(EOL).append(TAB);
+		qryBuilder.append(WHERE).append(EOL).append(TAB);
+		qryBuilder.append(ID_ESTABLECIMIENTO).append(SET_PARAM).append(TAB);
+		qryBuilder.append(AND).append(EOL).append(TAB);
+		qryBuilder.append(STATUS).append(SET_PARAM);
+		
+		READ_ALL_SERIE_STATUS_A = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append(UPDATE).append(EOL).append(TAB).append(TABLE_ESTAB_SERIE);
+		qryBuilder.append(EOL).append(TAB).append(SET).append(EOL);
+		
+		qryBuilder.append(TAB).append(STATUS).append(SET_PARAM).append(EOL);
+		
+		qryBuilder.append(WHERE).append(EOL).append(TAB);
+		qryBuilder.append(ID_ESTABLECIMIENTO).append(SET_PARAM);
+		
+		UPDATE_SERIE_FOLIO = qryBuilder.toString();
 	}	
 }
