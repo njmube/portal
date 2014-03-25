@@ -107,7 +107,7 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 	@Transactional(readOnly = true)
 	@Override
 	public void save (Establecimiento establecimiento) {
-		//FIXME Revisar la asignacion del tipo de establecimiento y emisor
+//		FIXME Revisar la asignacion del tipo de establecimiento y emisor
 		TipoEstablecimiento  tipoEstablecimiento = new TipoEstablecimiento();
 		EmpresaEmisor empresaEmisor = new EmpresaEmisor();
 		empresaEmisor.setId(1);
@@ -161,6 +161,16 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 			insertSerieFolio(establecimiento);
 	}
 	
+	@Override
+	public boolean existSerie(String serie) {
+		return establecimientoDao.existSerie(serie);
+	}
+	
+	/**
+	 * Metodo para insertar en la tabla de Establecimiento serie
+	 * @param {@link Establecimiento}
+	 */
+	@Override
 	public void insertSerieFolio (Establecimiento establecimiento){
 		for(int i = 0; i < 2; i ++) {
 			if (i == 0 ) {

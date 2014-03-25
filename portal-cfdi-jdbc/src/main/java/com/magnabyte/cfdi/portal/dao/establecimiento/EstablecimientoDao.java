@@ -43,5 +43,7 @@ public interface EstablecimientoDao {
 			Establecimiento establecimiento);
 
 	void updateSerieFolio(Establecimiento establecimiento);
+
+	boolean existSerie(String serie);
 	
 }

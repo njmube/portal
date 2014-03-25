@@ -177,9 +177,23 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 			return null;
 		}
 		return object;
-		
-		
 	}
+	
+	@Override
+	public boolean existSerie(String serie) {
+		logger.debug("existSerie: " + EstablecimientoSql.READ_BY_SERIE);
+		String objeto = null;
+		try {
+			objeto = getJdbcTemplate().queryForObject(EstablecimientoSql.READ_BY_SERIE, String.class, serie);
+			if (!objeto.isEmpty()){
+				return true;
+			}
+		} catch (EmptyResultDataAccessException ex) {
+			return false;
+		}
+		return false;
+	}
+	
 	private MapSqlParameterSource getParameters(Establecimiento establecimiento) {
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue(EstablecimientoSql.CLAVE, establecimiento.getClave());

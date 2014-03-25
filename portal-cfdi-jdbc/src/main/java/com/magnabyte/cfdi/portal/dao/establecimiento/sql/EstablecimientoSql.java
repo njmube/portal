@@ -77,6 +77,7 @@ public class EstablecimientoSql extends GenericSql {
 	public static final String UPDATE_FECHA_CIERRE;
 	public static final String READ_ALL_SERIE_STATUS_A;
 	public static final String UPDATE_SERIE_FOLIO;
+	public static final String READ_BY_SERIE;
 	
 	static {
 		StringBuilder qryBuilder = new StringBuilder();
@@ -391,5 +392,15 @@ public class EstablecimientoSql extends GenericSql {
 		qryBuilder.append(ID_ESTABLECIMIENTO).append(SET_PARAM);
 		
 		UPDATE_SERIE_FOLIO = qryBuilder.toString();
+		clearAndReuseStringBuilder(qryBuilder);
+		
+		qryBuilder.append(SELECT).append(EOL).append(TAB);
+		qryBuilder.append(SERIE).append(EOL).append(TAB);
+		qryBuilder.append(FROM).append(EOL).append(TAB);
+		qryBuilder.append(TABLE_ESTAB_SERIE).append(EOL).append(TAB);
+		qryBuilder.append(WHERE).append(EOL).append(TAB);
+		qryBuilder.append(SERIE).append(SET_PARAM);
+		
+		READ_BY_SERIE = qryBuilder.toString();
 	}	
 }

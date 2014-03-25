@@ -116,12 +116,25 @@ public class EstablecimientoController {
 	
 	@RequestMapping(value = "/guardarEstablecimiento", method = RequestMethod.POST)
 	public String guardarEstablecimiento(@ModelAttribute("nuevoEstablecimiento") Establecimiento establecimiento, ModelMap model){
-		
+		//FIXME Revisar refactorizacion
 		if (!establecimientoService.exist(establecimiento)) {
 			if (establecimiento.getId() != null){
 				establecimientoService.update(establecimiento); 
 			} else {
-				establecimientoService.save(establecimiento);
+				boolean serieFactura, serieNotaCredito;
+				serieFactura = establecimientoService.existSerie(establecimiento.getSerieFolioEstablecimientoLista().get(0).getSerie());
+				serieNotaCredito = establecimientoService.existSerie(establecimiento.getSerieFolioEstablecimientoLista().get(1).getSerie());
+				if (!serieFactura && !serieNotaCredito){
+					establecimientoService.save(establecimiento);
+				} else {
+					model.put("existSerie", true);
+					model.put("nuevoEstablecimiento", establecimiento);
+					if(serieFactura)
+						model.put("existSerieFactura", true);
+					else if(serieNotaCredito)
+						model.put("existSerieNotaCredito", true);
+					return "admin/altaSerieFolio";
+				}
 			}
 		} else {
 			muestraError(model, establecimiento);
@@ -137,6 +150,7 @@ public class EstablecimientoController {
 	@RequestMapping(value = "/asignarSerieFolio", method = RequestMethod.POST)
 	public String asignarSerieFolio(@ModelAttribute("nuevoEstablecimiento") Establecimiento establecimiento, ModelMap model) {
 		model.put("nuevoEstablecimiento", establecimiento);
+		model.put("guardar", true);
 		return "admin/altaSerieFolio";
 	}
 	
@@ -150,7 +164,20 @@ public class EstablecimientoController {
 	@RequestMapping("/actualizarSerieFolio")
 	public String actualizarSerieFolio(@ModelAttribute("nuevoEstablecimiento") Establecimiento establecimiento, ModelMap model) {
 		logger.debug("Reasignando Serie y Folio");
-		establecimientoService.updateSerieFolio(establecimiento);
+		boolean serieFactura, serieNotaCredito;
+		serieFactura = establecimientoService.existSerie(establecimiento.getSerieFolioEstablecimientoLista().get(0).getSerie());
+		serieNotaCredito = establecimientoService.existSerie(establecimiento.getSerieFolioEstablecimientoLista().get(1).getSerie());
+		if (!serieFactura && !serieNotaCredito){
+			establecimientoService.updateSerieFolio(establecimiento);
+		} else {
+			model.put("existSerie", true);
+			model.put("nuevoEstablecimiento", establecimiento);
+			if(serieFactura)
+				model.put("existSerieFactura", true);
+			else if(serieNotaCredito)
+				model.put("existSerieNotaCredito", true);
+			return "admin/altaSerieFolio";
+		}
 		return "redirect:/establecimientoSerieFolio";
 	}
 	

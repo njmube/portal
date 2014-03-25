@@ -41,5 +41,8 @@ public interface EstablecimientoService {
 			Establecimiento establecimiento);
 
 	void updateSerieFolio(Establecimiento establecimiento);
-	
+
+	boolean existSerie(String serie);
+
+	void insertSerieFolio(Establecimiento establecimiento);
 }
