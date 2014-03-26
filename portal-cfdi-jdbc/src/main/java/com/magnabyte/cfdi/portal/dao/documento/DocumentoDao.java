@@ -26,9 +26,9 @@ public interface DocumentoDao {
 
 	List<Documento> obtenerAcusesPendientes();
 	
-	List<Documento> getNombreDocumentoFacturado(List<Integer> idDocumentos);
+	List<Documento> getNombreDocumentoFacturado(List<Integer> idDocumentos, Integer[] tiposDocumento);
 	
-	List<Documento> getDocumentoByCliente(Cliente cliente, String fechaInicial, String fechaFinal);
+	List<Documento> getDocumentoByCliente(Cliente cliente, String fechaInicial, String fechaFinal, String idEstablecimiento);
 
 	void updateDocumentoCliente(DocumentoSucursal documento);
 
