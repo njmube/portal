@@ -56,8 +56,7 @@ public class EstablecimientoController {
 	private OpcionDeCatalogoService opcionDeCatalogoService;
 	
 	@Autowired
-	private  SerieFolioEstablecimientoService serieFolioEstablecimientoService;;
-	
+	private  SerieFolioEstablecimientoService serieFolioEstablecimientoService;
 	
 	@RequestMapping("/catalogoEstablecimiento")
 	public String catalogoEstablecimiento(ModelMap model) {
@@ -72,11 +71,10 @@ public class EstablecimientoController {
 		logger.debug("-- catalogoEstablecimientoStatusA");
 		List<Establecimiento> establecimientos= establecimientoService.readAll();
 		List<Establecimiento> establecimientoswithSerie = new ArrayList<Establecimiento>();
-		//FIXME validar por el rol
 		for (Establecimiento establecimiento : establecimientos) {
 			establecimiento.setSerieFolioEstablecimientoLista(
 					establecimientoService.readSerieFolioEstablecimiento(establecimiento));
-			if (establecimiento.getId() != 9999){
+			if (establecimiento.getTipoEstablecimiento().getId() != 3){
 				establecimientoswithSerie.add(establecimiento);
 			}
 		}
@@ -116,7 +114,6 @@ public class EstablecimientoController {
 	
 	@RequestMapping(value = "/guardarEstablecimiento", method = RequestMethod.POST)
 	public String guardarEstablecimiento(@ModelAttribute("nuevoEstablecimiento") Establecimiento establecimiento, ModelMap model){
-		//FIXME Revisar refactorizacion
 		if (!establecimientoService.exist(establecimiento)) {
 			if (establecimiento.getId() != null){
 				establecimientoService.update(establecimiento); 
@@ -161,6 +158,7 @@ public class EstablecimientoController {
 		return "admin/altaSerieFolio";
 	}
 	
+	
 	@RequestMapping("/actualizarSerieFolio")
 	public String actualizarSerieFolio(@ModelAttribute("nuevoEstablecimiento") Establecimiento establecimiento, ModelMap model) {
 		logger.debug("Reasignando Serie y Folio");
@@ -192,4 +190,5 @@ public class EstablecimientoController {
 				establecimiento.getDomicilio().getEstado().getPais().getId().toString(), "id_estado"));
 		return model;
 	}
+	
 }

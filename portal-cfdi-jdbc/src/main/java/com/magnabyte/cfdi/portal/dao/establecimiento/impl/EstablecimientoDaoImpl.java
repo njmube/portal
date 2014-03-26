@@ -106,7 +106,7 @@ public class EstablecimientoDaoImpl extends GenericJdbcDao implements
 	public List<Establecimiento> readAll() {
 		logger.debug(EstablecimientoSql.READ_ALL);
 
-		return getJdbcTemplate().query(EstablecimientoSql.READ_ALL, MAPPER_ESTABLECIMIENTO);
+		return getJdbcTemplate().query(EstablecimientoSql.READ_ALL, MAPPER_FOR_ESTAB);
 	}
 	
 	@Override

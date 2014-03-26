@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.aop.support.annotation.AnnotationClassFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -107,7 +108,7 @@ public class EstablecimientoServiceImpl implements EstablecimientoService {
 	@Transactional(readOnly = true)
 	@Override
 	public void save (Establecimiento establecimiento) {
-//		FIXME Revisar la asignacion del tipo de establecimiento y emisor
+//		FIXME -- CSR ----> Revisar la asignacion del tipo de establecimiento y emisor
 		TipoEstablecimiento  tipoEstablecimiento = new TipoEstablecimiento();
 		EmpresaEmisor empresaEmisor = new EmpresaEmisor();
 		empresaEmisor.setId(1);
