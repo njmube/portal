@@ -29,12 +29,11 @@ $(document).ready(function() {
 			var rfc = $("#rfc").val();
 			var fchInicial = $("#fechaInit").val();
 			var fchFinal = $("#fechaFin").val();
-			
-			var params = "rfc=" + rfc + "&fechaInicial=" + fchInicial + "&fechaFinal=" + fchFinal;
+			var idEstablecimiento = $("#establecimiento").val();
 			
 			$.ajax({
 				url: contextPath + "/portal/cfdi/listaDocumentos?ajax=true",
-				data: params,
+				data: {rfc: rfc, fechaInicial: fchInicial, fechaFinal: fchFinal, idEstablecimiento: idEstablecimiento},
 				type: "GET",
 				success: function(response) {
 					$("#listDocumentosPage").html(response);

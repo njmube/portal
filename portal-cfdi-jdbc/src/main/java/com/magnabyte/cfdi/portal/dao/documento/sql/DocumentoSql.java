@@ -114,6 +114,7 @@ public class DocumentoSql extends GenericSql {
 		qryBuilder.append("and convert(varchar(10), fecha_doc, 120) >= ?").append(EOL).append(TAB);
 		qryBuilder.append("and convert(varchar(10), fecha_doc, 120) <= ?").append(EOL).append(TAB);
 		qryBuilder.append("and id_status_doc = ?").append(EOL).append(TAB);
+		qryBuilder.append("and estab.id_establecimiento like ?").append(EOL).append(TAB);
 		
 		READ_DOCUMENTO_RUTA = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
@@ -123,7 +124,7 @@ public class DocumentoSql extends GenericSql {
 		qryBuilder.append(INNER).append(EOL).append(TAB).append("t_documento as doc on doc.id_documento = cfdi.id_documento").append(EOL).append(TAB);
 		qryBuilder.append(INNER).append(EOL).append(TAB).append("t_documento_folio as folio on cfdi.id_documento = folio.id_documento").append(EOL);
 		qryBuilder.append(WHERE).append(EOL).append(TAB).append("cfdi.id_documento in (:idDocumentos)").append(EOL);
-		qryBuilder.append("and folio.id_tipo_documento = :idTipoDocumento").append(EOL);
+		qryBuilder.append("and folio.id_tipo_documento in (:idTiposDocumento)").append(EOL);
 		qryBuilder.append("order by folio.id_documento");
 		READ_DOCUMENTOS_FACTURADOS = qryBuilder.toString();
 		clearAndReuseStringBuilder(qryBuilder);
@@ -247,5 +248,9 @@ public class DocumentoSql extends GenericSql {
 		
 		READ_BY_SERIE_FOLIO_IMPORTE = qryBuilder.toString();
 				
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(READ_DOCUMENTO_RUTA);
 	}
 }

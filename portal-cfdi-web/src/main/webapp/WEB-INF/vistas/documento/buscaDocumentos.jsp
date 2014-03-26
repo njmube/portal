@@ -20,10 +20,16 @@
 			</div>
 			<div class="well col-md-offset-2 col-md-8">
 				<form:form id="documentoForm" action="#" method="GET" modelAttribute="cliente" cssClass="form-horizontal" role="form">
+					<input type="hidden" id="establecimiento" value="${establecimiento.id}">
 					<div class="form-group">
 						<label for="rfc" class="col-lg-4 col-md-4 control-label">RFC: </label>
 						<div class="col-lg-5 col-md-5">
-							<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfc]]" />
+							<sec:authorize access="hasAnyRole('ROLE_SUC', 'ROLE_CORP')">
+								<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[custom[rfc]]" />
+							</sec:authorize>
+							<sec:authorize access="isAnonymous()">
+								<form:input path="rfc" id="rfc" cssClass="form-control input-sm validate[required, custom[rfc]]" />
+							</sec:authorize>
 						</div>
 					</div>
 					<div class="form-group">

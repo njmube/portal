@@ -50,6 +50,7 @@ import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.model.ticket.Ticket;
 import com.magnabyte.cfdi.portal.model.ticket.TipoEstadoTicket;
 import com.magnabyte.cfdi.portal.model.utils.PortalUtils;
+import com.magnabyte.cfdi.portal.model.utils.StringUtils;
 import com.magnabyte.cfdi.portal.service.cliente.ClienteService;
 import com.magnabyte.cfdi.portal.service.cliente.DomicilioClienteService;
 import com.magnabyte.cfdi.portal.service.codigoqr.CodigoQRService;
@@ -317,9 +318,22 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 	
 	@Transactional(readOnly = true)
 	@Override
-	public List<Documento> getDocumentos(Cliente cliente, String fechaInicial, String fechaFinal) {
+	public List<Documento> getDocumentos(Cliente cliente, 
+			String fechaInicial, String fechaFinal, String idEstablecimiento) {
+		Integer [] tiposDocumento = null;
+		if (StringUtils.isEmptyOrNull(idEstablecimiento)) {
+			idEstablecimiento = "%";
+			tiposDocumento = new Integer[] { TipoDocumento.FACTURA.getId() };
+		} else {
+			tiposDocumento = new Integer[] { 
+					TipoDocumento.FACTURA.getId(), 
+					TipoDocumento.NOTA_CREDITO.getId() 
+					};
+		}
+		cliente.setRfc("%" + cliente.getRfc() + "%");
+		
 		List<Documento> listaDocumentos = documentoDao
-				.getDocumentoByCliente(cliente, fechaInicial, fechaFinal);
+				.getDocumentoByCliente(cliente, fechaInicial, fechaFinal, idEstablecimiento);
 		List<Integer> idDocumentos = new ArrayList<Integer>();
 		List<Documento> documentosPorId = null;
 		
@@ -328,7 +342,7 @@ public class DocumentoServiceImpl implements DocumentoService, ResourceLoaderAwa
 				idDocumentos.add(ruta.getId());
 			}
 		
-			documentosPorId = documentoDao.getNombreDocumentoFacturado(idDocumentos);
+			documentosPorId = documentoDao.getNombreDocumentoFacturado(idDocumentos, tiposDocumento);
 			
 			for (Documento documento2 : documentosPorId) {
 				for (Documento documento : listaDocumentos) {

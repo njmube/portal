@@ -27,7 +27,7 @@ public interface DocumentoService {
 
 	List<Documento> obtenerAcusesPendientes();
 
-	List<Documento> getDocumentos(Cliente cliente, String fechaInicial, String fechaFinal);
+	List<Documento> getDocumentos(Cliente cliente, String fechaInicial, String fechaFinal, String idEstablecimiento);
 
 	byte[] recuperarDocumentoArchivo(String fileName, Integer idEstablecimiento,
 			String extension);

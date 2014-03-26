@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLXML;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -303,10 +304,10 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	}
 
 	@Override
-	public List<Documento> getNombreDocumentoFacturado(List<Integer> idDocumentos) {
+	public List<Documento> getNombreDocumentoFacturado(List<Integer> idDocumentos, Integer[] tiposDocumento) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("idDocumentos", idDocumentos);
-		map.addValue("idTipoDocumento", TipoDocumento.FACTURA.getId());
+		map.addValue("idTiposDocumento", Arrays.asList(tiposDocumento));
 		return getNamedParameterJdbcTemplate().query(DocumentoSql.READ_DOCUMENTOS_FACTURADOS,
 				map, DOCUMENTO_FACTURADO_MAPPER);
 	}
@@ -396,12 +397,12 @@ public class DocumentoDaoImpl extends GenericJdbcDao implements DocumentoDao {
 	};
 
 	@Override
-	public List<Documento> getDocumentoByCliente(Cliente cliente, String fechaInicial, String fechaFinal) {
+	public List<Documento> getDocumentoByCliente(Cliente cliente, String fechaInicial, String fechaFinal, String idEstablecimiento) {
 		return getJdbcTemplate().query(DocumentoSql.READ_DOCUMENTO_RUTA, 
 				DOCUMENTO_RUTA_MAPPER, cliente.getRfc(), 
 				new java.sql.Date(FechasUtils.parseStringToDate(fechaInicial, FechasUtils.formatddMMyyyyHyphen).getTime()),
 				new java.sql.Date(FechasUtils.parseStringToDate(fechaFinal, FechasUtils.formatddMMyyyyHyphen).getTime()),
-				TipoEstadoDocumento.PROCESADO.getId());
+				TipoEstadoDocumento.PROCESADO.getId(), idEstablecimiento);
 	}
 
 	@Override
