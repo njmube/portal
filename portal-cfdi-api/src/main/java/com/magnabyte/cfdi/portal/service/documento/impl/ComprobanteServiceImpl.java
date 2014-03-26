@@ -285,10 +285,10 @@ public class ComprobanteServiceImpl implements ComprobanteService {
 					concepto.setCantidad(partida.getCantidad());
 					concepto.setNoIdentificacion(partida.getArticulo().getId());
 					concepto.setDescripcion(partida.getArticulo().getDescripcion());
-					if (partida.getArticulo().getClaveIVA().equalsIgnoreCase(ivaTasaB4Clave)) {
-						concepto.setValorUnitario(partida.getPrecioUnitario().divide(IVA_DIVISION, 4, BigDecimal.ROUND_HALF_UP));
-					} else if (partida.getArticulo().getClaveIVA().equalsIgnoreCase(ivaTasaB0Clave)) {
+					if (partida.getArticulo().getClaveIVA() == null || partida.getArticulo().getClaveIVA().equalsIgnoreCase(ivaTasaB0Clave)) {
 						concepto.setValorUnitario(partida.getPrecioUnitario().setScale(4, BigDecimal.ROUND_HALF_UP));
+					} else if (partida.getArticulo().getClaveIVA().equalsIgnoreCase(ivaTasaB4Clave)) {
+						concepto.setValorUnitario(partida.getPrecioUnitario().divide(IVA_DIVISION, 4, BigDecimal.ROUND_HALF_UP));
 					} else {
 						logger.error(messageSource.getMessage("comprobante.error.iva", new Object[] {partida.getArticulo().getId()}, null));
 						throw new PortalException(messageSource.getMessage("comprobante.error.iva", new Object[] {partida.getArticulo().getId()}, null));
