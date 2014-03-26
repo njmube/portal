@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.magnabyte.cfdi.portal.model.commons.Usuario;
-import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusUsuario;
+import com.magnabyte.cfdi.portal.model.commons.enumeration.EstatusGenerico;
 import com.magnabyte.cfdi.portal.model.exception.PortalException;
 import com.magnabyte.cfdi.portal.service.commons.UsuarioService;
 import com.magnabyte.cfdi.portal.service.establecimiento.AutorizacionCierreService;
@@ -34,7 +34,7 @@ public class AutorizacionCierreServiceImpl implements AutorizacionCierreService 
 		Usuario usrBd = usuarioService.getUsuarioByEstablecimiento(usuario);
 		
 		if (usrBd != null) {
-			if(usrBd.getEstatus().getId() != EstatusUsuario.INACTIVO.getId()) {
+			if(usrBd.getEstatus().getId() != EstatusGenerico.INACTIVO.getId()) {
 				if(usuario.getUsuario().equals(usrBd.getUsuario()) && 
 						!usuario.getPassword().equals(usrBd.getPassword())) {
 					throw new PortalException(messageSource.getMessage("cierre.error.password", null, null));

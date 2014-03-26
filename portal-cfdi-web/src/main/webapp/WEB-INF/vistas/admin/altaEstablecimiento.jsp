@@ -30,7 +30,6 @@
 				<p class="text-info">Ingresa los datos del Establecimiento.</p>
 			</blockquote>
 			<hr>
-			<c:url var="guardar" value="/guardarEstablecimiento" />
 			<c:if test="${error}">
 				<div class="col-md-offset-3 col-md-6 alert alert-danger alert-dismissable alert-fixed auto-close">
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -38,7 +37,8 @@
 					<br><br> <strong>${messageError}</strong> 
 				</div>
 			</c:if>
-			<form:form id="establecimientoForm" action="${guardar }" method="post" modelAttribute="establecimiento" cssClass="form-horizontal"	role="form">
+			<c:url var="continuar" value="/asignarSerieFolio" />
+			<form:form id="establecimientoForm" action="${continuar}" method="post" modelAttribute="nuevoEstablecimiento" cssClass="form-horizontal"	role="form">
 			<div class="row">
 				<div class="col-md-5">
 					<div class="white-panel form-horizontal">
@@ -168,7 +168,7 @@
 			</div>	
 			<div class="row">
 					<p class="form-grup text-center">
-					<button id="guardar" type="submit" class="btn btn-primary">Guardar <i class="fa fa-floppy-o"></i></button>
+					<button id="guardar" type="submit" class="btn btn-primary">Continuar <i class="fa fa-floppy-o"></i></button>
 					<button id="cancelar" type="button" class="btn btn-danger">Cancelar <i class="fa fa-times"></i></button>
 					</p>
 			</div>

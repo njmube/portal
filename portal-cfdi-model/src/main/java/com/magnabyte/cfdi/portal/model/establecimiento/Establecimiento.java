@@ -2,6 +2,7 @@ package com.magnabyte.cfdi.portal.model.establecimiento;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.magnabyte.cfdi.portal.model.emisor.EmpresaEmisor;
 
@@ -80,6 +81,11 @@ public class Establecimiento implements Serializable {
 	 * Domicilio de establecimiento
 	 */
 	private DomicilioEstablecimiento domicilio;
+	
+	/**
+	 * Lista de la serie y folio de establecimiento
+	 */
+	private List<SerieFolioEstablecimiento> serieFolioEstablecimientoLista;
 
 	/**
 	 * Devuelve el identificador único de
@@ -296,6 +302,23 @@ public class Establecimiento implements Serializable {
 	 */
 	public void setUltimoCierre(Date ultimoCierre) {
 		this.ultimoCierre = ultimoCierre;
+	}
+	
+	/**
+	 * Devuelve la lista de la serie y folio del establecimiento
+	 * @return
+	 */
+	public List<SerieFolioEstablecimiento> getSerieFolioEstablecimientoLista() {
+		return serieFolioEstablecimientoLista;
+	}
+	
+	/**
+	 * Asigna la lista de la serie y folio del establecimiento
+	 * @param serieFolioEstablecimiento
+	 */
+	public void setSerieFolioEstablecimientoLista(
+			List<SerieFolioEstablecimiento> serieFolioEstablecimientoLista) {
+		this.serieFolioEstablecimientoLista = serieFolioEstablecimientoLista;
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.magnabyte.cfdi.portal.model.establecimiento.Establecimiento;
+import com.magnabyte.cfdi.portal.model.establecimiento.SerieFolioEstablecimiento;
 
 /**
  * 
@@ -37,5 +38,12 @@ public interface EstablecimientoDao {
 	Establecimiento findbyName(Establecimiento establecimiento);
 
 	void updateFechaCierre(Establecimiento establecimiento, Date fechaUltimoCierre, Date fechaCierreSiguiente);
+
+	List<SerieFolioEstablecimiento> readSerieFolioEstablecimiento(
+			Establecimiento establecimiento);
+
+	void updateSerieFolio(Establecimiento establecimiento);
+
+	boolean existSerie(String serie);
 	
 }

@@ -94,6 +94,12 @@
 						</a>
 					</p>
 					<hr>
+					<p>
+						<a href="<c:url value="/establecimientoSerieFolio"/>" class="btn btn-info btn-lg" role="button">Series y Folios
+							<i class="fa fa-bars"></i>
+						</a>
+					</p>
+					<hr>
 				</sec:authorize>
 			</div>
 		</div>
